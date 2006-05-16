@@ -1,0 +1,107 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+
+<head>
+	<title><%=@title if @title%></title>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	
+	<%= javascript_include_tag :defaults %>
+	
+	<%= stylesheet_link_tag "master", :media => "screen" %>
+</head>
+
+<body>
+
+<div id="navcontainer">
+
+<table width="100%" border="0" >
+ <tr>
+  <td align="left"><div id="headerleft"><%=@app['title']%></div></td>
+  <td align="right"><div id="headerright">
+<%if session[:user]%>Logged in as <%=session[:user].display_name%> (<%= link_to 'log out', :controller => '/index', :action => 'logout' %>)
+<%else%>You are not logged in.
+<%end%>
+</div>
+ </tr>
+</table>
+
+	<ul id="navlist">
+		
+		<% if session[:user].nil? %>
+		  <li><%= link_to "Login", { :controller => '/login' }, { :id => 'current' } %></li>
+		
+		<% else%>
+		  <% if @tab.nil? || !@tab.eql?('home') %>
+		    <li><%= link_to 'Home', :controller => '/home' %></li>
+		  <% else %>
+		    <li><%= link_to 'Home', { :controller => '/home' }, { :id => 'current' } %></li>
+		  <% end %>
+		  
+		  <% if session[:user].admin? %>
+		    <% if @tab.nil? || !@tab.eql?('administration') %>
+		      <li style="float: right;"><%= link_to 'Administration', :controller => '/admin' %>
+		    <% else %>
+		      <li style="float: right;"><%= link_to 'Administration', { :controller => '/admin' }, { :id => 'current' } %></li>
+		    <% end %>
+
+		    
+		  <% end %>
+		<% end %>
+		
+		
+		
+		<!--
+		<li><a href="#" <%= 'id="current"' if session[:tab].nil? || session[:tab].eql('home') %>>Home</a></li>
+		<li><a href="#">Item two</a></li>
+		<li><a href="#">Item three</a></li>
+		<li><a href="#">Item four</a></li>
+		<li><a href="#">Item five</a></li>
+		-->
+	</ul>
+	
+
+</div>
+
+<div id="Wrapper">
+<div class="Container">
+
+<table class="layout">
+  <tr>
+    <td class="left">
+      <div class="Left">
+        <div class="col">
+<% if flash[:notice] %><div id="GoodMessage"><%= flash[:notice] %></div><% end %>
+
+<%= @content_for_layout %>
+
+		</div>
+		
+		 <div class="bottom">&nbsp;</div>
+		 <div id="Footer">
+		   Copyright &copy; 2006 <a href="http://www.users.muohio.edu/helmicmt/">Mike Helmick</a> |
+		   <a href="http://www.users.muohio.edu/helmicmt/cscw/">Computer Science Courseware v<%=@app['version']%></a><br/>
+		   Installed for <%=@app['title']%>, Site contact: <a href="mailto:<%=@app['email']%>"><%=@app['email']%></a>
+		 </div>
+	  </div>
+	</td>
+	
+	<td class="right">
+	  <div class="Right">
+	    <div class="col">
+	
+<%= render :partial => "right" %>	
+	
+	    </div>
+	  </div>
+	</td>
+	
+ </tr>
+</table>
+
+
+</div>
+</div>
+
+</body>
+</html>

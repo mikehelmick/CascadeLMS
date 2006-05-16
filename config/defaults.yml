@@ -1,0 +1,41 @@
+version: 0.0.1
+title: Miami University CSA
+
+organization: Miami University
+
+email: helmicmt@muohio.edu
+blackboard: http://mymiami.muohio.edu
+
+smtp: mailfwd.muohio.edu
+
+# either ldap or basic
+authtype: ldap
+# the setting below need to be filled in if LDAP is being used
+ldapserver: ldapsun1.muohio.edu
+ldap_dc: dc=muohio,dc=edu
+ldap_ou: ou=people
+ldap_search: uid
+
+ldap_port: 636
+ldap_ssl: true
+
+ldap_field_uid: uid
+ldap_field_nickname: eduPersonNickname
+ldap_field_firstname: givenName
+ldap_field_middlename: muohioeduMiddleName
+ldap_field_lastname: sn
+ldap_field_affiliation: muohioeduAffiliation
+ldap_field_personaltitle: personalTitle
+ldap_field_email: mail
+ldap_field_officehours: muohioeduHours 
+ldap_field_phone: telephoneNumber
+
+instructor_affiliation: Faculty
+
+# auto enroll
+# Must have LDAP enabled & this info must be available via LDAP
+enable_auto_enroll: true
+
+ldap_faculty_crn: muohioeduCurrentTeachingCRN
+ldap_faculty_desc: muohioeduCurrentTeachingSubjectNumber
+ldap_student_crn: muohioeduCurrentCourseCRN

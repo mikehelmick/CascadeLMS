@@ -1,0 +1,24 @@
+
+<%= error_messages_for 'user', :class => "ErrorExplanation"  %>
+
+<% if @login_error %>
+<div id="ErrorExplanation"><%= @login_error %></div>
+<% end %>
+
+<div id="form_area">
+<%= start_form_tag :action => 'login' %>
+  <h2>Please login</h2>
+  <p class="blockintro">Please enter your username and password.</p>
+  <div class="block">
+  <label for="user_uniqueid" class="required">Username:</label>
+  <%= text_field 'user', 'uniqueid' %> <br/>
+
+  <label for="user_password" class="required">Password:</label>
+   <%= password_field 'user', 'password' %>
+  </div>
+  <div class="submit">
+    <%= submit_tag 'Login' %>
+  </div>
+
+<%= end_form_tag %>
+</div>

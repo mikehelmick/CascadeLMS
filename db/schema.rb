@@ -6,15 +6,18 @@ ActiveRecord::Schema.define(:version => 1) do
 
   create_table "users", :force => true do |t|
     t.column "uniqueid", :string, :limit => 15, :default => "", :null => false
-    t.column "prefered_name", :string
-    t.column "first_name", :string
+    t.column "password", :string
+    t.column "preferred_name", :string
+    t.column "first_name", :string, :default => "", :null => false
     t.column "middle_name", :string
-    t.column "last_name", :string
+    t.column "last_name", :string, :default => "", :null => false
     t.column "instructor", :string, :limit => 1, :default => "", :null => false
+    t.column "admin", :string, :limit => 1, :default => "N", :null => false
     t.column "affiliation", :string
     t.column "personal_title", :string
     t.column "office_hours", :string
     t.column "phone_number", :string
+    t.column "email", :string, :default => "", :null => false
   end
 
 end

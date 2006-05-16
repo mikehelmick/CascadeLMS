@@ -1,0 +1,8 @@
+
+<h2>Please login to access this system. </h2>
+
+<% if @app['authtype'].eql?('ldap') %>
+<p>This site is configured to automatically create new account for all authorized users, so simply log in using your normal <%= @app['organization'] %> username and password.</p>
+<% else %>
+<p>If you do not have a username, please contact your instructor.</p>
+<% end %>

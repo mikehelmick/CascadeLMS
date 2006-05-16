@@ -1,0 +1,365 @@
+
+body {
+	background: #DCDDDE;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	margin: 0;
+	padding: 0;
+}
+
+div#Wrapper {
+  padding: 0 23px 0 30px;
+  margin: 0 auto;
+}
+
+.Container {
+	margin: 12px auto 0 auto;
+	text-align: center;
+	min-width: 750px;
+}
+
+#ContentFrame, .ContentFrame {
+	margin: 0;
+	padding: 0px 0;
+	width: 100%;
+	text-align: left;
+	/*position: relative;*/
+	float: left;
+}
+
+table.layout {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+table.layout td.left,
+table.layout td.right {
+  vertical-align: top;
+  padding: 0;
+}
+
+table.layout td.left {
+  width: 70%;
+}
+
+table.layout td.right {
+  width: 30%;
+}
+
+div.Left {
+	margin: 0;
+	padding: 0;
+	text-align: left;
+	width: 70%;
+	float: left;
+	}
+
+div.Right {
+	margin: 0px 0 0 0;
+	padding: 0;
+	text-align: left;
+	/*position: absolute;*/
+	float: left;
+	width: 30%;
+	}
+
+table.layout td.left div.Left,
+table.layout td.right div.Right {
+  width: auto;
+  float: none;
+}
+
+.col {
+	padding: 0 20px;
+	text-align: left;
+}
+
+div.Left .col,
+div.Full .col {
+	padding: 15px 50px 10px 20px;
+  background: #fff url(/images/right-bg.gif) right repeat-y;
+  position: relative;
+}
+
+div.Full .col {
+	padding: 15px 30px 10px 20px;
+}
+
+div.Left .bottom,
+div.Full .bottom {
+  background: url(/images/bottom-bg.gif) top right no-repeat;
+  font-size: 8px;
+}
+
+div.Right .col {
+	min-width: 200px;
+	padding: 0 0 0 9px;
+}
+
+
+#Footer {
+	clear: left;
+	font-size: 10px;
+	color: #111;
+	margin: 4px 0 20px 20px;
+	text-align: left;
+	padding-bottom: 15px;
+}
+
+#Footer a:link, #Footer a:visited {
+	color: #666;
+}
+
+#Footer a:hover {
+	color: #fff;
+	background: #666;
+}
+
+
+
+/* Navigation (Thanks SimpleBits) */
+div#navcontainer {
+	width: auto;
+	margin: 0 auto;
+	padding: 0 15px 0 0;
+	background-color: #990000;
+	border-bottom: 1px solid #FFFFFF;
+}
+div#navcontainer ul {
+	font-family: Arial, Helvetica, sans-serif;
+	font-weight: bold;
+	color: white;
+	text-align: left;
+	margin: 0;
+	padding-bottom: 5px;
+	padding-top: 5px;
+}
+div#navcontainer ul li {
+	display: inline;
+	margin-left: -3px;
+}
+
+div#navcontainer ul li a {
+	margin: 0 3px 0 3px;
+	padding: 5px 10px 5px 10px;
+	color: #000;
+	text-decoration: none;
+	background-color: #fc0;
+}
+
+div#navcontainer ul li a#current {
+	padding: 5px 10px 5px 10px;
+	background-color: #DCDDDE;
+	color: #000000;
+	text-decoration: none;
+	border-left: 1px solid #fff;
+	border-right: 1px solid #fff;
+	border-top: 1px solid #fff;
+	border-bottom: 1px solid #DCDDDE;
+}
+
+div#navcontainer ul li a:hover {
+	background-color: #DCDDDE;
+	color: #000000;
+	text-decoration: none;
+}
+
+div#headerleft {
+	width: 50%;
+	font-family: Arial, Helvetica, sans-serif;
+	font-weight: bold;
+	text-align: left;
+	font-size: 15px;
+	color: #ffffff;
+	padding: 0 0 0 15px;
+}
+
+div#headerright {
+	font-family: Arial, Helvetica, sans-serif;
+	font-weight: bold;
+	color: white;
+	text-align: right;
+	padding: 0 15px 0 0;
+	clear: left;
+}
+
+div#headerright a {
+	color: #ffffff;
+	text-decoration: none;
+}
+
+div#headerright a:hover {
+	text-decoration: underline;
+}
+
+#active a { border-left: 1px solid #990000; }
+
+
+/** ERRORS **/
+
+#GoodMessage {
+	background-color: #E2F9E3;
+	border: 2px solid #00FF33;
+	border-left: none;
+	border-right: none;
+	padding: 2px 20px 2px 10px;
+	margin: 10px 0px 10px 0px;
+	color: #000;
+}
+
+#ErrorExplanation {
+	border: 2px solid #red;
+	padding: 7px;
+	padding-bottom: 12px;
+	margin-bottom: 20px;
+	background-color: #fcf0f0;
+}
+
+#ErrorExplanation h2 {
+	text-align: left;
+	font-weight: bold;
+	padding: 5px 5px 5px 27px;
+	font-size: 12px;
+	margin: -7px;
+	background: url(/images/alertbad_icon.gif) #c00 left no-repeat;
+	color: #fff;
+}
+
+#ErrorExplanation p {
+	color: #333;
+	margin-bottom: 0;
+	padding: 5px;
+}
+
+#ErrorExplanation ul {
+	margin-left: 30px;
+}
+
+#ErrorExplanation ul li {
+	font-size: 12px;
+	list-style: square;
+}
+
+
+/** MY STYLES **/
+
+div.Right .col h2 {
+	font-size: 15px;
+	font-weight: bold;
+	border-bottom: 1px solid #000;
+	margin: 0 0 4px 0;
+}
+
+
+/** FORMS **/
+#form_area {
+  font-family: verdana, sans-serif;
+}
+
+#form_area p.blockintro {
+	color: #666;
+	font-size: 11px;
+  line-height: 14px;
+  margin: 0;
+}
+
+#form_area table {}
+
+#form_area table td {
+	font-size: 10px;
+}
+
+#form_area table th {
+  font-size: 10px;
+	font-weight: normal;
+	text-align: right;
+}
+
+#form_area table th.required {
+  font-weight: bold;
+}
+
+#form_area div.block {
+	color: #333;
+	background: #DCDDDE;
+	margin: 3px 0 25px 0;
+	padding: 5px;
+	font-size: 11px;
+	font-weight: normal;
+}
+
+#form_area h2 {
+	font-size: 14px;
+	color: #333;
+	margin-bottom: 10px;
+	padding: 0;
+	margin: 0 0 5px 0;
+}
+
+#form_area div.action, div.action {
+	border-top: 2px solid #000;
+	margin-bottom: 10px;
+	text-align: right;
+	padding-top: 8px;
+	font-size: 12px;
+}
+
+#form_area div p {
+  margin: 0;
+}
+
+#form_area label {
+	display: block;
+	float: left;
+	margin-top: 5px;
+}
+
+#form_area label.required {
+	font-weight: bold;
+}
+
+#form_area .inputText {
+	display: block;
+	float: left;
+	margin-top: 10px;
+}
+#form_area .inputPassword {
+	display: block;
+	float: left;
+	margin-top: 10px;
+}
+#form_area select {
+	display: block;
+	float: left;
+	margin-top: 10px;
+}
+#form_area textarea {
+	display: block;
+	float: left;
+	margin-top: 10px;
+}
+#form_area radioLabel {
+	display: block;
+	float: left;
+	margin-top: 0px;	
+}
+
+#form_area .dynamicArea {
+	border: 1px dashed #000;
+	padding: 5px 5px 5px 5px;
+	margin: 5px 5px 5px 5px;
+}
+
+#form_area .field, .text {
+	display: block;
+	float: left;
+	margin-top: 5px;	
+}
+
+#form_area .submit {
+  border-top: 2px solid #000;
+  padding: 8px 0 12px 0;
+  text-align: right;
+}
+
+
