@@ -9,18 +9,27 @@ class ApplicationController < ActionController::Base
  	end
  	
  	def ensure_instructor
- 	  return false unless session[:user].instructor?
- 	  return true
+    unless session[:user].instructor?
+      flash[:badnotice] = "You do not have the rights to view the requested page."
+      redirect_to :controller => '/home'
+      return false
+    end
+    return true
   end
   
   def ensure_admin
-    return false unless session[:user].admin?
+    unless session[:user].admin?
+      flash[:badnotice] = "You do not have the rights to view the requested page."
+      redirect_to :controller => '/home'
+      return false
+    end
     return true
   end
  	
  	def ensure_logged_in
  	  if session[:user].nil?
- 	    redurect_to :controller => '/index'
+ 	    flash[:badnotice] = "You must log in before proceeding."
+ 	    redirect_to :controller => '/index'
  	    return false
     end
     return true

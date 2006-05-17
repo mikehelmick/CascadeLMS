@@ -1,0 +1,7 @@
+<h2>Term Summary</h2>
+
+<% if @current_term.nil? %><p><b>Warning:</b> there is no currently active term.</p>
+<%else%>
+<p><b>Current Term:</b> <%= @current_term.semester %><br>
+   <b>Code:</b> <%= @current_term.term %></p>
+<%end%>

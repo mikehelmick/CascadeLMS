@@ -29,7 +29,7 @@
 	<ul id="navlist">
 		
 		<% if session[:user].nil? %>
-		  <li><%= link_to "Login", { :controller => '/login' }, { :id => 'current' } %></li>
+		  <li><%= link_to "Login", { :controller => '/' }, { :id => 'current' } %></li>
 		
 		<% else%>
 		  <% if @tab.nil? || !@tab.eql?('home') %>
@@ -40,9 +40,9 @@
 		  
 		  <% if session[:user].admin? %>
 		    <% if @tab.nil? || !@tab.eql?('administration') %>
-		      <li style="float: right;"><%= link_to 'Administration', :controller => '/admin' %>
+		      <li><%= link_to 'Administration', :controller => '/admin' %>
 		    <% else %>
-		      <li style="float: right;"><%= link_to 'Administration', { :controller => '/admin' }, { :id => 'current' } %></li>
+		      <li><%= link_to 'Administration', { :controller => '/admin' }, { :id => 'current' } %></li>
 		    <% end %>
 
 		    
@@ -72,6 +72,7 @@
       <div class="Left">
         <div class="col">
 <% if flash[:notice] %><div id="GoodMessage"><%= flash[:notice] %></div><% end %>
+<% if flash[:badnotice] %><div id="ErrorExplanation"><%= flash[:badnotice] %></div><% end %>
 
 <%= @content_for_layout %>
 

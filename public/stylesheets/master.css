@@ -256,6 +256,10 @@ div.Right .col h2 {
   font-family: verdana, sans-serif;
 }
 
+#form_area br {
+	clear: left;
+}
+
 #form_area p.blockintro {
 	color: #666;
 	font-size: 11px;
@@ -312,6 +316,7 @@ div.Right .col h2 {
 	display: block;
 	float: left;
 	margin-top: 5px;
+	margin-right: 10px;
 }
 
 #form_area label.required {
@@ -338,6 +343,13 @@ div.Right .col h2 {
 	float: left;
 	margin-top: 10px;
 }
+
+#form_area select {
+	display: block;
+	float: left;
+	margin-top: 2px;
+}
+
 #form_area radioLabel {
 	display: block;
 	float: left;
@@ -362,4 +374,71 @@ div.Right .col h2 {
   text-align: right;
 }
 
+/** table **/
+
+.fancy {
+	border: 1px solid #666666;
+}
+
+.fancy tr.hover:hover
+{
+	background: #bfd5ff;
+}
+
+.fancy tr.fheader a
+{
+	color: #000000;
+	font-weight: normal;
+}
+
+.fancy tr.fheader a:hover
+{
+	color: #000000;
+	font-weight: normal;
+	text-decoration: none;
+}
+
+.fancy td.selected {
+	background-color: #3d80df;
+	border-left: 1px solid #346DBE;
+	border-bottom: 1px solid #7DAAEA;
+}
+
+.fancy td.selected a {
+	color: #ffffff;
+	font-weight: bold;
+	text-decoration: none;
+}
+
+.fancy td.selected a:hover {
+	color: #ffffff;
+	font-weight: bold;
+	text-decoration: underline;
+}
+
+.fancy a:visited {
+	color: #000000;
+}
+
+.fancy tr.odd
+{
+	background-color: #edf3fe;
+}
+
+.fancy tr.even
+{
+	background-color: #fff;
+}
+
+.fancy td.total 
+{
+	border-top: 1px dashed #666666;
+}
+
+.fancy tbody tr td {
+	font-family: "lucida grande", verdana, sans-serif;
+	font-size: 9pt;
+	padding: 3px 8px;
+	border-left: 1px solid #D9D9D9;
+}
 

@@ -1,5 +1,7 @@
 class Admin::IndexController < ApplicationController
   
+  before_filter :ensure_logged_in, :ensure_admin
+  
   def index
     
     set_tab

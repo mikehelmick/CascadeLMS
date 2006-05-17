@@ -1,4 +1,4 @@
-version: 0.0.1
+version: 0.0.2
 title: Miami University CSA
 
 organization: Miami University
@@ -17,6 +17,8 @@ ldap_ou: ou=people
 ldap_search: uid
 
 ldap_port: 636
+# 389
+# 636
 ldap_ssl: true
 
 ldap_field_uid: uid
@@ -39,3 +41,6 @@ enable_auto_enroll: true
 ldap_faculty_crn: muohioeduCurrentTeachingCRN
 ldap_faculty_desc: muohioeduCurrentTeachingSubjectNumber
 ldap_student_crn: muohioeduCurrentCourseCRN
+## our format is Year Term(2 digit) and a 5 digit course number
+## Any format of Y T N will work, but you can disable auto enrol or customize
+crn_format: YYYYTTNNNNN

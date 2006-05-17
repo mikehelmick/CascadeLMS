@@ -1,0 +1,21 @@
+<%= error_messages_for 'term' %>
+
+<!--[form:terms]-->
+<p><label for="term_term" class="required">Term: </label> 
+	<%= text_field 'term', 'term'  %><br/>
+
+<label for="term_year" class="required">Year: </label>
+<%= select 'term', 'year', @years.collect { |p| [ p, p ] }, { :selected => @start_year } %><br/> </p>
+
+</div>
+
+<p class="blockintro">Semester is a descriptive term, like 'Fall' or 'Spring.'</p>
+  <div class="block">
+
+<label for="term_semester" class="required">Semester: </label>
+<%= text_field 'term', 'semester'  %><br/></p>
+
+<p>Current: No</p>
+<p>Open: Yes</p>
+<!--[eoform:terms]-->
+

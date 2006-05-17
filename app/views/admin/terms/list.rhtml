@@ -1,0 +1,44 @@
+
+
+<h1>Listing Terms (<%= link_to 'Back', :controller => '/admin' %>)</h1>
+
+<table cellspacing="2" class="fancy">
+  <tr class="header">
+    <th>Term</th>
+    <th>Year</th>
+    <th>Semester</th>
+    <th>Current</th>
+    <th>Open</th>
+    <th>Actions</th>
+  </tr>
+  
+<% count = 0%>
+<% for term in @terms %>
+<% count = count.next 
+   odd = "odd"
+   odd = "even" if count.even?
+%>
+
+  <tr class="<%=odd%> hover" id="item_<%=term.id%>">
+    <td><%=h term.term %></td>
+    <td><%=h term.year %></td>
+    <td><%=h term.semester.capitalize %></td>
+    <td><%if term.current? %><b>current</b>
+	    <% else %><%= link_to 'make current', :action => 'current', :id => term %>
+	    <%end%></td>
+    <td><%if term.open? %><b><%= link_to 'yes', :action => 'toggle', :id => term %></b>
+	    <% else %><%= link_to 'no', :action => 'toggle', :id => term %>
+	    <%end%></td>
+
+    <td><%= link_to 'Edit', :action => 'edit', :id => term %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New Term', :action => 'new' %>
+
+<% if flash[:highlight] %>
+  <%= javascript_tag visual_effect(:highlight, "item_#{flash[:highlight]}", :duration => 7.0 ) %>
+<% end %>

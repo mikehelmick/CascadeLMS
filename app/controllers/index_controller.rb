@@ -4,6 +4,7 @@ require 'LdapAuthentication'
 class IndexController < ApplicationController
   
   layout 'application'
+  before_filter :check_login, :except => [ :logout ]
   
   def index
     @user = User.new
@@ -34,5 +35,12 @@ class IndexController < ApplicationController
     reset_session
     redirect_to :action => 'index', :out => 'out'
   end
+  
+  def check_login
+    return true if session[:user].nil?
+    return false
+  end
+  
+  private :check_login
   
 end
