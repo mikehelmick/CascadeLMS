@@ -16,6 +16,12 @@ class IndexController < ApplicationController
   def login
     @user = User.new( params[:user] )
     
+    if @user.password.nil? || @user.password.eql?('') 
+      @login_error = 'You must enter a password.'
+      render :action => 'index'
+      return
+    end
+    
     auth = BasicAuthentication.new()
     auth = LdapAuthentication.new( @app ) if @app['authtype'].downcase.eql?('ldap')
     

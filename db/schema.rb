@@ -2,7 +2,37 @@
 # migrations feature of ActiveRecord to incrementally modify your database, and
 # then regenerate this schema definition.
 
-ActiveRecord::Schema.define(:version => 2) do
+ActiveRecord::Schema.define(:version => 6) do
+
+  create_table "courses", :force => true do |t|
+    t.column "term_id", :integer, :default => 0, :null => false
+    t.column "title", :string, :default => "", :null => false
+    t.column "short_description", :string
+    t.column "open", :boolean, :default => true, :null => false
+  end
+
+  create_table "courses_crns", :id => false, :force => true do |t|
+    t.column "course_id", :integer, :default => 0, :null => false
+    t.column "crn_id", :integer, :default => 0, :null => false
+  end
+
+  add_index "courses_crns", ["course_id", "crn_id"], :name => "courses_crns_course_id_index", :unique => true
+
+  create_table "courses_users", :id => false, :force => true do |t|
+    t.column "user_id", :integer, :default => 0, :null => false
+    t.column "course_id", :integer, :default => 0, :null => false
+    t.column "course_student", :boolean, :default => true, :null => false
+    t.column "course_instructor", :boolean, :default => false, :null => false
+    t.column "course_guest", :boolean, :default => false, :null => false
+    t.column "course_assistant", :boolean, :default => false, :null => false
+  end
+
+  add_index "courses_users", ["user_id", "course_id"], :name => "courses_users_user_id_index", :unique => true
+
+  create_table "crns", :force => true do |t|
+    t.column "crn", :string, :limit => 20, :default => "", :null => false
+    t.column "name", :string, :default => "", :null => false
+  end
 
   create_table "terms", :force => true do |t|
     t.column "term", :string, :limit => 10, :default => "", :null => false
@@ -19,8 +49,8 @@ ActiveRecord::Schema.define(:version => 2) do
     t.column "first_name", :string, :default => "", :null => false
     t.column "middle_name", :string
     t.column "last_name", :string, :default => "", :null => false
-    t.column "instructor", :string, :limit => 1, :default => "", :null => false
-    t.column "admin", :string, :limit => 1, :default => "N", :null => false
+    t.column "instructor", :boolean, :default => false, :null => false
+    t.column "admin", :boolean, :default => false, :null => false
     t.column "affiliation", :string
     t.column "personal_title", :string
     t.column "office_hours", :string

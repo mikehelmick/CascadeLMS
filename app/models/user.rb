@@ -4,6 +4,10 @@ class User < ActiveRecord::Base
   validates_presence_of :password
   validates_format_of :email, :with => /^([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})$/i, :on => :create
   
+  has_and_belongs_to_many :courses
+  
+  attr_accessor :notice
+  
   def display_name
     unless self.preferred_name.nil?
       "#{self.preferred_name} #{self.last_name}"
@@ -13,27 +17,11 @@ class User < ActiveRecord::Base
   end
   
   def toggle_instructor
-    if self.instructor.eql?('N')
-      self.instructor = 'Y'
-    else
-      self.instructor = 'N'
-    end
+    self.instructor = !self.instructor
   end
   
   def toggle_admin
-    if self.admin.eql?('N')
-      self.admin = 'Y'
-    else
-      self.admin = 'N'
-    end    
-  end
-  
-  def instructor?
-    self.instructor.eql?('Y')
-  end
-  
-  def admin?
-    self.admin.eql?('Y')
+    self.admin = !self.admin   
   end
   
   def valid_password?( password_entered )
@@ -45,6 +33,9 @@ class User < ActiveRecord::Base
     self.password = Digest::SHA1.hexdigest( self.email + "mmmm...salty" + self.password + "ROCK, ROCK ON" )
   end
   
+  def to_s
+    display_name
+  end
   
   
 end

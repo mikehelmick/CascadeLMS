@@ -7,8 +7,8 @@ class CreateUsers < ActiveRecord::Migration
       t.column :first_name, :string, :null => false
       t.column :middle_name, :string
       t.column :last_name, :string, :null => false
-      t.column :instructor, :string, :limit => 1, :null => false, :defalt => 'N'
-      t.column :admin, :string, :limit => 1, :null => false, :default => 'N'
+      t.column :instructor, :boolean, :null => false, :defalt => false
+      t.column :admin, :boolean, :null => false, :default => false
       t.column :affiliation, :string
       t.column :personal_title, :string
       t.column :office_hours, :string

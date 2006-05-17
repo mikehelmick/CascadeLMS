@@ -3,6 +3,14 @@
 class ApplicationController < ActionController::Base
   
   before_filter :app_config
+  after_filter :pull_msg
+  
+  def pull_msg
+    if session[:user] && session[:user].notice
+      flash[:notice] = "#{flash[:notice]} #{session[:user].notice}"
+      session[:user].notice = nil
+    end
+  end
 
   def app_config
  		@app ||= YAML.load( File.open("#{RAILS_ROOT}/config/defaults.yml") )

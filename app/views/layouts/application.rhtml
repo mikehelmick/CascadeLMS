@@ -38,7 +38,7 @@
 		    <li><%= link_to 'Home', { :controller => '/home' }, { :id => 'current' } %></li>
 		  <% end %>
 		  
-		  <% if session[:user].admin? %>
+		  <% if session[:user].admin %>
 		    <% if @tab.nil? || !@tab.eql?('administration') %>
 		      <li style="padding-left: 25px"><%= link_to 'Administration', :controller => '/admin' %>
 		    <% else %>

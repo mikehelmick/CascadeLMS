@@ -1,6 +1,6 @@
 
 
-<h1>Listing Terms (<%= link_to 'Back', :controller => '/admin' %>)</h1>
+<h1>Listing Terms</h1>
 
 <table cellspacing="2" class="fancy">
   <tr class="header">
@@ -39,7 +39,7 @@
 
 <br />
 
-<%= link_to 'New Term', :action => 'new' %>
+<%= link_to 'New Term', :action => 'new' %> | <%= link_to 'Back', :controller => '/admin' %>
 
 <% if flash[:highlight] %>
   <%= javascript_tag visual_effect(:highlight, "item_#{flash[:highlight]}", :duration => 7.0 ) %>

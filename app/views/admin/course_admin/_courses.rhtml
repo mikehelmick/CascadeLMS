@@ -1,0 +1,36 @@
+<% if @courses.size == 0 %>
+<p><b>The selected term has no courses</b></p>
+<% else %>
+<table class="fancy">
+  <tr class="header">
+    <th>CRN</th>
+    <th>Title</th>
+    <th>Description
+    <th>Open?</th>   
+    <th>Instructor(s)</th>
+    <th>Controls</th>
+  </tr>
+
+<% count = 0 %>
+<% for course in @courses %>
+<% count = count.next 
+   odd = "odd"
+   odd = "even" if count.even?
+%>
+
+  <tr class="<%=odd%> hover" id="item_<%=course.id%>">
+    <td><%=h course.crns.join(', ')%></td>
+    <td><%=h course.title%></td>
+    <td><%=h course.short_description%></td>  
+    <td id="course_open_<%=course.id%>">
+      <% @course = course %>
+      <%= render :partial => 'courseopen' %>
+    </td>
+    <td><%=h course.instructors.join(', ')%></td>
+    <td><%= link_to 'edit', :action => 'edit', :id => course %></td>
+  </tr>
+
+<% end %>
+
+</table>
+<% end %>

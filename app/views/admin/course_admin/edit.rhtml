@@ -1,0 +1,102 @@
+<p><%= link_to 'Cancel', :action => 'index' %>
+
+<div id="form_area">
+<h2>Editing course <%= @course.title %></h2>
+
+<%= start_form_tag :action => 'update', :id => @course %>
+
+<%= error_messages_for 'course' %>
+
+<%= render :partial => 'courseform' %>
+
+<div class="submit">
+  <%= submit_tag "Edit" %>
+</div>
+<%= end_form_tag %>
+</div>
+
+<h2>CRN(s) for <%= @course.title %></h2>
+<div id="CRN_error"> </div>
+<div id="CRN"> 
+<ul>
+<% if @course.crns.size == 0 %>
+  <li>No CRN values have been entered for this course (can not auto-enroll).</li>
+<% else %>
+  <% for crn in @course.crns %>
+    <li><%=h crn.crn %> - <%= crn.name %></li>
+  <% end %>  
+<% end %>
+<ul>
+</div>
+<hr/>
+
+<h2>Instructor(s) for <%= @course.title %></h2>
+<div id="instructor_error"> </div>
+<div id="instructor">
+<ul>
+<% if @course.instructors.size == 0 %>
+  <li>No instructors are assigned to this course.</li>
+<% else %>
+  <% for user in @course.instructors %>
+    <li><%=h user.display_name %> (<%=h user.email %>)</li>
+  <% end %>
+<% end %>
+</ul>
+</div>
+
+
+<hr/>
+<h2>TA/Grader(s) for <%= @course.title %></h2>
+<div id="assistant_error"> </div>
+<div id="assistant">
+<ul>
+<% if @course.assistants.size == 0 %>
+  <li>No TAs/graders are assigned to this course.</li>
+<% else %>
+  <% for user in @course.assistants %>
+    <li><%=h user.display_name %> (<%=h user.email %>)</li>
+  <% end %>
+<% end %>
+</ul>
+</div>
+
+<hr/>
+<h2>Students(s) for <%= @course.title %></h2>
+<div id="student_error"> </div>
+<div id="student">
+<ul>
+<% if @course.students.size == 0 %>
+  <li>There are no students enrolled in this course.</li>
+<% else %>
+  <% for user in @course.students %>
+    <li><%=h user.display_name %> (<%=h user.email %>) | uniqueID=<%=h user.uniqueid %></li>
+  <% end %>
+<% end %>
+
+  <li><a href="#" onclick="new Effect.toggle('add_student')">Add Student</a></li>
+</ul>
+</div>
+<div id="add_student" style="display: none;">
+
+</div>
+<div id="add_student_results">
+
+</div>
+
+<hr/>
+<h2>Guest(s) for <%= @course.title %></h2>
+<div id="guest_error"> </div>
+<div id="guest">
+<ul>
+<% if @course.guests.size == 0 %>
+  <li>There are no guests in this course.</li>
+<% else %>
+  <% for user in @course.guests %>
+    <li><%=h user.display_name %> (<%=h user.email %>)</li>
+  <% end %>
+<% end %>
+</ul>
+</div>
+
+<hr/>
+<p><%= link_to 'Cancel', :action => 'index' %>

@@ -1,5 +1,7 @@
 require 'ldap'
 require 'ldap/control'
+require 'CourseCreator'
+require 'AutoEnrollment'
 
 # Performs LDAP authentication
 class LdapAuthentication
@@ -35,6 +37,34 @@ class LdapAuthentication
       else
         user = update_user( user, page )
       end
+      
+      ## see if auto enrollment is enabled
+      if !@settings['enable_auto_enroll'].nil? && @settings['enable_auto_enroll'] == true
+#        begin
+          if user.instructor?
+            # try to pull instructor field
+            crns = page[0][@settings['ldap_faculty_crn']]
+            descs= page[0][@settings['ldap_faculty_desc']]
+            
+            unless crns.nil? || descs.nil?
+              creator = CourseCreator.new( user, crns, descs, @settings['crn_format'] )
+              user.notice = creator.reconcile
+            end
+          
+          else
+            # try to pull student fields
+          
+          end
+#        rescue ## if something bad happens here - we will just ignore it :)
+#          if user.instructor?
+#            user.notice = "Automatic course creation failed, please contact the system administrator."
+#          else
+#            user.notice = "AutoEnrollment failed.  Contact your instructor if you are missing a course."
+#          end
+#        end
+      end
+      
+      
       # user if valid, authorized, and synced 
       return user
       
@@ -48,7 +78,7 @@ class LdapAuthentication
   def create_user( page, password )
     user = User.new()
     user.password = password
-    user.admin = 'N'
+    user.admin = false
     
     update_user( user, page )
   end
@@ -61,11 +91,11 @@ class LdapAuthentication
     user.first_name = page[0][@settings['ldap_field_firstname']][0]
     user.middle_name = page[0][@settings['ldap_field_middlename']][0] unless page[0][@settings['ldap_field_middlename']].nil?
     user.last_name = page[0][@settings['ldap_field_lastname']][0]
-    user.instructor = 'N'
+    user.instructor = false
     user.affiliation = page[0][@settings['ldap_field_affiliation']].join(', ')
     page[0][@settings['ldap_field_affiliation']].each do |x|
       if x.downcase.eql?( @settings['instructor_affiliation'].downcase ) 
-        user.instructor = 'Y'
+        user.instructor = true
       end
     end
     user.personal_title = page[0][@settings['ldap_field_personaltitle']][0] unless page[0][@settings['ldap_field_personaltitle']].nil?

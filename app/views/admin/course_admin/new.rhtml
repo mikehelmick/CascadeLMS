@@ -1,0 +1,22 @@
+<div id="form_area">
+<h2>Create a new course</h2>
+
+<%= start_form_tag :action => 'create' %>
+
+<%= error_messages_for 'course' %>
+
+<%= render :partial => 'courseform' %>
+
+<p class="blockintro">The CRN number is used for auto-enrollment.  A course can exist without one entered, but it is recommended to enter one.   Use the full CRN number, for example '20063012345' to represent course number '12345' in term '200630'.  If a course has multiple CRN numbers, you should create a course with each, and then combine the courses (for example a cross-listed graduate/undergraduate course) as this will preserve  both course numbers.</p>
+  <div class="block">
+  <label for='crn'>CRN:</label>
+  <%= text_field_tag 'crn', @crn %> <br/>    
+  </div>
+
+<div class="submit">
+  <%= submit_tag "Create" %>
+</div>
+<%= end_form_tag %>
+</div>
+
+<%= link_to 'Cancel', :action => 'index' %>

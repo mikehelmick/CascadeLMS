@@ -1,0 +1,15 @@
+<p class="blockintro">Course title is the short title (course number).  For example, 'CSA101'.</p>
+  <div class="block">
+  <label for='course_title' class="required">Title:</label>
+  <%= text_field 'course', 'title'  %><br/>
+  </div>
+<p class="blockintro">Description is a more formal course title. For example 'Introduction to Computer Science'.</p>
+  <div class="block">
+  <label for='course_short_description'>Description:</label>
+  <%= text_field 'course', 'short_description' %> <br/>
+
+<label for="term" class="required">Term:</label> <%= select_tag 'term', options_from_collection_for_select(@terms, "id", "semester", @course.term.id ) %> <br />
+  </div>
+
+
+  

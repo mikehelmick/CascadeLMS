@@ -4,6 +4,10 @@
 <%= render :partial => 'controls' %>
 </div>
 
+<% if @app['authtype'].eql?('ldap') %>
+<p><i>You can not add users in this system since you are using LDAP authentication.</i></p>
+<% end %>
+
 <hr/>
 
 <div id="listing">

@@ -12,17 +12,17 @@ class Admin::TermsController < ApplicationController
          :redirect_to => { :action => :list }
 
   def list
-    @terms = Terms.find( :all, :order => ["term asc"] )
+    @terms = Term.find( :all, :order => ["term asc"] )
   end
 
   def new
-    @terms = Terms.new
+    @term = Term.new
     setup_years
     @term.year = @start_year
   end
   
   def current
-    @terms = Terms.find( :all )
+    @terms = Term.find( :all )
     @terms.each do |x|
       x.current = false
       x.current = true if x.id == params[:id].to_i
@@ -35,7 +35,7 @@ class Admin::TermsController < ApplicationController
   
   
   def toggle
-    @term = Terms.find(params[:id])
+    @term = Term.find(params[:id])
     @term.open = !@term.open
     @term.save
     
@@ -43,9 +43,9 @@ class Admin::TermsController < ApplicationController
   end
 
   def create
-    @term = Terms.new(params[:term])
+    @term = Term.new(params[:term])
     if @term.save
-      flash[:notice] = 'Terms was successfully created.'
+      flash[:notice] = "Term #{@term.semester} was successfully created."
       flash[:highlight] = "#{@term.id}"
       redirect_to :action => 'list'
     else
@@ -54,12 +54,12 @@ class Admin::TermsController < ApplicationController
   end
 
   def edit
-    @term = Terms.find(params[:id])
+    @term = Term.find(params[:id])
     setup_years
   end
 
   def update
-    @term = Terms.find(params[:id])
+    @term = Term.find(params[:id])
     if @term.update_attributes(params[:term])
       flash[:notice] = "Term '#{@term.semester}' was successfully updated."
       flash[:highlight] = "#{@term.id}"
