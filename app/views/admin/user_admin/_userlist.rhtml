@@ -1,0 +1,45 @@
+<p>Directory entries starting with the letter '<%=session[:searchletter]%>'.</p>
+
+<% if @users.size == 0 %><p><b>No users match your selection</b></p>
+<% else %>
+
+<table class="fancy">
+  <tr class="header">
+    <th>Uniqueid</th>
+    <th>First Name</th>
+    <th>Nickname</th>
+    <th>Last Name</th>
+    <th>Email</th>
+    <th>Affiliation</th>
+    <th>Instructor</th>
+    <th>Admin</th>
+    <th>Edit</td>
+  </tr>
+
+<% count = 0 %>
+<% for user in @users %>
+<% count = count.next 
+   odd = "odd"
+   odd = "even" if count.even?
+%>
+
+  <tr class="<%=odd%> hover" id="item_<%=user.id%>">
+    <td><%= user.uniqueid %></td>
+    <td><%= user.first_name %></td>
+    <td><%= user.preferred_name %></td>
+    <td><%= user.last_name %></td>
+    <td><%= user.email %></td>
+    <td><%= user.affiliation %></td>
+    <td id="instructor_<%=user.id%>"><%= link_to_remote( "#{user.instructor}", :update => "instructor_#{user.id}", :url => { :action => 'toggle_instructor', :id => user }, :complete => "new Effect.Highlight( 'item_#{user.id}' )" ) %></td>
+    <td id="admin_<%=user.id%>"><%= link_to_remote( "#{user.admin}", :update => "admin_#{user.id}", :url => { :action => 'toggle_admin', :id => user }, :complete => "new Effect.Highlight( 'item_#{user.id}' )" ) %></td>
+    <td>
+<% if @app['authtype'].eql?('ldap') %>Use LDAP<%end%>
+
+    </td>
+  </tr>
+
+<% end %>
+</table>
+
+
+<% end %>

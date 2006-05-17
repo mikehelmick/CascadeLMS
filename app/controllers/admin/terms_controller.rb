@@ -1,6 +1,6 @@
 class Admin::TermsController < ApplicationController
   
-  before_filter :set_tab
+  before_filter :ensure_logged_in, :ensure_admin, :set_tab
   
   def index
     list
@@ -18,6 +18,7 @@ class Admin::TermsController < ApplicationController
   def new
     @terms = Terms.new
     setup_years
+    @term.year = @start_year
   end
   
   def current
@@ -38,8 +39,7 @@ class Admin::TermsController < ApplicationController
     @term.open = !@term.open
     @term.save
     
-    flash[:highlight] = "#{@term.id}"
-    redirect_to :action => 'list'
+    render(:layout => false)
   end
 
   def create
@@ -55,13 +55,15 @@ class Admin::TermsController < ApplicationController
 
   def edit
     @term = Terms.find(params[:id])
+    setup_years
   end
 
   def update
     @term = Terms.find(params[:id])
     if @term.update_attributes(params[:term])
-      flash[:notice] = 'Terms was successfully updated.'
-      redirect_to :action => 'show', :id => @term
+      flash[:notice] = "Term '#{@term.semester}' was successfully updated."
+      flash[:highlight] = "#{@term.id}"
+      redirect_to :action => 'list'
     else
       render :action => 'edit'
     end

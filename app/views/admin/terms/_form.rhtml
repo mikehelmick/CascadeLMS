@@ -5,11 +5,11 @@
 	<%= text_field 'term', 'term'  %><br/>
 
 <label for="term_year" class="required">Year: </label>
-<%= select 'term', 'year', @years.collect { |p| [ p, p ] }, { :selected => @start_year } %><br/> </p>
+<%= select 'term', 'year', @years.collect { |p| [ p, p ] }, { :selected => @term.year } %><br/> </p>
 
 </div>
 
-<p class="blockintro">Semester is a descriptive term, like 'Fall' or 'Spring.'</p>
+<p class="blockintro">Semester is a descriptive term, like 'Fall 2005' or 'Spring 2006'.</p>
   <div class="block">
 
 <label for="term_semester" class="required">Semester: </label>

@@ -1,0 +1,19 @@
+<p>Search by: 
+<%= "<b>" if session[:searchby].eql?('uniqueid') %>
+<%= link_to_remote( 'Unique ID', :update => "directory_control", :url => { :action => 'searchby', :id => 'uniqueid' }, :loading => "new Effect.BlindUp('listing')" )%>
+<%= "</b>" if session[:searchby].eql?('uniqueid') %> |
+<%= "<b>" if session[:searchby].eql?('lastname') %>
+<%= link_to_remote( 'Last Name', :update => "directory_control", :url => { :action => 'searchby', :id => 'lastname' }, :loading => "new Effect.BlindUp('listing')" )%>
+<%= "</b>" if session[:searchby].eql?('lastname') %> |
+<%= "<b>" if session[:searchby].eql?('firstname') %>
+<%= link_to_remote( 'First Name', :update => "directory_control", :url => { :action => 'searchby', :id => 'firstname' }, :loading => "new Effect.BlindUp('listing')" )%>
+<%= "</b>" if session[:searchby].eql?('firstname') %> 
+</p>
+<p>
+<% letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z' ] %></p>
+
+<% for letter in letters %>
+<%= "<b>" if session[:searchletter].eql?( "#{letter}" ) %>
+<%= link_to_remote( "#{letter}", :update => "listing", :url => { :action => 'listbyletter', :id => letter }, :complete => "new Effect.BlindDown('listing')" ) %> 
+<%= "</b>" if session[:searchletter].eql?( "#{letter}" ) %>
+<% end %>

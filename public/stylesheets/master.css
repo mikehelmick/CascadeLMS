@@ -132,7 +132,7 @@ div#navcontainer ul {
 	text-align: left;
 	margin: 0;
 	padding-bottom: 5px;
-	padding-top: 5px;
+	padding-top: 15px;
 }
 div#navcontainer ul li {
 	display: inline;
@@ -180,7 +180,6 @@ div#headerright {
 	color: white;
 	text-align: right;
 	padding: 0 15px 0 0;
-	clear: left;
 }
 
 div#headerright a {

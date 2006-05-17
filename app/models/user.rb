@@ -8,8 +8,24 @@ class User < ActiveRecord::Base
     unless self.preferred_name.nil?
       "#{self.preferred_name} #{self.last_name}"
     else
-      "#{self.preferred_name} #{self.last_name}"
+      "#{self.first_name} #{self.middle_name} #{self.last_name}"
     end
+  end
+  
+  def toggle_instructor
+    if self.instructor.eql?('N')
+      self.instructor = 'Y'
+    else
+      self.instructor = 'N'
+    end
+  end
+  
+  def toggle_admin
+    if self.admin.eql?('N')
+      self.admin = 'Y'
+    else
+      self.admin = 'N'
+    end    
   end
   
   def instructor?

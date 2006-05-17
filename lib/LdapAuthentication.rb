@@ -57,9 +57,9 @@ class LdapAuthentication
   def update_user( user, page )
     # load fields from LDAP
     user.uniqueid = page[0][@settings['ldap_field_uid']][0]
-    user.preferred_name = page[0][@settings['ldap_field_nickname']][0]
+    user.preferred_name = page[0][@settings['ldap_field_nickname']][0] unless page[0][@settings['ldap_field_nickname']].nil? 
     user.first_name = page[0][@settings['ldap_field_firstname']][0]
-    user.middle_name = page[0][@settings['ldap_field_middlename']][0]
+    user.middle_name = page[0][@settings['ldap_field_middlename']][0] unless page[0][@settings['ldap_field_middlename']].nil?
     user.last_name = page[0][@settings['ldap_field_lastname']][0]
     user.instructor = 'N'
     user.affiliation = page[0][@settings['ldap_field_affiliation']].join(', ')
@@ -68,9 +68,9 @@ class LdapAuthentication
         user.instructor = 'Y'
       end
     end
-    user.personal_title = page[0][@settings['ldap_field_personaltitle']][0]
-    user.office_hours = page[0][@settings['ldap_field_officehours']][0]
-    user.phone_number = page[0][@settings['ldap_field_phone']][0]
+    user.personal_title = page[0][@settings['ldap_field_personaltitle']][0] unless page[0][@settings['ldap_field_personaltitle']].nil?
+    user.office_hours = page[0][@settings['ldap_field_officehours']][0] unless page[0][@settings['ldap_field_officehours']].nil?
+    user.phone_number = page[0][@settings['ldap_field_phone']][0] unless page[0][@settings['ldap_field_phone']].nil?
     user.email = page[0][@settings['ldap_field_email']][0]
     
     if ! user.save

@@ -38,6 +38,7 @@ class IndexController < ApplicationController
   
   def check_login
     return true if session[:user].nil?
+    redirect_to :controller => '/home'
     return false
   end
   

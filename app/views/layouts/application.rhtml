@@ -40,9 +40,9 @@
 		  
 		  <% if session[:user].admin? %>
 		    <% if @tab.nil? || !@tab.eql?('administration') %>
-		      <li><%= link_to 'Administration', :controller => '/admin' %>
+		      <li style="padding-left: 25px"><%= link_to 'Administration', :controller => '/admin' %>
 		    <% else %>
-		      <li><%= link_to 'Administration', { :controller => '/admin' }, { :id => 'current' } %></li>
+		      <li style="padding-left: 25px"><%= link_to 'Administration', { :controller => '/admin' }, { :id => 'current' } %></li>
 		    <% end %>
 
 		    

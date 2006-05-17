@@ -1,0 +1,4 @@
+<%if @term.open? %>
+   <b><%= link_to_remote( 'yes', :update => "open_#{@term.id}", :url => { :action => 'toggle', :id => @term }, :complete => "new Effect.Highlight( 'item_#{@term.id}' )" ) %></b>
+<% else %><%= link_to_remote( 'no', :update => "open_#{@term.id}", :url => { :action => 'toggle', :id => @term }, :complete => "new Effect.Highlight( 'item_#{@term.id}' )" ) %>
+<%end%>
