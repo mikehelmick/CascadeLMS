@@ -1,0 +1,26 @@
+<%= error_messages_for 'announcement' %>
+
+<!--[form:announcement]-->
+<div class="block">
+<p><label for="announcement_headline" class="required">Headline</label>
+<%= text_field 'announcement', 'headline'  %></p>	
+	
+</div>
+
+<div class="blockintro">The text entered will be visible to ALL users of this system.</div>
+<div class="block">
+<p><label for="announcement_text" class="required">Text</label>
+<%= text_area 'announcement', 'text'  %></p>
+
+</div>
+
+<div class="blockintro">All announcements are time restrictive, be sure that you give all users adequate time to view all announcements.</div>
+<div class="block">
+<p><label for="announcement_start" class="required">Start</label>
+<%= datetime_select 'announcement', 'start'  %></p>
+
+<p><label for="announcement_end" class="required">End</label>
+<%= datetime_select 'announcement', 'end'  %></p>
+</div>
+<!--[eoform:announcement]-->
+

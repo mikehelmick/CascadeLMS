@@ -9,13 +9,13 @@ class HomeController < ApplicationController
   def index
     @title = "Home for #{session[:user].display_name}"
     
-    
     set_tab
   end
   
   
   def set_tab
     @tab = 'home'
+    @term = Term.find_current
   end
   
 end

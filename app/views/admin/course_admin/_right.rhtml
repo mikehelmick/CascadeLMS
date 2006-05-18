@@ -6,3 +6,32 @@
   <li>ID: <%= @current_term.term %></li>
   <li>Name: <%= @current_term.semester %></li>
 </ul>
+
+<% if request.path_parameters['action'].eql?('edit') %>
+<h2>Merge Courses</h2>
+<div id="merge_area">
+<%= form_remote_tag( :update => 'merge_results', :url => { :action => 'mergesearch', :id => @course }, :complete => "new Effect.BlindDown('merge_results');" ) %>
+	<label for="id">Title (i.e. CSA101):</label> 
+		<%= text_field_tag 'searchterms', '' %>
+		<%= submit_tag 'Search' %><br/>
+		<%= end_form_tag %>
+</div>
+<div id="merge_results" style="display: none;">
+	
+</div>
+
+<h2>Add users to this course</h2>
+<div id="search_area">
+<%= form_remote_tag( :update => 'search_results', :url => { :action => :search, :id => @course }, :complete => "new Effect.BlindDown('search_results');" ) %>
+	<label for="id">Search Terms:</label> 
+	<%= text_field_tag 'searchterms', '' %>
+	<%= submit_tag 'Search' %><br/>
+	<%= end_form_tag %>
+<span id="spinner" style="display: none;"><%= image_tag 'spinner.gif' %></span>
+</div>
+
+<div id="search_results" style="display: none;">
+
+</div>
+
+<% end %>

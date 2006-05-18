@@ -4,13 +4,16 @@ require 'LdapAuthentication'
 class IndexController < ApplicationController
   
   layout 'application'
-  before_filter :check_login, :except => [ :logout ]
+  before_filter :check_login, :except => [ :logout, :credits ]
   
   def index
     @user = User.new
     if params[:out].eql?('out')
       flash[:notice] = "You have been logged out."
     end
+  end
+  
+  def credits
   end
   
   def login

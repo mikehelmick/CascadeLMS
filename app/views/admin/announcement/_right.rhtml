@@ -1,0 +1,15 @@
+<h2>Current Announcements</h2>
+
+<% if @announcements.size == 0 %>
+There are no current announcements.
+<% else %>
+
+<% for an in @announcements %>
+<p><b><%= an.headline %></b><br/>
+	<%= an.text_html %></p>
+<hr/>
+
+
+<% end %>
+
+<% end %>

@@ -2,7 +2,16 @@
 # migrations feature of ActiveRecord to incrementally modify your database, and
 # then regenerate this schema definition.
 
-ActiveRecord::Schema.define(:version => 6) do
+ActiveRecord::Schema.define(:version => 7) do
+
+  create_table "announcements", :force => true do |t|
+    t.column "headline", :string
+    t.column "text", :text
+    t.column "start", :datetime
+    t.column "end", :datetime
+    t.column "user_id", :integer
+    t.column "text_html", :text
+  end
 
   create_table "courses", :force => true do |t|
     t.column "term_id", :integer, :default => 0, :null => false
@@ -18,7 +27,7 @@ ActiveRecord::Schema.define(:version => 6) do
 
   add_index "courses_crns", ["course_id", "crn_id"], :name => "courses_crns_course_id_index", :unique => true
 
-  create_table "courses_users", :id => false, :force => true do |t|
+  create_table "courses_users", :force => true do |t|
     t.column "user_id", :integer, :default => 0, :null => false
     t.column "course_id", :integer, :default => 0, :null => false
     t.column "course_student", :boolean, :default => true, :null => false

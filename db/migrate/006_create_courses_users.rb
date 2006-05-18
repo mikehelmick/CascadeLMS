@@ -1,6 +1,6 @@
 class CreateCoursesUsers < ActiveRecord::Migration
   def self.up
-    create_table( :courses_users, :id => false, :primary_key => 'course_id, user_id' ) do |t|
+    create_table( :courses_users ) do |t|
       t.column :user_id, :integer, :null => false
       t.column :course_id, :integer, :null => false
       t.column :course_student, :boolean, :null => false, :default => true

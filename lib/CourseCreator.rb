@@ -56,14 +56,20 @@ class CourseCreator
         course.open = true
         
         course.crns << crn
-        course.users.push_with_attributes( @user, :course_student => false, :course_instructor => true )
+        courseuser = CoursesUser.new
+        courseuser.user = @user
+        courseuser.course = @course
+        courseuser.course_student = false
+        courseuser.course_instructor = true
+        
+        course.courses_users << courseuser
         course.save
         status += "Created, and made you the instructor of, course: #{crn.crn}, #{crn.name}.<br/>"
       end
       
     end
     
-    
+    status = nil if status.eql?('')
     return status
   end
   

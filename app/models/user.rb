@@ -4,7 +4,8 @@ class User < ActiveRecord::Base
   validates_presence_of :password
   validates_format_of :email, :with => /^([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})$/i, :on => :create
   
-  has_and_belongs_to_many :courses
+  has_many :courses_users
+  has_many :courses, :through => :courses_users
   
   attr_accessor :notice
   
@@ -14,6 +15,48 @@ class User < ActiveRecord::Base
     else
       "#{self.first_name} #{self.middle_name} #{self.last_name}"
     end
+  end
+  
+  def courses_instructing( term )
+    cur = Array.new
+    courses_users.each do |cu|
+      cur << cu if cu.course.term_id == term.id && (cu.course_instructor || cu.course_instructor)
+    end
+    cur.sort! { |x,y| x.crn.name <=> y.crn.name }    
+  end
+  
+  def courses_as_student_or_guest( term )
+    cur = Array.new
+    courses_users.each do |cu|
+      cur << cu if cu.course.term.id == term.id && (cu.course_student || cu.course_guest)
+    end
+    cur.sort! { |x,y| x.crn.name <=> y.crn.name }
+  end
+  
+  def student_in_course?( course_id )
+    blank_in_course( course_id ) { |x| x.course_student }
+  end
+  
+  def assistant_in_course?( course_id )
+    blank_in_course( course_id ) { |x| x.course_assistant }
+  end
+  
+  def guest_in_course?( course_id )
+    blank_in_course( course_id ) { |x| x.course_guest }
+  end
+  
+  def instructor_in_course?( course_id )
+    blank_in_course( course_id ) { |x| x.course_instructor }
+  end
+  
+  def blank_in_course( course_id, &cb ) 
+    self.courses_users.each do |x|
+      if x.course_id.to_i == course_id.to_i
+        #puts "#{x.inspect}\n --- #{cb.call(x)} \n\n"
+        return cb.call( x )
+      end
+    end
+    false
   end
   
   def toggle_instructor
@@ -37,5 +80,6 @@ class User < ActiveRecord::Base
     display_name
   end
   
+  private :blank_in_course
   
 end
