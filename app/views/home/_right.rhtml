@@ -1,7 +1,7 @@
-<h2><%= session[:user].display_name %>'s Dashboard</h2>
+<h2><%= @user.display_name %>'s Dashboard</h2>
 <p><b>Current Term: </b> <%= @term.semester %></p>
 
-<% ci = session[:user].courses_instructing( @term ) %>
+<% ci = @user.courses_instructing( @term ) %>
 <% if ci.size > 0 %>
  <h2>Courses You're Teaching</h2>
  <ul>
@@ -16,7 +16,7 @@
 <% end %>
 
 <h2>Your Courses</h2>
-<% ct = session[:user].courses_as_student_or_guest( @term ) %>
+<% ct = @user.courses_as_student_or_guest( @term ) %>
 <% if ct.size > 0%>
 <ul>
   <% for cu in ct %>

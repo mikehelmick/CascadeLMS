@@ -2,7 +2,7 @@
 # migrations feature of ActiveRecord to incrementally modify your database, and
 # then regenerate this schema definition.
 
-ActiveRecord::Schema.define(:version => 7) do
+ActiveRecord::Schema.define(:version => 8) do
 
   create_table "announcements", :force => true do |t|
     t.column "headline", :string
@@ -11,6 +11,28 @@ ActiveRecord::Schema.define(:version => 7) do
     t.column "end", :datetime
     t.column "user_id", :integer
     t.column "text_html", :text
+  end
+
+  create_table "course_settings", :id => false, :force => true do |t|
+    t.column "course_id", :integer
+    t.column "enable_blog", :boolean, :default => true, :null => false
+    t.column "blog_comments", :boolean, :default => true, :null => false
+    t.column "enable_gradebook", :boolean, :default => true, :null => false
+    t.column "enable_documents", :boolean, :default => true, :null => false
+    t.column "enable_prog_assignments", :boolean, :default => true, :null => false
+    t.column "enable_svn", :boolean, :default => false, :null => false
+    t.column "svn_server", :text
+    t.column "enable_rss", :boolean, :default => true, :null => false
+    t.column "ta_course_information", :boolean, :default => false, :null => false
+    t.column "ta_course_documents", :boolean, :default => false, :null => false
+    t.column "ta_course_assignments", :boolean, :default => false, :null => false
+    t.column "ta_course_gradebook", :boolean, :default => false, :null => false
+    t.column "ta_course_users", :boolean, :default => false, :null => false
+    t.column "ta_course_blog_post", :boolean, :default => false, :null => false
+    t.column "ta_course_blog_edit", :boolean, :default => false, :null => false
+    t.column "ta_course_settings", :boolean, :default => false, :null => false
+    t.column "ta_view_student_files", :boolean, :default => true, :null => false
+    t.column "ta_grade_individual", :boolean, :default => true, :null => false
   end
 
   create_table "courses", :force => true do |t|

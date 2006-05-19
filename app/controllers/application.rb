@@ -40,7 +40,32 @@ class ApplicationController < ActionController::Base
  	    redirect_to :controller => '/index'
  	    return false
     end
+    # duplicate user - to keep session down
+    @user = User.find(session[:user].id)
     return true
+  end
+  
+  def allowed_to_see_course( course, user )
+    user.courses_users.each do |cu|
+      if cu.course_id == course.id
+        if cu.course_student || cu.course_assistant || cu.course_instructor || cu.course_guest
+          return true
+        end
+      end  
+    end
+    flash[:badnotice] = "You are not authorized to view the requested course."
+    redirect_to :controller => '/home'
+    return false
+  end
+  
+  def load_course( course_id )
+    begin
+      @course = Course.find( course_id )
+    rescue
+      flash[:badnotice] = "Requrest course could not be found."
+      redirect_to :controller => '/home'
+      return
+    end
   end
 
 end

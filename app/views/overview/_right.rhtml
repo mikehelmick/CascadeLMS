@@ -1,0 +1,15 @@
+<h2>Subscribe to this course's RSS feed</h2>
+<p>
+Want to be notified any time there is a new document, announcement, or assignment posted? <%= link_to "Subscribe to this course's RSS feed. #{image_tag 'feed_go'}", :controller => 'feed', :action => 'subscribe', :course => @course %>
+(<%= link_to "What is RSS?", "http://www.feedburner.com/fb/a/aboutrss", :popup => true %>)
+</p>
+
+<h2>Course Information</h2>
+<p>
+<b>Course:</b> <%= @course.title %><br/>
+<b>Instructor:</b> <%= @course.instructors.join(', ') %><br/>
+<% tas = @course.assistants %>
+<% if tas.size > 0 %>
+ <b>Assistant(s):</b> <%= tas.join(', ') %><br/>
+<% end %>
+</p>

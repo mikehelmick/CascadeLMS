@@ -1,0 +1,2 @@
+module Courses::OverviewHelper
+end

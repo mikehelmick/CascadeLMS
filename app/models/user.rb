@@ -17,12 +17,20 @@ class User < ActiveRecord::Base
     end
   end
   
+  def courses_in_term( term )
+    cur = Array.new
+    courses_users.each do |cu|
+      cur << cu if cu.course.term_id == term.id && cu.course
+    end
+    cur.sort! { |x,y| x.course.title <=> y.course.title }    
+  end
+
   def courses_instructing( term )
     cur = Array.new
     courses_users.each do |cu|
       cur << cu if cu.course.term_id == term.id && (cu.course_instructor || cu.course_instructor)
     end
-    cur.sort! { |x,y| x.crn.name <=> y.crn.name }    
+    cur.sort! { |x,y| x.course.title <=> y.course.title }    
   end
   
   def courses_as_student_or_guest( term )
@@ -30,7 +38,7 @@ class User < ActiveRecord::Base
     courses_users.each do |cu|
       cur << cu if cu.course.term.id == term.id && (cu.course_student || cu.course_guest)
     end
-    cur.sort! { |x,y| x.crn.name <=> y.crn.name }
+    cur.sort! { |x,y| x.course.title <=> y.course.title }
   end
   
   def student_in_course?( course_id )

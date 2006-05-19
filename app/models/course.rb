@@ -4,6 +4,8 @@ class Course < ActiveRecord::Base
   belongs_to :term
   has_and_belongs_to_many :crns
   
+  has_one :course_setting
+  
   has_many :courses_users
   has_many :users, :through => :courses_users
   
@@ -75,6 +77,12 @@ class Course < ActiveRecord::Base
     self.open = ! self.open
   end
   
+  def student_count
+    count = 0
+    self.courses_users.each { |u| count += 1 if u.course_student }
+    count
+  end
+  
   def students
     inst = Array.new
     self.courses_users.each do |u|
@@ -89,6 +97,12 @@ class Course < ActiveRecord::Base
       inst << u.user if u.course_assistant
     end
     sort_c_users inst  
+  end
+  
+  def guest_count
+    count = 0
+    self.courses_users.each { |u| count += 1 if u.course_guest }
+    count
   end
   
   def guests

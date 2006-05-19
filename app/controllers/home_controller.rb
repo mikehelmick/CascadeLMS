@@ -7,9 +7,11 @@ class HomeController < ApplicationController
   end
   
   def index
-    @title = "Home for #{session[:user].display_name}"
-    @announcements = Announcement.current_announcements
     set_tab
+    
+    @title = "Home for #{@user.display_name}"
+    @announcements = Announcement.current_announcements
+    @courses = @user.courses_in_term( @term )
   end
   
   

@@ -32,13 +32,40 @@
 		  <li><%= link_to "Login", { :controller => '/' }, { :id => 'current' } %></li>
 		
 		<% else%>
-		  <% if @tab.nil? || !@tab.eql?('home') %>
-		    <li><%= link_to 'Home', :controller => '/home' %></li>
+		
+		  <% if @show_course_tabs.nil? || !@show_course_tabs %>
+		    <% if @tab.nil? || !@tab.eql?('home') %>
+		      <li><%= link_to 'Home', :controller => '/home' %></li>
+		    <% else %>
+		      <li><%= link_to 'Home', { :controller => '/home' }, { :id => 'current' } %></li>
+		    <% end %>
+		
 		  <% else %>
-		    <li><%= link_to 'Home', { :controller => '/home' }, { :id => 'current' } %></li>
+		
+		    <li><%= link_to 'Home', :controller => '/home' %></li>     
+		    <% if @tab.nil? || !@tab.eql?('course_overview') %>
+		          <li><%= link_to 'Overview', :controller => '/overview', :course => @course %></a></li> 
+		    <% else %>
+                  <li><%= link_to 'Overview', { :controller => '/overview', :course => @course }, { :id => 'current' } %></li>		
+		    <% end %> 
+		    <li><a href="#">Course Blog</a></li>
+		    <li><a href="#">Documents</a></li>
+		    <li><a href="#">Assignments</a></li>
+		    
+		    <% if @user.student_in_course?(@course.id) %>
+		      <li><a href="#">Grades</a></li>
+		    <% end %>
+		    <% if @user.instructor_in_course?(@course.id) || @user.assistant_in_course?(@course.id) %>
+		      <% if @tab.nil? || !@tab.eql?('course_instructor') %>
+		        <li style="padding-left: 25px"><%= link_to 'Instructor', { :controller => '/instructor/index', :course => @course } %></li>
+		      <% else %>
+		        <li style="padding-left: 25px"><%= link_to 'Instructor', { :controller => '/instructor/index', :course => @course }, { :id => 'current' } %></li>
+		      <% end %>
+		    <% end %>
+		
 		  <% end %>
 		  
-		  <% if session[:user].admin %>
+		  <% if @user.admin %>
 		    <% if @tab.nil? || !@tab.eql?('administration') %>
 		      <li style="padding-left: 25px"><%= link_to 'Administration', :controller => '/admin' %>
 		    <% else %>

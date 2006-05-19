@@ -1,0 +1,34 @@
+<div class="SectionHeader"><div class="Full">
+<h2>Your Courses for <%= @term.semester %></h2>
+</div></div>
+
+<% if @courses.size == 0 %>
+<p><i>You have no courses for this term.</i></p>
+<% else %>
+
+ <% for course_user in @courses %>
+
+<table class="FadeTable" cellspacing="0">
+  <tr class="header">
+	<th colspan="3">
+<% if course_user.course.open %>		
+	  <%= link_to "<b>#{course_user.course.title}</b> #{course_user.course.short_description}", :controller => "/overview", :course => course_user.course %> 
+<% else %>	
+      <b><%=course_user.course.title%></b> <%=course_user.course.short_description%> (Unavailable)
+<% end %>	
+	  <br/>
+	  <b>Instructor: </b>
+	  <% inst = course_user.course.instructors %>
+	  <% if inst.size == 0 %>
+	    <i>No instructor is currently assigned to this course.</i>
+	  <% else %>
+	    <%= inst.join(', ') %>
+	  <% end %>
+  </th>
+</tr>
+  
+</table>
+
+ <% end %>
+
+<% end %>

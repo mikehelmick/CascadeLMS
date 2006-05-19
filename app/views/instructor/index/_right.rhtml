@@ -1,0 +1,13 @@
+<h2>Course Information</h2>
+
+<p>
+<b>Course:</b> <%= @course.title %><br/>
+<b>CRN(s):</b> <%= @course.crns.join(', ') %><br/>
+<b>Instructor:</b> <%= @course.instructors.join(', ') %><br/>
+<% tas = @course.assistants %>
+<% if tas.size > 0 %>
+ <b>Assistant(s):</b> <%= tas.join(', ') %><br/>
+<% end %>
+<b>Students:</b> <%= @course.student_count %><br />
+<b>Guests:</b> <%= @course.guest_count %><br />
+</p>

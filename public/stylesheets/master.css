@@ -96,6 +96,15 @@ div.Right .col {
 	padding: 0 0 0 9px;
 }
 
+.left a {
+	color: #000000;
+	text-decoration: underline;
+}
+
+.left a:hover {
+	color: #990000;
+}
+
 
 #Footer {
 	clear: left;
@@ -430,4 +439,68 @@ div.Right .col h2 {
 	border-left: 1px dashed #990000;
 	border-bottom: 1px dashed #990000;
 }
+
+
+
+/** general content */
+.SectionHeader {
+	margin: 5px 0 0px 0;
+	border-bottom: 1px solid #000000;
+}
+
+.SectionHeader h2 {
+	margin: 0 0 0 0;
+}
+
+.SectionHeader .Full {
+	text-align: center;
+}
+
+/* fade table */
+
+.FadeTable {
+	margin: 5px 0 5px 0;
+	border: none;
+	width: 100%;
+	border-left: 1px solid #990000;
+}
+
+.FadeTable tr.header {
+	background-color: #d9d9d9;
+}
+
+.FadeTable th {
+	padding: 5px 0 5px 5px;
+	text-align: left;
+	font-weight: normal;
+}
+
+.FadeTable th.full {
+	text-align: center;
+}
+
+.FadeTable tr.row1 {
+	background-color: #e4e4e4;
+}
+
+.FadeTable tr.row2 {
+	background-color: #e4e4e4;
+}
+
+.FadeTable tr.row3 {
+	background-color: #e4e4e4;
+}
+
+.FadeTable tr.row4 {
+	background-color: #f3f3f3;
+}
+
+.FadeTable tr.row5 {
+	background-color: #f3f3f3;
+}
+
+.FadeTable td {
+	padding: 2px 2px 2px 5px
+}
+
 

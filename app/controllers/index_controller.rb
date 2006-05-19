@@ -30,7 +30,7 @@ class IndexController < ApplicationController
     
     begin
       @user = auth.authenticate( @user.uniqueid, @user.password )
-      session[:user] = @user
+      session[:user] = User.find( @user.id )
       redirect_to :controller => 'home'
     rescue SecurityError => doh
       @login_error = doh.message

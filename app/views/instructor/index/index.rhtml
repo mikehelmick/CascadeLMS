@@ -1,0 +1,31 @@
+<div class="SectionHeader"><div class="Full">
+<h2><%= @course.title %> <%= @course.short_description %></h2>
+</div></div>
+
+<table class="FadeTable" cellspacing="0">
+  <tr class="header">
+    <th class="full" colspan="2"><b>Instructor Controls for <%= @user.display_name %></b></th>
+  </tr>
+
+  <% if @user.instructor_in_course?( @course.id ) %>
+  <tr>
+	<td>Course Information</td>
+	<td>Course Users</td>
+  </tr>
+  <tr>
+	<td>Course Documents</td>
+	<td>Course Blog</td>
+  </tr>
+  <tr>
+	<td>Assignments</td>
+	<td><%= link_to 'Settings', :controller => '/instructor/course_setting', :course => @course %></td>
+  </tr>
+  <tr> 
+    <td>Gradebook</td>
+    <td>&nbsp;</td>
+  </tr>
+  <% else %>
+assistant
+  <% end %>
+
+</table>

@@ -30,7 +30,7 @@
 		<% end %>
 	  </td>
 	  <td>
-		<% if user.instructor_in_course?(@course.id) %>
+		<% if user.instructor_in_course?(@course.id) || !user.instructor %>
 		  <s>Instructor</s>
 		<%else%>
 		  <%= link_to_remote( "Instructor", :update => "instructor", :url => { :action => 'adduser', :type => 'instructor', :course => @course.id, :id => user }, :complete => "new Effect.Highlight( 'instructor' )" ) %>
