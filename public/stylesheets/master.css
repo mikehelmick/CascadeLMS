@@ -423,3 +423,11 @@ div.Right .col h2 {
 	border-left: 1px solid #D9D9D9;
 }
 
+/* message / announcements */
+
+.announcement {
+	padding: 3px 0px 5px 5px;
+	border-left: 1px dashed #990000;
+	border-bottom: 1px dashed #990000;
+}
+

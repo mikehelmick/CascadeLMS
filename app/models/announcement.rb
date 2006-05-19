@@ -21,7 +21,7 @@ class Announcement < ActiveRecord::Base
   
   def Announcement.current_announcements
     today = Time.now
-    Announcement.find(:all, :conditions => ["start <= ? and end >=?", today, today ], :order => "start asc")
+    Announcement.find(:all, :conditions => ["start <= ? and end >=?", today, today ], :order => "start desc")
   end
 	
 	protected
