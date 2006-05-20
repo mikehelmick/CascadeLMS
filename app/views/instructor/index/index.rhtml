@@ -9,19 +9,19 @@
 
   <% if @user.instructor_in_course?( @course.id ) %>
   <tr>
-	<td>Course Information</td>
-	<td>Course Users</td>
+	<td><%= image_tag 'cog', :align => 'absmiddle' %> Course Information</td>
+	<td><%= image_tag 'cog', :align => 'absmiddle' %> Course Users</td>
   </tr>
   <tr>
-	<td>Course Documents</td>
-	<td>Course Blog</td>
+	<td><%= image_tag 'cog', :align => 'absmiddle' %> Course Documents</td>
+	<td><%= image_tag 'cog', :align => 'absmiddle' %> Course Blog</td>
   </tr>
   <tr>
-	<td>Assignments</td>
-	<td><%= link_to 'Settings', :controller => '/instructor/course_setting', :course => @course %></td>
+	<td><%= image_tag 'cog', :align => 'absmiddle' %> Assignments</td>
+	<td><%= link_to "#{image_tag 'cog', :align => 'absmiddle'} Settings", :controller => '/instructor/course_setting', :course => @course %></td>
   </tr>
   <tr> 
-    <td>Gradebook</td>
+    <td><%= image_tag 'cog', :align => 'absmiddle' %> Gradebook</td>
     <td>&nbsp;</td>
   </tr>
   <% else %>
