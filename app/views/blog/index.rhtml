@@ -1,0 +1,13 @@
+<% for post in @posts %>
+<%= render :partial => "article", :locals => { :post => post, :single => false } %> 
+<% end %>
+
+<% if @post_pages.page_count > 1 %><p>Page: 
+<% 1.upto(@post_pages.page_count) do |i| %>
+ <% if i == @page %>
+   <%= i %>
+ <% else %>
+   <%= link_to i, { :page => i } %>
+ <% end %>
+<% end %></p>
+<% end %>

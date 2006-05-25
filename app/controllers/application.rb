@@ -2,6 +2,8 @@
 # Likewise, all the methods added will be available for all controllers.
 class ApplicationController < ActionController::Base
   
+  layout 'application'
+  
   before_filter :app_config
   after_filter :pull_msg
   

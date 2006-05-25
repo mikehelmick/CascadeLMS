@@ -3,7 +3,6 @@ require 'LdapAuthentication'
 
 class IndexController < ApplicationController
   
-  layout 'application'
   before_filter :check_login, :except => [ :logout, :credits ]
   
   def index

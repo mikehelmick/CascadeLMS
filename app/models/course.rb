@@ -8,6 +8,8 @@ class Course < ActiveRecord::Base
   
   has_many :courses_users
   has_many :users, :through => :courses_users
+  has_many :posts, :order => "created_at", :dependent => :destroy
+  
   
   def merge( other )
     Course.transaction do

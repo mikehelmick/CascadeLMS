@@ -1,0 +1,14 @@
+<div id="form_area">
+<h2>New blog post for <%= @course.title %></h2>
+<p><%= link_to 'Cancel', :action => 'list' %></p>
+
+<%= start_form_tag :action => 'create' %>
+  <%= render :partial => 'form' %>
+<div class="submit">
+  <%= submit_tag "Create" %>
+</div>
+<%= end_form_tag %>
+
+</div>
+
+<p><%= link_to 'Cancel', :action => 'list' %></p>

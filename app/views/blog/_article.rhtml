@@ -1,0 +1,28 @@
+<div class="BlogPost">
+	
+<h2><%= link_to "#{h post.title}", :action => 'post', :course => @course, :id => post %>
+<% if post.user_id == session[:user].id %>
+ <%= link_to "#{image_tag('page_edit')}", :controller => "/instructor/blog", :action => 'edit', :course => @course, :id => post %>
+<% end %>
+</h2>	
+<p class="author">Posted by: <%=h post.user.display_name %> on 
+<%=h post.created_at.to_formatted_s(:long) %>
+</p>
+<p>
+<%= post.body_html %>
+</p>
+<p class="summary">
+  <% if post.enable_comments %>
+    <% if single %>
+      <% count = post.number_of_comments %>
+        <%= link_to_function( "Leave a comment #{image_tag 'comment_add'}", "blindToggle( 'leave_comment' )" ) %>
+    <% else %>
+      <% count = post.number_of_comments %>
+      <%= link_to "#{pluralize(count, 'Comment')}", :action => 'post', :course => @course, :id => post %>
+    <% end %>	
+  <% else %>
+    <i>Comments disabled for this post</i>
+  <% end %>
+</p>
+
+</div>

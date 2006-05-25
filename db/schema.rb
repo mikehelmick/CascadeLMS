@@ -2,7 +2,7 @@
 # migrations feature of ActiveRecord to incrementally modify your database, and
 # then regenerate this schema definition.
 
-ActiveRecord::Schema.define(:version => 8) do
+ActiveRecord::Schema.define(:version => 10) do
 
   create_table "announcements", :force => true do |t|
     t.column "headline", :string
@@ -11,6 +11,15 @@ ActiveRecord::Schema.define(:version => 8) do
     t.column "end", :datetime
     t.column "user_id", :integer
     t.column "text_html", :text
+  end
+
+  create_table "comments", :force => true do |t|
+    t.column "post_id", :integer, :default => 0, :null => false
+    t.column "user_id", :integer, :default => 0, :null => false
+    t.column "body", :text, :default => "", :null => false
+    t.column "body_html", :text, :default => "", :null => false
+    t.column "created_at", :datetime, :null => false
+    t.column "ip", :string, :limit => 15, :default => "", :null => false
   end
 
   create_table "course_settings", :id => false, :force => true do |t|
@@ -63,6 +72,18 @@ ActiveRecord::Schema.define(:version => 8) do
   create_table "crns", :force => true do |t|
     t.column "crn", :string, :limit => 20, :default => "", :null => false
     t.column "name", :string, :default => "", :null => false
+  end
+
+  create_table "posts", :force => true do |t|
+    t.column "course_id", :integer, :default => 0, :null => false
+    t.column "user_id", :integer, :default => 0, :null => false
+    t.column "featured", :boolean, :default => false, :null => false
+    t.column "title", :string, :default => "", :null => false
+    t.column "body", :text, :default => "", :null => false
+    t.column "body_html", :text, :default => "", :null => false
+    t.column "enable_comments", :boolean, :default => true, :null => false
+    t.column "created_at", :datetime, :null => false
+    t.column "published", :boolean, :default => true, :null => false
   end
 
   create_table "terms", :force => true do |t|

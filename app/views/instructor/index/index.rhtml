@@ -14,7 +14,7 @@
   </tr>
   <tr>
 	<td><%= image_tag 'cog', :align => 'absmiddle' %> Course Documents</td>
-	<td><%= image_tag 'cog', :align => 'absmiddle' %> Course Blog</td>
+	<td><%= link_to "#{image_tag 'cog', :align => 'absmiddle'} Course Blog", :controller => '/instructor/blog', :course => @course %></td>
   </tr>
   <tr>
 	<td><%= image_tag 'cog', :align => 'absmiddle' %> Assignments</td>
@@ -25,7 +25,64 @@
     <td>&nbsp;</td>
   </tr>
   <% else %>
-assistant
+  <tr>
+	<td>
+		<% if @course.course_setting.ta_course_information %>
+		  <%= image_tag 'cog', :align => 'absmiddle' %> Course Information
+		<% else %>
+		  <%= image_tag 'cancel', :align => 'absmiddle' %><s>Course Information</s>
+		<% end %>
+	</td>
+	<td>
+		<% if @course.course_setting.ta_course_users %>
+	  	  <%= image_tag 'cog', :align => 'absmiddle' %> Course Users
+	    <% else %>
+	      <%= image_tag 'cancel', :align => 'absmiddle' %><s>Course Users</s>
+	    <% end %>
+	</td>
+  </tr>
+  <tr>
+	<td>
+		<% if @course.course_setting.ta_course_documents %>
+		  <%= image_tag 'cog', :align => 'absmiddle' %> Course Documents
+		<% else %>
+		  <%= image_tag 'cancel', :align => 'absmiddle' %><s>Course Documents</s>
+		<% end %>
+	</td>
+	<td>
+		<% if @course.course_setting.ta_course_blog_post %>
+		  <%= image_tag 'cog', :align => 'absmiddle' %> Course Blog
+		<% else %>
+		  <%= image_tag 'cancel', :align => 'absmiddle' %><s>Course Blog</s>
+		<% end %>
+	</td>
+  </tr>
+  <tr>
+	<td>
+		<% if @course.course_setting.ta_course_assignments %>
+		  <%= image_tag 'cog', :align => 'absmiddle' %> Assignments
+		<% else %>
+		  <%= image_tag 'cancel', :align => 'absmiddle' %><s>Assignments</s>
+		<% end %>
+	</td>
+	<td>
+		<% if @course.course_setting.ta_course_settings %>
+		  <%= link_to "#{image_tag 'cog', :align => 'absmiddle'} Settings", :controller => '/instructor/course_setting', :course => @course %>
+		<% else %>
+		  <%= image_tag 'cancel', :align => 'absmiddle' %><s>Settings</s>
+		<% end %>
+	</td>
+  </tr>
+  <tr> 
+    <td>
+	    <% if @course.course_setting.ta_course_gradebook %>
+	      <%= image_tag 'cog', :align => 'absmiddle' %> Gradebook
+	    <% else %>
+	      <%= image_tag 'cancel', :align => 'absmiddle' %><s>Gradebook</s>
+	    <% end %>
+	</td>
+    <td>&nbsp;</td>
+  </tr>
   <% end %>
 
 </table>

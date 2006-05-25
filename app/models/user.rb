@@ -7,6 +7,9 @@ class User < ActiveRecord::Base
   has_many :courses_users
   has_many :courses, :through => :courses_users
   
+  has_many :posts
+  has_many :comments
+  
   attr_accessor :notice
   
   def display_name

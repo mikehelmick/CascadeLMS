@@ -1,4 +1,4 @@
-version: 0.0.7 20060519
+version: 0.0.9 20060525
 title: Miami University CSA
 
 organization: Miami University
@@ -7,6 +7,8 @@ email: helmicmt@muohio.edu
 blackboard: http://mymiami.muohio.edu
 
 smtp: mailfwd.muohio.edu
+
+external_dir: /Users/Shared/courseware
 
 # either ldap or basic
 authtype: basic

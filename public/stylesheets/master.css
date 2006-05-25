@@ -215,7 +215,7 @@ div#headerright a:hover {
 	color: #000;
 }
 
-#ErrorExplanation {
+.errorExplanation {
 	border: 2px solid #red;
 	padding: 7px;
 	padding-bottom: 12px;
@@ -223,30 +223,31 @@ div#headerright a:hover {
 	background-color: #fcf0f0;
 }
 
-#ErrorExplanation h2 {
+.errorExplanation h2 {
 	text-align: left;
 	font-weight: bold;
 	padding: 5px 5px 5px 27px;
 	font-size: 12px;
 	margin: -7px;
-	background: url(/images/alertbad_icon.gif) #c00 left no-repeat;
-	color: #fff;
+	background: #cc0000;
+	color: #ffffff;
 }
 
-#ErrorExplanation p {
+.errorExplanation p {
 	color: #333;
 	margin-bottom: 0;
 	padding: 5px;
 }
 
-#ErrorExplanation ul {
+.errorExplanation ul {
 	margin-left: 30px;
 }
 
-#ErrorExplanation ul li {
+.errorExplanation ul li {
 	font-size: 12px;
 	list-style: square;
 }
+
 
 
 /** MY STYLES **/
@@ -504,3 +505,54 @@ div.Right .col h2 {
 }
 
 
+/* blog */
+
+.BlogPost {
+	margin: 5px 0 0 0;
+	border-bottom: 1px dashed #DCDDDE;
+}
+
+.BlogPost h2 {
+	margin: 0 0 0 0;
+	border-bottom: 1px solid #990000;
+}
+
+.BlogPost p.author {
+	margin: 0 0 0 15px;
+	font-weight: italic;
+}
+
+.BlogPost p {
+	margin: 5px 5px 5px 5px;
+}
+
+.BlogPost p.summary {
+	text-align: right;
+}
+
+a img {
+	text-decoration: none;
+	border: none;
+}
+
+.Comment {
+	margin: 5px 0 0 10px;
+	padding: 0 0 0 5px;
+	border-left: 2px solid #990000;
+}
+
+.Comment p.commentAuthor {
+	margin: 0;
+	font-weight: italic;
+	border-bottom: 1px solid #DCDDDE;
+}
+
+.Comment p.commentBody {
+	padding: 0px 0px 0px 10px;
+}
+	
+#leave_comment {
+	border: 1px dotted #990000;
+	padding: 5px 5px 5px 5px;
+	margin: 5px 5px 5px 5px;
+}

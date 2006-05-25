@@ -1,0 +1,29 @@
+<%= error_messages_for 'post' %>
+
+<!--[form:post]-->
+<p class="blockintro">Making a post featured will force it to show up first, regardless of there being newer posts to show.   It is suggested that you only feature 1 or 2 posts at a time.</p>
+<div class="block">
+<p><label for="post_featured" class="required">Featured: </label>
+	<%= radio_button 'post', 'featured', true %> Yes
+	<%= radio_button 'post', 'featured', false %> No</p>
+
+<p><label for="post_title"  class="required">Title:</label>
+<%= text_field 'post', 'title'  %></p>
+
+<p><label for="post_body" class="required">Body:</label>
+<%= text_area 'post', 'body'  %></p>
+
+<p><label for="post_enable_comments" class="required">Enable comments:</label>
+	<%= radio_button 'post', 'enable_comments', true %> Yes
+	<%= radio_button 'post', 'enable_comments', false %> No</p>
+
+<p><label for="post_created_at" class="required">Publish Date/Time:</label>
+<%= datetime_select 'post', 'created_at'  %></p>
+
+<p><label for="post_published" class="required">Published:</label>
+	<%= radio_button 'post', 'published', true %> Yes
+	<%= radio_button 'post', 'published', false %> No</p>
+
+</div>
+<!--[eoform:post]-->
+

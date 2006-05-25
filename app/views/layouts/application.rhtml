@@ -48,7 +48,13 @@
 		    <% else %>
                   <li><%= link_to 'Overview', { :controller => '/overview', :course => @course }, { :id => 'current' } %></li>		
 		    <% end %> 
-		    <li><a href="#">Course Blog</a></li>
+		    <li>
+			  <% if @tab.nil? || !@tab.eql?('course_blog') %>
+			    <li><%= link_to 'Course Blog', :controller => '/blog', :course => @course %></a></li> 
+			  <% else %>
+	            <li><%= link_to 'Course Blog', { :controller => '/blog', :course => @course }, { :id => 'current' } %></li>
+	          <% end %>
+			</li>
 		    <li><a href="#">Documents</a></li>
 		    <li><a href="#">Assignments</a></li>
 		    
@@ -99,7 +105,7 @@
       <div class="Left">
         <div class="col">
 <% if flash[:notice] %><div id="GoodMessage"><%= flash[:notice] %></div><% end %>
-<% if flash[:badnotice] %><div id="ErrorExplanation"><%= flash[:badnotice] %></div><% end %>
+<% if flash[:badnotice] %><div class="errorExplanation"><%= flash[:badnotice] %></div><% end %>
 
 <%= @content_for_layout %>
 

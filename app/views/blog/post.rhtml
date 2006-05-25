@@ -1,0 +1,46 @@
+<p><%= link_to "Back", :action => 'index' %></p>
+
+<%= render :partial => 'article', :locals => { :post => @post, :single => true } %>
+
+<% style = 'display: none;'
+   style = '' if flash[:expand] %>
+
+<div id="leave_comment" style="<%=style%>">
+<p><%= link_to_function( "Cancel", "blindToggle( 'leave_comment' )" ) %></p>	
+
+<div id="form_area">
+  <%= error_messages_for 'comment' %>	
+  <%= start_form_tag :action => 'comment', :id => @post %>
+
+   <div class="block">
+	<p><label for="comment_body" class="required">Your Comment:</label>
+	<%= text_area 'comment', 'body', "cols" => 40, "rows" => 15  %></p>
+   </div>
+
+  <div class="submit">
+	<%= submit_tag "Leave Comment" %>
+  </div>
+  <%= end_form_tag %>	
+</div>
+
+</div>
+
+<h2>Comments</h2>
+<% for comment in @post.comments %>
+<div class="Comment" id="comment_<%=comment.id%>">
+  <p class="commentAuthor">Left by <%=h comment.user.display_name %> @ <%=h comment.created_at.to_formatted_s(:long) %>
+ <% if @user.instructor_in_course?(@course.id) || (@user.assistant_in_course?(@course.id) && @course.course_setting.ta_course_blog_edit ) %>
+<%= link_to_remote( "#{image_tag('pencil_delete', :align => 'absmiddle')} Delete Comment", :url => { :controller => '/instructor/blog', :action => 'delete_comment', :course => @course.id, :post => @post.id, :id => comment.id }, :confirm => "Delete comment?", :success => "new Effect.Puff( 'comment_#{comment.id}' )", :failure => "alert('There was an error deleting the comment.');" ) %>
+ <% end %>
+</p>
+  <p class="commentBody">
+	<%= comment.body_html %>
+  </p>
+</div>
+<% end %>
+
+<% if flash[:highlight] %>
+<%= javascript_tag "new Effect.Highlight('#{flash[:highlight]}');" %>
+<% end %>
+
+<p><%= link_to "Back", :action => 'index' %></p>
