@@ -1,0 +1,92 @@
+<%= error_messages_for 'course_settings' %>
+
+<!--[form:course_settings]-->
+<p class="blockintro">A course blog is similar to announcements.  It allows you to post information for your students, and (if you allow comments) allows students to respond and interact with each other.</p>
+<div class="block">
+<p><label for="course_settings_enable_blog" class="required">Enable Blog:</label>
+<%= radio_button 'course_settings', 'enable_blog', true %> Yes
+<%= radio_button 'course_settings', 'enable_blog', false %> No</p>
+
+<p><label for="course_settings_blog_comments" class="required">Enable Blog comments:</label>
+	<%= radio_button 'course_settings', 'blog_comments', true %> Yes
+	<%= radio_button 'course_settings', 'blog_comments', false %> No</p>
+</div>
+
+<p class="blockintro">This system offers a fully functional gradebook.  If you are going to keep track of your grades in a different application (Blackboard, Excel, etc...) then you should disable the gradebook in this application.</p>
+<div class="block">
+<p><label for="course_settings_enable_gradebook" class="required">Enable gradebook:</label>
+	<%= radio_button 'course_settings', 'enable_gradebook', true %> Yes
+	<%= radio_button 'course_settings', 'enable_gradebook', false %> No</p>
+</div>
+
+<p class="blockintro">Enabling RSS will allow your students to receive notification of new assignments and blog posts in their web browser or news aggregator. RSS feeds are fully password protected and are only readable by users associated with your course. <%= link_to "More information on RSS. #{image_tag 'feed'}", "http://www.feedburner.com/fb/a/aboutrss", :popup => true %></p>
+<div class="block">
+	<p><label for="course_settings_enable_rss" class="required">Enable RSS Feed:</label>
+		<%= radio_button 'course_settings', 'enable_rss', true %> Yes
+		<%= radio_button 'course_settings', 'enable_rss', false %> No</p>
+</div>
+
+<p class="blockintro">The 'documents' section allows you to post other documents (syllabus, lecture notes, etc.) for students to download and read.   It also allows you to create slide shows that are visible and presented through this site.</p>
+<div class="block">
+<p><label for="course_settings_enable_documents" class="required">Enable documents:</label>
+	<%= radio_button 'course_settings', 'enable_documents', true %> Yes
+	<%= radio_button 'course_settings', 'enable_documents', false %> No</p>
+</div>
+
+<p class="blockintro">Enable the programming assignments capability of this system for this course.  If your course does not involve programming assignments, it is recommended that you turn this off.  The programming assignments allow for full integration with Subversion using http(s). The SVN server location must follow the pattern <code>http://svnserver.com/uniqueid</code>, a more comprehensive path to an individual assignment's files can be entered for each assignment.</p>
+<div class="block">
+<p><label for="course_settings_enable_prog_assignments" class="required">Enable programming assignments:</label>
+	<%= radio_button 'course_settings', 'enable_prog_assignments', true %> Yes
+	<%= radio_button 'course_settings', 'enable_prog_assignments', false %> No</p>
+<p><label for="course_settings_enable_svn" class="required">Enable Subversion:</label>
+	<%= radio_button 'course_settings', 'enable_svn', true %> Yes
+	<%= radio_button 'course_settings', 'enable_svn', false %> No</p>	
+<p><label for="course_settings_svn_server" class="required">Subversion Server:</label>
+	<%= text_field 'course_settings', 'svn_server', "size" => 50 %>
+	</p>
+</div>
+
+<p class="blockintro">These settings allow you to specify exactly what responsibilities are are going to assign to teaching assistants.</p>
+<div class="block">
+<p><label for="course_settings_ta_course_information" class="required">TA can edit course information:</label>
+	<%= radio_button 'course_settings', 'ta_course_information', true %> Yes
+	<%= radio_button 'course_settings', 'ta_course_information', false %> No</p>
+
+<p><label for="course_settings_ta_course_documents" class="required">TA can edit course documents:</label>
+	<%= radio_button 'course_settings', 'ta_course_documents', true %> Yes
+	<%= radio_button 'course_settings', 'ta_course_documents', false %> No</p>
+
+<p><label for="course_settings_ta_course_assignments" class="required">TA can edit course assignments:</label>
+	<%= radio_button 'course_settings', 'ta_course_assignments', true %> Yes
+	<%= radio_button 'course_settings', 'ta_course_assignments', false %> No</p>
+
+<p><label for="course_settings_ta_course_gradebook" class="required">TA can edit full gradebook:</label>
+	<%= radio_button 'course_settings', 'ta_course_gradebook', true %> Yes
+	<%= radio_button 'course_settings', 'ta_course_gradebook', false %> No</p>
+
+<p><label for="course_settings_ta_course_users" class="required">TA can manage course users:</label>
+	<%= radio_button 'course_settings', 'ta_course_users', true %> Yes
+	<%= radio_button 'course_settings', 'ta_course_users', false %> No</p>
+
+<p><label for="course_settings_ta_course_blog_post" class="required">TA can post to course blog:</label>
+	<%= radio_button 'course_settings', 'ta_course_blog_post', true %> Yes
+	<%= radio_button 'course_settings', 'ta_course_blog_post', false %> No</p>
+
+<p><label for="course_settings_ta_course_blog_edit" class="required">Ta can edit the course blog (including comments):</label>
+	<%= radio_button 'course_settings', 'ta_course_blog_edit', true %> Yes
+	<%= radio_button 'course_settings', 'ta_course_blog_edit', false %> No</p>
+
+<p><label for="course_settings_ta_course_settings" class="required">TA can edit course settings:</label>
+	<%= radio_button 'course_settings', 'ta_course_settings', true %> Yes
+	<%= radio_button 'course_settings', 'ta_course_settings', false %> No</p>
+
+<p><label for="course_settings_ta_view_student_files" class="required">TA can view student files:</label>
+	<%= radio_button 'course_settings', 'ta_view_student_files', true %> Yes
+	<%= radio_button 'course_settings', 'ta_view_student_files', false %> No</p>
+
+<p><label for="course_settings_ta_grate_individual" class="required">TA can ender grades for individual assignments</label>
+	<%= radio_button 'course_settings', 'ta_grade_individual', true %> Yes
+	<%= radio_button 'course_settings', 'ta_grade_individual', false %> No</p>
+</div>
+<!--[eoform:course_settings]-->
+
