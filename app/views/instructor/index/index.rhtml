@@ -9,7 +9,7 @@
 
   <% if @user.instructor_in_course?( @course.id ) %>
   <tr>
-	<td><%= image_tag 'cog', :align => 'absmiddle' %> Course Information</td>
+	<td><%= link_to "#{image_tag 'cog', :align => 'absmiddle'} Course Information", :controller => '/instructor/course_info', :course => @course %></td>
 	<td><%= link_to "#{image_tag 'cog', :align => 'absmiddle'} Course Users", :controller => '/instructor/course_users', :course => @course %></td>
   </tr>
   <tr>
@@ -28,7 +28,7 @@
   <tr>
 	<td>
 		<% if @course.course_setting.ta_course_information %>
-		  <%= image_tag 'cog', :align => 'absmiddle' %> Course Information
+		  <%= link_to "#{image_tag 'cog', :align => 'absmiddle'} Course Information", :controller => '/instructor/course_info', :course => @course %>
 		<% else %>
 		  <%= image_tag 'cancel', :align => 'absmiddle' %><s>Course Information</s>
 		<% end %>

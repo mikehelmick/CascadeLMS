@@ -1,1 +1,15 @@
 <%= render :partial => 'instructor/index/right' %>
+
+<h2>Add users to this course</h2>
+<div id="search_area">
+<%= form_remote_tag( :update => 'search_results', :url => { :action => :search, :id => @course }, :complete => "new Effect.BlindDown('search_results');" ) %>
+	<label for="id">Search Terms:</label> 
+	<%= text_field_tag 'searchterms', '' %>
+	<%= submit_tag 'Search' %><br/>
+	<%= end_form_tag %>
+<span id="spinner" style="display: none;"><%= image_tag 'spinner.gif' %></span>
+</div>
+
+<div id="search_results" style="display: none;">
+
+</div>

@@ -4,12 +4,14 @@ class Course < ActiveRecord::Base
   belongs_to :term
   has_and_belongs_to_many :crns
   
-  has_one :course_setting
+  has_one :course_setting, :dependent => :destroy
+  has_one :course_information, :dependent => :destroy
   
   has_many :courses_users
   has_many :users, :through => :courses_users
   has_many :posts, :order => "created_at", :dependent => :destroy
   
+  before_create :create_settings
   
   def merge( other )
     Course.transaction do
@@ -131,6 +133,10 @@ class Course < ActiveRecord::Base
       end
       res
     end
+  end
+  
+  def create_settings
+    self.course_setting = CourseSetting.new if self.course_setting.nil?
   end
   
   private :sort_c_users

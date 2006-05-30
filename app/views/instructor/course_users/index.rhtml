@@ -1,1 +1,41 @@
-<p>Hello, world!</p>
+<p><%= link_to "#{image_tag 'arrow_left' } Back", :controller => '/instructor/index', :course => @course.id %></p>
+
+<h2>Instructor(s) for <%= @course.title %></h2>
+<div id="instructor_error"> </div>
+<div id="instructor">
+<% @users = @course.instructors %>
+<% @utype = 'instructor' %>
+<%= render :partial => 'userlist' %>
+</div>
+
+
+<hr/>
+<h2>TA/Grader(s) for <%= @course.title %></h2>
+<div id="assistant_error"> </div>
+<div id="assistant">
+<% @users = @course.assistants %>
+<% @utype = 'assistant' %>
+<%= render :partial => 'userlist' %>
+</div>
+
+<hr/>
+<h2>Students(s) for <%= @course.title %></h2>
+<div id="student_error"> </div>
+<div id="student">
+<% @users = @course.students %>
+<% @utype = 'student' %>
+<%= render :partial => 'userlist' %>
+</div>
+
+
+<hr/>
+<h2>Guest(s) for <%= @course.title %></h2>
+<div id="guest_error"> </div>
+<div id="guest">
+<% @users = @course.guests %>
+<% @utype = 'guest' %>
+<%= render :partial => 'userlist' %>
+</div>
+
+<hr/>
+<p><%= link_to "#{image_tag 'arrow_left' } Back", :controller => '/instructor/index', :course => @course.id %></p>

@@ -1,0 +1,28 @@
+<p class="blockintro">Course title is the short title (course number).  For example, 'CSA101'.</p>
+  <div class="block">
+  <label for='course_title' class="required">Title:</label>
+  <%= text_field 'courseo', 'title'  %><br/>
+  </div>
+<p class="blockintro">Description is a more formal course title. For example 'Introduction to Computer Science'.</p>
+  <div class="block">
+  <label for='course_short_description'>Description:</label>
+  <%= text_field 'courseo', 'short_description', :size => '50' %> <br/>
+
+  </div>
+
+<p class="blockintro">The following information is not required but would most likely be helpful to your students.</p>
+  <div class="block">
+    <label for='course_information_meeting_days'>Meeting Days:</label>
+    <%= text_field 'course_information', 'meeting_days', :size => '50' %><br/>
+
+    <label for='course_information_meeting_time'>Meeting Times:</label>
+    <%= text_field 'course_information', 'meeting_time', :size => '50' %><br/>
+
+    <label for='course_information_room'>Room:</label>
+    <%= text_field 'course_information', 'room', :size => '40' %><br/>
+
+    <label for='course_information_office_hours'>Office Hours:</label>
+    <%= text_field 'course_information', 'office_hours', :size => '40' %>
+
+
+  </div>

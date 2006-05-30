@@ -1,3 +1,18 @@
+<% if @posts.size == 0 %>
+ <p><i>There are no entries in this course's blog.</i></p>
+
+<% else %>
+
+<% if @featured.size > 0 %>
+  <div id="featured"><h2>Sticky Announcements</h2>
+  <% for post in @featured %>
+    <%= render :partial => "article", :locals => { :post => post, :single => false } %> 
+  <% end %>
+
+  </div>
+<% end %>
+
+
 <% for post in @posts %>
 <%= render :partial => "article", :locals => { :post => post, :single => false } %> 
 <% end %>
@@ -10,4 +25,6 @@
    <%= link_to i, { :page => i } %>
  <% end %>
 <% end %></p>
+<% end %>
+
 <% end %>

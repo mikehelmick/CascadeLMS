@@ -71,7 +71,7 @@
 		
 		  <% end %>
 		  
-		  <% if @user.admin %>
+		  <% if @user && @user.admin %>
 		    <% if @tab.nil? || !@tab.eql?('administration') %>
 		      <li style="padding-left: 25px"><%= link_to 'Administration', :controller => '/admin' %>
 		    <% else %>

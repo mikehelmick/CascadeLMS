@@ -556,3 +556,9 @@ a img {
 	padding: 5px 5px 5px 5px;
 	margin: 5px 5px 5px 5px;
 }
+
+#featured {
+	border: 3px solid #DCDDDE;
+	border: 2px solid #990000;
+	padding: 10px 10px 10px 10px;
+}

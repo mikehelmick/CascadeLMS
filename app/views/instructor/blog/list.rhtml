@@ -6,7 +6,7 @@
 	<%= link_to 'New Blog Post', :action => 'new' %> </p>
 
 <% if @course.posts.size == 0 %>
- <p><i>There are no posts in this blog.</i></p>
+  <p><i>There are no posts in this blog.</i></p>
 <% else %>
 
 <table class="fancy" width="100%">
@@ -27,7 +27,7 @@
 %>
   <% com_count = post.number_of_comments %>
   <tr class="<%=odd%> hover" id="post_<%=post.id%>">
-    <td><%=h post.title%></td>
+    <td><%= link_to "#{post.title}", :controller => '/blog', :course => @course, :action => 'post', :id => post %></td>
     <td><%=h post.featured_text %></td>
     <td><%=h post.published_text %></td>
     <td><%=h post.created_at.to_formatted_s(:long) %></td>
