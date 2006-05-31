@@ -1,0 +1,13 @@
+<h2>Editing document '<%= @document.title %>'</h2>
+
+<div id="form_area">
+<%= start_form_tag( { :action => 'update', :id => @document }, :multipart => true )%>
+  <%= render :partial => 'form' %>
+<div class="submit"> 
+  <%= submit_tag 'Edit' %>
+</div>
+<%= end_form_tag %>
+
+</div>
+
+<%= link_to 'Back', :action => 'index' %>

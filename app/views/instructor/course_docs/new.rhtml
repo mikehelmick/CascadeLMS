@@ -1,0 +1,15 @@
+<h2>New document</h2>
+
+<div id="form_area">
+<%= start_form_tag( { :action => 'create' }, :multipart => true, :onsubmit => "new Element.toggle('button', 'spinner');" ) %>
+  <%= render :partial => 'form' %>
+
+<div class="submit">
+  <div id="button"><%= submit_tag "Create" %></div>
+  <div id="spinner" style="display: none;"><%= image_tag 'spinner.gif' %></div>
+</div>
+<%= end_form_tag %>
+
+</div>
+
+<%= link_to 'Back', :action => 'index' %>

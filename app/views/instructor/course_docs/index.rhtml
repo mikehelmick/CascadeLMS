@@ -1,0 +1,43 @@
+<h2>Documents for <%= @course.title %></h2>
+
+<% if @documents.size == 0 %>
+ <p><i>There are no documents for this class.</i></p>
+<% else %>
+
+<table class="fancy">
+  <tr class="header">
+	<th>Title</th>
+	<th>Size</th>
+    <th>Published</th>
+	<th>Date</th>
+	<th>Controls</th>
+  </tr>
+ 
+<% count = 0%> 
+<% for document in @documents %>
+<% count = count.next 
+   odd = "odd"
+   odd = "even" if count.even?
+%>
+  <tr class="<%=odd%> hover" id="documet_<%=document.id%>">
+  
+    <td><%= image_tag "#{document.icon_file}", :align => 'absmiddle' %> <%=h document.title %></td>
+    <td><%=h document.size_text %></td>
+    <td><%=h document.published %></td>
+    <td><%=h document.created_at.to_formatted_s(:long) %></td>
+
+    <td><%= link_to 'Download', :action => 'download', :id => document %> |
+    <%= link_to 'Edit', :action => 'edit', :id => document %> |
+    <%= link_to 'Delete', { :action => 'destroy', :id => document }, :confirm => 'Are you sure you want to permanently delete this file?', :post => true %></td>
+  </tr>
+<% end %>
+</table>
+
+<%= link_to 'Previous page', { :page => @document_pages.current.previous } if @document_pages.current.previous %>
+<%= link_to 'Next page', { :page => @document_pages.current.next } if @document_pages.current.next %> 
+
+<% end %>
+
+<br />
+
+<%= link_to 'New document', :action => 'new' %>

@@ -1,4 +1,4 @@
-version: 0.0.10 20060530
+version: 0.0.11 20060530
 title: Miami University CSA
 
 organization: Miami University
@@ -13,17 +13,17 @@ external_dir: /Users/Shared/courseware
 # either ldap or basic
 authtype: ldap
 # the setting below need to be filled in if LDAP is being used
-#ldapserver: 127.0.0.1
-ldapserver: ldapsun1.muohio.edu
+ldapserver: 127.0.0.1
+#ldapserver: ldapsun1.muohio.edu
 ldap_dc: dc=muohio,dc=edu
 ldap_ou: ou=people
 ldap_search: uid
 
-ldap_port: 636
+ldap_port: 4001
 # 4001
 # 389
 # 636
-ldap_ssl: true
+ldap_ssl: false
 
 ldap_field_uid: uid
 ldap_field_nickname: eduPersonNickname

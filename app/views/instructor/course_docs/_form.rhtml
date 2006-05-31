@@ -1,0 +1,23 @@
+<%= error_messages_for 'document' %>
+
+<!--[form:document]-->
+<p class="blockintro">Course documents are any printed material that you might handout that is not part of an assignment.</p>
+<div class="block">
+<p><label for="document_title" class="required">Title:</label>
+<%= text_field 'document', 'title'  %></p>
+
+<p><label for="file">File:</label>
+<%= file_field_tag "file" %></p>
+
+<p><label for="document_comments">Comments:</label>
+<%= text_area 'document', 'comments'  %></p>
+
+<p><label for="document_created_at" class="required">Created at:</label>
+<%= datetime_select 'document', 'created_at'  %></p>
+
+<p><label for="document_published" class="required">Published:</label>
+	<%= radio_button 'document', 'published', true %> Yes
+	<%= radio_button 'document', 'published', false %> No</p>
+</div>
+<!--[eoform:document]-->
+

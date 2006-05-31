@@ -7,6 +7,8 @@ class Course < ActiveRecord::Base
   has_one :course_setting, :dependent => :destroy
   has_one :course_information, :dependent => :destroy
   
+  has_many :documents, :order => "created_at desc", :dependent => :destroy
+  
   has_many :courses_users
   has_many :users, :through => :courses_users
   has_many :posts, :order => "created_at", :dependent => :destroy
