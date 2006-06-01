@@ -1,0 +1,36 @@
+<h2>Documents for <%= @course.title %></h2>
+
+<% if @documents.size == 0 %>
+  <p><i>There are no documents in this course.</i></p>
+<% else %>
+
+<%= render :partial => 'pages' %>
+
+  <table class="fancy">
+    <tr class="header">
+	  <th>Title</th>
+	  <th>Filename</th>
+	  <th>Size</th>
+	  <th>Date</th>
+	  <th>Instructor Comments</th>
+	</tr>
+
+    <% count = 0 %>
+    <% for document in @documents %>
+      <% count = count.next 
+	     odd = "odd"
+	     odd = "even" if count.even? %>
+	  <tr class="<%=odd%> hover" id="documet_<%=document.id%>">
+		<td><%= link_to "#{image_tag document.icon_file, :align=> 'absmiddle'} #{document.title}", :action => 'download', :course => @course.id, :id => document %></td>
+		<td><%= link_to "#{document.filename}", :action => 'download', :course => @course.id, :id => document %></td>
+		<td><%=h document.size_text %></td>
+		<td><%=h document.created_at.to_formatted_s(:short) %></td>
+	    <td><%=h document.comments %></td>
+	  </tr>
+    <% end %>
+
+  </table>
+
+<%= render :partial => 'pages' %>
+
+<% end %>

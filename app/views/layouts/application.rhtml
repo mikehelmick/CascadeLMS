@@ -48,14 +48,18 @@
 		    <% else %>
                   <li><%= link_to 'Overview', { :controller => '/overview', :course => @course }, { :id => 'current' } %></li>		
 		    <% end %> 
-		    <li>
+		    
 			  <% if @tab.nil? || !@tab.eql?('course_blog') %>
-			    <li><%= link_to 'Course Blog', :controller => '/blog', :course => @course %></a></li> 
+			    <li><%= link_to 'Course Blog', :controller => '/blog', :course => @course %></li> 
 			  <% else %>
 	            <li><%= link_to 'Course Blog', { :controller => '/blog', :course => @course }, { :id => 'current' } %></li>
 	          <% end %>
-			</li>
-		    <li><a href="#">Documents</a></li>
+			
+			  <% if @tab.nil? || !@tab.eql?('course_documents') %>
+			    <li><%= link_to 'Documents', :controller => '/documents', :course =>@course %></li>
+			  <% else %>
+			    <li><%= link_to 'Documents', { :controller => '/documents', :course =>@course }, { :id => 'current' } %></li>
+			  <% end %>
 		    <li><a href="#">Assignments</a></li>
 		    
 		    <% if @user.student_in_course?(@course.id) %>

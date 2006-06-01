@@ -90,6 +90,8 @@ class Instructor::CourseDocsController < Instructor::InstructorBase
     @document = Document.find(params[:id])
     @document.delete_file( @app['external_dir'] )
     @document.destroy
+    
+    flash[:notice] = "Document #{@document.title} has been deleted."
     redirect_to :action => 'index'
   end
   

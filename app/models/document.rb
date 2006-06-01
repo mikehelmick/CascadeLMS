@@ -35,7 +35,10 @@ class Document < ActiveRecord::Base
     full_path = "#{path}term/#{self.course.term.id}/course/#{self.course.id}/documents"
     file_name = "#{full_path}/doc_#{self.id}_#{self.filename}"
     
-    File.delete( file_name )
+    begin
+      File.delete( file_name )
+    rescue
+    end
   end
 
   def size_text
@@ -54,6 +57,8 @@ class Document < ActiveRecord::Base
     self.extension = self.filename.split('.').last.downcase
     self.size = file_field.size
   end
+  
+  
   
   def resolve_file_name( path )
     path = "#{path}/" unless path[-1] == '/'

@@ -1,0 +1,9 @@
+<% if @document_pages.page_count > 1 %><p>Page: 
+<% 1.upto(@document_pages.page_count) do |i| %>
+ <% if i == @page %>
+   <b><%= i %></b>
+ <% else %>
+   <%= link_to i, { :page => i } %>
+ <% end %>
+<% end %></p>
+<% end %>
