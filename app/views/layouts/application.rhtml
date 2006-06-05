@@ -62,7 +62,7 @@
 			  <% end %>
 		    <li><a href="#">Assignments</a></li>
 		    
-		    <% if @user.student_in_course?(@course.id) %>
+		    <% if @user.student_in_course?(@course.id) && @course.course_setting.enable_gradebook %>
 		      <li><a href="#">Grades</a></li>
 		    <% end %>
 		    <% if @user.instructor_in_course?(@course.id) || @user.assistant_in_course?(@course.id) %>

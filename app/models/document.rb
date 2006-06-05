@@ -1,6 +1,8 @@
 class Document < ActiveRecord::Base
   belongs_to :course
   
+  before_save :transform_markup
+  
   @@icons = { 'pdf' => 'page_white_acrobat',
               'mp3' => 'music', 'wav' => 'music', 'acc' => 'music', 'ogg' => 'music',
               'doc' => 'page_white_word',
@@ -75,6 +77,10 @@ class Document < ActiveRecord::Base
   def base_part_of(file_name)
     name = File.basename(file_name)
     name.gsub(/[^\w._-]/, '')
+  end
+  
+  def transform_markup
+	  self.comments_html = HtmlEngine.apply_textile( self.comments )
   end
   
 end

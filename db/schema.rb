@@ -2,7 +2,7 @@
 # migrations feature of ActiveRecord to incrementally modify your database, and
 # then regenerate this schema definition.
 
-ActiveRecord::Schema.define(:version => 12) do
+ActiveRecord::Schema.define(:version => 14) do
 
   create_table "announcements", :force => true do |t|
     t.column "headline", :string
@@ -11,6 +11,23 @@ ActiveRecord::Schema.define(:version => 12) do
     t.column "end", :datetime
     t.column "user_id", :integer
     t.column "text_html", :text
+  end
+
+  create_table "assignments", :force => true do |t|
+    t.column "course_id", :integer
+    t.column "title", :string
+    t.column "open_date", :datetime
+    t.column "due_date", :datetime
+    t.column "close_date", :datetime
+    t.column "description", :text
+    t.column "description_html", :text
+    t.column "file_uploads", :boolean, :default => false, :null => false
+    t.column "enable_journal", :boolean, :default => true, :null => false
+    t.column "programming", :boolean, :default => true, :null => false
+    t.column "use_subversion", :boolean, :default => true, :null => false
+    t.column "subversion_path", :string
+    t.column "auto_grade", :boolean, :default => false, :null => false
+    t.column "grade_category_id", :integer
   end
 
   create_table "comments", :force => true do |t|
@@ -90,10 +107,16 @@ ActiveRecord::Schema.define(:version => 12) do
     t.column "filename", :string, :default => "", :null => false
     t.column "content_type", :string, :default => "", :null => false
     t.column "comments", :text
+    t.column "comments_html", :text
     t.column "created_at", :datetime, :null => false
     t.column "extension", :string
     t.column "size", :string
     t.column "published", :boolean, :default => true, :null => false
+  end
+
+  create_table "grade_categories", :force => true do |t|
+    t.column "category", :string
+    t.column "course_id", :integer, :default => 0, :null => false
   end
 
   create_table "posts", :force => true do |t|

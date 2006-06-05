@@ -6,13 +6,12 @@
 
 <%= render :partial => 'pages' %>
 
-  <table class="fancy">
+  <table class="fancy" width="99%">
     <tr class="header">
 	  <th>Title</th>
 	  <th>Filename</th>
 	  <th>Size</th>
 	  <th>Date</th>
-	  <th>Instructor Comments</th>
 	</tr>
 
     <% count = 0 %>
@@ -25,7 +24,10 @@
 		<td><%= link_to "#{document.filename}", :action => 'download', :course => @course.id, :id => document %></td>
 		<td><%=h document.size_text %></td>
 		<td><%=h document.created_at.to_formatted_s(:short) %></td>
-	    <td><%=h document.comments %></td>
+	  </tr>
+	  <tr>
+		<td><b>Comments:</b></td>
+	    <td colspan="3"><%= document.comments_html %></td>
 	  </tr>
     <% end %>
 

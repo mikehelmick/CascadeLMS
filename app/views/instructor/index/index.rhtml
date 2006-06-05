@@ -17,11 +17,15 @@
 	<td><%= link_to "#{image_tag 'cog', :align => 'absmiddle'} Course Blog", :controller => '/instructor/blog', :course => @course %></td>
   </tr>
   <tr>
-	<td><%= image_tag 'cog', :align => 'absmiddle' %> Assignments</td>
+	<td><%= link_to "#{image_tag 'cog', :align => 'absmiddle'} Assignments", :controller => '/instructor/course_assignments', :course => @course %></td>
 	<td><%= link_to "#{image_tag 'cog', :align => 'absmiddle'} Settings", :controller => '/instructor/course_setting', :course => @course %></td>
   </tr>
   <tr> 
-    <td><%= image_tag 'cog', :align => 'absmiddle' %> Gradebook</td>
+    <td>
+	<% if @course.course_setting.enable_gradebook %>
+	  <%= image_tag 'cog', :align => 'absmiddle' %> Gradebook
+	<% end %>
+	</td>
     <td>&nbsp;</td>
   </tr>
   <% else %>

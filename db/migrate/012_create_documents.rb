@@ -6,6 +6,7 @@ class CreateDocuments < ActiveRecord::Migration
       t.column :filename, :string, :null => false
       t.column :content_type, :string, :null => false
       t.column :comments, :text, :null => true
+      t.column :comments_html, :text, :null => true
       t.column :created_at, :datetime, :null => false
       t.column :extension, :string
       t.column :size, :string
