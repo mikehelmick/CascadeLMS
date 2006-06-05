@@ -41,6 +41,3 @@
 
 <%= link_to 'New Term', :action => 'new' %> | <%= link_to 'Back', :controller => '/admin' %>
 
-<% if flash[:highlight] %>
-  <%= javascript_tag visual_effect(:highlight, "item_#{flash[:highlight]}", :duration => 7.0 ) %>
-<% end %>

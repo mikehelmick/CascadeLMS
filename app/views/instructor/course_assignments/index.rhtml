@@ -1,1 +1,42 @@
 <h2>Assignments for <%= @course.title %></h2>
+
+<% if @course.assignments.size == 0 %>
+ <p><i>There are no assignments in this course.</i></p>
+<% else %>
+
+ <table class="fancy"> 
+   <tr class="header"> 
+    <th>#</th>
+    <th>Title</th>
+    <th>Category</th>
+    <th>Available</th>
+    <th>Due</th>
+    <th>Controls</th>
+   </tr>
+
+   <% count = 0 %>
+   <% for assignment in @course.assignments %>
+     <% count = count.next 
+	   odd = "odd"
+	   odd = "even" if count.even?
+  	  %>
+	  <tr class="<%=odd%> hover" id="assignment_<%=assignment.id%>">
+	    <td align="right"><%= link_to "#{h assignment.position}", :action => 'edit', :id => assignment %></td>
+	    <td><%= link_to "#{image_tag 'page_edit', :align => 'absmiddle'} #{h assignment.title}", :action => 'edit', :id => assignment %></td>
+	    <td><%=h assignment.grade_category.category %></td>
+	    <td nowrap="nowrap"><%= assignment.open_date.to_formatted_s(:long) %></td>
+	    <td nowrap="nowrap"><%= assignment.due_date.to_formatted_s(:long) %></td>
+	    <td>
+	      <%= link_to 'Move Up', :action => 'move_up', :id => assignment %> |
+	      <%= link_to 'Move Down', :action => 'move_down', :id => assignment %> |
+	      <%= link_to 'Delete', { :action => 'destroy', :id => assignment }, :confirm => "Are you sure you want to delete the assignment '#{assignment.title}' and all of it's associated data? This action can no be undone." %>
+	    </td> 
+	  </tr>
+   <% end %>
+ </table>
+
+<% end %>
+
+<p><%= link_to 'New Assignment', :action => 'new' %> |
+ <%= link_to 'Back', :controller => '/instructor/index', :course => @course %>
+</p>

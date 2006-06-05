@@ -365,6 +365,12 @@ div.Right .col h2 {
   text-align: right;
 }
 
+.sub_form {
+	margin: 5px 0 0 10px;
+	padding: 0 0 0 5px;
+	border-left: 2px solid #990000;
+}
+
 /** table **/
 
 .fancy {

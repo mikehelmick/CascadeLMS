@@ -1,0 +1,121 @@
+<%= error_messages_for 'assignment' %>
+<%= error_messages_for 'journal_field' %>
+
+
+
+<div class="blockintro">Create a new assignment for this course.</div>
+
+<div class="block">
+<p><label for="assignment[title]" class="required">Assignment name:</label>
+<%= text_field 'assignment', 'title'  %></p>
+<p><label for="term" class="required">Category:</label> <%= select_tag 'grade_category_id', options_from_collection_for_select(@categories, "id", "category", @assignment.grade_category_id ) %>
+</div>
+
+<div class="blockintro">For the dates of an assignment: the available date allows to set up an assignment in this system without allowing students to see it until a certain point in time.  The due date and the close date allow you to set a time that assignments are due, but still allow files to be submitted for a slightly longer period of time.</div>
+<div class="block">
+<p><label for="assignment[open_date]" class="required">Date available to students:</label>
+<%= datetime_select 'assignment', 'open_date'  %></p>
+<p><label for="assignment[due_date]" class="required">Assignment due date:</label>
+<%= datetime_select 'assignment', 'due_date'  %></p>
+<p><label for="assignment[close_date]" class="required">Last time material can be submitted:</label>
+<%= datetime_select 'assignment', 'close_date'  %></p>
+</div>
+
+<div class="blockintro">You may either describe this assignment with text or upload a file.  If you choose to upload a file, you will be able to add additional files after the assignment is created.</div>
+<div class="block">
+
+<% desc_style = 'display: block;'
+   file_style = 'display: none;'
+   if @assignment.file_uploads
+	 t = file_style
+	 file_style = desc_style
+	 desc_style = t
+   end
+%>
+
+  <div id="asgn_desc" style="<%=desc_style%>" >
+    <p><b>Use Description</b> | <%= link_to_function 'Use File', "new Effect.Puff('asgn_desc'); new Effect.Appear('asgn_file');" %></p>
+  	<p><label for="assignment[description]" class="required">Assignment Description:</label>
+    <%= text_area 'assignment', 'description'  %></p>
+  </div>
+  <div id="asgn_file" style="<%=file_style%>">
+    <p><%= link_to_function 'Use Description', "new Effect.Puff('asgn_file'); new Effect.Appear('asgn_desc');" %> | <b>Use File</b></p>
+  	<p><label for="file" class="required">Assignment File:</label>
+	<%= file_field_tag "file" %></p>
+  </div>
+</div>
+
+<div class="blockintro">Journals allow students to chronicle their progress on this assignment.   If you choose to enable journals, you may specify which fields are to be included in the student journals.</div>
+<div class="block">
+
+  <% journal_style = "display: block;" 
+     journal_style = "display: none;" unless @assignment.enable_journal
+  %>
+
+  <p><b>Enable Journals:</b>
+	<%= radio_button 'assignment', 'enable_journal', true, :onclick => 'new Effect.SlideDown("journal_settings")' %> Yes
+	<%= radio_button 'assignment', 'enable_journal', false, :onclick => 'new Effect.Puff("journal_settings")' %> No
+  </p>
+  <div id="journal_settings" style="<%=journal_style%>">
+    <div class="sub_form">
+      <p><label for="journal_field[start_time]" class="required">Capture start time:</label>
+        <%= radio_button 'journal_field', 'start_time', true %> Yes
+	    <%= radio_button 'journal_field', 'start_time', false %> No</p>
+      <p><label for="journal_field[end_time]" class="required">Capture end time:</label>
+        <%= radio_button 'journal_field', 'end_time', true %> Yes
+	    <%= radio_button 'journal_field', 'end_time', false %> No</p>
+      <p><label for="journal_field[interruption_time]" class="required">Capture interruption time:</label>
+        <%= radio_button 'journal_field', 'interruption_time', true %> Yes
+	    <%= radio_button 'journal_field', 'interruption_time', false %> No</p>
+      <p><label for="journal_field[completed]" class="required">Capture completed status:</label>
+        <%= radio_button 'journal_field', 'completed', true %> Yes
+	    <%= radio_button 'journal_field', 'completed', false %> No</p>
+      <p><label for="journal_field[task]" class="required">Capture task worked on:</label>
+        <%= radio_button 'journal_field', 'task', true %> Yes
+	    <%= radio_button 'journal_field', 'task', false %> No</p>
+      <p><label for="journal_field[reason_for_stopping]" class="required">Capture reason for stopping:</label>
+        <%= radio_button 'journal_field', 'reason_for_stopping', true %> Yes
+	    <%= radio_button 'journal_field', 'reason_for_stopping', false %> No</p>
+      <p><label for="journal_field[comments]" class="required">Capture comments:</label>
+        <%= radio_button 'journal_field', 'comments', true %> Yes
+	    <%= radio_button 'journal_field', 'comments', false %> No</p>
+    </div>
+  </div>
+
+</div>
+
+<div class="blockintro">This section allows you to specify items pertaining to programming assignments.</div>
+<div class="block">
+
+  <% prog_style = "display: block;" 
+     prog_style = "display: none;" unless @assignment.programming
+  %>
+
+  <p><b>Enable Programming Assignment Enhancements:</b>
+	<%= radio_button 'assignment', 'programming', true, :onclick => 'new Effect.SlideDown("programming_settings")' %> Yes
+	<%= radio_button 'assignment', 'programming', false, :onclick => 'new Effect.Puff("programming_settings")' %> No
+  </p>
+  <div id="programming_settings" class="sub_form" style="<%=prog_style%>">
+    <p><label for="assignment[use_subversion]" class="required">Enable Subversion:</label>
+       <%= radio_button 'assignment', 'use_subversion', true, :onclick => 'new Effect.SlideDown("subversion_settings")' %> Yes
+	   <%= radio_button 'assignment', 'use_subversion', false, :onclick => 'new Effect.Puff("subversion_settings")' %> No</p>
+	
+	<% svn_style = "display: block;" 
+	   svn_style = "display: none;" unless @assignment.use_subversion
+	%>
+	<div id="subversion_settings" class="sub_form" style="<%=svn_style%>">
+	  <p>For subversion, the server name is something like <code>http://svn.server/</code> and the path is something like <code>$uniqueid$/assignment4/release/$uniqueid$</code>.  The development and release paths allow you to pull student files during development, but limit final turn in to a 'release' directory.  If you only with to use 1 path, leave the release path blank.  The symbol <code>$uniqueid$</code> is expanded to each student's uniqueID in this system.  <b>To use Subversion - you must have read access to each student's repository.</b></p>
+  	  <p><label for="assignment[subversion_server]" class="required">Subversion Server:</label>
+      <%= text_field 'assignment', 'subversion_server'  %></p>
+	  <p><label for="assignment[subversion_development_path]" class="required">Subversion Development Path:</label>
+      <%= text_field 'assignment', 'subversion_development_path'  %></p>
+	  <p><label for="assignment[subversion_release_path]" class="required">Subversion Release Path:</label>
+      <%= text_field 'assignment', 'subversion_release_path'  %></p>
+	</div>
+	<p><i>You will have the ability to adjust AutoGrade settings later.</i></p>
+	<p><label for="assignment[auto_grade]" class="required">Enable AutoGrade:</label>
+       <%= radio_button 'assignment', 'auto_grade', true %> Yes
+	   <%= radio_button 'assignment', 'auto_grade', false %> No</p>
+  </div>
+
+</div>

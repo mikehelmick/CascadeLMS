@@ -69,5 +69,9 @@ class ApplicationController < ActionController::Base
       return
     end
   end
+  
+  def set_highlight( dom_id )
+    flash[:highlight] = dom_id
+  end
 
 end

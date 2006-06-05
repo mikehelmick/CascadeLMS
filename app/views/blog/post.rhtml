@@ -39,8 +39,5 @@
 </div>
 <% end %>
 
-<% if flash[:highlight] %>
-<%= javascript_tag "new Effect.Highlight('#{flash[:highlight]}');" %>
-<% end %>
 
 <p><%= link_to "Back", :action => 'index' %></p>

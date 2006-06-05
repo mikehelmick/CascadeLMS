@@ -14,6 +14,7 @@ class CreateGradeCategories < ActiveRecord::Migration
     GradeCategory.create :category => 'Program', :course_id => 0
     GradeCategory.create :category => 'Programming Quiz', :course_id => 0
     GradeCategory.create :category => 'Group Project', :course_id => 0
+    GradeCategory.create :category => 'Reading', :course_id => 0
   end
 
   def self.down

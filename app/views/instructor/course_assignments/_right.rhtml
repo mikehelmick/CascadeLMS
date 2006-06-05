@@ -1,1 +1,17 @@
 <%= render :partial => 'instructor/index/right' %>
+
+<div style="float:left;">
+<% today = Date.today %>
+<%= calendar( :year => today.year, :month => today.month, :abbrev=>(0..0) ) do |d|
+	  if d.eql?(today) 
+	    [d.mday, {:class => "specialDay"}]     
+	  else                                     
+	    [d.mday, {:class => "day"}]	 
+	  end
+    end	
+%>
+<% today = today.to_time.next_month %>
+<%= calendar( :year => today.year, :month => today.month, :abbrev=>(0..0) )%>
+<% today = today.to_time.next_month %>
+<%= calendar( :year => today.year, :month => today.month, :abbrev=>(0..0) )%>
+</div>

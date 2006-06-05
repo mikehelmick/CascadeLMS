@@ -113,6 +113,6 @@ class Instructor::CourseDocsController < Instructor::InstructorBase
     true
   end
   
-  private :set_tab, :set_title
+  private :set_tab, :set_title, :doc_in_course
   
 end

@@ -29,7 +29,7 @@ class Admin::TermsController < ApplicationController
       x.save
     end
     flash[:notice] = 'Current term changed.'
-    flash[:highlight] = "#{params[:id]}"
+    set_highlight "item_#{params[:id]}"
     redirect_to :action => 'list'
   end
   
@@ -46,7 +46,7 @@ class Admin::TermsController < ApplicationController
     @term = Term.new(params[:term])
     if @term.save
       flash[:notice] = "Term #{@term.semester} was successfully created."
-      flash[:highlight] = "#{@term.id}"
+      set_highlight = "item_#{@term.id}"
       redirect_to :action => 'list'
     else
       render :action => 'new'
@@ -62,7 +62,7 @@ class Admin::TermsController < ApplicationController
     @term = Term.find(params[:id])
     if @term.update_attributes(params[:term])
       flash[:notice] = "Term '#{@term.semester}' was successfully updated."
-      flash[:highlight] = "#{@term.id}"
+      set_highlight = "item_#{@term.id}"
       redirect_to :action => 'list'
     else
       render :action => 'edit'

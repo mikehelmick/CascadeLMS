@@ -2,7 +2,7 @@
 # migrations feature of ActiveRecord to incrementally modify your database, and
 # then regenerate this schema definition.
 
-ActiveRecord::Schema.define(:version => 14) do
+ActiveRecord::Schema.define(:version => 16) do
 
   create_table "announcements", :force => true do |t|
     t.column "headline", :string
@@ -13,8 +13,19 @@ ActiveRecord::Schema.define(:version => 14) do
     t.column "text_html", :text
   end
 
+  create_table "assignment_documents", :force => true do |t|
+    t.column "assignment_id", :integer
+    t.column "position", :integer
+    t.column "filename", :string, :default => "", :null => false
+    t.column "content_type", :string, :default => "", :null => false
+    t.column "created_at", :datetime, :null => false
+    t.column "extension", :string
+    t.column "size", :string
+  end
+
   create_table "assignments", :force => true do |t|
     t.column "course_id", :integer
+    t.column "position", :integer
     t.column "title", :string
     t.column "open_date", :datetime
     t.column "due_date", :datetime
@@ -25,7 +36,9 @@ ActiveRecord::Schema.define(:version => 14) do
     t.column "enable_journal", :boolean, :default => true, :null => false
     t.column "programming", :boolean, :default => true, :null => false
     t.column "use_subversion", :boolean, :default => true, :null => false
-    t.column "subversion_path", :string
+    t.column "subversion_server", :string
+    t.column "subversion_development_path", :string
+    t.column "subversion_release_path", :string
     t.column "auto_grade", :boolean, :default => false, :null => false
     t.column "grade_category_id", :integer
   end
@@ -118,6 +131,19 @@ ActiveRecord::Schema.define(:version => 14) do
     t.column "category", :string
     t.column "course_id", :integer, :default => 0, :null => false
   end
+
+  create_table "journal_fields", :id => false, :force => true do |t|
+    t.column "assignment_id", :integer
+    t.column "start_time", :boolean, :default => true, :null => false
+    t.column "end_time", :boolean, :default => true, :null => false
+    t.column "interruption_time", :boolean, :default => true, :null => false
+    t.column "completed", :boolean, :default => true, :null => false
+    t.column "task", :boolean, :default => true, :null => false
+    t.column "reason_for_stopping", :boolean, :default => true, :null => false
+    t.column "comments", :boolean, :default => true, :null => false
+  end
+
+  add_index "journal_fields", ["assignment_id"], :name => "journal_fields_assignment_id_index", :unique => true
 
   create_table "posts", :force => true do |t|
     t.column "course_id", :integer, :default => 0, :null => false
