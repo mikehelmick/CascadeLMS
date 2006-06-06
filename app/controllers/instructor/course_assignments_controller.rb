@@ -25,21 +25,10 @@ class Instructor::CourseAssignmentsController < Instructor::InstructorBase
     do_exit = false
     # create the assignment
     @assignment = Assignment.new( params[:assignment] )
+    
     @assignment.course = @course
     @assignment.grade_category_id = params[:grade_category_id].to_i
-    # see if we got a document
-    if params[:file]
-      if params[:file].nil? || params[:file].type.to_s.eql?('String')
-        flash[:badnotice] = "You must upload an assignment file, or enter a description."
-        do_exit = true;
-      else
-        @asgm_document = AssignmentDocument.new
-        @asgm_document.set_file_props( params[:file] )
-        @assignment.assignment_documents << @asgm_document
-        @assignment.file_uploads = true
-        @assignment.description = nil
-      end
-    end
+    do_exit = process_file( params[:file] )
     # see if we need to create a journal settings
     if @assignment.enable_journal
       @journal_field = JournalField.new( params[:journal_field] )
@@ -96,6 +85,8 @@ class Instructor::CourseAssignmentsController < Instructor::InstructorBase
     @assignment = Assignment.find( @params['id'] )
     return unless assignment_in_course( @course, @assignment )
     
+    @assignment.assignment_documents.each { |x| x.delete_file( @app['external_dir'] ) }
+    
     @assignment.destroy
     flash[:notice] = 'Assignment Deleted'
     redirect_to :action => 'index'
@@ -108,8 +99,112 @@ class Instructor::CourseAssignmentsController < Instructor::InstructorBase
     @assignment = Assignment.find( @params['id'] )
     return unless assignment_in_course( @course, @assignment )   
     
+    @journal_field = @assignment.journal_field
     @journal_field = JournalField.new if @assignment.journal_field.nil?
     @categories = GradeCategory.for_course( @course ) 
+  end
+  
+  def update
+    return unless load_course( params[:course] )
+    return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_assignments' )
+    
+    @assignment = Assignment.find( @params['id'] )
+    return unless assignment_in_course( @course, @assignment )
+    
+    begin
+      raise 'Assignment update failed.' unless @assignment.update_attributes(params[:assignment]) 
+      if @assignment.enable_journal
+        if @assignment.journal_field.nil?
+          @journal_field = JournalField.new( params[:journal_field] )
+          @assignment.journal_field = @journal_field
+          @assignment.save
+        else
+          @assignment.journal_field.update_attributes( params[:journal_field] )
+        end
+      else
+        @assignment.journal_field.destroy unless @assignment.journal_field.nil?
+      end
+      
+      ## see if there is a file to upload
+      do_exit = process_file( params[:file], true )
+      unless @asgm_document.nil?
+         @asgm_document.create_file( params[:file], @app['external_dir'] )
+      end
+      
+      flash[:notice] = 'Assignment has been updated.'
+      redirect_to :action => 'edit', :course => @course, :id => @assignment
+    rescue RuntimeError => re
+      flash[:badnotice] = re.message
+      redirect_to :action => 'edit', :course => @course, :id => @assignment
+    end
+        
+  end
+  
+  
+  def file_move_up
+    return unless load_course( params[:course] )
+    return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_assignments' )
+    
+    @assignment = Assignment.find @params[:id] rescue @assignment = Assignment.new
+    return unless assignment_in_course( @course, @assignment )
+    
+    @document = AssignmentDocument.find( @params[:document] ) rescue @document = AssignmentDocument.new
+    return unless document_in_assignment( @document, @assignment )
+    
+    (@assignment.assignment_documents.to_a.find {|s| s.id == @document.id}).move_higher
+    set_highlight "assignment_document_#{@document.id}"
+  	redirect_to :action => 'edit', :course => @course, :id => @assignment
+  end
+  
+  def file_move_down
+    return unless load_course( params[:course] )
+    return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_assignments' )
+    
+    @assignment = Assignment.find( @params[:id] ) rescue @assignment = Assignment.new
+    return unless assignment_in_course( @course, @assignment )
+    
+    @document = AssignmentDocument.find( @params[:document] ) rescue @document = AssignmentDocument.new
+    return unless document_in_assignment( @document, @assignment )
+    
+    (@assignment.assignment_documents.to_a.find {|s| s.id == @document.id}).move_lower
+    set_highlight "assignment_document_#{@document.id}"
+  	redirect_to :action => 'edit', :course => @course, :id => @assignment
+  end
+  
+  def file_delete
+    return unless load_course( params[:course] )
+    return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_assignments' )
+    
+    @assignment = Assignment.find( @params[:id] ) rescue @assignment = Assignment.new
+    return unless assignment_in_course( @course, @assignment )
+    
+    @document = AssignmentDocument.find( @params[:document] ) rescue @document = AssignmentDocument.new
+    return unless document_in_assignment( @document, @assignment )
+    
+    if @assignment.assignment_documents.size == 1 && (@assignment.description.nil? || @assignment.description.size == 0)
+      flash[:badnotice] = "You can not remove the last file from this assignment unless a textual description is entered first."
+    else
+      @document.destroy
+    end
+    redirect_to :action => 'edit', :course => @course, :id => @assignment    
+  end
+  
+  def download
+    return unless load_course( params[:course] )
+    return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_assignments' )
+    
+    @assignment = Assignment.find( @params[:id] ) rescue @assignment = Assignment.new
+    return unless assignment_in_course( @course, @assignment )
+    
+    @document = AssignmentDocument.find( @params[:document] ) rescue @document = AssignmentDocument.new
+    return unless document_in_assignment( @document, @assignment )
+    
+    begin  
+      send_file @document.resolve_file_name(@app['external_dir']), :filename => @document.filename, :type => "#{@document.content_type}", :disposition => 'download'  
+    rescue
+      flash[:badnotice] = "Sorry - the requested document has been deleted or is corrupt.  Please notify your administrator of the problem and mention 'document id #{@document.id}'."
+      redirect_to :action => 'index'
+    end
   end
   
   def set_tab
@@ -129,6 +224,32 @@ class Instructor::CourseAssignmentsController < Instructor::InstructorBase
     end
     true
   end
+  
+  def document_in_assignment( document, assignment )
+    unless document.assignment.id == assignment.id
+      redirect_to :controller => '/instructor/course_assignments', :action => 'edit', :id => assignment.id, :course => @course
+      flash[:notice] = "Requested document could not be found."
+      return false
+    end
+    true   
+  end
+  
+  def process_file( file_param, supress_error = false )
+    # see if we got a document
+    if file_param
+      if file_param.nil? || file_param.class.to_s.eql?('String')
+        flash[:badnotice] = "You must upload an assignment file, or enter a description." unless supress_error
+        return true
+      else
+        @asgm_document = AssignmentDocument.new
+        @asgm_document.set_file_props( file_param )
+        @assignment.assignment_documents << @asgm_document
+        @assignment.file_uploads = true
+        @assignment.description = nil
+        return false
+      end
+    end
+  end 
   
   private :set_tab, :set_title, :assignment_in_course
   

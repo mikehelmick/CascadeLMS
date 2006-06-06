@@ -116,6 +116,7 @@ ActiveRecord::Schema.define(:version => 16) do
 
   create_table "documents", :force => true do |t|
     t.column "course_id", :integer, :default => 0, :null => false
+    t.column "position", :integer, :default => 0, :null => false
     t.column "title", :string, :default => "", :null => false
     t.column "filename", :string, :default => "", :null => false
     t.column "content_type", :string, :default => "", :null => false

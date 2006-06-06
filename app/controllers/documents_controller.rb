@@ -10,7 +10,7 @@ class DocumentsController < ApplicationController
     @page = @params[:page].to_i
     @page = 1 if @page.nil? || @page == 0
     @document_pages = Paginator.new self, Document.count(:conditions => ["course_id = ?", @course.id]), 30, @page
-    @documents = Document.find(:all, :conditions => ['course_id = ?', @course.id], :order => 'created_at asc', :limit => 30, :offset => @document_pages.current.offset)  
+    @documents = Document.find(:all, :conditions => ['course_id = ? and published = ?', @course.id, true], :order => 'position', :limit => 30, :offset => @document_pages.current.offset)  
   
     set_title
   end
@@ -21,12 +21,14 @@ class DocumentsController < ApplicationController
     
     begin
       @document = Document.find(params[:id])
+      raise 'unpublished' unless @document.published
     rescue
       flash[:badnotice] = 'Sorry, the requested document could not be found.'
       redirect_to :action => 'index'
       return
     end
     return unless doc_in_course( @course, @document )
+  
     
     begin  
       send_file @document.resolve_file_name(@app['external_dir']), :filename => @document.filename, :type => "#{@document.content_type}", :disposition => 'inline'  

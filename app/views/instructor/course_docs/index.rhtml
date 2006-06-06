@@ -6,6 +6,7 @@
 
 <table class="fancy">
   <tr class="header">
+    <th>#</th>
 	<th>Title</th>
 	<th>Size</th>
     <th>Published</th>
@@ -19,14 +20,16 @@
    odd = "odd"
    odd = "even" if count.even?
 %>
-  <tr class="<%=odd%> hover" id="documet_<%=document.id%>">
-  
+  <tr class="<%=odd%> hover" id="document_<%=document.id%>">
+    <td><%= document.position %></td>
     <td><%= image_tag "#{document.icon_file}", :align => 'absmiddle' %> <%=h document.title %></td>
     <td><%=h document.size_text %></td>
     <td><%=h document.published %></td>
     <td><%=h document.created_at.to_formatted_s(:long) %></td>
 
     <td><%= link_to 'Download', :action => 'download', :id => document %> |
+    <%= link_to 'Move Up', :action => 'move_up', :id => document %> |
+    <%= link_to 'Move Down', :action => 'move_down', :id => document %> |
     <%= link_to 'Edit', :action => 'edit', :id => document %> |
     <%= link_to 'Delete', { :action => 'destroy', :id => document }, :confirm => 'Are you sure you want to permanently delete this file?', :post => true %></td>
   </tr>

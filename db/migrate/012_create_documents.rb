@@ -2,6 +2,7 @@ class CreateDocuments < ActiveRecord::Migration
   def self.up
     create_table :documents do |t|
       t.column :course_id, :integer, :null => false
+      t.column :position, :integer, :null => false
       t.column :title, :string, :null => false
       t.column :filename, :string, :null => false
       t.column :content_type, :string, :null => false

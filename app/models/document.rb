@@ -2,6 +2,7 @@ require 'FileManager'
 
 class Document < ActiveRecord::Base
   belongs_to :course
+  acts_as_list :scope => :course
   
   before_save :transform_markup
   

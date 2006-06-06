@@ -15,6 +15,19 @@ class Assignment < ActiveRecord::Base
   
   before_save :transform_markup
   
+  def upcoming?
+    Time.now < open_date
+  end
+  
+  def current?
+    td = Time.now
+    open_date <= td && td <= due_date
+  end
+  
+  def past?
+    Time.now > due_date
+  end
+  
   def validate
     errors.add( 'open_date', 'must be before the assignment\'s close date' ) unless close_date > open_date
     errors.add('due_date', 'must be before the assignment\'s close date ') unless close_date >= due_date
@@ -25,7 +38,7 @@ class Assignment < ActiveRecord::Base
    
     if self.programming && self.use_subversion
       errors.add('subversion_server', 'can not be empty when using subversion.') if subversion_server.nil? || subversion_server.size == 0
-      errors.add('subversion_development_path', 'can not be empty when using subversion.') if subversion_development_path.nil? || subversion_development_path.size == 0
+      errors.add('subversion_development_path', 'can not be empty when using subversion.') if subversion_development_path.nil? 
     end
    
   end

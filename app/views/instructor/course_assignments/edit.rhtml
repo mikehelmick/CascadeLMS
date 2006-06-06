@@ -1,3 +1,28 @@
 <h2>Assignment '<%= @assignment.title %>' for '<%= @course.title%>'</h2>
 
-<p><%= link_to 'Cancel', :action => 'index' %></p>
+<p><%= link_to 'Back', :action => 'index' %>
+<% if @assignment.auto_grade %>| <a href="#autograde">AutoGrade Settings</a><% end %>
+</p>
+
+<div id="form_area">
+
+<%= start_form_tag( { :action => 'update', :id => @assignment }, :multipart => true, :onsubmit => "new Element.toggle('button', 'spinner');" ) %>
+
+  <%= render :partial => 'form', :locals => { :edit_mode => true } %>
+
+<div class="submit">
+  <div id="button"><%= submit_tag "Save Changes" %></div>
+  <div id="spinner" style="display: none;"><%= image_tag 'spinner.gif' %></div>
+</div>
+
+<%= end_form_tag %>
+
+<% if @assignment.auto_grade %>
+<hr/>
+<h2><a name="autograde">AutoGrading</a></h2>
+
+<% end %>
+
+<p><%= link_to 'Back', :action => 'index' %></p>
+
+</div>

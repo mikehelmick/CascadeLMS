@@ -35,15 +35,63 @@
 
   <div id="asgn_desc" style="<%=desc_style%>" >
     <p><b>Use Description</b> | <%= link_to_function 'Use File', "new Effect.Puff('asgn_desc'); new Effect.Appear('asgn_file');" %></p>
-  	<p><label for="assignment[description]" class="required">Assignment Description:</label>
-    <%= text_area 'assignment', 'description'  %></p>
+
+    <% if edit_mode %>
+	  <p><label for="assignment[description]" class="required">Assignment Description:</label><br/>
+	  <table>
+	    <tr><td><i>Edit Description</i></td><td><i>Description As Students See It</i></td></tr>
+	    <tr>
+	      <td width="50%" valign="top"><%= text_area 'assignment', 'description'  %></td>
+	      <td width="50%" valign="top"><%= @assignment.description_html %></td>
+	    </tr>
+	  </table> 
+    <% else %>
+  	  <p><label for="assignment[description]" class="required">Assignment Description:</label>
+      <%= text_area 'assignment', 'description'  %></p>
+    <% end %>
   </div>
   <div id="asgn_file" style="<%=file_style%>">
     <p><%= link_to_function 'Use Description', "new Effect.Puff('asgn_file'); new Effect.Appear('asgn_desc');" %> | <b>Use File</b></p>
-  	<p><label for="file" class="required">Assignment File:</label>
-	<%= file_field_tag "file" %></p>
+
+    <% if edit_mode %>
+      <p><label for="file" class="required">Upload additional assignment file:</label>
+	  <%= file_field_tag "file" %></p>
+
+    <% else %>
+  	  <p><label for="file" class="required">Assignment File:</label>
+	  <%= file_field_tag "file" %></p>
+	<% end %>
+	
   </div>
 </div>
+
+<% if edit_mode %>
+<div class="block">
+<div class="sub_form">
+<p>Files attached to this assignment:</p>
+<table class="fancy">
+  <tr class="header">
+    <th align="left">#</th><th align="left">Filename</th><th align="left">Size</th><th align="left">Controls</th>
+  </tr>
+  <% count = 0 %>
+  <% for asgn_doc in @assignment.assignment_documents %>
+    <% count = count.next 
+	     odd = "odd"
+	     odd = "even" if count.even?
+	  %>
+	  <tr class="<%=odd%> hover" id="assignment_document_<%=asgn_doc.id%>">
+	    <td><%=h asgn_doc.position %></td>
+	    <td><%= link_to "#{image_tag asgn_doc.icon_file, :align => 'absmiddle'} #{h asgn_doc.filename}", :action => 'download', :id => @assignment, :course => @course, :document => asgn_doc.id %></td>
+	    <td><%=h asgn_doc.size_text %></td>
+	    <td><%= link_to 'Move Up', :action => 'file_move_up', :id => @assignment, :course => @course, :document => asgn_doc.id %> | 
+	        <%= link_to 'Move Down', :action => 'file_move_down', :id => @assignment, :course => @course, :document => asgn_doc.id %> |  
+	        <%= link_to 'Delete', :action => 'file_delete', :id => @assignment, :course => @course, :document => asgn_doc.id %>
+	    </td>
+	  </tr>
+  <% end %>
+</table>
+</div></div>
+<% end %>
 
 <div class="blockintro">Journals allow students to chronicle their progress on this assignment.   If you choose to enable journals, you may specify which fields are to be included in the student journals.</div>
 <div class="block">

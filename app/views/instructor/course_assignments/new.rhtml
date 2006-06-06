@@ -4,7 +4,7 @@
 
 <%= start_form_tag( { :action => 'create' }, :multipart => true, :onsubmit => "new Element.toggle('button', 'spinner');" ) %>
 
-  <%= render :partial => 'form' %>
+  <%= render :partial => 'form', :locals => { :edit_mode => false } %>
 
 <div class="submit">
   <div id="button"><%= submit_tag "Create" %></div>

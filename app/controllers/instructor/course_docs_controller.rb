@@ -10,7 +10,7 @@ class Instructor::CourseDocsController < Instructor::InstructorBase
     @page = @params[:page].to_i
     @page = 1 if @page.nil? || @page == 0
     @document_pages = Paginator.new self, Document.count(:conditions => ["course_id = ?", @course.id]), 50, @page
-    @documents = Document.find(:all, :conditions => ['course_id = ?', @course.id], :order => 'created_at DESC', :limit => 50, :offset => @document_pages.current.offset)  
+    @documents = Document.find(:all, :conditions => ['course_id = ?', @course.id], :order => 'position', :limit => 50, :offset => @document_pages.current.offset)  
      
     set_title
   end
@@ -63,7 +63,7 @@ class Instructor::CourseDocsController < Instructor::InstructorBase
     
     if @document.update_attributes(params[:document])
       
-      unless params[:file].nil?
+      unless params[:file].nil? || params[:file].class.to_s.eql?('String')
         @document.delete_file( @app['external_dir'] )
         @document.set_file_props( params[:file] )
         @document.create_file( params[:file], @app['external_dir'] )
@@ -74,6 +74,30 @@ class Instructor::CourseDocsController < Instructor::InstructorBase
     else
       render :action => 'edit'
     end
+  end
+  
+  def move_up
+      return unless load_course( params[:course] )
+      return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_documents' )
+
+      @document = Document.find(params[:id])
+      return unless doc_in_course( @course, @document )
+ 
+      (@course.documents.to_a.find {|s| s.id == @document.id}).move_higher
+      set_highlight "document_#{@document.id}"
+	    redirect_to :action => 'index'
+  end
+  
+  def move_down
+    return unless load_course( params[:course] )
+    return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_documents' )
+
+    @document = Document.find(params[:id])
+    return unless doc_in_course( @course, @document )
+
+    (@course.documents.to_a.find {|s| s.id == @document.id}).move_lower
+    set_highlight "document_#{@document.id}"
+    redirect_to :action => 'index'
   end
   
   def download
