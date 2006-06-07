@@ -12,6 +12,7 @@ class CreateAssignments < ActiveRecord::Migration
       t.column :description_html, :text, :null => true
       t.column :file_uploads, :boolean, :null => false, :default => false
       
+      t.column :enable_upload, :boolean, :null => false, :default => false
       t.column :enable_journal, :boolean, :null => false, :default => true
       t.column :programming, :boolean, :null => false, :default => true
       t.column :use_subversion, :boolean, :null => false, :default => true

@@ -93,6 +93,14 @@
 </div></div>
 <% end %>
 
+<div class="blockintro">Enabling web turning will allow students to turn in files for assignments through this web site.   If you want students to only hand in printouts, or force them to use subversion (see below), then you should disable this feature for this assignment.</div>
+<div class="block">
+<p><b>Enable Web Turnins:</b>
+	<%= radio_button 'assignment', 'enable_upload', true %> Yes
+	<%= radio_button 'assignment', 'enable_upload', false %> No
+</p>
+</div>
+
 <div class="blockintro">Journals allow students to chronicle their progress on this assignment.   If you choose to enable journals, you may specify which fields are to be included in the student journals.</div>
 <div class="block">
 

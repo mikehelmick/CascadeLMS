@@ -33,6 +33,7 @@ ActiveRecord::Schema.define(:version => 16) do
     t.column "description", :text
     t.column "description_html", :text
     t.column "file_uploads", :boolean, :default => false, :null => false
+    t.column "enable_upload", :boolean, :default => false, :null => false
     t.column "enable_journal", :boolean, :default => true, :null => false
     t.column "programming", :boolean, :default => true, :null => false
     t.column "use_subversion", :boolean, :default => true, :null => false
