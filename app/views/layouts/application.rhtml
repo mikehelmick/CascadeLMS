@@ -61,7 +61,12 @@
 			  <% else %>
 			    <li><%= link_to 'Documents', { :controller => '/documents', :course =>@course }, { :id => 'current' } %></li>
 			  <% end %>
-		    <li><a href="#">Assignments</a></li>
+			
+			  <% if @tab.nil? || !@tab.eql?('course_assignments') %>
+				<li><%= link_to 'Assignments', :controller => '/assignments', :course => @course %></li>
+			  <% else %>
+			    <li><%= link_to 'Assignments', { :controller => '/assignments', :course => @course }, { :id => 'current' } %></li>
+			  <% end %>
 		    
 		    <% if @user.student_in_course?(@course.id) && @course.course_setting.enable_gradebook %>
 		      <li><a href="#">Grades</a></li>

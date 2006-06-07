@@ -129,6 +129,8 @@ class Instructor::CourseAssignmentsController < Instructor::InstructorBase
       do_exit = process_file( params[:file], true )
       unless @asgm_document.nil?
          @asgm_document.create_file( params[:file], @app['external_dir'] )
+         @assignment.file_uploads = true
+         @assignment.save
       end
       
       flash[:notice] = 'Assignment has been updated.'

@@ -51,3 +51,10 @@ end
 # end
 
 # Include your application configuration below
+
+my_formats = {
+  :friendly_date => '%A %B %d, %Y %I:%M:%S %p %Z',
+  :friendly_time => '%I:%M:%S %p %Z'
+}
+
+ActiveSupport::CoreExtensions::Time::Conversions::DATE_FORMATS.merge!(my_formats)

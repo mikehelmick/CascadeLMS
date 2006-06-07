@@ -62,7 +62,8 @@ module CalendarHelper
       :day_name_class => 'dayName',
       :day_class => 'day',
       :abbrev => (0..2),
-      :first_day_of_week => 0
+      :first_day_of_week => 0,
+      :show_year => false
     }
     options = defaults.merge options
 
@@ -78,7 +79,9 @@ module CalendarHelper
     end
 
     cal = %(<table class="#{options[:table_class]}" border="0" cellspacing="0" cellpadding="0">) 
-    cal << %(<thead><tr class="#{options[:month_name_class]}"><th colspan="7">#{Date::MONTHNAMES[options[:month]]}</th></tr><tr class="#{options[:day_name_class]}">)
+    cal << %(<thead><tr class="#{options[:month_name_class]}"><th colspan="7">#{Date::MONTHNAMES[options[:month]]})
+    cal << %( #{first.year}) if options[:show_year]
+    cal << %(</th></tr><tr class="#{options[:day_name_class]}">)
     day_names.each {|d| cal << "<th>#{d[options[:abbrev]]}</th>"}
     cal << "</tr></thead><tbody><tr>"
     beginning_of_week(first, first_weekday).upto(first - 1) do |d|

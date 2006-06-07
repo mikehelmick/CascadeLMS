@@ -1,4 +1,7 @@
-<%= render :partial => 'instructor/index/right' %>
+<%= render :partial => 'overview/right' %>
+
+<h2>Current Time</h2>
+<p><b><%= Time.now.to_formatted_s(:friendly_date) %></b></p>
 
 <h2>Due Dates</h2>
 <div style="float:left;">
@@ -6,15 +9,21 @@
 today = Date.today 
 code_block = Proc.new do |d|
 	  if d.eql?(today) 
-	    [d.mday, {:class => "specialDay"}]     
+	    [d.mday, {:class => "today"}]     
 	  else
-		clazz = "day"                                     
+		clazz = "day"       
+		duea = Array.new                              
 		@course.assignments.each do |x|
 		  if x.due_date.to_date.eql?(d)
-		    clazz = "otherSpecialDay" 
+		    clazz = "specialDay" 
+		    duea << x.title
 		  end	
 		end
-	    [d.mday, {:class => clazz}]	 
+		if duea.size > 0
+		  ["<acronym title=\"#{duea.join(', ')}\">#{d.mday}</acronym>", {:class => clazz} ]
+		else
+	      [d.mday, {:class => clazz}]	 
+	    end
 	  end
     end
 %>

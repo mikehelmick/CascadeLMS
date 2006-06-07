@@ -24,6 +24,14 @@ class Assignment < ActiveRecord::Base
     open_date <= td && td <= due_date
   end
   
+  def development_path_replace( uniqueid )
+    subversion_development_path.gsub(/\$uniqueid\$/, uniqueid )
+  end
+ 
+  def release_path_replace( uniqueid )
+    subversion_release_path.gsub(/\$uniqueid\$/, uniqueid )
+  end
+  
   def past?
     Time.now > due_date
   end

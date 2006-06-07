@@ -36,9 +36,17 @@ class ApplicationController < ActionController::Base
     return true
   end
  	
+ 	def boolean_to_text( boolean )
+ 	  if boolean
+ 	    "Yes"
+    else
+      "No"
+    end
+  end
+ 	
  	def ensure_logged_in
  	  if session[:user].nil?
- 	    flash[:badnotice] = "You must log in before proceeding."
+ 	    flash[:notice] = "Please log in."
  	    redirect_to :controller => '/index'
  	    return false
     end
@@ -74,4 +82,15 @@ class ApplicationController < ActionController::Base
     flash[:highlight] = dom_id
   end
 
+end
+
+class TrueClass
+  def yes_no
+    "Yes"
+  end
+end
+class FalseClass
+  def yes_no
+    "No"
+  end
 end

@@ -1,0 +1,96 @@
+<% if @assignment.close_date <= @now %>
+  <div class="errorExplanation"><%= image_tag 'clock_red' %> <b>This assignment is past due and late submissions are not being accepted.</b></div>
+<% elsif @assignment.due_date <= @now and @assignment.close_date >= @now %>
+  <div class="errorExplanation"><%= image_tag 'clock_red' %> <b>This assignment is past due and late submissions are still being accepted.</b></div>
+<% else %>
+  <div class="GoodMessage"><%= image_tag 'clock' %> <b>This assignment is due in <%= distance_of_time_in_words_to_now( @assignment.due_date, true ) %></b></div>
+<% end %>
+
+<h2><%= @assignment.title %> ( <%= @assignment.grade_category.category %>)</h2>
+
+<p><%= link_to 'Back', :action => 'index' %></p>
+
+<div id="Assignment">
+  <div class="blockintro"><p><b>Assignment Information</b> <%= link_to_function "#{image_tag 'eye', :align => 'absmiddle'}", visual_effect(:toggle_slide, 'assignment_information' ) %></p></div>
+  <div class="block" id="assignment_information">
+    <table width="100%">
+      <tr><td class="label" width="15%" nowrap="nowrap" valign="top">Name:</td>
+          <td valign="top"><%= @assignment.title %></td>
+          <td rowspan="15" width="15%" align="right" valign="top">
+              <%= calendar( :year => @assignment.due_date.year, :month => @assignment.due_date.month, :abbrev=>(0..0), :show_year => true ) do |day|
+                    if day.eql?(@assignment.open_date.to_date)
+	                  [day.mday, {:class => 'otherSpecialDay' }]	
+                    elsif day.eql?(@assignment.close_date.to_date) 
+	                  [day.mday, {:class => 'specialDay' }]	
+	                elsif day.eql?(Date.today)
+		              [day.mday, {:class => 'today' }]	
+	                else
+		              [day.mday, {:class => 'day' }]	
+	                end
+                  end
+	           %>
+	          <% unless @assignment.past? %>due in <%= distance_of_time_in_words_to_now( @assignment.due_date, true ) %><% end %>
+          </td>
+      </tr>
+      <tr><td class="label" width="15%" nowrap="nowrap" valign="top">Type:</td>
+          <td valign="top"><%= @assignment.grade_category.category %></td></tr>
+      <tr><td class="label" width="15%" nowrap="nowrap" valign="top">Date Available:</td>
+          <td valign="top"><%= @assignment.open_date.to_formatted_s(:friendly_date) %></td></tr>
+      <tr><td class="label" width="15%" nowrap="nowrap" valign="top">Due Date:</td>
+          <td valign="top"><%= @assignment.due_date.to_formatted_s(:friendly_date) %></td></tr>
+      <tr><td class="label" width="15%" nowrap="nowrap" valign="top">Last Submission Date:</td>
+          <td valign="top"><%= @assignment.close_date.to_formatted_s(:friendly_date) %></td></tr>
+      <tr><td class="label" width="15%" nowrap="nowrap" valign="top">Journals Required:</td>
+	      <td valign="top"><%=  @assignment.enable_journal.yes_no %></td></tr>
+	  <tr><td class="label" width="15%" nowrap="nowrap" valign="top">Turnin methods:</td>
+		  <td valign="top">
+		   <% if @assignment.use_subversion && @assignment.enable_upload %> Subversion or Upload to this site.
+		   <% elsif @assignment.use_subversion %> Subversion only.
+		   <% elsif @assignment.enable_upload %> Upload to this site.
+		   <% else %> Printout. 
+		   <% end %>
+		  </td></tr>
+	  <% if @assignment.use_subversion %>
+	  <tr><td class="label" width="15%" nowrap="nowrap" valign="top">Subversion Server:</td>
+		  <td valign="top"><%=  @assignment.subversion_server %></td></tr>
+	  <tr><td class="label" width="15%" nowrap="nowrap" valign="top">SVN Dev Path:</td>
+		  <td valign="top"><%=  @assignment.development_path_replace( @user.uniqueid ) %></td></tr>
+	  <% unless @assignment.subversion_release_path.nil? || @assignment.subversion_release_path.size == 0 %>
+	  <tr><td class="label" width="15%" nowrap="nowrap" valign="top">SVN Release Path:</td>
+		  <td valign="top"><%=  @assignment.release_path_replace( @user.uniqueid ) %></td></tr>
+	  <% end %>
+	  <% end %>
+	  <% if @assignment.programming %>
+	  <tr><td class="label" width="15%" nowrap="nowrap" valign="top">AutoGrade Enabled:</td>
+		  <td valign="top"><%=  @assignment.auto_grade.yes_no %></td></tr>	  
+	  <% end %>
+
+      <% unless @assignment.description.nil? or @assignment.description.size == 0 %>
+	  <tr><td class="label" width="15%" nowrap="nowrap" valign="top">Assignment Description:</td>
+		  <td valign="top"><%=  @assignment.description_html %></td></tr>
+      <% end %>
+      <% if @assignment.file_uploads %>
+	  <tr><td class="label" width="15%" nowrap="nowrap" valign="top">Assignment Files:</td>
+		  <td valign="top"> 
+		  
+		  <ul>
+	      <% for asgn_doc in @assignment.assignment_documents %>
+		    <li><%= link_to "#{image_tag asgn_doc.icon_file, :align => 'absmiddle'} #{h asgn_doc.filename}", :action => 'download', :id => @assignment, :course => @course, :document => asgn_doc.id %> (Size: <%=h asgn_doc.size_text %>)</li>
+		  <% end %>
+		  </ul>
+		
+		  </td></tr>    
+      <% end %>
+    </table>
+  </div>
+
+  <% if @assignment.use_subversion %>
+  <div class="blockintro"><p><b>Subversion Setup</b> <%= link_to_function "#{image_tag 'eye', :align => 'absmiddle'}", visual_effect(:toggle_slide, 'subversion_setup_area' ) %></p></div>
+  <div class="block" id="subversion_setup_area">
+    <p>next thing to work on...</p>
+  </div>
+  <% end %>
+
+  <p>Next</p>
+
+</div>

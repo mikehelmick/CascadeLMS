@@ -36,9 +36,21 @@
   background-color: #eeeeee;
 }
 
+.today {
+	background-color: yellow;
+	text-align: center;
+}
+
 .day, .specialDay {
   text-align: center;
   border-bottom: 1px dotted #bbbbbb;
+}
+
+.otherSpecialDay {
+  text-align: center;
+  background-color: #256A0A;
+  border-bottom: 1px dotted #990000;
+  color: white;
 }
 
 .specialDay {
