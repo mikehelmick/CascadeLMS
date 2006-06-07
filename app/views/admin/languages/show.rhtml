@@ -1,0 +1,8 @@
+<% for column in ProgrammingLanguage.content_columns %>
+<p>
+  <b><%= column.human_name %>:</b> <%=h @programming_language.send(column.name) %>
+</p>
+<% end %>
+
+<%= link_to 'Edit', :action => 'edit', :id => @programming_language %> |
+<%= link_to 'Back', :action => 'list' %>

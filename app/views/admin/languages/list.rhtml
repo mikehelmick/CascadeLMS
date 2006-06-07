@@ -1,0 +1,35 @@
+<h2>Programming Languages</h2>
+
+
+<% if @programming_languages.size == 0 %>
+  <p><i>There are no programming languages configured.</i></p>
+<% else %>
+
+<table class="fancy">
+  <tr class="header">
+    <th>Language</th>
+    <th>Controls</th>
+  </tr>
+  
+<% count = 0 %>
+<% for programming_language in @programming_languages %>
+<% count = count.next 
+   odd = "odd"
+   odd = "even" if count.even?
+%>
+
+  <tr class="<%=odd%> hover" id="language_<%=programming_language.id%>">
+    <td><%=h programming_language.name %></td>
+    <td><%= link_to 'Show', :action => 'show', :id => programming_language %> |
+        <%= link_to 'Edit', :action => 'edit', :id => programming_language %> |
+        <%= link_to 'Destroy', { :action => 'destroy', :id => programming_language }, :confirm => 'Are you sure?', :post => true %></td>
+  </tr>
+<% end %>
+</table>
+
+<% end %>
+
+<br />
+
+<%= link_to 'New Programming Language', :action => 'new' %> |
+<%= link_to 'Back', :controller => '/admin' %>

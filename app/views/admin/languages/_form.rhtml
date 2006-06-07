@@ -1,0 +1,40 @@
+<%= error_messages_for 'programming_language' %>
+
+
+<!--[form:programming_language]-->
+<div class="block">
+<p><label for="programming_language_name">Language Name:</label>
+<%= text_field 'programming_language', 'name'  %></p>
+</div>
+
+<div class="blockintro"><p>This setting says wether your language is compiled or interpreted.   For a complied language, like Java, you will have a compile step <code>javac</code> and an execute step <code>java</code>.</p></div>
+<div class="block">
+<p><label for="programming_language_enable_compile_step">Enable compile step:</label>
+<%= radio_button 'programming_language', 'enable_compile_step', true %> Yes
+<%= radio_button 'programming_language', 'enable_compile_step', false %> No</p>
+</div>
+
+<div class="blockintro">For the actual compile and execute commands there are four variables that you may use.
+<ol>
+  <li><code><b>{:mainfile}</b></code> To represent the entire submitted filename, i.e. 'Main.java'</li>
+  <li><code><b>{:basename}</b></code> To represent the part of the file name that comes before the extension, i.e. 'Main'</li>
+  <li><code><b>{:dotted}</b></code> To take the full file path and turn '/' characters to '.' characters.</li>
+  <ul>
+    <li>'studentid/Main' becomes 'studentid.Main'</li>
+  </ul> 
+  <li><code><b>{:studentid}</b></code> Replaces this command with each student's uniqueid (used for login)</li>
+</ol>
+<i>You should use absolute paths for the compile and execute commands to avoid environment issues.</i>
+</div>
+<div class="block">
+<p><label for="programming_language_compile_command">Compile command:</label>
+<%= text_field 'programming_language', 'compile_command', :size => 100  %></p>
+
+<p><label for="programming_language_executable_name">Executable name:</label>
+<%= text_field 'programming_language', 'executable_name', :size => 100  %></p>
+
+<p><label for="programming_language_execute_command">Execute command:</label>
+<%= text_field 'programming_language', 'execute_command', :size => 100  %></p>
+</div>
+<!--[eoform:programming_language]-->
+

@@ -20,7 +20,7 @@
  <tr>
   <td align="left"><div id="headerleft"><%=@app['title']%></div></td>
   <td align="right"><div id="headerright">
-<%if session[:user]%>Logged in as <%=session[:user].display_name%> (<%= link_to 'log out', :controller => '/index', :action => 'logout' %>)
+<%if session[:user]%>Logged in as <%=session[:user].display_name%> (<%= link_to "log out #{image_tag 'lock_go'}", :controller => '/index', :action => 'logout' %>)
 <%else%>You are not logged in.
 <%end%>
 </div>
