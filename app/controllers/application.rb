@@ -55,7 +55,7 @@ class ApplicationController < ActionController::Base
     return true
   end
   
-  def allowed_to_see_course( course, user )
+  def allowed_to_see_course( course, user, redirect = true)
     user.courses_users.each do |cu|
       if cu.course_id == course.id
         if cu.course_student || cu.course_assistant || cu.course_instructor || cu.course_guest
@@ -64,17 +64,17 @@ class ApplicationController < ActionController::Base
       end  
     end
     flash[:badnotice] = "You are not authorized to view the requested course."
-    redirect_to :controller => '/home'
+    redirect_to :controller => '/home' if redirect
     return false
   end
   
-  def load_course( course_id )
+  def load_course( course_id, redirect = true )
     begin
       @course = Course.find( course_id )
     rescue
-      flash[:badnotice] = "Requrest course could not be found."
-      redirect_to :controller => '/home'
-      return
+      flash[:badnotice] = "Requested course could not be found."
+      redirect_to :controller => '/home' if redirect
+      return false
     end
   end
   

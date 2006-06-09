@@ -4,6 +4,7 @@ require 'LdapAuthentication'
 class IndexController < ApplicationController
   
   before_filter :check_login, :except => [ :logout, :credits ]
+  before_filter :set_title
   
   def index
     @user = User.new
@@ -50,6 +51,10 @@ class IndexController < ApplicationController
     return false
   end
   
-  private :check_login
+  def set_title
+    @title = @app['title']
+  end
+  
+  private :check_login, :set_title
   
 end

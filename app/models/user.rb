@@ -10,6 +10,9 @@ class User < ActiveRecord::Base
   has_many :posts
   has_many :comments
   
+  has_many :user_trnins, :order => "assignment_id asc, position desc", :dependent => :destroy
+  
+  
   attr_accessor :notice
   
   def display_name

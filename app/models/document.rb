@@ -4,7 +4,13 @@ class Document < ActiveRecord::Base
   belongs_to :course
   acts_as_list :scope => :course
   
+  validates_presence_of :title
+  
   before_save :transform_markup
+  
+  def validate
+    errors.add_to_base("No file was given") if self.filename.nil? || self.filename.size == 0
+  end
   
   ##   term/:term_id/course/:course_id/documents/doc_:id.extension
   

@@ -6,6 +6,7 @@ class Assignment < ActiveRecord::Base
   has_one :journal_field, :dependent => :destroy
   
   has_many :assignment_documents, :order => "position", :dependent => :destroy
+  has_many :user_turnins, :order => "user_id asc, position desc", :dependent => :destroy
   
   validates_presence_of :title
   # NEEDS extended validations
@@ -37,8 +38,8 @@ class Assignment < ActiveRecord::Base
   end
   
   def validate
-    errors.add( 'open_date', 'must be before the assignment\'s close date' ) unless close_date > open_date
-    errors.add('due_date', 'must be before the assignment\'s close date ') unless close_date >= due_date
+    errors.add_to_base( 'The assignment available date must be before the assignment close date' ) unless close_date > open_date
+    errors.add_to_base( 'The assinment due date must be before the assignment close date and after the available date.') unless close_date >= due_date || due_date <= open_date
    
     if ! self.file_uploads && (self.description.nil?  || self.description.size == 0)
       errors.add('description', 'can not be empty if you are not uploading a file.')

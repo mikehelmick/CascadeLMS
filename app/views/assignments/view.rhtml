@@ -85,12 +85,42 @@
   </div>
 
   <% if @assignment.use_subversion %>
-  <div class="blockintro"><p><b>Subversion Setup</b> <%= link_to_function "#{image_tag 'eye', :align => 'absmiddle'}", visual_effect(:toggle_slide, 'subversion_setup_area' ) %></p></div>
+  <div class="blockintro"><p><b>Subversion</b> <%= link_to_function "#{image_tag 'eye', :align => 'absmiddle'}", visual_effect(:toggle_slide, 'subversion_setup_area' ) %></p></div>
   <div class="block" id="subversion_setup_area">
-    <p>next thing to work on...</p>
+
+<% unless @user.student_in_course?( @course.id )%>
+  <p><i>Subversion controls are only available to users who are registered in this course as students.  Please contact your instructor if you feel you should be able to see this information.</i></p>
+<% else %>
+
+    <%= form_remote_tag( :update => 'svn_results', :url => { :action => 'svn_command', :course => @course, :id => @assignment }, :before => "new Element.toggle('svn_submit', 'svn_spinner');", :complete => "new Effect.BlindDown('svn_results'); new Element.toggle('svn_submit', 'svn_spinner');" ) %>
+	  <label for="password" class="required">Subversion Password:</label> <%= password_field_tag 'password', '' %><br/>
+	  <label for="command" class="required">Command:</label>
+	    <%= radio_button_tag 'command', 'list_dev', true %>List Development Directory
+	    <%= radio_button_tag 'command', 'create_dev', false %>Create Development Directory <br/>
+	    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	    <%= radio_button_tag 'command', 'list_rel', false %>List Release Directory 
+	    <%= radio_button_tag 'command', 'release', false %>Release (and Turn in!) Development Directory 
+	    <%= radio_button_tag 'command', 'turnin', false %>Turn in Release Directory <br/>
+	    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	    <i>Release and Turn in will delete your existing release directory and create a new one containing the files from your development directory.   You may create the release directory on your own and use the 'Turn in' command to just submit the files.</i> <br/>
+	
+	  <div id="svn_submit"><%= submit_tag "Run Subversion Command" %></div> 
+	  <div id="svn_spinner" style="display: none;"><%= image_tag 'spinner.gif' %> Running Subversion commands - this may take up to 2 minutes.  Please wait for a response.</div> <br/>
+	  <div id="svn_results" style="display: none;"> </div>
+	  <p></p>
+    <%= end_form_tag %>
+
+<% end %>
+
   </div>
   <% end %>
 
-  <p>Next</p>
+  <% if @assignment.enable_journal %>
+  <div class="blockintro"><p><b>Assignment Journals</b> <%= link_to_function "#{image_tag 'eye', :align => 'absmiddle'}", visual_effect(:toggle_slide, 'journals_area' ) %></p></div>
+  <div class="block" id="journals_area">
+    <p>YO</p>
+  </div>
+  <% end %>
+
 
 </div>

@@ -1,7 +1,9 @@
+require 'SubversionManager'
+
 class AssignmentsController < ApplicationController
   
   before_filter :ensure_logged_in
-  before_filter :set_tab
+  before_filter :set_tab, :except => [ :svn_command ]
 
   def index
     return unless load_course( params[:course] )
@@ -42,19 +44,66 @@ class AssignmentsController < ApplicationController
     end 
   end
 
-  def assignment_available( assignment )
+  def svn_command
+    @partial_name = nil
+    
+    exit = false
+    return render( :layout => false ) unless load_course( params[:course], false )
+    return render( :layout => false ) unless allowed_to_see_course( @course, @user, false )
+    
+    @assignment = Assignment.find(params[:id]) rescue @assignment = Assignment.new
+    return render( :layout => false ) unless assignment_in_course( @assignment, @course )
+    return render( :layout => false ) unless assignment_available( @assignment )
+    
+    if params[:password].nil? || params[:password].size == 0 
+      flash[:badnotice] = "You must enter your password."
+      return render( :layout => false )
+    end
+    
+    if params[:command].eql?('list_dev') || params[:command].eql?('list_rel')
+      
+      path = @assignment.development_path_replace(@user.uniqueid)
+      path = @assignment.release_path_replace(@user.uniqueid) if params[:command].eql?('list_rel')
+      
+      svn = SubversionManager.new( @app['subversion_command'] )
+      begin
+        @list_entries = svn.list( @user.uniqueid, params[:password], @assignment.subversion_server, path )  
+        @path = "#{path}"
+        render :layout => false, :partial => 'svnlist'
+      rescue RuntimeError => re
+        flash[:badnotice] = re.message
+        render :layout => false
+      end
+      
+    elsif params[:command].eql?('create_dev')
+      svn = SubversionManager.new( @app['subversion_command'] )
+      begin
+        flash[:notice] = svn.create_directory( @user.uniqueid, params[:password], @assignment.subversion_server, @assignment.development_path_replace(@user.uniqueid) )
+        @list_entries = svn.list( @user.uniqueid, params[:password], @assignment.subversion_server, @assignment.development_path_replace(@user.uniqueid) )  
+        @path = "#{@assignment.development_path_replace(@user.uniqueid)}"
+        render :layout => false, :partial => 'svnlist'
+      rescue RuntimeError => re
+        flash[:badnotice] = re.message
+        render :layout => false
+      end
+    end
+    
+  end
+
+
+  def assignment_available( assignment, redirect = true )
     unless assignment.open_date <= Time.now
       flash[:badnotice] = "The requisted assignment is not yet available."
-      redirect_to :action => 'index'
+      redirect_to :action => 'index' if redirect
       return false
     end
     true
   end
 
-  def assignment_in_course( assignment, course )
+  def assignment_in_course( assignment, course, redirect = true )
     unless assignment.course_id == course.id 
       flash[:badnotice] = "The requested assignment could not be found."
-      redirect_to :action => 'index'
+      redirect_to :action => 'index' if redirect
       return false
     end
     true

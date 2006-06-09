@@ -205,7 +205,7 @@ div#headerright a:hover {
 
 /** ERRORS **/
 
-#GoodMessage .GoodMessage {
+#GoodMessage {
 	background-color: #E2F9E3;
 	border: 2px solid #00FF33;
 	border-left: none;
@@ -616,6 +616,10 @@ a img {
 #Assignment div.block td.label {
 	text-align: right;
 	font-weight: bold;
+}
+
+#Assignment .required {
+  font-weight: bold;
 }
 
 

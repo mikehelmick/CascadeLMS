@@ -1,0 +1,24 @@
+<% if flash[:notice] %>
+  <div class="GoodMessage"><%= flash[:notice] %></div>
+  <% flash[:notice] = nil %>
+<% end %>
+
+<p>Files on server <code><%= @assignment.subversion_server %></code> in the path <code><%= @path %></code>.
+
+<% if @list_entries.size == 0 %>
+ <p><i>No files found, but the path exists.</i></p>
+<% else %>
+
+<table cellspacing="2" cellpadding="1">
+  <tr><th>Name</th><th>Revision</th><th>Author</th><th>Date</th></tr>
+  <% for entry in @list_entries %>
+    <tr>
+      <td><%= entry.name %></td>
+      <td><%= entry.revision %></td>
+	  <td><%= entry.author %></td>
+	  <td><%= Time.parse(entry.date.to_s).to_formatted_s(:long) %></td>
+    </tr>
+  <% end %>
+</table>
+
+<% end %>
