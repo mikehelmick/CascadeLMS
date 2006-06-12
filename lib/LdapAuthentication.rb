@@ -53,6 +53,13 @@ class LdapAuthentication
           
           else
             # try to pull student fields
+            crns = page[0][@settings['ldap_student_crn']]
+            descs= page[0][@settings['ldap_student_desc']]
+          
+            unless crns.nil? || descs.nil?
+              enroll = AutoEnrollment.new( user, crns, descs, @settings['crn_format'] )
+              user.notice = enroll.reconcile
+            end           
           
           end
 #        rescue ## if something bad happens here - we will just ignore it :)
