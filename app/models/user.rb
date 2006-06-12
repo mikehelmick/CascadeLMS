@@ -10,7 +10,7 @@ class User < ActiveRecord::Base
   has_many :posts
   has_many :comments
   
-  has_many :user_trnins, :order => "assignment_id asc, position desc", :dependent => :destroy
+  has_many :user_turnins, :order => "assignment_id asc, position desc", :dependent => :destroy
   
   
   attr_accessor :notice

@@ -20,7 +20,7 @@
               <%= calendar( :year => @assignment.due_date.year, :month => @assignment.due_date.month, :abbrev=>(0..0), :show_year => true ) do |day|
                     if day.eql?(@assignment.open_date.to_date)
 	                  [day.mday, {:class => 'otherSpecialDay' }]	
-                    elsif day.eql?(@assignment.close_date.to_date) 
+                    elsif day.eql?(@assignment.due_date.to_date) 
 	                  [day.mday, {:class => 'specialDay' }]	
 	                elsif day.eql?(Date.today)
 		              [day.mday, {:class => 'today' }]	
@@ -54,10 +54,10 @@
 	  <tr><td class="label" width="15%" nowrap="nowrap" valign="top">Subversion Server:</td>
 		  <td valign="top"><%=  @assignment.subversion_server %></td></tr>
 	  <tr><td class="label" width="15%" nowrap="nowrap" valign="top">SVN Dev Path:</td>
-		  <td valign="top"><%=  @assignment.development_path_replace( @user.uniqueid ) %></td></tr>
+		  <td valign="top"><a href="<%=@assignment.subversion_server%><%=@assignment.development_path_replace( @user.uniqueid ) %>"><%=  @assignment.development_path_replace( @user.uniqueid ) %></a></td></tr>
 	  <% unless @assignment.subversion_release_path.nil? || @assignment.subversion_release_path.size == 0 %>
 	  <tr><td class="label" width="15%" nowrap="nowrap" valign="top">SVN Release Path:</td>
-		  <td valign="top"><%=  @assignment.release_path_replace( @user.uniqueid ) %></td></tr>
+		  <td valign="top"><a href="<%=@assignment.subversion_server%><%=@assignment.release_path_replace( @user.uniqueid ) %>"><%=  @assignment.release_path_replace( @user.uniqueid ) %></a></td></tr>
 	  <% end %>
 	  <% end %>
 	  <% if @assignment.programming %>
@@ -92,7 +92,7 @@
   <p><i>Subversion controls are only available to users who are registered in this course as students.  Please contact your instructor if you feel you should be able to see this information.</i></p>
 <% else %>
 
-    <%= form_remote_tag( :update => 'svn_results', :url => { :action => 'svn_command', :course => @course, :id => @assignment }, :before => "new Element.toggle('svn_submit', 'svn_spinner');", :complete => "new Effect.BlindDown('svn_results'); new Element.toggle('svn_submit', 'svn_spinner');" ) %>
+    <%= form_remote_tag( :update => 'svn_results', :url => { :action => 'svn_command', :course => @course, :id => @assignment }, :before => "new Element.toggle('svn_submit', 'svn_spinner'); new Effect.BlindUp('svn_results');", :complete => "new Effect.BlindDown('svn_results'); new Element.toggle('svn_submit', 'svn_spinner');" ) %>
 	  <label for="password" class="required">Subversion Password:</label> <%= password_field_tag 'password', '' %><br/>
 	  <label for="command" class="required">Command:</label>
 	    <%= radio_button_tag 'command', 'list_dev', true %>List Development Directory

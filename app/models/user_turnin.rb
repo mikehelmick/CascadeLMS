@@ -3,6 +3,16 @@ class UserTurnin < ActiveRecord::Base
   belongs_to :user
   acts_as_list :scope => :user
   
-  has_many :user_turnin_files, :order => "position asc", :dependent => "destroy"
+  has_many :user_turnin_files, :order => "position asc", :dependent => :destroy
+  
+  def get_dir( dir )
+    "#{dir}/term/#{assignment.course.term.id}/course/#{assignment.course.id}/turnins/#{user.uniqueid}/assignment_#{assignment.id}/turnin_#{self.id}"  
+  end
+    
+  def make_dir( dir )
+    fs_path = get_dir(dir)
+    FileUtils.mkdir_p fs_path
+  end
+  
   
 end

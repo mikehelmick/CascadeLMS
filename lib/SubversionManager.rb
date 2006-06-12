@@ -3,6 +3,14 @@ require 'rexml/document'
 # A class used for the list only
 class SvnListEntry
   attr_accessor :name, :kind, :revision, :author, :date  
+  
+  def dir?
+    kind.eql?('dir')
+  end
+  
+  def file?
+    kind.eql?('file')
+  end
 end
 
 # A class that handles subversion interaction for this system
@@ -13,6 +21,55 @@ class SubversionManager
   
   def initialize( svn_command = 'svn' )
     @subversion_command = svn_command
+  end
+  
+  def get_release_files( username, password, server, path, fs_path )
+    list_files = list( username, password, server, path )
+    
+    # do the checkout
+    slash = (server[-1..-1].to_s.eql?('/')) ? '' : '/' 
+    command = "#{@subversion_command} checkout --username #{username} --password #{password} --non-interactive --ignore-externals #{server}#{slash}#{path} #{fs_path}"
+    result = `#{command}`    
+    raise "Error checking out files: #{result}" if result.index('Checked out revision').nil?
+    
+    return list_files
+  end
+  
+  def create_release( username, password, server, from_path, to_path )
+    begin
+      rtn = ''
+      
+      # verify dev directory exists
+      slash = (server[-1..-1].to_s.eql?('/')) ? '' : '/' 
+      info_command = "#{@subversion_command} info --username #{username} --password #{password} --non-interactive #{server}#{slash}"
+    
+      result = `#{info_command}#{from_path}`
+      raise "Development directory `#{from_path}` could not be found." unless result.index('Not a valid URL').nil?
+     
+      result = `#{info_command}#{to_path}`
+      unless result.index('Node Kind: directory').nil?
+        rtn = "#{rtn}  Release directory exists, deleting." 
+        
+        del_command = "#{@subversion_command} delete --username #{username} --password #{password} --non-interactive -m \"AUTOMATIC DELETION OF PREVIOUS RELEASE DIRECTORY #{to_path}.\" #{server}#{slash}#{to_path}"
+        result = `#{del_command}`
+        raise "Error cleaning up old release directory." if result.index('Committed').nil?
+        
+        rtn = "#{rtn}  Deleted old release directory #{to_path}."
+      end
+      
+      copy_command = "#{@subversion_command} copy --username #{username} --password #{password} --non-interactive -m \"AUTOMATIC RELEASE COPY from #{from_path} to #{to_path}\" #{server}#{slash}#{from_path} #{server}#{slash}#{to_path}"
+      result = `#{copy_command}`
+      raise "Error creating release copy." if result.index('Committed').nil?
+      rtn = "#{rtn}  Created release copy `#{result}`"
+      
+      return rtn
+    rescue Exception => ex
+      if result.class.to_s.eql?('String') && !result.index('authorization failed').nil?
+        raise "Authorization failed for user #{username} using the supplied password."
+      else
+        raise "Subversion Error: #{ex.message}"
+      end
+    end
   end
   
   def create_directory( username, password, server, path )
@@ -64,6 +121,7 @@ class SubversionManager
         index = index - 1
       end
     
+      rtn = 'Directory already exists' if rtn.nil? || rtn.eql?('')
       return rtn
     rescue  Exception => ex
       #puts ex.message

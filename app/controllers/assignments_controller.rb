@@ -86,6 +86,64 @@ class AssignmentsController < ApplicationController
         flash[:badnotice] = re.message
         render :layout => false
       end
+    
+    elsif params[:command].eql?('release')
+      svn = SubversionManager.new( @app['subversion_command'] )
+      begin
+        output = svn.create_release( @user.uniqueid, params[:password], @assignment.subversion_server, @assignment.development_path_replace(@user.uniqueid), @assignment.release_path_replace(@user.uniqueid) )  
+     
+        path = @assignment.release_path_replace(@user.uniqueid)
+        
+        ut = UserTurnin.new
+        ut.assignment = @assignment
+        ut.user = @user
+        ut.sealed = false
+        @user.user_turnins << ut
+        @user.save
+        
+        ut.make_dir( @app['external_dir'] )
+        
+        @list_entries = svn.get_release_files( @user.uniqueid, params[:password], @assignment.subversion_server, path, ut.get_dir( @app['external_dir'] ) )
+       
+        # create root entry
+        utf = UserTurninFile.new
+        utf.user_turnin = ut
+        utf.directory_entry = true
+        utf.directory_parent = 0
+        utf.filename = '/'
+        ut.user_turnin_files << utf
+        ut.save
+        
+        parent = utf.id
+        take_off = ''
+        ## create entries in database
+        @list_entries.each do |le|
+          utf = UserTurninFile.new
+          utf.user_turnin = ut
+          utf.directory_entry = le.dir?
+          utf.directory_parent = parent
+          utf.filename = le.name.to_s[take_off.size...le.name.to_s.size]
+          ridx = utf.filename.rindex('.')
+          unless ridx.nil?
+            utf.extension = utf.filename[ridx...utf.filename.size]
+          end
+          ut.user_turnin_files << utf
+          ut.save
+          
+          if utf.directory_entry
+            take_off = "#{take_off}#{utf.filename}/"
+            parent = utf.id
+          end
+          
+        end
+     
+        @path = "#{path}"
+        flash[:notice] = output
+        render :layout => false, :partial => 'svnlist'
+      rescue RuntimeError => re
+        flash[:badnotice] = re.message
+        render :layout => false
+      end 
     end
     
   end

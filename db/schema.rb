@@ -2,7 +2,7 @@
 # migrations feature of ActiveRecord to incrementally modify your database, and
 # then regenerate this schema definition.
 
-ActiveRecord::Schema.define(:version => 17) do
+ActiveRecord::Schema.define(:version => 19) do
 
   create_table "announcements", :force => true do |t|
     t.column "headline", :string
@@ -173,6 +173,25 @@ ActiveRecord::Schema.define(:version => 17) do
     t.column "semester", :string, :limit => 15, :default => "", :null => false
     t.column "current", :boolean, :default => false
     t.column "open", :boolean, :default => true
+  end
+
+  create_table "user_turnin_files", :force => true do |t|
+    t.column "user_turnin_id", :integer
+    t.column "directory_entry", :boolean, :default => false, :null => false
+    t.column "directory_parent", :integer, :default => 0, :null => false
+    t.column "position", :integer, :default => 0, :null => false
+    t.column "filename", :string, :default => "", :null => false
+    t.column "created_at", :datetime, :null => false
+    t.column "extension", :string
+  end
+
+  create_table "user_turnins", :force => true do |t|
+    t.column "assignment_id", :integer
+    t.column "user_id", :integer
+    t.column "position", :integer
+    t.column "sealed", :boolean, :default => false, :null => false
+    t.column "created_at", :datetime, :null => false
+    t.column "updated_at", :datetime, :null => false
   end
 
   create_table "users", :force => true do |t|

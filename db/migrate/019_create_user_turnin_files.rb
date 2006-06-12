@@ -8,11 +8,8 @@ class CreateUserTurninFiles < ActiveRecord::Migration
       
       t.column :position, :integer, :null => false
       t.column :filename, :string, :null => false
-      t.column :content_type, :string, :null => false
-      t.column :comments, :text, :null => true
       t.column :created_at, :datetime, :null => false
       t.column :extension, :string
-      t.column :size, :string
     end
   end
 
