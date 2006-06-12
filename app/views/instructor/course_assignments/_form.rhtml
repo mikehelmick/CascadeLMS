@@ -16,15 +16,15 @@
 
 <table border="0" cellspacing="2" cellpadding="2">
  <tr>
-  <td align="right"><label for="assignment[open_date]" class="required">Date available to students:</label></td>
+  <td align="right" class="required"><b>Date available to students:</b></td>
   <td align="left" nowrap="nowrap"><%= datetime_select 'assignment', 'open_date'  %></td>
  </tr>
  <tr>
-  <td align="right"><label for="assignment[due_date]" class="required">Assignment due date:</label></td>
+  <td align="right" class="required"><b>Assignment due date:</b></td>
   <td align="left" nowrap="nowrap"><%= datetime_select 'assignment', 'due_date'  %></td>
  </tr>
  <tr>
-  <td align="right"><label for="assignment[close_date]" class="required">Last time material can be submitted:</label></td>
+  <td align="right" class="required"><b>Last time material can be submitted:</b></td>
   <td align="left" nowrap="nowrap"><%= datetime_select 'assignment', 'close_date'  %></td>
  </tr>
 </table>
