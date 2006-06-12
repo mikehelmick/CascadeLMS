@@ -16,6 +16,18 @@ class Instructor::CourseAssignmentsController < Instructor::InstructorBase
     @assignment = Assignment.new
     @journal_field = JournalField.new
     @categories = GradeCategory.for_course( @course )
+    
+    if @course.course_setting.enable_prog_assignments
+      @assignment.programming = true
+      @assignment.use_subversion = @course.course_setting.enable_svn
+      if @assignment.use_subversion
+        @assignment.subversion_server = @course.course_setting.svn_server
+      end
+    else
+      @assignment.programming = false
+      @assignment.use_subversion = false
+      @assignment.auto_grade = false
+    end
   end
   
   def create

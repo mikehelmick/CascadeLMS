@@ -140,6 +140,8 @@
 
 </div>
 
+<% if @course.course_setting.enable_prog_assignments %>
+
 <div class="blockintro">This section allows you to specify items pertaining to programming assignments.</div>
 <div class="block">
 
@@ -152,6 +154,9 @@
 	<%= radio_button 'assignment', 'programming', false, :onclick => 'new Effect.Puff("programming_settings")' %> No
   </p>
   <div id="programming_settings" class="sub_form" style="<%=prog_style%>">
+
+    <% if @course.course_setting.enable_svn %>
+
     <p><label for="assignment[use_subversion]" class="required">Enable Subversion:</label>
        <%= radio_button 'assignment', 'use_subversion', true, :onclick => 'new Effect.SlideDown("subversion_settings")' %> Yes
 	   <%= radio_button 'assignment', 'use_subversion', false, :onclick => 'new Effect.Puff("subversion_settings")' %> No</p>
@@ -168,6 +173,12 @@
 	  <p><label for="assignment[subversion_release_path]" class="required">Subversion Release Path:</label>
       <%= text_field 'assignment', 'subversion_release_path'  %></p>
 	</div>
+	
+	<% else %>
+	  <%= hidden_field_tag 'assignment', 'use_subversion' %>
+      <%= hidden_field_tag 'assignment', 'subversion_server' %>
+	<% end %>
+	
 	<p><i>You will have the ability to adjust AutoGrade settings later.</i></p>
 	<p><label for="assignment[auto_grade]" class="required">Enable AutoGrade:</label>
        <%= radio_button 'assignment', 'auto_grade', true %> Yes
@@ -175,3 +186,10 @@
   </div>
 
 </div>
+
+<% else %>
+  <%= hidden_field_tag 'assignment', 'programming' %>
+  <%= hidden_field_tag 'assignment', 'use_subversion' %>
+  <%= hidden_field_tag 'assignment', 'subversion_server' %>
+  <%= hidden_field_tag 'assignment', 'auto_grade' %>
+<% end %>
