@@ -13,12 +13,21 @@
 
 <div class="blockintro">For the dates of an assignment: the available date allows to set up an assignment in this system without allowing students to see it until a certain point in time.  The due date and the close date allow you to set a time that assignments are due, but still allow files to be submitted for a slightly longer period of time.</div>
 <div class="block">
-<p><label for="assignment[open_date]" class="required">Date available to students:</label>
-<%= datetime_select 'assignment', 'open_date'  %></p>
-<p><label for="assignment[due_date]" class="required">Assignment due date:</label>
-<%= datetime_select 'assignment', 'due_date'  %></p>
-<p><label for="assignment[close_date]" class="required">Last time material can be submitted:</label>
-<%= datetime_select 'assignment', 'close_date'  %></p>
+
+<table border="0" cellspacing="2" cellpadding="2">
+ <tr>
+  <td align="right"><label for="assignment[open_date]" class="required">Date available to students:</label></td>
+  <td align="left" nowrap="nowrap"><%= datetime_select 'assignment', 'open_date'  %></td>
+ </tr>
+ <tr>
+  <td align="right"><label for="assignment[due_date]" class="required">Assignment due date:</label></td>
+  <td align="left" nowrap="nowrap"><%= datetime_select 'assignment', 'due_date'  %></td>
+ </tr>
+ <tr>
+  <td align="right"><label for="assignment[close_date]" class="required">Last time material can be submitted:</label></td>
+  <td align="left" nowrap="nowrap"><%= datetime_select 'assignment', 'close_date'  %></td>
+ </tr>
+</table>
 </div>
 
 <div class="blockintro">You may either describe this assignment with text or upload a file.  If you choose to upload a file, you will be able to add additional files after the assignment is created.</div>
