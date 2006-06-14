@@ -11,7 +11,12 @@ class UserTurnin < ActiveRecord::Base
     
   def make_dir( dir )
     fs_path = get_dir(dir)
-    FileUtils.mkdir_p fs_path
+    FileUtils.mkdir_p( fs_path )
+  end
+  
+  def delete_dir( dir ) 
+    fs_path = get_dir( dir )
+    FileUtils.remove_dir( fs_path, true )
   end
   
   

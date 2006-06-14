@@ -87,12 +87,16 @@ class AssignmentsController < ApplicationController
         render :layout => false
       end
     
-    elsif params[:command].eql?('release')
+    elsif params[:command].eql?('release') || params[:command].eql?('turnin')
       svn = SubversionManager.new( @app['subversion_command'] )
       begin
-        output = svn.create_release( @user.uniqueid, params[:password], @assignment.subversion_server, @assignment.development_path_replace(@user.uniqueid), @assignment.release_path_replace(@user.uniqueid) )  
-     
+        output = ""
+        if params[:command].eql?('release')
+          output = svn.create_release( @user.uniqueid, params[:password], @assignment.subversion_server, @assignment.development_path_replace(@user.uniqueid), @assignment.release_path_replace(@user.uniqueid) )  
+        end
+        
         path = @assignment.release_path_replace(@user.uniqueid)
+        
         
         ut = UserTurnin.new
         ut.assignment = @assignment
@@ -128,19 +132,23 @@ class AssignmentsController < ApplicationController
             utf.extension = utf.filename[ridx...utf.filename.size]
           end
           ut.user_turnin_files << utf
-          ut.save
           
           if utf.directory_entry
             take_off = "#{take_off}#{utf.filename}/"
             parent = utf.id
           end
-          
+          output = "#{output} Submitted file: '#{utf.filename}'. "
         end
+        ut.save
      
         @path = "#{path}"
         flash[:notice] = output
         render :layout => false, :partial => 'svnlist'
       rescue RuntimeError => re
+        unless ut.nil?
+          ut.delete_dir( @app['external_dir'] )
+          ut.destroy
+        end
         flash[:badnotice] = re.message
         render :layout => false
       end 
