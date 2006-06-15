@@ -19,5 +19,4 @@ class UserTurnin < ActiveRecord::Base
     FileUtils.remove_dir( fs_path, true )
   end
   
-  
 end

@@ -2,7 +2,7 @@
 # migrations feature of ActiveRecord to incrementally modify your database, and
 # then regenerate this schema definition.
 
-ActiveRecord::Schema.define(:version => 19) do
+ActiveRecord::Schema.define(:version => 20) do
 
   create_table "announcements", :force => true do |t|
     t.column "headline", :string
@@ -165,6 +165,11 @@ ActiveRecord::Schema.define(:version => 19) do
     t.column "compile_command", :string
     t.column "executable_name", :string
     t.column "execute_command", :string, :default => "", :null => false
+  end
+
+  create_table "temp_files", :force => true do |t|
+    t.column "filename", :text
+    t.column "save_until", :datetime
   end
 
   create_table "terms", :force => true do |t|

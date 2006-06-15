@@ -1,0 +1,17 @@
+<%= render :partial => 'overview/right' %>
+
+<h2>Current Time</h2>
+<p><b><%= Time.now.to_formatted_s(:friendly_date) %></b></p>
+
+<h2>Assignment Info</h2>
+
+<%= render :partial => 'assignments/due' %>
+
+<p>
+<b>Assignment:</b> <%=h @assignment.title %><br/>
+<b>Due Date:</b> <%=h @assignment.due_date.to_formatted_s(:friendly_date) %><br/>
+</p>
+
+<div style="float; left;">
+<%= render :partial => 'assignments/duecalendar' %>
+</div>

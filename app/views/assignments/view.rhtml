@@ -1,10 +1,4 @@
-<% if @assignment.close_date <= @now %>
-  <div class="errorExplanation"><%= image_tag 'clock_red' %> <b>This assignment is past due and late submissions are not being accepted.</b></div>
-<% elsif @assignment.due_date <= @now and @assignment.close_date >= @now %>
-  <div class="errorExplanation"><%= image_tag 'clock_red' %> <b>This assignment is past due and late submissions are still being accepted.</b></div>
-<% else %>
-  <div class="GoodMessage"><%= image_tag 'clock' %> <b>This assignment is due in <%= distance_of_time_in_words_to_now( @assignment.due_date, true ) %></b></div>
-<% end %>
+<%= render :partial => 'due' %>
 
 <h2><%= @assignment.title %> ( <%= @assignment.grade_category.category %>)</h2>
 
@@ -17,18 +11,7 @@
       <tr><td class="label" width="15%" nowrap="nowrap" valign="top">Name:</td>
           <td valign="top"><%= @assignment.title %></td>
           <td rowspan="15" width="15%" align="right" valign="top">
-              <%= calendar( :year => @assignment.due_date.year, :month => @assignment.due_date.month, :abbrev=>(0..0), :show_year => true ) do |day|
-                    if day.eql?(@assignment.open_date.to_date)
-	                  [day.mday, {:class => 'otherSpecialDay' }]	
-                    elsif day.eql?(@assignment.due_date.to_date) 
-	                  [day.mday, {:class => 'specialDay' }]	
-	                elsif day.eql?(Date.today)
-		              [day.mday, {:class => 'today' }]	
-	                else
-		              [day.mday, {:class => 'day' }]	
-	                end
-                  end
-	           %>
+              <%= render :partial => 'duecalendar' %>
 	          <% unless @assignment.past? %>due in <%= distance_of_time_in_words_to_now( @assignment.due_date, true ) %><% end %>
           </td>
       </tr>
@@ -51,6 +34,12 @@
 		   <% end %>
 		  </td></tr>
 	  <% if @assignment.use_subversion %>
+	  <% if  @assignment.use_subversion ||  @assignment.enable_upload %>
+	  <tr><td class="label" width="15%" nowrap="nowrap" valign="top">&nbsp;</td>
+	      <td valign="top">
+	        <%= link_to "Manage Submitted Files #{"and AutoGrade" if @assignment.auto_grade}", :controller => '/turnins', :course => @course, :assignment => @assignment, :action => 'index'  %>
+	      </td>
+	  <% end %>
 	  <tr><td class="label" width="15%" nowrap="nowrap" valign="top">Subversion Server:</td>
 		  <td valign="top"><%=  @assignment.subversion_server %></td></tr>
 	  <tr><td class="label" width="15%" nowrap="nowrap" valign="top">SVN Dev Path:</td>
@@ -99,12 +88,15 @@
 	    <%= radio_button_tag 'command', 'create_dev', false %>Create Development Directory <br/>
 	    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 	    <%= radio_button_tag 'command', 'list_rel', false %>List Release Directory 
+	<% unless @assignment.closed? %>
 	    <%= radio_button_tag 'command', 'release', false %>Release (and Turn in!) Development Directory 
-	    <%= radio_button_tag 'command', 'turnin', false %>Turn in Release Directory <br/>
+	    <%= radio_button_tag 'command', 'turnin', false %>Turn in Release Directory 
+	<% end %>
+	<br/>
 	    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 	    <i>Release and Turn in will delete your existing release directory and create a new one containing the files from your development directory.   You may create the release directory on your own and use the 'Turn in' command to just submit the files.</i> <br/>
 	
-	  <div id="svn_submit"><%= submit_tag "Run Subversion Command" %></div> 
+	  <div id="svn_submit"><%= submit_tag "Run Subversion Command" %> | <%= link_to "Manage Submitted Files #{"and AutoGrade" if @assignment.auto_grade}", :controller => '/turnins', :course => @course, :assignment => @assignment, :action => 'index'  %></div> 
 	  <div id="svn_spinner" style="display: none;"><%= image_tag 'spinner.gif' %> Running Subversion commands - this may take up to 2 minutes.  Please wait for a response.</div> <br/>
 	  <div id="svn_results" style="display: none;"> </div>
 	  <p></p>

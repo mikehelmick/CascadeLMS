@@ -1,0 +1,12 @@
+<%= calendar( :year => @assignment.due_date.year, :month => @assignment.due_date.month, :abbrev=>(0..0), :show_year => true ) do |day|
+        if day.eql?(@assignment.open_date.to_date)
+          [day.mday, {:class => 'otherSpecialDay' }]	
+        elsif day.eql?(@assignment.due_date.to_date) 
+          [day.mday, {:class => 'specialDay' }]	
+        elsif day.eql?(Date.today)
+          [day.mday, {:class => 'today' }]	
+        else
+          [day.mday, {:class => 'day' }]	
+        end
+      end
+   %>

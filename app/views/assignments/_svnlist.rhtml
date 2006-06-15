@@ -13,7 +13,7 @@
   <tr><th>Name</th><th>Revision</th><th>Author</th><th>Date</th></tr>
   <% for entry in @list_entries %>
     <tr>
-      <td><%= entry.name %></td>
+      <td><%= entry.name %> <%= "&nbsp;&nbsp;&nbsp;&nbsp;<i>(directory)</i>" if entry.dir? %></td>
       <td><%= entry.revision %></td>
 	  <td><%= entry.author %></td>
 	  <td><%= Time.parse(entry.date.to_s).to_formatted_s(:long) %></td>

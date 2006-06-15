@@ -1,4 +1,4 @@
-version: 0.0.23 20060612
+version: 0.0.25 20060615
 title: Miami University CSA
 
 organization: Miami University
@@ -9,6 +9,8 @@ blackboard: http://mymiami.muohio.edu
 smtp: mailfwd.muohio.edu
 
 external_dir: /Users/Shared/courseware
+
+temp_dir: /tmp
 
 # Require the 1.3 client - for it's XML output capabilities
 subversion_command: /usr/local/bin/svn

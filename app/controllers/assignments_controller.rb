@@ -57,6 +57,7 @@ class AssignmentsController < ApplicationController
     
     if params[:password].nil? || params[:password].size == 0 
       flash[:badnotice] = "You must enter your password."
+      sleep( 0.5 )
       return render( :layout => false )
     end
     
@@ -88,6 +89,8 @@ class AssignmentsController < ApplicationController
       end
     
     elsif params[:command].eql?('release') || params[:command].eql?('turnin')
+      return unless assignment_open( @assignment )
+      
       svn = SubversionManager.new( @app['subversion_command'] )
       begin
         output = ""
@@ -118,6 +121,8 @@ class AssignmentsController < ApplicationController
         ut.user_turnin_files << utf
         ut.save
         
+        first_parent = utf.id
+        
         parent = utf.id
         take_off = ''
         ## create entries in database
@@ -125,16 +130,32 @@ class AssignmentsController < ApplicationController
           utf = UserTurninFile.new
           utf.user_turnin = ut
           utf.directory_entry = le.dir?
-          utf.directory_parent = parent
-          utf.filename = le.name.to_s[take_off.size...le.name.to_s.size]
-          ridx = utf.filename.rindex('.')
+          
+          if ( le.dir? )
+            # see if this has the same prefix ("subdir")
+            unless ( le.name.to_s.index( take_off ).nil? )
+              utf.filename = le.name.to_s[take_off.size...le.name.to_s.size]
+              
+              utf.directory_parent = parent
+              take_off = "#{take_off}#{utf.filename}/"
+            else
+              # back up to parent level
+              utf.filename = le.name.to_s
+              utf.directory_parent = first_parent
+              take_off = "#{utf.filename}/"
+            end
+          else
+            utf.directory_parent = parent
+            utf.filename = le.name.to_s[take_off.size...le.name.to_s.size]
+          end
+          
+          ridx = utf.filename.to_s.rindex('.')
           unless ridx.nil?
-            utf.extension = utf.filename[ridx...utf.filename.size]
+            utf.extension = utf.filename[(ridx+1)...utf.filename.size]
           end
           ut.user_turnin_files << utf
           
           if utf.directory_entry
-            take_off = "#{take_off}#{utf.filename}/"
             parent = utf.id
           end
           output = "#{output} Submitted file: '#{utf.filename}'. "
@@ -142,7 +163,7 @@ class AssignmentsController < ApplicationController
         ut.save
      
         @path = "#{path}"
-        flash[:notice] = output
+        flash[:notice] = "#{output} <br/> <b>Please select 'Manage Submitted Files' to verify your files have been collected</b>"
         render :layout => false, :partial => 'svnlist'
       rescue RuntimeError => re
         unless ut.nil?
@@ -164,6 +185,15 @@ class AssignmentsController < ApplicationController
       return false
     end
     true
+  end
+  
+  def assignment_open( assignment, redirect = true  ) 
+    unless assignment.close_date > Time.now
+      flash[:badnotice] = "The requisted assignment is closed, no more files may be submitted."
+      redirect_to :action => 'index' if redirect
+      return false
+    end
+    true    
   end
 
   def assignment_in_course( assignment, course, redirect = true )

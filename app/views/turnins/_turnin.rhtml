@@ -1,0 +1,75 @@
+<% if @current_turnin.id == @display_turnin.id %>
+  <div class="GoodMessage">This is your current turn-in set.
+  <% if @assignment.closed? %>
+    <b>This assignment is closed - the files below are the ones submitted to your instructor.</b>
+  <% end %>
+  </div>
+<% else %>
+  <div class="errorExplanation">This is not your current turn-in set.</div>
+<% end %>
+
+
+<p><b>Turn-in set</b><br/>
+Originally Submitted: <%= @display_turnin.created_at.to_formatted_s(:friendly_date) %><br/>
+Last Updated: <%= @display_turnin.updated_at.to_formatted_s(:friendly_date) %><br/>
+</p>
+
+<p><b>Download entire turn-in set:</b> <%= link_to 'as tar file', :action => 'download_set', :id => @display_turnin.id %></p>
+
+<% parents = Array.new %>
+
+<table class="fancy">
+  <tr class="header">
+    <th>File</th>
+	<th>Date</th>
+	<th>Controls</th>
+  </tr>
+
+<% count = 0 %>
+<% for @tif in @display_turnin.user_turnin_files %>
+  <% count = count.next 
+     odd = "odd"
+     odd = "even" if count.even?
+   %>
+  <tr class="<%=odd%> hover" id="user_turnin_file_<%=@tif.id%>">
+    
+    <% 
+
+       if @tif.directory_entry 
+	     if ( @tif.directory_parent == parents[-1] )
+	       id = parents[-1]       
+	       parents = Array.new
+           parents << @tif.id
+           parents << id
+         else
+	       parents.insert( 0, @tif.id )
+         end
+       end %>
+
+
+    <% spaces = ''
+       if @tif.directory_entry
+         upper = parents.size - 1
+       else
+	     upper = parents.size
+       end
+       1.upto(upper*3) { |i| spaces = "&nbsp;#{spaces}" }
+     %>
+    <td>
+      <%= spaces %>    
+      <%= image_tag "#{@tif.icon}", :align => 'absmiddle' %>
+      <%=h @tif.filename %> 
+    </td>
+    <td> <i><%= @tif.created_at.to_formatted_s(:short) %></i> </td>
+    <td>
+     <% if @tif.directory_entry %>
+       <s>Download</s>
+     <% else %>
+       <%= link_to 'Download', :action => 'download_file', :id => @tif.id %>
+     <% end %>
+    </td>
+  
+  </tr>
+<% end %>
+</table>
+

@@ -37,6 +37,10 @@ class Assignment < ActiveRecord::Base
     Time.now > due_date
   end
   
+  def closed?
+    Time.now > close_date
+  end
+  
   def validate
     errors.add_to_base( 'The assignment available date must be before the assignment close date' ) unless close_date > open_date
     errors.add_to_base( 'The assinment due date must be before the assignment close date and after the available date.') unless close_date >= due_date || due_date <= open_date

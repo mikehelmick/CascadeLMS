@@ -1,0 +1,38 @@
+<h2>Your Turned in files</h2>
+
+<p><%= link_to 'Back', :controller => '/assignments', :course => @course, :action => 'view', :id => @assignment, :assignment => nil %></p>
+
+<% if @turnins.size == 0 %>
+  <p><i>No turn-ins found found</i></p>
+<% else %>
+
+<%= render :partial => 'turnin' %>
+
+
+<hr/>
+
+<h2>Previous Turn-in sets (read-only)</h2>
+
+<table class="fancy">
+  <tr class="header">
+    <th>#</th>
+    <th>Previous Set</th><th>View</th>
+  </tr>
+
+<% count = @turnins.size + 1 %>
+<% for ut in @turnins %>
+  <% count = count - 1  
+     odd = "odd"
+     odd = "even" if count.even?
+   %>
+  <tr class="<%=odd%> hover" id="user_turnin_<%=ut.id%>">
+    <td align="right"><%= count %></td>
+    <td><%=h ut.updated_at.to_formatted_s(:long) %>
+      <% if ut.id == @current_turnin.id %><b>current</b> <%end%>
+    </td>
+    <td><%= link_to 'View', :action => 'view', :id => ut.id %></td>
+  </tr>
+<% end %>
+</table>
+
+<% end %>

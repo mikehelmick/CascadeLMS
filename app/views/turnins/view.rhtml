@@ -1,0 +1,5 @@
+<h2>View Past Turn-in for this assignment</h2>
+
+<p><%= link_to 'Back / View Current Turn-in Set', :controller => '/turnins', :course => @course, :action => 'index', :assignment => @assignment  %></p>
+
+<%= render :partial => 'turnin' %>
