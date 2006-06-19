@@ -68,6 +68,24 @@ class ApplicationController < ActionController::Base
     return false
   end
   
+  def assignment_in_course( assignment, course, redirect = true )
+    unless assignment.course_id == course.id 
+      flash[:badnotice] = "The requested assignment could not be found."
+      redirect_to :controller => 'assignments', :action => 'index', :course => @course if redirect
+      return false
+    end
+    true
+  end
+  
+  def assignment_has_journals( assignment )
+    unless assignment.enable_journal
+      flash[:badnotice] = "The selected assignment does not have a journal requirement."
+      redirect_to :controller => 'assignments', :action => 'view', :id => assignment.id, :course => @course, :assignment => nil
+      return false
+    end
+    true
+  end
+  
   def load_course( course_id, redirect = true )
     begin
       @course = Course.find( course_id )

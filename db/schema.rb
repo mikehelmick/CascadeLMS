@@ -2,7 +2,7 @@
 # migrations feature of ActiveRecord to incrementally modify your database, and
 # then regenerate this schema definition.
 
-ActiveRecord::Schema.define(:version => 20) do
+ActiveRecord::Schema.define(:version => 25) do
 
   create_table "announcements", :force => true do |t|
     t.column "headline", :string
@@ -134,6 +134,20 @@ ActiveRecord::Schema.define(:version => 20) do
     t.column "course_id", :integer, :default => 0, :null => false
   end
 
+  create_table "journal_entry_stop_reasons", :id => false, :force => true do |t|
+    t.column "journal_id", :integer
+    t.column "journal_stop_reason_id", :integer
+  end
+
+  add_index "journal_entry_stop_reasons", ["journal_id", "journal_stop_reason_id"], :name => "journal_entry_stop_reasons_journal_id_index", :unique => true
+
+  create_table "journal_entry_tasks", :id => false, :force => true do |t|
+    t.column "journal_id", :integer
+    t.column "journal_task_id", :integer
+  end
+
+  add_index "journal_entry_tasks", ["journal_id", "journal_task_id"], :name => "journal_entry_tasks_journal_id_index", :unique => true
+
   create_table "journal_fields", :id => false, :force => true do |t|
     t.column "assignment_id", :integer
     t.column "start_time", :boolean, :default => true, :null => false
@@ -146,6 +160,28 @@ ActiveRecord::Schema.define(:version => 20) do
   end
 
   add_index "journal_fields", ["assignment_id"], :name => "journal_fields_assignment_id_index", :unique => true
+
+  create_table "journal_stop_reasons", :force => true do |t|
+    t.column "reason", :string
+    t.column "course_id", :integer, :default => 0, :null => false
+  end
+
+  create_table "journal_tasks", :force => true do |t|
+    t.column "task", :string
+    t.column "course_id", :integer, :default => 0, :null => false
+  end
+
+  create_table "journals", :force => true do |t|
+    t.column "assignment_id", :integer, :default => 0, :null => false
+    t.column "user_id", :integer, :default => 0, :null => false
+    t.column "start_time", :datetime
+    t.column "end_time", :datetime
+    t.column "interruption_time", :integer
+    t.column "completed", :boolean
+    t.column "comments", :text
+    t.column "created_at", :datetime
+    t.column "updated_at", :datetime
+  end
 
   create_table "posts", :force => true do |t|
     t.column "course_id", :integer, :default => 0, :null => false

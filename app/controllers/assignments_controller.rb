@@ -20,6 +20,23 @@ class AssignmentsController < ApplicationController
     return unless assignment_in_course( @assignment, @course )
     return unless assignment_available( @assignment )
     
+    if @assignment.enable_journal
+      @journals = @user.assignment_journals( @assignment )
+      
+      elapsed = 0;
+      @journals.each do |journal|
+        elapsed += journal.end_time - journal.start_time - journal.interruption_time*60
+      end
+      elapsed = (elapsed / 60).truncate #down to minutes
+      @minutes = elapsed % 60
+      elapsed -= @minutes
+
+      @days = (elapsed / 1440).truncate
+      elapsed -= @days * 1440
+
+      @hours = (elapsed / 60).truncate
+    end
+    
     @now = Time.now
     set_title
   end
@@ -189,21 +206,13 @@ class AssignmentsController < ApplicationController
   
   def assignment_open( assignment, redirect = true  ) 
     unless assignment.close_date > Time.now
-      flash[:badnotice] = "The requisted assignment is closed, no more files may be submitted."
+      flash[:badnotice] = "The requisted assignment is closed, no more files or information may be submitted."
       redirect_to :action => 'index' if redirect
       return false
     end
     true    
   end
 
-  def assignment_in_course( assignment, course, redirect = true )
-    unless assignment.course_id == course.id 
-      flash[:badnotice] = "The requested assignment could not be found."
-      redirect_to :action => 'index' if redirect
-      return false
-    end
-    true
-  end
   
   def document_in_assignment( document, assignment )
     unless document.assignment_id == assignment.id 
@@ -213,6 +222,7 @@ class AssignmentsController < ApplicationController
     end
     true
   end
+
 
   def set_tab
     @show_course_tabs = true
@@ -225,6 +235,6 @@ class AssignmentsController < ApplicationController
     @title = "#{@assignment.title} - #{@course.title}" unless @assignment.nil?
   end
   
-  private :set_tab, :set_title, :assignment_in_course, :assignment_available, :document_in_assignment
+  private :set_tab, :set_title, :assignment_available, :document_in_assignment
   
 end

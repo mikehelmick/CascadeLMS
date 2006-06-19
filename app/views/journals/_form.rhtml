@@ -1,0 +1,55 @@
+<%= error_messages_for 'journal' %>
+
+<!--[form:journal]-->
+<div class="block">
+
+<% if @assignment.journal_field.start_time %>
+<p><label for="journal_start_time" class="required">Start time:</label>
+<%= datetime_select 'journal', 'start_time'  %></p>
+<% end %>
+
+<% if @assignment.journal_field.end_time %>
+<p><label for="journal_end_time" class="required">&nbsp;End time:</label>
+<%= datetime_select 'journal', 'end_time'  %></p>
+<% end %>
+
+<% if @assignment.journal_field.interruption_time %>
+<p><label for="journal_interruption_time" class="required">Interruption time:</label>
+<%= text_field 'journal', 'interruption_time', :size => 10  %> (minutes)</p>
+<% end %>
+
+<% if @assignment.journal_field.completed %>
+<p><label for="journal_completed" class="required">Completed:</label>
+ 	<%= radio_button 'journal', 'completed', true %> Yes
+	<%= radio_button 'journal', 'completed', false %> No
+</p>
+<% end %>
+
+<% if @assignment.journal_field.comments %>
+<p><label for="journal_comments" class="required">Comments:</label>
+<%= text_area 'journal', 'comments'  %></p>
+<% end %>
+
+<% if @assignment.journal_field.task %>
+<p><label for="journal_tasks" class="required">Tasks performed during this session:</label><br/>
+  <div class="sub_form"></p>
+    <% for task in @journal_tasks %>
+      <%= check_box_tag "task_id_#{task.id}", task.id, @journal.has_task?(task.id) %><%=h task.task %><br/>
+    <% end %>
+  </p></div>
+</p>
+<% end %>
+
+<% if @assignment.journal_field.reason_for_stopping %>
+<p><label for="journal_stop_reason" class="required">Reason for stopping:</label><br/>
+  <div class="sub_form"></p>
+    <% for stop_reason in @journal_stop_reasons %>
+      <%= check_box_tag "stop_reason_id_#{stop_reason.id}", stop_reason.id, @journal.has_stop_reason?(stop_reason.id) %><%=h stop_reason.reason %><br/>
+    <% end %>
+  </p></div>
+</p>
+<% end %>
+
+</div>
+<!--[eoform:journal]-->
+

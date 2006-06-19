@@ -8,6 +8,8 @@ class Assignment < ActiveRecord::Base
   has_many :assignment_documents, :order => "position", :dependent => :destroy
   has_many :user_turnins, :order => "user_id asc, position desc", :dependent => :destroy
   
+  has_many :journals, :dependent => :destroy
+  
   validates_presence_of :title
   # NEEDS extended validations
   # open < due <= close dates

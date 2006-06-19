@@ -11,9 +11,13 @@ class User < ActiveRecord::Base
   has_many :comments
   
   has_many :user_turnins, :order => "assignment_id asc, position desc", :dependent => :destroy
-  
+  has_many :journals, :dependent => :destroy
   
   attr_accessor :notice
+  
+  def assignment_journals( assignment )
+    Journal.find(:all, :conditions => ["assignment_id = ? and user_id = ?", assignment.id, self.id], :order => 'created_at asc' )
+  end
   
   def display_name
     unless self.preferred_name.nil?

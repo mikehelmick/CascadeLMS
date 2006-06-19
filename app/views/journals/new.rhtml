@@ -1,0 +1,22 @@
+<div id="form_area">
+
+<h2>Create new journal entry</h2>
+
+<%= link_to 'Back', :controller => 'assignments', :action => 'view', :course => @course, :assignment => nil, :id => @assignment %>
+
+<p>
+<b>Course:</b> <%=h @course.title %><br/>
+<b>Assignment:</b> <%=h @assignment.title %>
+</p>
+
+<%= start_form_tag :action => 'create', :course => @course, :assignment => @assignment %>
+  <%= render :partial => 'form' %>
+<div class="submit">
+  <%= submit_tag "Create" %>
+</div>
+<%= end_form_tag %>
+
+<%= link_to 'Back', :controller => 'assignments', :action => 'view', :course => @course, :assignment => nil, :id => @assignment %>
+
+
+</div>

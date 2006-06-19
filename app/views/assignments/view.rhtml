@@ -107,10 +107,14 @@
   </div>
   <% end %>
 
+
   <% if @assignment.enable_journal %>
   <div class="blockintro"><p><b>Assignment Journals</b> <%= link_to_function "#{image_tag 'eye', :align => 'absmiddle'}", visual_effect(:toggle_slide, 'journals_area' ) %></p></div>
   <div class="block" id="journals_area">
-    <p>YO</p>
+    <p><%= link_to 'New Journal Entry', :controller => 'journals', :action => 'new', :course => @course, :assignment => @assignment %></p>
+	
+	<%= render :partial => 'journals' %>
+
   </div>
   <% end %>
 

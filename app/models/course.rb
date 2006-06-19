@@ -14,6 +14,9 @@ class Course < ActiveRecord::Base
   has_many :users, :through => :courses_users
   has_many :posts, :order => "created_at", :dependent => :destroy
   
+  has_many :journal_tasks, :dependent => :destroy
+  has_many :journal_stop_reasons, :dependent => :destroy
+  
   before_create :create_settings
   
   def merge( other )
