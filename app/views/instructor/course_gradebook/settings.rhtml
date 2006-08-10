@@ -1,0 +1,30 @@
+<div id="form_area">
+
+<%= start_form_tag :action => 'save_settings', :id => @course %>
+<h2>Edit Grade Book Settings for <%= @course.title %></h2>
+
+  <%= error_messages_for 'gradebook' %>
+
+<!--[form:course_settings]-->
+<p class="blockintro">Should grades in this course be weighted?  You can configure weighting from the Grade Book screen after enabling weighting.</p>
+<div class="block">
+<p><label for="gradebook_weight_grades" class="required">Weight Grades?:</label>
+<%= radio_button 'gradebook', 'weight_grades', true %> Yes
+<%= radio_button 'gradebook', 'weight_grades', false %> No</p>
+</div>
+
+<p class="blockintro">Should students be able to see their calculated total grade?</p>
+<div class="block">
+<p><label for="gradebook_show_total" class="required">Show Total?:</label>
+<%= radio_button 'gradebook', 'show_total', true %> Yes
+<%= radio_button 'gradebook', 'show_total', false %> No</p>
+</div>
+ 
+<div class="submit">
+  <%= submit_tag 'Save Settings' %>
+</div>
+<%= end_form_tag %>
+</div>
+
+<%= link_to 'Cancel', :controller => '/instructor/course_gradebook', :course => @course, :action => 'index' %>
+</div>

@@ -1,6 +1,6 @@
 <h2>Documents for <%= @course.title %></h2>
 
-<p><%= link_to "Back", :controller => "/instructor/index" %> | <%= link_to 'New document', :action => 'new' %></p>
+<p><%= link_to "Back", :controller => "/instructor/index", :course => @course %> | <%= link_to 'New document', :action => 'new' %></p>
 
 <% if @documents.size == 0 %>
  <p><i>There are no documents for this class.</i></p>
@@ -45,4 +45,4 @@
 
 <br />
 
-<p><%= link_to "Back", :controller => "/instructor/index" %> | <%= link_to 'New document', :action => 'new' %></p>
+<p><%= link_to "Back", :controller => "/instructor/index", :course => @course %> | <%= link_to 'New document', :action => 'new' %></p>

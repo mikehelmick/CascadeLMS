@@ -28,6 +28,8 @@ class CreateCourseSettings < ActiveRecord::Migration
       t.column :ta_grade_individual, :boolean, :null => false, :default => true
       # t.column :name, :string
     end
+    
+    add_index(:course_settings, :course_id, :unique => true)
   end
 
   def self.down
