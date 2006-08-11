@@ -33,7 +33,7 @@ class AutoEnrollment < CourseCreator
           unless found
             courseuser = CoursesUser.new
             courseuser.user = @user
-            courseuser.course = @course
+            courseuser.course = course
             courseuser.course_student = true
             courseuser.course_instructor = false
         

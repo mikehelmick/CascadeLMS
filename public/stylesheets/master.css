@@ -387,6 +387,21 @@ div.Right .col h2 {
 	border: 1px solid #666666;
 }
 
+.fancy .cell {
+	border-left: 1px solid #990000;
+	padding-left: 2px;
+	padding-right: 2px;
+	text-align: right;
+}
+
+.fancy .summaryCell {
+	border-top: 1px dashed #990000;
+	border-left: 1px solid #990000;
+	padding-left: 2px;
+	padding-right: 2px;
+	text-align: right;
+}
+
 .fancy tr.hover:hover
 {
 	background: #bfd5ff;

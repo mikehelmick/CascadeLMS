@@ -1,1 +1,47 @@
-item
+<div id="form_area">
+
+<%= start_form_tag :action => 'save_item', :course => @course, :id => @grade_item %>
+<h2><% if @grade_item.id %> Edit Grade Book Item
+<% else %>Create Grade Book Item
+<% end %> <%= @course.title %></h2>
+
+<%= error_messages_for 'grade_item' %>
+
+<!--[form:course_settings]-->
+<div class="block">
+<p><label for="grade_item_name" class="required">Name:</label>
+<%= text_field 'grade_item', 'name' %></p>
+
+<p><label for="grade_item_date" class="required">Date:</label>
+<%= date_select("grade_item", "date") %></p>
+
+<p><label for="grade_item_points" class="required">Points:</label>
+<%= text_field 'grade_item', 'points', :size => '5' %></p>
+
+<p><label for="grade_item_display_type" class="required">Display Type:</label>
+<%=
+  options = GradeItem::SHOWN_TYPES
+  select('grade_item','display_type', options)
+%></p>
+
+<p><label for="grade_item_visible" class="required">Visible to Students:</label>
+<%= radio_button 'grade_item', 'visible', true %> Yes
+<%= radio_button 'grade_item', 'visible', false %> No</p>
+
+<p><label for="grade_item_grade_category" class="required">Category:</label> 
+<%= select('grade_item','grade_category_id', @categories.collect {|c| [c.category,c.id]} ) %>
+</p>
+
+<p><label for="grade_item_assignment">Link to Assignment (optional):</label>
+<%= select("grade_item", "assignment_id", @course.assignments.collect {|a| [ a.title, a.id ] }, { :include_blank => true }) %></p>
+
+</div>
+ 
+<div class="submit">
+  <%= submit_tag 'Save Grade Book Item' %>
+</div>
+<%= end_form_tag %>
+</div>
+
+<%= link_to 'Cancel', :controller => '/instructor/course_gradebook', :course => @course, :action => 'index' %>
+</div>

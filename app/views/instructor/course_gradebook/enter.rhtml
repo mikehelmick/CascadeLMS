@@ -1,0 +1,56 @@
+<%= link_to 'Cancel / Back to Grade Book', :controller => '/instructor/course_gradebook', :course => @course %> 
+
+<h2>Enter grades for '<%= @grade_item.name %>'</h2>
+<h3>for course '<%= @course.title %>'</h3>
+
+
+<%= start_form_tag :action => 'save_grades', :course => @course, :id => @grade_item %>
+<div class="block">
+
+<% if @students.size == 0 %>
+  <p>There are no students enrolled in this class.</p>
+<% else %>
+
+<table class="fancy"> 
+  <tr class="header"> 
+   <th>ID</th>
+   <th>Student Name</th>
+   <th>Current Grade</th>
+   <th>New Grade</th>
+  </tr>
+
+  <% count = 0 %>
+  <% for student in @students %>
+  <% count = count.next 
+	   odd = "odd"
+	   odd = "even" if count.even?
+	  %>
+  <tr class="<%=odd%> hover" id="student_<%=student.id%>">
+    <td><%= student.uniqueid %></td>
+	<td><%= student.display_name %></td>
+	<td class="cell">
+	  	<% if @grade_matrix[student.id].nil? %>
+	      <acronym title="no grade entered"><%= image_tag 'bullet_error' %></acronym>
+	    <% else %>
+	      <%= @grade_matrix[student.id] %>
+	    <% end %>
+	</td>
+	<td class="cell">
+	  <%= text_field_tag "student_#{student.id}_item_#{@grade_item.id}", @grade_matrix[student.id], :size => 10 %>
+	  / <%= @grade_item.points %>
+	</td>
+  </tr>
+  <% end %>
+
+</table>
+<% end %>
+
+</div>
+ 
+<div class="submit">
+  <%= submit_tag 'Save Grades' %>
+</div>
+<%= end_form_tag %>
+
+
+<%= link_to 'Cancel / Back to Grade Book', :controller => '/instructor/course_gradebook', :course => @course, :action => 'index' %>

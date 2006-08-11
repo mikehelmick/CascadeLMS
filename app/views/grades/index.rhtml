@@ -1,0 +1,50 @@
+<h2>Grades for <%= @user.display_name %></h2>
+<h3><%= @course.title %>, <%= @course.term.semester %></h3>
+
+<table class="fancy">
+  <tr class="header">
+    <th>Assignment</th>
+    <th>Date</th>
+    <th>Your Score</th>
+    <th>Possible Points</th>
+    <th>Percentage</th>
+   </tr>
+
+  <% count = 0 %>
+  <% for grade_item in @grade_items %>
+   <% if grade_item.visible %>
+	<% count = count.next 
+	     odd = "odd"
+	     odd = "even" if count.even?
+	   %> 
+    <tr class="<%=odd%> hover" id="item_<%=grade_item.id%>">
+      <td><%= grade_item.name %></td>
+      <td><%= grade_item.date.to_formatted_s(:long) %></td>
+      <td align="right" class="cell">
+        <% if @grade_map[grade_item.id].nil? %>
+          <i>No Grade Reported</i> <%= image_tag 'bullet_error' %>
+        <% else %>
+          <%= sprintf("%.1f", @grade_map[grade_item.id].to_f ) %>
+        <% end %>
+      </td> 
+      <td align="right" class="cell"><%= grade_item.points %></td>
+      <td align="right" class="cell">
+        <% unless @grade_map[grade_item.id].nil? %>
+          <%= sprintf( "%.2f",  @grade_map[grade_item.id] / grade_item.points * 100 ) %>%
+        <% else %> --% <% end %>
+      </td>
+    </tr>
+   <% end %>
+  <% end %>
+
+
+  <% if @course.gradebook.show_total %>
+    <tr class="summary">
+      <td colspan="2">&nbsp;</td>
+      <td class="summaryCell"><%= sprintf( "%.1f", @total_points ) %></td>
+      <td class="summaryCell"><%= sprintf( "%.1f", @total_points_possible ) %></td> 
+      <td class="summaryCell"><%= sprintf( "%.2f", @total_points / @total_points_possible * 100 ) rescue '--' %>% </td>
+    </tr>
+  <% end %>
+
+</table>

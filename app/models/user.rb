@@ -13,6 +13,8 @@ class User < ActiveRecord::Base
   has_many :user_turnins, :order => "assignment_id asc, position desc", :dependent => :destroy
   has_many :journals, :dependent => :destroy
   
+  has_many :grade_entries, :dependent => :destroy
+  
   attr_accessor :notice
   
   def assignment_journals( assignment )

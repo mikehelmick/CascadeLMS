@@ -69,7 +69,11 @@
 			  <% end %>
 		    
 		    <% if @user.student_in_course?(@course.id) && @course.course_setting.enable_gradebook %>
-		      <li><a href="#">Grades</a></li>
+		  	  <% if @tab.nil? || !@tab.eql?('course_grades') %>
+			    <li><%= link_to 'Grades', :controller => '/grades', :course => @course %></li>
+		      <% else %>
+		        <li><%= link_to 'Grades', { :controller => '/grades', :course => @course }, { :id => 'current' } %></li>
+		      <% end %>
 		    <% end %>
 		    <% if @user.instructor_in_course?(@course.id) || @user.assistant_in_course?(@course.id) %>
 		      <% if @tab.nil? || !@tab.eql?('course_instructor') %>

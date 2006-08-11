@@ -1,3 +1,84 @@
 <%= link_to 'Back', :controller => '/instructor/index', :course => @course %> |
 <%= link_to 'Grade Book Settings', :action => 'settings', :course => @course %> |
 <%= link_to 'Add New Item', :action => 'item', :course => @course %>
+
+<h2>Grade Book for <%= @course.title %></h2>
+
+<table class="fancy"> 
+  <tr class="header"> 
+   <th nowrap="nowrap">ID</th>
+   <th nowrap="nowrap">Students</th>
+   <% for gi in @grade_items %>
+	<th class="cell"  nowrap="nowrap">  
+	  <b><%= gi.name %></b><br/>
+	  <i><%= gi.grade_category.category %></i><br/>
+	  Points: <%= gi.points %><br/>
+	   <acronym title="Delete Item"><%= link_to "#{image_tag 'cross'}", { :action => 'delete_item', :course => @course, :id => gi.id}, :confirm => "Are you sure you want to delete the item '#{gi.name}'?  All entered student grade will be deleted.  This action can not be undone." %></acronym>
+	   <% if gi.visible %>
+	     <acronym title="Visible to Students"><%= image_tag 'picture_add' %></acronym>
+	   <% else %>
+	     <acronym title="Hidden from Students"><%= image_tag 'picture_delete' %></acronym>
+	   <% end %>
+	   <acronym title="Edit Item Information">
+	     <%= link_to "#{image_tag 'book_edit'}", :action => 'item', :course => @course, :id => gi.id %>
+	   </a>
+	   <acronym title="Enter Grades"><%= link_to "#{image_tag 'calculator'}", :action => 'enter', :course => @course, :id => gi.id %></a>
+	</th>
+   <% end %>
+   <th class="cell"  nowrap="nowrap">Total Points<br/><%=@total_points%></th>
+   <th class="cell"  nowrap="nowrap">
+   <% if @course.gradebook.weight_grades %>Weighted Average
+   <% else %>Average
+   <% end %>
+   </th>
+   <th class="cell"  nowrap="nowrap">Students</th>
+  </tr>
+
+<% count = 0 %>
+<% for student in @students %>
+  <% count = count.next 
+	   odd = "odd"
+	   odd = "even" if count.even?
+	  %>
+  <tr class="<%=odd%> hover" id="student_<%=student.id%>">
+	<td  nowrap="nowrap"><%= student.uniqueid %></td>
+	<td  nowrap="nowrap"><%= student.display_name %></td>
+	
+	<% for gi in @grade_items %>
+	  <td class="cell">
+	    <% if @grade_matrix[student.id][gi.id].nil? %>
+	      <acronym title="no grade entered"><%= link_to "#{image_tag 'bullet_error'}", :action => 'enter', :course => @course, :id => gi.id %></acronym>
+	    <% else %>
+	      <%= sprintf( "%.1f", @grade_matrix[student.id][gi.id] ) %>
+	    <% end %>
+	  </td>
+	<% end %>
+	
+	<td class="cell"><%= @student_totals[student.id] %></td>
+	<td class="cell">
+	  <% if @course.gradebook.weight_grades %>TODO
+      <% else %>
+		<%= sprintf( "%.2f", @student_totals[student.id] / @total_points * 100 )%>%
+      <% end %>
+	</td>
+	<td  nowrap="nowrap"><%= student.display_name %></td>
+  </tr>
+<% end %>
+
+<% if @students.size > 0 %>
+  <tr class="summary">
+    <td colspan="2" class="summaryCell"><b>Item Averages</b></td>
+	
+	<% for gi in @grade_items %>
+		<td class="summaryCell"> 
+		  <%= sprintf( "%.2f", @averages[gi.id]/@students.size ) %> 
+		</td>
+	<% end %>
+    
+    <td class="summaryCell">*****</td>
+    <td class="summaryCell">*****</td>
+    <td class="summaryCell">*****</td>
+  </tr>
+<% end %>
+
+</table>

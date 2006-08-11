@@ -8,7 +8,7 @@
 <div class="block">
 <p><label for="assignment[title]" class="required">Assignment name:</label>
 <%= text_field 'assignment', 'title'  %></p>
-<p><label for="term" class="required">Category:</label> <%= select_tag 'grade_category_id', options_from_collection_for_select(@categories, "id", "category", @assignment.grade_category_id ) %>
+<p><label for="term" class="required">Category:</label> <%= select_tag 'grade_category_id', options_from_collection_for_select(@categories, "id", "category", @assignment.grade_category_id ) %></p>
 </div>
 
 <div class="blockintro">For the dates of an assignment: the available date allows to set up an assignment in this system without allowing students to see it until a certain point in time.  The due date and the close date allow you to set a time that assignments are due, but still allow files to be submitted for a slightly longer period of time.</div>
@@ -184,8 +184,8 @@
 	</div>
 	
 	<% else %>
-	  <%= hidden_field_tag 'assignment', 'use_subversion' %>
-      <%= hidden_field_tag 'assignment', 'subversion_server' %>
+	  <%= hidden_field 'assignment', 'use_subversion', :value => false %>
+      <%= hidden_field 'assignment', 'subversion_server', :value => '' %>
 	<% end %>
 	
 	<p><i>You will have the ability to adjust AutoGrade settings later.</i></p>
@@ -197,8 +197,8 @@
 </div>
 
 <% else %>
-  <%= hidden_field_tag 'assignment', 'programming' %>
-  <%= hidden_field_tag 'assignment', 'use_subversion' %>
-  <%= hidden_field_tag 'assignment', 'subversion_server' %>
-  <%= hidden_field_tag 'assignment', 'auto_grade' %>
+  <%= hidden_field 'assignment', 'programming', :value => false %>
+  <%= hidden_field 'assignment', 'use_subversion', :value => false %>
+  <%= hidden_field 'assignment', 'subversion_server', :value => '' %>
+  <%= hidden_field 'assignment', 'auto_grade', :value => false %>
 <% end %>
