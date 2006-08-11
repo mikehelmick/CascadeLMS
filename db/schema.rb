@@ -85,6 +85,8 @@ ActiveRecord::Schema.define(:version => 26) do
     t.column "ta_grade_individual", :boolean, :default => true, :null => false
   end
 
+  add_index "course_settings", ["course_id"], :name => "course_settings_course_id_index", :unique => true
+
   create_table "courses", :force => true do |t|
     t.column "term_id", :integer, :default => 0, :null => false
     t.column "title", :string, :default => "", :null => false

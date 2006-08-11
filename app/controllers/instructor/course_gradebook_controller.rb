@@ -1,7 +1,9 @@
 class Instructor::CourseGradebookController < Instructor::InstructorBase
   
+  layout 'noright'
+  
   before_filter :ensure_logged_in
-   before_filter :set_tab
+  before_filter :set_tab
   
   def index
     return unless load_course( params[:course] )
@@ -30,7 +32,14 @@ class Instructor::CourseGradebookController < Instructor::InstructorBase
     else
       render :action => 'index'
     end
+  end
+  
+  def item
+    return unless load_course( params[:course] )
+    return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_gradebook' )
     
+    # either the existing - or a new one
+    @grade_item = GradeItem.find(param[:id]) rescue @grade_item = GradeItem.new
   end
   
   def set_tab
