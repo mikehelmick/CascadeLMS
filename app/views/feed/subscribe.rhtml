@@ -1,0 +1,19 @@
+<h2>Subscribe to this course's RSS feed</h2>
+
+<div class="standout">
+<p>
+<B>RSS Feed URL:</b>
+<%= link_to "#{url_for :controller => 'feed', :course => @course, :only_path => false}", :controller => 'feed', :course => @course, :only_path => false %>
+</p>
+</div>
+
+<h3>RSS Information</h3>
+<p>RSS allows your RSS feed reader to update you with information about a Web site without having to actually visit that site with your browser.   If you are unfamiliar with RSS, <a href="http://www.feedburner.com/fb/a/aboutrss">here is some more information</a>.
+
+On this site, RSS allows you to be updated when there is a new <b>assignment</b>, <b>document</b>, <b>blog post</b>, or </b>comment</b> added for this course.   The RSS feed is automatically updated when one of these events occurs and your feed reader will notify you what has been added.</p>
+
+<h3>Security</h3>
+<p><b>Each RSS feed is protected and authenticated by your own username and password</b> (the same one you use to log into your account). Your RSS reader will prompt you to enter your username and password to update your feed (most will save your password for you).  </p>
+<p>In addition - you will not be able to access the RSS feed for any course that you are not enrolled in.</p>
+
+<p><b>Special note about web-based feed readers</b>: You should not subscribe to this RSS feed with a web-based feed reader that doesn't guarantee your feeds are kept private (otherwise other people or search engines may be able to see your data). You should confirm your feed will be kept private with the company that provides your feed reader service. <i>(text from 37 Signals)</i></p> 

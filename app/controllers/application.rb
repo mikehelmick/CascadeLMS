@@ -1,3 +1,6 @@
+require 'BasicAuthentication'
+require 'LdapAuthentication'
+
 # Filters added to this controller will be run for all controllers in the application.
 # Likewise, all the methods added will be available for all controllers.
 class ApplicationController < ActionController::Base
@@ -99,6 +102,70 @@ class ApplicationController < ActionController::Base
   def set_highlight( dom_id )
     flash[:highlight] = dom_id
   end
+  
+  def authenticate( user, redirect = true )
+    auth = BasicAuthentication.new()
+    auth = LdapAuthentication.new( @app ) if @app['authtype'].downcase.eql?('ldap')
+    
+    begin
+      @user = auth.authenticate( user.uniqueid, user.password )
+      session[:user] = User.find( @user.id )
+      redirect_to :controller => 'home' if redirect 
+      return true
+    rescue SecurityError => doh
+      if redirect
+        @login_error = doh.message
+        @user.password = '' 
+        render :action => 'index' 
+      end
+      return false
+    end
+  end
+  
+  def rss_authorize(realm='RSS Authentication', errormessage="You must log in to view this page.") 
+    ## if they are already in an HTTP session (using browser based reader)
+    #unless session[:user].nil?
+    #  return User.find(session[:user].id)
+    #end
+    
+    username, passwd = get_auth_data 
+    passwd = '' if passwd.nil?
+    
+    # check if authorized 
+    # try to get user 
+    user = User.new()
+    user.uniqueid = username
+    user.password = passwd 
+    
+    if authenticate( user, false )
+      return @user         
+    else  
+      # the user does not exist or the password was wrong 
+      @response.headers["Status"] = "Unauthorized" 
+      @response.headers["WWW-Authenticate"] = "Basic realm=\"#{realm}\"" 
+      render_text(errormessage, 401)     
+      nil  
+    end 
+  end 
+
+  def get_auth_data 
+    user, pass = '', '' 
+    # extract authorisation credentials 
+    if request.env.has_key? 'X-HTTP_AUTHORIZATION' 
+      # try to get it where mod_rewrite might have put it 
+      authdata = @request.env['X-HTTP_AUTHORIZATION'].to_s.split 
+    elsif request.env.has_key? 'HTTP_AUTHORIZATION' 
+      # this is the regular location 
+      authdata = @request.env['HTTP_AUTHORIZATION'].to_s.split  
+    end 
+      # at the moment we only support basic authentication 
+    if authdata and authdata[0] == 'Basic' 
+      user, pass = Base64.decode64(authdata[1]).split(':')[0..1] 
+    end 
+    return [user, pass] 
+  end
+
+  private :get_auth_data
 
 end
 

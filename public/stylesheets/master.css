@@ -637,4 +637,15 @@ a img {
   font-weight: bold;
 }
 
+.standout {
+	background: #FFFFCC;
+	border: 1px solid #990000;
+	margin: 5px 5px 5px 5px;
+	padding: 10px 10px 10px 10px;
+}
+
+.standout a {
+	color: #0000FF;
+}
+
 

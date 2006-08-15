@@ -22,6 +22,10 @@ class Assignment < ActiveRecord::Base
     open_date.to_date.to_formatted_s(:short)
   end
   
+  def feed_action
+    "Assignment Posted"
+  end
+  
   def acronym
      'Assignment'
   end

@@ -12,6 +12,10 @@ class Document < ActiveRecord::Base
     errors.add_to_base("No file was given") if self.filename.nil? || self.filename.size == 0
   end
   
+  def feed_action
+    'Document Uploaded'
+  end
+  
   def summary_date
     created_at.to_date.to_formatted_s(:short)
   end

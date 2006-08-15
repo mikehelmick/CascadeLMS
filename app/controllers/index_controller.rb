@@ -25,19 +25,7 @@ class IndexController < ApplicationController
       return
     end
     
-    auth = BasicAuthentication.new()
-    auth = LdapAuthentication.new( @app ) if @app['authtype'].downcase.eql?('ldap')
-    
-    begin
-      @user = auth.authenticate( @user.uniqueid, @user.password )
-      session[:user] = User.find( @user.id )
-      redirect_to :controller => 'home'
-    rescue SecurityError => doh
-      @login_error = doh.message
-      @user.password = ''
-      render :action => 'index'
-    end
-    
+    authenticate( @user )
   end
   
   def logout

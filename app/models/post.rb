@@ -11,6 +11,10 @@ class Post < ActiveRecord::Base
     created_at.to_date.to_formatted_s(:short)
   end
   
+  def feed_action
+    'Blog Post'
+  end
+  
   def acronym
     'Blog Post'
   end
