@@ -1,3 +1,5 @@
+require 'FileManager'
+
 class TurninsController < ApplicationController
   
   before_filter :ensure_logged_in
@@ -221,9 +223,17 @@ class TurninsController < ApplicationController
       mover = get_parent( @current_turnin.user_turnin_files, mover )
     end
     
-    @current_turnin.make_sub_dir( @app['external_dir'], fname )
-    @current_turnin.user_turnin_files << utf
-    @current_turnin.save
+    UserTurnin.transaction do
+      @current_turnin.make_sub_dir( @app['external_dir'], fname )
+      @current_turnin.user_turnin_files << utf
+      @current_turnin.save
+    
+      # move the item up
+      while( utf.position > nested.position + 1 )
+        utf.move_higher
+      end
+      @current_turnin.save
+    end
     
     flash[:notice] = "New directory '#{utf.filename}' created."
     redirect_to :action => 'index'
@@ -248,31 +258,54 @@ class TurninsController < ApplicationController
     @current_turnin.user_turnin_files.each do |tif|
       nested = tif if tif.id == params[:directory].to_i
     end
+    
+    # grab the file
+    file_field = params[:file]
+    if file_field.nil? || file_field.eql?('')
+      flash[:badnotice] = "You must select a file for upload."
+      redirect_to :action => 'index'
+      return
+    end
 
-    # create the new directory
-    utf = UserTurninFile.new
-    utf.user_turnin = @current_turnin
-    utf.directory_entry = false
-    utf.directory_parent = nested.id
-    utf.filename = params[:newdir]
+    # create the new file (but don't save yet)
+    @utf = UserTurninFile.new
+    @utf.user_turnin = @current_turnin
+    @utf.directory_entry = false
+    @utf.directory_parent = nested.id
+    @utf.filename = FileManager.base_part_of( file_field.original_filename )
+    @utf.extension = @utf.filename.split('.').last.downcase
 
-    mover = get_parent( @current_turnin.user_turnin_files, utf )
-    fname = ""
+    mover = get_parent( @current_turnin.user_turnin_files, @utf )
+    dir_name = ""
     while( mover.directory_parent > 0 )
-      fname = prepend_dir( mover.filename, fname )
+      dir_name = prepend_dir( mover.filename, dir_name )
+      puts "DIRNAME: #{dir_name}"
       mover = get_parent( @current_turnin.user_turnin_files, mover )
     end
-    # fname - is the name of the file on the file system
-    # minus the actual file name
-
-      @current_turnin.make_sub_dir( @app['external_dir'], fname )
-      @current_turnin.user_turnin_files << utf
-      @current_turnin.save
-
-      flash[:notice] = "New directory '#{utf.filename}' created."
-      redirect_to :action => 'index'
+    # dir - is the name of the directory on the file system
     
-    ## TODO here
+    dir_name = "#{@current_turnin.get_dir(@app['external_dir'])}/#{dir_name}"
+    
+    puts "DIR NAME: #{dir_name}"
+    
+    UserTurnin.transaction do
+      if @utf.create_file( file_field, dir_name )
+        @current_turnin.user_turnin_files << @utf
+        @current_turnin.save
+      
+        # move the item up
+        while( @utf.position > nested.position + 1 )
+          @utf.move_higher
+        end
+        @current_turnin.save
+
+        flash[:notice] = "File '#{@utf.filename}' uploaded and stored, you can download the file to verify it was received."
+      else
+        flash[:badnotice] = "Error saving file, you may not upload two files of the same name to the same directory."
+      end
+    end
+    
+    redirect_to :action => 'index'
     
   end
   

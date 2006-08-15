@@ -5,6 +5,9 @@ class CreateGradeEntries < ActiveRecord::Migration
       t.column :user_id, :int
       t.column :course_id, :int
       t.column :points, :float
+      
+      t.column :created_at, :timestamp
+      t.column :updated_at, :timestamp
       # t.column :name, :string
     end
     

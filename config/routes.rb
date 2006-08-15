@@ -26,6 +26,9 @@ ActionController::Routing::Routes.draw do |map|
   map.connect '/course/:course/:controller/:action/:id',
     :controller => 'overview', :action => 'index', :course => nil, :id => nil
 
+  map.connect '/redirect/type/:type/:id',
+    :controller => 'redirect', :action => 'index', :type => nil, :id => nil
+
   # Allow downloading Web Service WSDL as a file with an extension
   # instead of a file named 'wsdl'
   map.connect ':controller/service.wsdl', :action => 'wsdl'

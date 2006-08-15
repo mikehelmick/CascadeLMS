@@ -18,6 +18,30 @@ class Assignment < ActiveRecord::Base
   
   before_save :transform_markup
   
+  def summary_date
+    open_date.to_date.to_formatted_s(:short)
+  end
+  
+  def acronym
+     'Assignment'
+  end
+  
+  def summary_title
+    self.title
+  end
+  
+  def summary_actor
+    due_date.to_formatted_s(:friendly_date)
+  end
+  
+  def summary_action
+    'due'
+  end
+  
+  def icon
+    'calendar'
+  end
+  
   def upcoming?
     Time.now < open_date
   end

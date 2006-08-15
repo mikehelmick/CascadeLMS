@@ -38,7 +38,7 @@
   <% end %>
 
 
-  <% if @course.gradebook.show_total %>
+  <% if @course.gradebook && @course.gradebook.show_total %>
     <tr class="summary">
       <td colspan="2">&nbsp;</td>
       <td class="summaryCell"><%= sprintf( "%.1f", @total_points ) %></td>

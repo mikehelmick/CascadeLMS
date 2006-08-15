@@ -39,6 +39,7 @@ class BlogController < ApplicationController
     @comment.user = session[:user]
     @comment.post = @post
     @comment.ip = 'unknown'  # FIX THIS
+    @comment.course_id = @course.id
     
     if @comment.save
       set_highlight = "comment_#{@comment.id}"

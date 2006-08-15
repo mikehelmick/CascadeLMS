@@ -2,7 +2,7 @@
 # migrations feature of ActiveRecord to incrementally modify your database, and
 # then regenerate this schema definition.
 
-ActiveRecord::Schema.define(:version => 28) do
+ActiveRecord::Schema.define(:version => 30) do
 
   create_table "announcements", :force => true do |t|
     t.column "headline", :string
@@ -51,6 +51,7 @@ ActiveRecord::Schema.define(:version => 28) do
     t.column "body_html", :text, :default => "", :null => false
     t.column "created_at", :datetime, :null => false
     t.column "ip", :string, :limit => 15, :default => "", :null => false
+    t.column "course_id", :integer, :default => 0, :null => false
   end
 
   create_table "course_informations", :id => false, :force => true do |t|
@@ -141,6 +142,8 @@ ActiveRecord::Schema.define(:version => 28) do
     t.column "user_id", :integer
     t.column "course_id", :integer
     t.column "points", :float
+    t.column "created_at", :datetime
+    t.column "updated_at", :datetime
   end
 
   add_index "grade_entries", ["grade_item_id"], :name => "grade_entries_grade_item_id_index"
@@ -256,6 +259,8 @@ ActiveRecord::Schema.define(:version => 28) do
     t.column "created_at", :datetime, :null => false
     t.column "extension", :string
   end
+
+  add_index "user_turnin_files", ["user_turnin_id", "filename", "directory_parent"], :name => "unique_filename_idx", :unique => true
 
   create_table "user_turnins", :force => true do |t|
     t.column "assignment_id", :integer

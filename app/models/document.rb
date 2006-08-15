@@ -12,6 +12,30 @@ class Document < ActiveRecord::Base
     errors.add_to_base("No file was given") if self.filename.nil? || self.filename.size == 0
   end
   
+  def summary_date
+    created_at.to_date.to_formatted_s(:short)
+  end
+  
+  def acronym
+     'Document'
+  end
+  
+  def summary_action
+    'file info:'
+  end
+  
+  def summary_actor
+    self.size_text
+  end
+  
+  def summary_title
+    self.title
+  end
+  
+  def icon
+    'page'
+  end
+  
   ##   term/:term_id/course/:course_id/documents/doc_:id.extension
   
   def create_file( file_field, path )

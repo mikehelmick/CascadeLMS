@@ -16,7 +16,9 @@ Last Updated: <%= @display_turnin.updated_at.to_formatted_s(:friendly_date) %><b
 
 <p><b>Download entire turn-in set:</b> <%= link_to 'as tar file', :action => 'download_set', :id => @display_turnin.id %></p>
 
-<% parents = Array.new %>
+<% parent_spaces = Hash.new 
+   parent_spaces[0.to_s] = 0
+%>
 
 <table class="fancy">
   <tr class="header">
@@ -26,6 +28,7 @@ Last Updated: <%= @display_turnin.updated_at.to_formatted_s(:friendly_date) %><b
   </tr>
 
 <% count = 0 %>
+<% previous_tif = nil %>
 <% for @tif in @display_turnin.user_turnin_files %>
   <% count = count.next 
      odd = "odd"
@@ -36,22 +39,15 @@ Last Updated: <%= @display_turnin.updated_at.to_formatted_s(:friendly_date) %><b
     <% 
 
        if @tif.directory_entry 
-	     if ( @tif.directory_parent == parents[-1] )
-	       id = parents[-1]       
-	       parents = Array.new
-           parents << @tif.id
-           parents << id
-         else
-	       parents.insert( 0, @tif.id )
-         end
+	     parent_spaces[@tif.id.to_s] = parent_spaces[@tif.directory_parent.to_s] + 1
        end %>
 
 
     <% spaces = ''
        if @tif.directory_entry
-         upper = parents.size - 1
+         upper = parent_spaces[@tif.id.to_s] - 1
        else
-	     upper = parents.size
+	     upper = parent_spaces[@tif.directory_parent.to_s]
        end
        1.upto(upper*3) { |i| spaces = "&nbsp;#{spaces}" }
      %>
@@ -70,6 +66,7 @@ Last Updated: <%= @display_turnin.updated_at.to_formatted_s(:friendly_date) %><b
     </td>
   
   </tr>
+  <% previous_tif = @tif %>
 <% end %>
 </table>
 

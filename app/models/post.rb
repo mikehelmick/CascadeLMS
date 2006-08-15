@@ -7,6 +7,31 @@ class Post < ActiveRecord::Base
   
   before_save :transform_markup
   
+  def summary_date
+    created_at.to_date.to_formatted_s(:short)
+  end
+  
+  def acronym
+    'Blog Post'
+  end
+  
+  def icon
+    'pencil'
+  end
+  
+  def summary_action
+    'posted by:'
+  end
+  
+  def summary_actor
+    self.user.display_name
+  end
+  
+  def summary_title
+    self.title
+  end
+  
+  
   def featured_text
     return "Yes" if self.featured
     return "No"

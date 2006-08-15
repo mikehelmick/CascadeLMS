@@ -11,6 +11,7 @@ class CreateUserTurninFiles < ActiveRecord::Migration
       t.column :created_at, :datetime, :null => false
       t.column :extension, :string
     end
+
   end
 
   def self.down
