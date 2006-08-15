@@ -20,6 +20,14 @@ class TurninsController < ApplicationController
     
     @display_turnin = @current_turnin
     
+    if @current_turnin
+      @directories = Array.new
+      @current_turnin.user_turnin_files.each do |utf|
+        @directories << utf if utf.directory_entry?
+      end
+      @directory = ""
+    end
+    
     @now = Time.now
     set_title
   end
@@ -120,7 +128,165 @@ class TurninsController < ApplicationController
     end
   end
   
+  def create_set
+    return unless load_course( params[:course] )
+    return unless allowed_to_see_course( @course, @user )
+    
+    @assignment = Assignment.find(params[:assignment]) rescue @assignment = Assignment.new
+    return unless assignment_in_course( @assignment, @course )
+    return unless assignment_available( @assignment )
+    
+    return unless assignment_open( @assignment )
+    
+    # load turnin sets
+    @turnins = UserTurnin.find( :all, :conditions => [ "assignment_id = ? and user_id = ?", @assignment.id, @user.id ], :order => "position desc" )
+    @current_turnin = nil
+    @current_turnin = @turnins[0] if @turnins.size > 0
+    
+    # create new turning set
+    ut = UserTurnin.new
+    ut.assignment = @assignment
+    ut.user = @user
+    ut.sealed = false
+    @user.user_turnins << ut
+    # create root directory entry
+    utf = UserTurninFile.new
+    utf.user_turnin = ut
+    utf.directory_entry = true
+    utf.directory_parent = 0
+    utf.filename = '/'
+    
+    UserTurnin.transaction(ut,utf,@current_transaction) do
+      if @current_turnin.nil?
+        # this is a new 
+        utf.position=1
+      else
+        utf.position=@current_turnin.position+1
+        @current_turnin.sealed = true
+      end
+    
+      # save and create directories
+      @user.save
+      ut.make_dir( @app['external_dir'] )
+      ut.user_turnin_files << utf
+      ut.save
+      @current_turnin.save unless @current_turnin.nil?
+    end
+    
+    
+    redirect_to :action => 'index'
+  end
+  
+  def create_directory
+    return unless load_course( params[:course] )
+    return unless allowed_to_see_course( @course, @user )
+    
+    @assignment = Assignment.find(params[:assignment]) rescue @assignment = Assignment.new
+    return unless assignment_in_course( @assignment, @course )
+    return unless assignment_available( @assignment )
+    
+    return unless assignment_open( @assignment )
+    
+    ## Validations
+    md = params[:newdir].match(/\w+/)
+    if ( md.pre_match.size > 0 || md.post_match.size > 0 ) 
+      @newdir = params[:newdir]
+      flash[:badnotice] = "Thew new directory name may only contain letters and digits, no spaces or special characters."
+      redirect_to :action => 'index'
+      return
+    end
+    ## end
+    
+    @turnins = UserTurnin.find( :all, :conditions => [ "assignment_id = ? and user_id = ?", @assignment.id, @user.id ], :order => "position desc" )
+    @current_turnin = nil
+    @current_turnin = @turnins[0] if @turnins.size > 0
+    
+    # find the nested dir
+    nested = nil
+    @current_turnin.user_turnin_files.each do |tif|
+      nested = tif if tif.id == params[:directory].to_i
+    end
+    
+    # create the new directory
+    utf = UserTurninFile.new
+    utf.user_turnin = @current_turnin
+    utf.directory_entry = true
+    utf.directory_parent = nested.id
+    utf.filename = params[:newdir]
+    
+    mover = get_parent( @current_turnin.user_turnin_files, utf )
+    fname = utf.filename
+    while( mover.directory_parent > 0 )
+      fname = prepend_dir( mover.filename, fname )
+      mover = get_parent( @current_turnin.user_turnin_files, mover )
+    end
+    
+    @current_turnin.make_sub_dir( @app['external_dir'], fname )
+    @current_turnin.user_turnin_files << utf
+    @current_turnin.save
+    
+    flash[:notice] = "New directory '#{utf.filename}' created."
+    redirect_to :action => 'index'
+  end
+  
+  def upload_file
+    return unless load_course( params[:course] )
+    return unless allowed_to_see_course( @course, @user )
+    
+    @assignment = Assignment.find(params[:assignment]) rescue @assignment = Assignment.new
+    return unless assignment_in_course( @assignment, @course )
+    return unless assignment_available( @assignment )
+    
+    return unless assignment_open( @assignment )
+    
+    @turnins = UserTurnin.find( :all, :conditions => [ "assignment_id = ? and user_id = ?", @assignment.id, @user.id ], :order => "position desc" )
+    @current_turnin = nil
+    @current_turnin = @turnins[0] if @turnins.size > 0
+
+    # find the nested dir
+    nested = nil
+    @current_turnin.user_turnin_files.each do |tif|
+      nested = tif if tif.id == params[:directory].to_i
+    end
+
+    # create the new directory
+    utf = UserTurninFile.new
+    utf.user_turnin = @current_turnin
+    utf.directory_entry = false
+    utf.directory_parent = nested.id
+    utf.filename = params[:newdir]
+
+    mover = get_parent( @current_turnin.user_turnin_files, utf )
+    fname = ""
+    while( mover.directory_parent > 0 )
+      fname = prepend_dir( mover.filename, fname )
+      mover = get_parent( @current_turnin.user_turnin_files, mover )
+    end
+    # fname - is the name of the file on the file system
+    # minus the actual file name
+
+      @current_turnin.make_sub_dir( @app['external_dir'], fname )
+      @current_turnin.user_turnin_files << utf
+      @current_turnin.save
+
+      flash[:notice] = "New directory '#{utf.filename}' created."
+      redirect_to :action => 'index'
+    
+    ## TODO here
+    
+  end
+  
 private
+
+  def get_parent( list, current ) 
+    return nil if current.directory_parent == 0
+    list.each { |x| return x if x.id == current.directory_parent }
+  end
+
+  def prepend_dir( newpart, existing )
+    "#{newpart}/#{existing}"
+  end
+
   def turnin_file_downloadable( tif )
     if tif.directory_entry
       flash[:badnotice] = "Individual turn-in directories can not be downloaded"

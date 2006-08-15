@@ -2,11 +2,50 @@
 
 <p><%= link_to 'Back', :controller => '/assignments', :course => @course, :action => 'view', :id => @assignment, :assignment => nil %></p>
 
+<% if !@assignment.closed? && @assignment.enable_upload %>
+<p><%= link_to 'Create new turn-in set (and seal current).', :action => 'create_set', :course => @course, :assignment => @assignment %></p>
+<% end %>
+
 <% if @turnins.size == 0 %>
   <p><i>No turn-ins found found</i></p>
 <% else %>
 
 <%= render :partial => 'turnin' %>
+
+<br />
+
+<% if !@assignment.closed? && @assignment.enable_upload %>
+<div id="form_area">
+  <%= error_messages_for 'UserTurninFile' %>
+  <%= start_form_tag( { :action => "upload_file" }, :multipart => true, :onsubmit => "new Element.toggle('f_button', 'f_spinner');" ) %>
+
+   <p class="blockintro">Upload a new file.  <i>Files can not be deleted or updated, if the need arises please create a new turn-in set.</i></p>
+   <div class="block">
+	<p><label for="file" class="required">Upload File:</label> <%= file_field_tag "file" %></p>
+	<p><label for="nested" class="required">Nested In:</label>
+	  <%= select_tag("directory", options_from_collection_for_select(@directories, "id", "filename") ) %>
+	</p>
+	
+	<div id="f_button"><%= submit_tag "Upload File" %></div>
+	<div id="f_spinner" style="display: none;"><%= image_tag 'spinner.gif' %></div>
+   </div>
+  <%= end_form_tag %>
+
+  <%= start_form_tag( :action => "create_directory" ) %>
+  <p class="blockintro">Create a new directory</p>	
+  <div class="block">
+	<p><label for="directory" class="required">Directory to create:</label>
+	   <%= text_field_tag "newdir", @newdir %></p>
+	
+	<p><label for="nested" class="required">Nested In:</label>
+	  <%= select_tag("directory", options_from_collection_for_select(@directories, "id", "filename") ) %>
+	</p>
+
+	<div id="f_button"><%= submit_tag "Create Directory" %></div>
+  </div>
+  <%= end_form_tag %>
+</div>
+<% end %>
 
 
 <hr/>

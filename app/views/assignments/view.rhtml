@@ -29,17 +29,20 @@
 		  <td valign="top">
 		   <% if @assignment.use_subversion && @assignment.enable_upload %> Subversion or Upload to this site.
 		   <% elsif @assignment.use_subversion %> Subversion only.
-		   <% elsif @assignment.enable_upload %> Upload to this site.
+		   <% elsif @assignment.enable_upload %> 
+		     <%= link_to 'Upload to this site.', :controller => '/turnins', :course => @course, :assignment => @assignment, :action => 'index'  %> 
 		   <% else %> Printout. 
 		   <% end %>
-		  </td></tr>
-	  <% if @assignment.use_subversion %>
+		  </td>
+	  </tr>
+	  
 	  <% if  @assignment.use_subversion ||  @assignment.enable_upload %>
 	  <tr><td class="label" width="15%" nowrap="nowrap" valign="top">&nbsp;</td>
 	      <td valign="top">
 	        <%= link_to "Manage Submitted Files #{"and AutoGrade" if @assignment.auto_grade}", :controller => '/turnins', :course => @course, :assignment => @assignment, :action => 'index'  %>
 	      </td>
 	  <% end %>
+	  <% if @assignment.use_subversion %>  
 	  <tr><td class="label" width="15%" nowrap="nowrap" valign="top">Subversion Server:</td>
 		  <td valign="top"><%=  @assignment.subversion_server %></td></tr>
 	  <tr><td class="label" width="15%" nowrap="nowrap" valign="top">SVN Dev Path:</td>

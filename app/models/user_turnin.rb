@@ -8,6 +8,11 @@ class UserTurnin < ActiveRecord::Base
   def get_dir( dir )
     "#{dir}/term/#{assignment.course.term.id}/course/#{assignment.course.id}/turnins/#{user.uniqueid}/assignment_#{assignment.id}/turnin_#{self.id}"  
   end
+  
+  def make_sub_dir( dir, chain ) 
+    fs_path = "#{get_dir( dir )}/#{chain}"
+    FileUtils.mkdir_p( fs_path )
+  end
     
   def make_dir( dir )
     fs_path = get_dir(dir)
