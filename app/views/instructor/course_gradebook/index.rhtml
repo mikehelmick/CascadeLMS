@@ -58,7 +58,11 @@
 	<td class="cell">
 	  <% if @course.gradebook.weight_grades %>TODO
       <% else %>
-		<%= sprintf( "%.2f", @student_totals[student.id] / @total_points * 100 )%>%
+		<% if @total_points > 0 %>
+		  <%= sprintf( "%.2f", @student_totals[student.id] / @total_points * 100 )%>%
+		<% else %>
+		  <i>?</i>%
+		<% end %>
       <% end %>
 	</td>
 	<td  nowrap="nowrap"><%= student.display_name %></td>

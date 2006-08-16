@@ -14,6 +14,8 @@ class Instructor::CourseGradebookController < Instructor::InstructorBase
     @students = @course.students
     @total_points = 0
     
+    create_gradebook
+    
     if @students.size > 0
       @student_totals = Hash.new
       @students.each { |s| @student_totals[s.id] = 0 }
@@ -46,10 +48,7 @@ class Instructor::CourseGradebookController < Instructor::InstructorBase
     return unless load_course( params[:course] )
     return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_gradebook' )
     
-    unless @course.gradebook
-      @course.gradebook = Gradebook.new 
-      @course.gradebook.save
-    end
+    create_gradebook
     @gradebook = @course.gradebook
   end
   
@@ -200,6 +199,13 @@ class Instructor::CourseGradebookController < Instructor::InstructorBase
     return true
   end
   
-  private :set_tab, :item_in_course
+  def create_gradebook
+    unless @course.gradebook
+      @course.gradebook = Gradebook.new 
+      @course.gradebook.save
+    end
+  end
+  
+  private :set_tab, :item_in_course, :create_gradebook
   
 end
