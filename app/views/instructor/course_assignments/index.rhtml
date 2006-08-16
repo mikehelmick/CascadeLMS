@@ -8,6 +8,7 @@
    <tr class="header"> 
     <th>#</th>
     <th>Title</th>
+    <th>Turn-ins</th>
     <th>Category</th>
     <th>Available</th>
     <th>Due</th>
@@ -23,6 +24,8 @@
 	  <tr class="<%=odd%> hover" id="assignment_<%=assignment.id%>">
 	    <td align="right"><%= link_to "#{h assignment.position}", :action => 'edit', :id => assignment %></td>
 	    <td><%= link_to "#{image_tag 'page_edit', :align => 'absmiddle'} #{h assignment.title}", :action => 'edit', :id => assignment %></td>
+	    <td><%= link_to 'Turn-ins', :controller => '/instructor/turnins', :course => @course, :assignment => assignment %></td>
+	
 	    <td><%=h assignment.grade_category.category %></td>
 	    <td nowrap="nowrap">
 	    <% if assignment.upcoming? %><%= image_tag 'clock_error' %>

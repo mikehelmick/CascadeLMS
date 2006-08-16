@@ -1,0 +1,36 @@
+<%= render :partial => 'instructor/index/right' %>
+
+<h2>Assignment Due Dates</h2>
+<div style="float:left;">
+<% 
+today = Date.today 
+code_block = Proc.new do |d|
+	  if d.eql?(today) 
+	    [d.mday, {:class => "today"}]     
+	  else
+		clazz = "day"                                     
+		
+		  if @assignment.open_date.to_date.eql?(d)
+		    clazz = "otherSpecialDay"	
+		  end
+		
+		  if @assignment.due_date.to_date.eql?(d)
+		    clazz = "specialDay" 
+		  end	
+		
+	    [d.mday, {:class => clazz}]	 
+	  end
+    end
+%>
+
+<p>
+<b>Assigned:</b> <%= @assignment.open_date.to_formatted_s(:long) %><br/>
+<b>Due:</b> <%= @assignment.due_date.to_formatted_s(:long) %>
+</p>
+
+<%= calendar( :year => today.year, :month => today.month, :abbrev=>(0..0) ) { |d| code_block.call(d) } %>
+<% today = today.to_time.next_month %>
+<%= calendar( :year => today.year, :month => today.month, :abbrev=>(0..0) ) { |d| code_block.call(d) } %>
+<% today = today.to_time.next_month %>
+<%= calendar( :year => today.year, :month => today.month, :abbrev=>(0..0) ) { |d| code_block.call(d) } %>
+</div>

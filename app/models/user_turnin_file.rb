@@ -15,6 +15,10 @@ class UserTurninFile < ActiveRecord::Base
     end
   end
   
+  def is_text_file?
+    FileManager.is_text_file( self.extension )
+  end
+  
   def create_file( file_field, path )
     save_res = self.save
     

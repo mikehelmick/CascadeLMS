@@ -8,17 +8,33 @@ class FileManager
               'java' => 'page_white_cup', 'jar' => 'page_white_cup',
               'cc' => 'page_white_cplusplus', 'c++' => 'page_white_cplusplus',
               'cpp' => 'page_white_cplusplus',
+              'c++' => 'page_white_cplusplus',
               'cs' => 'page_white_csharp',
               'rb' => 'page_white_ruby',
               'c' => 'page_white_c',
               'zip' => 'page_white_compressed', 'gz' => 'page_white_compressed', 'tar' => 'page_white_compressed',
               'jpg' => 'page_white_camera', 'png' => 'page_white_camera',
               'gif' => 'page_white_camera', 'jpeg' => 'page_white_camera' }
+     
+  @@text_exts = { 'java' => true, 
+                  'cc' => true, 
+                  'cpp' => true, 
+                  'c++' => true, 
+                  'cs' => true, 
+                  'rb' => true, 
+                  'c' => true, 
+                  'tex' => true, 
+                  'txt' => true, 
+                  'readme' => true }
               
   def FileManager.icon( extension ) 
     icn = @@icons[extension]
     icn = 'page_white' if icn.nil?
     return icn
+  end
+  
+  def FileManager.is_text_file( extension ) 
+    @@text_exts[extension]
   end
   
   def FileManager.base_part_of(file_name)

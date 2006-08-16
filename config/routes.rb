@@ -24,6 +24,9 @@ ActionController::Routing::Routes.draw do |map|
 
   map.connect '/course/:course/assignment/:assignment/:controller/:action/:id',
     :controller => 'assignment/index', :action => 'index', :id => nil
+    
+    map.connect '/course/:course/assignment/:assignment/student/:student/:controller/:action/:id',
+      :controller => 'home', :action => 'index', :id => nil
 
   map.connect '/course/:course/:controller/:action/:id',
     :controller => 'overview', :action => 'index', :course => nil, :id => nil

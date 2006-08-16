@@ -23,6 +23,14 @@ class Journal < ActiveRecord::Base
     
   end
   
+  def completed_text
+    if completed
+      "Yes"
+    else
+      "No"
+    end
+  end
+  
   def before_destroy
     JournalEntryTask.destroy_all( ["journal_id = ?", self.id ] )
     JournalEntryStopReason.destroy_all( ["journal_id = ?", self.id ] )

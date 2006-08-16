@@ -38,7 +38,7 @@
          <% end %>
          </td>
        <% end %>
-       <% if @assignment.journal_field.completed %><td>Complete?</td><% end %>
+       <% if @assignment.journal_field.completed %><td><%=journal.completed_text%></td><% end %>
        <% unless @assignment.closed? %>       
        <td>
         <%= link_to 'Edit', :controller => 'journals', :action => 'edit', :course => @course, :assignment => @assignment.id, :id => journal.id %> 

@@ -1,0 +1,210 @@
+<h2>'<%= @assignment.title %>' turn-ins for '<%= @student.display_name %>'</h2>
+<h3>Course: <%= @course.title %> (<%= @course.term.semester%>)</h3>
+
+<p><%= link_to 'Back to all students', :controller => '/instructor/turnins', :course => @course, :assignment => @assignment %></p>
+
+<div class="SectionHeader"><div class="Full">
+  <h2>Grade</h2>
+</div></div>
+
+<% unless @grade_item %>
+<p><i>Warning - this assignment is not connected with an entry in the GradeBook.</i></p>
+<% else %>
+  <div id="form_area">
+  <%= start_form_tag :action => 'submit_grade', :id => @student, :course => @course, :assignment => @assignment %>
+    
+	<p class="blockintro">You can enter general assignment comments here.   You also have the ability to comment on individual files below as well as to make annotations tied to specific line numbers for text files.</p>
+	<div class="block">
+	  <p><label for="document_title">Points:</label>
+	  <%= text_field 'grade_entry', 'points', :size => 10  %> / <%= sprintf("%0.1f", @grade_item.points ) %></p>
+
+      <p><label for="document_comments">General comments:</label>
+      <%= text_area 'grade_entry', 'comment', "cols" => 60, "rows" => 7  %></p>
+
+    </div>
+
+  	<div class="submit">
+	  <div id="button"><%= submit_tag "Submit Grade and Comments" %></div>
+	</div>
+  <%= end_form_tag %>
+  </div>
+
+<% end %>
+
+
+<!-- files -->
+
+<div class="SectionHeader"><div class="Full">
+  <h2>Turn-in Sets</h2>
+</div></div>
+
+<% if @display_turnin %>
+
+<% if @display_turnin.id == @current_turnin.id %>
+  <div class="GoodMessage">This is the student's most recent turn-in set.</div>
+<% else %>
+  <div class="errorExplanation">This is NOT the student's final turn-in set.  You most likely do not want to grade these files.</div>
+<% end %>
+
+<p><b>Turn-in set</b><br/>
+Originally Submitted: <%= @display_turnin.created_at.to_formatted_s(:friendly_date) %><br/>
+Last Updated: <%= @display_turnin.updated_at.to_formatted_s(:friendly_date) %><br/>
+</p>
+
+<p><b>Download entire turn-in set:</b> <%= link_to 'as tar file', :action => 'download_set', :id => @display_turnin.id %></p>
+
+<% parent_spaces = Hash.new 
+   parent_spaces[0.to_s] = 0
+%>
+
+<table class="fancy">
+  <tr class="header">
+    <th>File</th>
+	<th>Date</th>
+	<th>Download</th>
+	<th>Review / Comment</th>
+  </tr>
+
+<% count = 0 %>
+<% previous_tif = nil %>
+<% for @tif in @display_turnin.user_turnin_files %>
+  <% count = count.next 
+     odd = "odd"
+     odd = "even" if count.even?
+   %>
+  <tr class="<%=odd%> hover" id="user_turnin_file_<%=@tif.id%>">
+    
+    <% 
+
+       if @tif.directory_entry 
+	     parent_spaces[@tif.id.to_s] = parent_spaces[@tif.directory_parent.to_s] + 1
+       end %>
+
+
+    <% spaces = ''
+       if @tif.directory_entry
+         upper = parent_spaces[@tif.id.to_s] - 1
+       else
+	     upper = parent_spaces[@tif.directory_parent.to_s]
+       end
+       1.upto(upper*3) { |i| spaces = "&nbsp;#{spaces}" }
+     %>
+    <td>
+      <%= spaces %>    
+      <%= image_tag "#{@tif.icon}", :align => 'absmiddle' %>
+      <%=h @tif.filename %> 
+    </td>
+    <td> <i><%= @tif.created_at.to_formatted_s(:short) %></i> </td>
+    <td>
+     <% if @tif.directory_entry %>
+       <s>Download</s>
+     <% else %>
+       <%= link_to 'Download', :action => 'download_file', :id => @tif.id %>
+     <% end %>
+    </td>
+  
+    <td>
+      <% if @tif.directory_entry %>
+        &nbsp;
+      <% else %>
+        <% if @tif.is_text_file? %>
+          <%= link_to 'View/Comment', :action => 'view_file', :course => @course, :assignment => @assignment, :student => @student, :id => @tif %>
+        <% else %>
+          <%= link_to 'View/Comment', :action => 'view_binary_file', :course => @course, :assignment => @assignment, :student => @student, :id => @tif %>
+        <% end %>
+      <% end %>
+    </td>
+
+  </tr>
+  <% previous_tif = @tif %>
+<% end %>
+</table>
+
+
+<% else %>
+  <p><i>No files submitted</i></p>
+<% end %>
+
+
+<h2>Previous Turn-in sets (read-only)</h2>
+
+<table class="fancy">
+  <tr class="header">
+    <th>#</th>
+    <th>Previous Set</th><th>View</th>
+  </tr>
+
+<% count = @turnins.size + 1 %>
+<% for ut in @turnins %>
+  <% count = count - 1  
+     odd = "odd"
+     odd = "even" if count.even?
+   %>
+  <tr class="<%=odd%> hover" id="user_turnin_<%=ut.id%>">
+    <td align="right"><%= count %></td>
+    <td><%=h ut.updated_at.to_formatted_s(:long) %>
+      <% if ut.id == @current_turnin.id %><b>current</b> <%end%>
+    </td>
+    <td><%= link_to 'View', :action => 'view_student', :course => @course, :assignment => @assignment, :id => @student, :ut => ut.id %></td>
+  </tr>
+<% end %>
+</table>
+
+<hr/>
+<!-- journals -->
+
+<div class="SectionHeader"><div class="Full">
+  <h2>Assignment Journals</h2>
+</div></div>
+
+<% if @journals.size == 0 %>
+<p><i>This student has not submitted any journal entries.</i></p>
+<% else %>
+
+<p><b>Reported Time:</b> <%= pluralize(@days,'day') %>, <%= pluralize(@hours,'hour') %>, <%= pluralize(@minutes,'minute') %>.
+
+<table cellpadding="0" cellspacing="0" class="fancy">
+   <tr class="header">
+     <% if @assignment.journal_field.start_time %><th>Start</th><% end %>
+     <% if @assignment.journal_field.end_time %><th>End</th><% end %>
+     <% if @assignment.journal_field.interruption_time %><th>Intr.</th><% end %>
+     <% if @assignment.journal_field.task %><th>Tasks</th><% end %>
+     <% if @assignment.journal_field.reason_for_stopping %><th>Stop Reason</th><% end %>
+     <% if @assignment.journal_field.completed %><th>Complete?</th><% end %>
+   </tr>
+
+   <% count = 0 %>
+   <% for journal in @journals %>
+	<% count = count.next 
+	     odd = "odd"
+	     odd = "even" if count.even?
+	   %>
+     <tr class="<%=odd%> hover" id="journal_<%=journal.id%>">
+       <% if @assignment.journal_field.start_time %><td nowrap="nowrap"><%=h journal.start_time.to_formatted_s(:short) %></td><% end %>
+       <% if @assignment.journal_field.end_time %><td nowrap="nowrap"><%=h journal.end_time.to_formatted_s(:short) %></td><% end %>
+       <% if @assignment.journal_field.interruption_time %><td nowrap="nowrap"><%=h journal.interruption_time %></td><% end %>
+       <% if @assignment.journal_field.task %><td nowrap="nowrap">
+         <% for task in journal.journal_tasks %>
+           <%= task.task %><br/>
+         <% end %>
+         </td>
+       <% end %>
+       <% if @assignment.journal_field.reason_for_stopping %><td nowrap="nowrap">
+         <% for sr in journal.journal_stop_reasons %>
+           <%= sr.reason %><br/>
+         <% end %>
+         </td>
+       <% end %>
+       <% if @assignment.journal_field.completed %><td nowrap="nowrap">
+         <%= journal.completed_text %>
+       </td><% end %>
+     </tr>
+     <tr class="<%=odd%> hover" id="journal_comments_<%=journal.id%>">
+	   <td align="right" valign="top"><b>Comments:</b></td>
+       <td align="left" valign="top" colspan="5"><%=(h journal.comments).gsub(/\n/,"<br/>") %></td>
+     </tr>
+   <% end %>
+
+</table>
+
+<% end %>

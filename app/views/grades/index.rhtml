@@ -18,7 +18,13 @@
 	     odd = "even" if count.even?
 	   %> 
     <tr class="<%=odd%> hover" id="item_<%=grade_item.id%>">
-      <td><%= grade_item.name %></td>
+      <td>
+        <% if grade_item.assignment_id && grade_item.assignment_id > 0 %>
+          <%= link_to "#{grade_item.name}", :controller => '/assignments', :course => @course, :action => 'view', :id => grade_item.assignment_id %>
+  	    <% else %>	
+          <%= grade_item.name %>
+	    <% end %>
+	  </td>
       <td><%= grade_item.date.to_formatted_s(:long) %></td>
       <td align="right" class="cell">
         <% if @grade_map[grade_item.id].nil? %>

@@ -1,0 +1,64 @@
+<h2>Student turn-ins for '<%= @assignment.title %>'</h2>
+<h3>Course: <%= @course.title %> (<%= @course.term.semester%>)</h3>
+
+<% unless @grade_item %>
+<p><i>Warning - this assignment is not connected with an entry in the GradeBook.</i></p>
+<% end %>
+
+
+<table class="fancy">
+  <tr class="header">
+    <th valign="bottom">UniqueID</th>
+    <th valign="bottom">Student</th>
+    <% if @assignment.use_subversion || @assignment.enable_upload %>
+      <th valign="bottom">Files<br/>Submitted</th>
+    <% end %>
+    <% if @assignment.enable_journal %>
+      <th valign="bottom">Journals</th>
+    <% end %>
+
+	<% if @grade_item %>
+	  <th valign="bottom">Grades<br/>
+	  <%= @grade_item.points %> points
+	  </th>
+	<% end %>
+
+    <th valign="bottom">View</th>
+  </tr>
+
+  <% count = 0 %>
+  <% for student in @students %>
+    <% count = count.next 
+	   odd = "odd"
+	   odd = "even" if count.even?
+  	%>
+	<tr class="<%=odd%> hover" id="student_<%=@students%>">
+      <td><%=h student.uniqueid %></td>
+      <td><%=h student.display_name %></td>
+
+      <% if @assignment.use_subversion || @assignment.enable_upload %>
+        <td><% if @turnin_sets[student.id] %>Yes
+	        <% else %>No<% end %>
+        </td>
+      <% end %>
+      <% if @assignment.enable_journal %>
+        <td><%= pluralize( @journal_count[student.id], 'Journal') %></td>
+      <% end %>
+
+	  <% if @grade_item %>
+	    <td align="right">
+	      <% if @grades[student.id] %>
+	        <%= sprintf("%0.1f", @grades[student.id] ) %>
+	      <% else %>
+	        <acronym title="no grade entered"><%= image_tag 'bullet_error' %></acronym>
+	      <% end %>
+	    </td>
+	  <% end %>
+
+      <td>
+        <%= link_to "View files/journals", :action => 'view_student', :id => student %>
+      </td> 
+    </tr>
+  <% end %>
+
+</table>
