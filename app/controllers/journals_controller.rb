@@ -20,6 +20,7 @@ class JournalsController < ApplicationController
   def new
     return unless load_course( params[:course] )
     return unless allowed_to_see_course( @course, @user )
+    return unless course_open( @course, :controller => '/assignments', :action => 'view', :assignment => params[:assignment], :course => params[:course] )
     
     @assignment = Assignment.find(params[:assignment]) rescue @assignment = Assignment.new
     return unless assignment_in_course( @assignment, @course )
@@ -36,6 +37,7 @@ class JournalsController < ApplicationController
   def create
     return unless load_course( params[:course] )
     return unless allowed_to_see_course( @course, @user )
+    return unless course_open( @course, :controller => '/assignments', :action => 'view', :assignment => params[:assignment], :course => params[:course] )
     
     @assignment = Assignment.find(params[:assignment]) rescue @assignment = Assignment.new
     return unless assignment_in_course( @assignment, @course )
@@ -65,6 +67,7 @@ class JournalsController < ApplicationController
   def edit
     return unless load_course( params[:course] )
     return unless allowed_to_see_course( @course, @user )
+    return unless course_open( @course, :controller => '/assignments', :action => 'view', :assignment => params[:assignment], :course => params[:course] )
     
     @assignment = Assignment.find(params[:assignment]) rescue @assignment = Assignment.new
     return unless assignment_in_course( @assignment, @course )
@@ -80,6 +83,7 @@ class JournalsController < ApplicationController
   def update
     return unless load_course( params[:course] )
     return unless allowed_to_see_course( @course, @user )
+    return unless course_open( @course, :controller => '/assignments', :action => 'view', :assignment => params[:assignment], :course => params[:course] )
     
     @assignment = Assignment.find(params[:assignment]) rescue @assignment = Assignment.new
     return unless assignment_in_course( @assignment, @course )

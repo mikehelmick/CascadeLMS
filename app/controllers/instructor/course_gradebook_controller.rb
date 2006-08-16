@@ -55,6 +55,7 @@ class Instructor::CourseGradebookController < Instructor::InstructorBase
   def save_settings
     return unless load_course( params[:course] )
     return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_gradebook' )
+    return unless course_open( @course, :action => 'index' )
     
     @gradebook = @course.gradebook
     if @gradebook.update_attributes(params[:gradebook])
@@ -68,6 +69,7 @@ class Instructor::CourseGradebookController < Instructor::InstructorBase
   def item
     return unless load_course( params[:course] )
     return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_gradebook' )
+    return unless course_open( @course, :action => 'index' )
     
     # either the existing - or a new one
     @grade_item = GradeItem.find(params[:id]) rescue @grade_item = nil
@@ -82,6 +84,7 @@ class Instructor::CourseGradebookController < Instructor::InstructorBase
   def delete_item
     return unless load_course( params[:course] )
     return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_gradebook' )
+    return unless course_open( @course, :action => 'index' )
     
     @grade_item = GradeItem.find(params[:id]) rescue @grade_item = nil
     return unless item_in_course( @course, @grade_item )
@@ -97,6 +100,7 @@ class Instructor::CourseGradebookController < Instructor::InstructorBase
   def save_item
     return unless load_course( params[:course] )
     return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_gradebook' )
+    return unless course_open( @course, :action => 'index' )
     
     if ( params[:id] ) # existing
       @grade_item = GradeItem.find(params[:id]) rescue @grade_item = nil
@@ -128,6 +132,7 @@ class Instructor::CourseGradebookController < Instructor::InstructorBase
   def enter
     return unless load_course( params[:course] )
     return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_gradebook' )
+    return unless course_open( @course, :action => 'index' )
     
     @grade_item = GradeItem.find(params[:id]) rescue @grade_item = nil
     return unless item_in_course( @course, @grade_item )
@@ -144,6 +149,7 @@ class Instructor::CourseGradebookController < Instructor::InstructorBase
   def save_grades
     return unless load_course( params[:course] )
     return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_gradebook' )
+    return unless course_open( @course, :action => 'index' )
     
     @grade_item = GradeItem.find(params[:id]) rescue @grade_item = nil
     return unless item_in_course( @course, @grade_item )

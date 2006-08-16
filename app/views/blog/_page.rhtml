@@ -1,0 +1,34 @@
+<%
+public = false if public.nil?
+%>
+
+<% if @posts.size == 0 %>
+ <p><i>There are no entries in this course's blog.</i></p>
+
+<% else %>
+
+<% if @featured.size > 0 %>
+  <div id="featured"><h2>Sticky Announcements</h2>
+  <% for post in @featured %>
+    <%= render :partial => "/blog/article", :locals => { :post => post, :single => false, :public => public } %> 
+  <% end %>
+
+  </div>
+<% end %>
+
+
+<% for post in @posts %>
+<%= render :partial => "/blog/article", :locals => { :post => post, :single => false, :public => public } %> 
+<% end %>
+
+<% if @post_pages.page_count > 1 %><p>Page: 
+<% 1.upto(@post_pages.page_count) do |i| %>
+ <% if i == @page %>
+   <%= i %>
+ <% else %>
+     <%= link_to i, { :page => i } %>
+ <% end %>
+<% end %></p>
+<% end %>
+
+<% end %>

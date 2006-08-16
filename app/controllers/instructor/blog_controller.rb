@@ -29,7 +29,7 @@ class Instructor::BlogController < Instructor::InstructorBase
   def new
     return unless load_course( params[:course] )
     return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_blog_post' )
-    
+    return unless course_open( @course, :action => 'index' )
     
     @post = Post.new
   end
@@ -37,7 +37,7 @@ class Instructor::BlogController < Instructor::InstructorBase
   def create
     return unless load_course( params[:course] )
     return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_blog_post' )
-    
+    return unless course_open( @course, :action => 'index' )
     
     @post = Post.new(params[:post])
     @post.course = @course
@@ -53,11 +53,16 @@ class Instructor::BlogController < Instructor::InstructorBase
   def edit
     return unless load_course( params[:course] )
     return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_blog_post' )
+    return unless course_open( @course, :action => 'index' )
     
     @post = Post.find(params[:id])
   end
 
   def update
+    return unless load_course( params[:course] )
+    return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_blog_post' )
+    return unless course_open( @course, :action => 'index' )
+    
     @post = Post.find(params[:id])
     if @post.update_attributes(params[:post])
       flash[:notice] = 'Post was successfully updated.'
@@ -71,6 +76,7 @@ class Instructor::BlogController < Instructor::InstructorBase
   def destroy
     return unless load_course( params[:course] )
     return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_blog_post' )
+    return unless course_open( @course, :action => 'index' )
     
     Post.find(params[:id]).destroy
     
@@ -82,6 +88,7 @@ class Instructor::BlogController < Instructor::InstructorBase
     return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_blog_edit' )
     post = Post.find(params[:post])
     return unless post_in_course( @course, post )
+    return unless course_open( @course, :action => 'index' )
   
     comment = Comment.find( params[:id] )
     return false unless comment.post_id = post.id

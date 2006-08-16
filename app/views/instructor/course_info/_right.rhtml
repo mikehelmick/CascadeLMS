@@ -4,6 +4,7 @@
 <div id="merge_area">
 
 <% term_courses = @user.courses_in_term( @course.term ) %>
+<% if @course.open %>
 <% if term_courses.size <= 1 %>
   <i>You have no other courses in this term.  Courses can only be merged if they are in the same term.</i>
 <% else %>
@@ -33,7 +34,9 @@
 <% end %>
 </table>
 
-
+<% end %>
+<% else %>
+<i><b>Disabled:</b> this course is in archive status.</i>
 <% end %>
 	
 </div>

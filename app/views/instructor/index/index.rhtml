@@ -90,3 +90,32 @@
   <% end %>
 
 </table>
+
+<table class="FadeTable" cellspacing="0">
+  <tr class="header">
+    <th class="full"><b>Course Availability for <%= @course.title %></b></th>
+  </tr>
+  
+  <tr>
+    <td><p>
+      <% if @course.open %>
+        <b>This course is open.</b><%= image_tag 'accept' %>
+      <% else %>
+        <b>This course is in archive status.</b><%= image_tag 'cross' %>
+      <% end %> (<%= link_to 'Change', :action => 'toggle_open' %>)</p>
+      <p>An <b>open</b> course is one which can still be updated (add new blog posts, comments, documents, and assignments).   A course in archive status allows for information to be read, but no information can be updated.   It is recommended that courses no longer taking place are put into archive status.</p>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <% if @course.public %>
+        <b>This course is visible to the public.</b><%= image_tag 'accept' %>
+      <% else %>
+        <b>This course is hidden from the public.</b><%= image_tag 'cross' %>
+      <% end %> (<%= link_to 'Change', :action => 'toggle_public' %>)</p>
+      <p>If a course is visible to the public, any internet user can view the course content, including: <b>blog posts, documents, and assignments</b>.  All student information (including blog comments) are kept hidden from the public in order to protect the identity of students.   <i>Making this information available will allow you to distribute information to the greater public in an easy manner.</i></p>
+    </td>
+    </td>
+  </tr>
+ 
+</table>

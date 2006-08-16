@@ -40,7 +40,7 @@ class DocumentsController < ApplicationController
   
   def doc_in_course( course, doc )
     unless course.id == doc.course.id
-      redirect_to :controller => '/instructor/index', :course => course
+      redirect_to :controller => '/documents', :course => course
       flash[:notice] = "Requested document could not be found."
       return false
     end

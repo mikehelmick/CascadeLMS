@@ -22,7 +22,7 @@ class Instructor::CourseDocsController < Instructor::InstructorBase
   def new
     return unless load_course( params[:course] )
     return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_documents' )
-    
+    return unless course_open( @course, :action => 'index' )
     
     @document = Document.new
   end
@@ -30,6 +30,7 @@ class Instructor::CourseDocsController < Instructor::InstructorBase
   def create
     return unless load_course( params[:course] )
     return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_documents' )
+    return unless course_open( @course, :action => 'index' )
     
     @document = Document.new(params[:document])
     @document.course = @course
@@ -49,6 +50,7 @@ class Instructor::CourseDocsController < Instructor::InstructorBase
   def edit
     return unless load_course( params[:course] )
     return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_documents' )
+    return unless course_open( @course, :action => 'index' )
     
     @document = Document.find(params[:id])
     return unless doc_in_course( @course, @document )
@@ -57,6 +59,7 @@ class Instructor::CourseDocsController < Instructor::InstructorBase
   def update
     return unless load_course( params[:course] )
     return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_documents' )
+    return unless course_open( @course, :action => 'index' )
     
     @document = Document.find(params[:id])
     return unless doc_in_course( @course, @document )
@@ -79,6 +82,7 @@ class Instructor::CourseDocsController < Instructor::InstructorBase
   def move_up
       return unless load_course( params[:course] )
       return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_documents' )
+      return unless course_open( @course, :action => 'index' )
 
       @document = Document.find(params[:id])
       return unless doc_in_course( @course, @document )
@@ -91,6 +95,7 @@ class Instructor::CourseDocsController < Instructor::InstructorBase
   def move_down
     return unless load_course( params[:course] )
     return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_documents' )
+    return unless course_open( @course, :action => 'index' )
 
     @document = Document.find(params[:id])
     return unless doc_in_course( @course, @document )
@@ -111,6 +116,10 @@ class Instructor::CourseDocsController < Instructor::InstructorBase
   end
 
   def destroy
+    return unless load_course( params[:course] )
+    return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_documents' )
+    return unless course_open( @course, :action => 'index' )
+    
     @document = Document.find(params[:id])
     @document.delete_file( @app['external_dir'] )
     @document.destroy

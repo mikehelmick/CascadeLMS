@@ -31,6 +31,7 @@ class BlogController < ApplicationController
   def comment
     return unless load_course( params[:course] )
     return unless allowed_to_see_course( @course, @user )
+    return unless course_open( @course, :action => 'post', :id => params[:id] )
     @post = Post.find( params[:id] )
     return unless post_in_course( @course, @post )  
     return unless check_comments_enabled( @course, @post )    

@@ -1,0 +1,46 @@
+<h2>Courses that offer public access</h2>
+
+<%
+options = ""
+@terms.each { |x| options = "#{options} <option value=\"#{x.id}\" #{"selected=\"selected\"" if @term.id==x.id}> #{x.semester.capitalize} #{ '(CURRENT)' if x.current }</option>" }
+%>
+
+<%= start_form_tag( { :action => 'cterm', :id => nil}, :method => :post ) %>
+<p><b>View Term: <%= select_tag 'id', options %></b> <%= submit_tag "Change" %>
+<%= end_form_tag %>
+
+<% if @term.current %>
+  <div class="GoodMessage" align="center"><b>'<%=@term.semester%>' is the current term.</b></div>
+<% else %>
+  <div class="errorExplanation" align="center"><b>'<%=@term.semester%>' is not the current term.</b></div>
+<% end %>
+
+<div class="SectionHeader"><div class="Full">
+<h2>Public viewable courses in this term</h2>
+</div></div>
+
+<% if @courses.size == 0 %>
+  <i>Sorry - there are no courses available in this term.</i>
+<% else %>
+<div class="Section" style="padding-top: 10px;">
+  <table class="fancy">
+    <tr class="header">
+      <th>Course</th>
+      <th>Title</th>
+      <th>Instructor</th>
+    </tr>
+
+    <% count = 0 %>
+    <% for course in @courses %>
+      <% count = count.next 
+	     odd = "odd"
+	     odd = "even" if count.even? %>
+	  <tr class="<%=odd%> hover" id="course_<%=course.id%>">
+        <td nowrap="nowrap"><%=h course.title %></td>
+        <td width="75%" nowrap="nowrap"><%= link_to "#{h course.short_description}", :controller => '/public/overview', :course => course %></td>
+        <td><%=h course.instructors.join(', ') %></td>
+      </tr>
+    <% end %>
+  </table>
+</div>
+<% end %>

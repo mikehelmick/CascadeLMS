@@ -54,11 +54,13 @@
                   <li><%= link_to 'Overview', { :controller => '/overview', :course => @course }, { :id => 'current' } %></li>		
 		    <% end %> 
 		    
+		     <% if @course.course_setting.enable_blog %>
 			  <% if @tab.nil? || !@tab.eql?('course_blog') %>
 			    <li><%= link_to 'Course Blog', :controller => '/blog', :course => @course %></li> 
 			  <% else %>
 	            <li><%= link_to 'Course Blog', { :controller => '/blog', :course => @course }, { :id => 'current' } %></li>
 	          <% end %>
+	         <% end %>
 			
 			  <% if @tab.nil? || !@tab.eql?('course_documents') %>
 			    <li><%= link_to 'Documents', :controller => '/documents', :course =>@course %></li>
@@ -100,15 +102,6 @@
 		  <% end %>
 		<% end %>
 		
-		
-		
-		<!--
-		<li><a href="#" <%= 'id="current"' if session[:tab].nil? || session[:tab].eql('home') %>>Home</a></li>
-		<li><a href="#">Item two</a></li>
-		<li><a href="#">Item three</a></li>
-		<li><a href="#">Item four</a></li>
-		<li><a href="#">Item five</a></li>
-		-->
 	</ul>
 	
 
@@ -124,6 +117,10 @@
         <div class="col">
 <% if flash[:notice] %><div id="GoodMessage"><%= flash[:notice] %></div><% end %>
 <% if flash[:badnotice] %><div class="errorExplanation"><%= flash[:badnotice] %></div><% end %>
+
+<% if @course && !@course.open %>
+<div class="errorExplanation" align="center"><b>This course is now in archive mode, no changes may be made.</b></div>
+<% end  %>
 
 <%= @content_for_layout %>
 

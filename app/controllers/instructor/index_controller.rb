@@ -10,6 +10,26 @@ class Instructor::IndexController < Instructor::InstructorBase
     set_title
   end
   
+  def toggle_open
+    return unless load_course( params[:course] )
+    return unless ensure_course_instructor_on_assistant( @course, @user )
+    
+    @course.open = ! @course.open
+    @course.save
+    
+    redirect_to :action => 'index'
+  end
+  
+  def toggle_public
+    return unless load_course( params[:course] )
+    return unless ensure_course_instructor_on_assistant( @course, @user )
+    
+    @course.public = ! @course.public
+    @course.save
+    
+    redirect_to :action => 'index'
+  end
+  
   def set_tab
     @show_course_tabs = true
     @tab = "course_instructor"

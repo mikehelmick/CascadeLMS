@@ -1,0 +1,3 @@
+<% unless session[:user] && session[:user].student_in_course?(@course.id) %>
+<div class="errorExplanation" align="center"><b>You are not enrolled in this course.</b></div>
+<% end  %>

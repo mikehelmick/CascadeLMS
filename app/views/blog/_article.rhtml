@@ -1,7 +1,7 @@
 <div class="BlogPost">
 	
 <h2><%= link_to "#{h post.title}", :action => 'post', :course => @course, :id => post %>
-<% if post.user_id == session[:user].id %>
+<% if session[:user] && post.user_id == session[:user].id %>
  <%= link_to "#{image_tag('page_edit')}", :controller => "/instructor/blog", :action => 'edit', :course => @course, :id => post %>
 <% end %>
 </h2>	

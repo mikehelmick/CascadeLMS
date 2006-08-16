@@ -62,6 +62,7 @@ class AssignmentsController < ApplicationController
   end
 
   def svn_command
+    
     @partial_name = nil
     
     exit = false
@@ -107,6 +108,7 @@ class AssignmentsController < ApplicationController
     
     elsif params[:command].eql?('release') || params[:command].eql?('turnin')
       return unless assignment_open( @assignment )
+      return unless course_open( @course, :action => 'index' )
       
       svn = SubversionManager.new( @app['subversion_command'] )
       begin
@@ -235,6 +237,6 @@ class AssignmentsController < ApplicationController
     @title = "#{@assignment.title} - #{@course.title}" unless @assignment.nil?
   end
   
-  private :set_tab, :set_title, :assignment_available, :document_in_assignment
+  private :set_tab, :set_title, :assignment_available, :document_in_assignment, :assignment_open
   
 end

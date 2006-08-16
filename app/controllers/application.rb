@@ -46,6 +46,23 @@ class ApplicationController < ActionController::Base
       "No"
     end
   end
+  
+  def disabled_text
+    if course.open
+      ''
+    else
+      'disabled="disabled"'
+    end
+  end
+  
+  def course_open( course, redirect_info = {} )
+    unless course.open
+      flash[:badnotice] = "The requested action can not be performed, since the course is in archive status."
+      redirect_to redirect_info
+      return false
+    end
+    return true
+  end
  	
  	def ensure_logged_in
  	  if session[:user].nil?
@@ -55,6 +72,14 @@ class ApplicationController < ActionController::Base
     end
     # duplicate user - to keep session down
     @user = User.find(session[:user].id)
+    return true
+  end
+  
+  def course_is_public( course )
+    unless course.public
+      flash[:badnotice] = "The selected course is not available to the public."
+      redirect_to :controller => '/public'
+    end
     return true
   end
   

@@ -17,6 +17,7 @@ class Instructor::CourseInfoController < Instructor::InstructorBase
   def update
     return unless load_course( params[:course] )
     return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_information' )
+    return unless course_open( @course, :action => 'index' )
     
     if @course.course_information.nil?
       @course.course_information = CourseInformation.new
@@ -37,6 +38,7 @@ class Instructor::CourseInfoController < Instructor::InstructorBase
   def merge
     return unless load_course( params[:course] )
     return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_information' )
+    return unless course_open( @course, :action => 'index' )
    
     other = Course.find(params[:id])
     

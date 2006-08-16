@@ -1,6 +1,7 @@
 <%= render :partial => 'instructor/index/right' %>
 
 <h2>Add users to this course</h2>
+<% if @course.open %>
 <div id="search_area">
 <%= form_remote_tag( :update => 'search_results', :url => { :action => :search, :id => @course }, :complete => "new Effect.BlindDown('search_results');" ) %>
 	<label for="id">Search Terms:</label> 
@@ -11,5 +12,7 @@
 </div>
 
 <div id="search_results" style="display: none;">
-
 </div>
+<% else %>
+<i><b>Disabled:</b> this course is in archive status.</i>
+<% end %>

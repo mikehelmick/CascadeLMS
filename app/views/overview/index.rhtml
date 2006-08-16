@@ -1,31 +1,4 @@
 <h2><%= @course.title %> 
 <% if @course.short_description %>, <%= @course.short_description %><%end%></h2>
 
-
-<table class="FadeTable" cellspacing="0" cellpadding="0">
-  <tr class="header">
-    <th colspan="5"><b>What's Fresh?</b> - the most recent activity for this course.</th>
-  </tr>
-
-  <% if @recent_activity.size == 0 %>
-    <tr class="row1"><td colspan="5"><i>No recent activity.</i></td></tr>
-  <% else %>
-  
-    <% count = 0 %>
-    <% for item in @recent_activity %>
-      <% count = count.next %>
-
-      <tr class="row<%=count%>">
-        <td nowrap="nowrap"><acronym title="<%= item.acronym %>"><%= image_tag "#{item.icon}" %></a></td>
-	    <td nowrap="nowrap"><b><%= item.summary_date %></b></td>
-		<td nowrap="nowrap">
-		  <%= link_to "#{item.summary_title}", :controller => '/redirect', :type => "#{item.class.to_s}", :id => item.id %>
-		</td>
-	    <td nowrap="nowrap" align="right"><i><%= item.summary_action %></i></td>
-		<td width="75%"><%= item.summary_actor %></td>
-      </tr>
-    
-    <% end %>
-  <% end %>
-
-</table>
+<%= render :partial => "fresh" %>

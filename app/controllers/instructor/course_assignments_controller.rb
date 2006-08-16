@@ -12,6 +12,7 @@ class Instructor::CourseAssignmentsController < Instructor::InstructorBase
   def new
     return unless load_course( params[:course] )
     return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_assignments' )
+    return unless course_open( @course, :action => 'index' )
 
     @assignment = Assignment.new
     @journal_field = JournalField.new
@@ -33,6 +34,7 @@ class Instructor::CourseAssignmentsController < Instructor::InstructorBase
   def create
     return unless load_course( params[:course] )
     return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_assignments' )
+    return unless course_open( @course, :action => 'index' )
     
     do_exit = false
     # create the assignment
@@ -69,6 +71,7 @@ class Instructor::CourseAssignmentsController < Instructor::InstructorBase
   def move_up
     return unless load_course( params[:course] )
     return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_assignments' )
+    return unless course_open( @course, :action => 'index' )
     
     @assignment = Assignment.find @params['id'] rescue @assignment = Assignment.new
     return unless assignment_in_course( @course, @assignment )
@@ -81,6 +84,7 @@ class Instructor::CourseAssignmentsController < Instructor::InstructorBase
   def move_down
     return unless load_course( params[:course] )
     return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_assignments' )
+    return unless course_open( @course, :action => 'index' )
     
     @assignment = Assignment.find @params['id'] rescue @assignment = Assignment.new
     return unless assignment_in_course( @course, @assignment )
@@ -93,6 +97,7 @@ class Instructor::CourseAssignmentsController < Instructor::InstructorBase
   def destroy
     return unless load_course( params[:course] )
     return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_assignments' )
+    return unless course_open( @course, :action => 'index' )
     
     @assignment = Assignment.find( @params['id'] )
     return unless assignment_in_course( @course, @assignment )
@@ -107,6 +112,7 @@ class Instructor::CourseAssignmentsController < Instructor::InstructorBase
   def edit
     return unless load_course( params[:course] )
     return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_assignments' )
+    return unless course_open( @course, :action => 'index' )
     
     @assignment = Assignment.find( @params['id'] )
     return unless assignment_in_course( @course, @assignment )   
@@ -119,6 +125,7 @@ class Instructor::CourseAssignmentsController < Instructor::InstructorBase
   def update
     return unless load_course( params[:course] )
     return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_assignments' )
+    return unless course_open( @course, :action => 'index' )
     
     @assignment = Assignment.find( @params['id'] )
     return unless assignment_in_course( @course, @assignment )
@@ -158,6 +165,7 @@ class Instructor::CourseAssignmentsController < Instructor::InstructorBase
   def file_move_up
     return unless load_course( params[:course] )
     return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_assignments' )
+    return unless course_open( @course, :action => 'index' )
     
     @assignment = Assignment.find @params[:id] rescue @assignment = Assignment.new
     return unless assignment_in_course( @course, @assignment )
@@ -173,6 +181,7 @@ class Instructor::CourseAssignmentsController < Instructor::InstructorBase
   def file_move_down
     return unless load_course( params[:course] )
     return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_assignments' )
+    return unless course_open( @course, :action => 'index' )
     
     @assignment = Assignment.find( @params[:id] ) rescue @assignment = Assignment.new
     return unless assignment_in_course( @course, @assignment )
@@ -188,6 +197,7 @@ class Instructor::CourseAssignmentsController < Instructor::InstructorBase
   def file_delete
     return unless load_course( params[:course] )
     return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_assignments' )
+    return unless course_open( @course, :action => 'index' )
     
     @assignment = Assignment.find( @params[:id] ) rescue @assignment = Assignment.new
     return unless assignment_in_course( @course, @assignment )

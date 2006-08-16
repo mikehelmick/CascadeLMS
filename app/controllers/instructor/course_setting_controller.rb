@@ -18,6 +18,8 @@ class Instructor::CourseSettingController < Instructor::InstructorBase
   def update
     return unless load_course( params[:course] )
     return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_settings' )
+    return unless course_open( @course, :action => 'index' )
+    
     @course_settings = @course.course_setting
     if @course_settings.update_attributes(params[:course_settings])
       flash[:notice] = 'Settings were successfully updated.'
