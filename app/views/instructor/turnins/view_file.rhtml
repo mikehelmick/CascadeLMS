@@ -3,7 +3,6 @@
 
 <p><%= link_to "Back turn-in for #{@student.display_name}", :controller => '/instructor/turnins', :action => 'view_student', :course => @course, :assignment => @assignment, :id => @student %></p>
 
-
 <table class="codetable" cellpadding="0" cellspacing="0">
   <tr class="header">
    <th>Line#</th>
@@ -18,9 +17,32 @@
 	   odd = "even" if line_num.even?
   	%>
 	<tr class="<%=odd%> hover" id="line_<%=line_num%>">
-	  <td align="right" nowrap="nowrap"><%=line_num%></td>
-	  <td>--</td>
+	  <td align="right" nowrap="nowrap" <%= 'style="background-color: #0C0;"' if @comments[line_num] %>><%=line_num%></td>
+	  <td align="center" <%= 'style="background-color: #0C0;"' if @comments[line_num] %>>
+	    <% if @comments[line_num] %>
+	      <%= link_to_function "view", visual_effect(:toggle_slide, "comments_line_#{line_num}" ) %>
+	    <% else %>
+	      <%= link_to_function "new", visual_effect(:toggle_slide, "comments_line_#{line_num}" ) %>	      
+	    <% end %>
+	  </td>
       <td><code><%= line %></code></td>
+    </tr>
+    <tr id="comments_line_<%=line_num%>" style="display: none;">
+      <td colspan="3" class="formcell">
+ 		<%= form_remote_tag :url => { :controller => "/instructor/turnins", :action => "file_comment", :course => @course, :assignment => @assignment, :student => @student, :id => @utf.id }, :success => "new Effect.Highlight( 'line_#{line_num}' )", :failure => "alert('There was an error saving the comment for line #{line_num}, please refresh the page.');"  %>
+<!-- 
+        <%= form_tag( :controller => "/instructor/turnins", :action => "file_comment", :course => @course, :assignment => @assignment, :student => @student, :id => @utf.id ) %> -->
+           <%= hidden_field_tag 'line', line_num.to_s %>
+           <% if @comments[line_num] %>
+             <i>Comment by <%= @comments[line_num].user.display_name %></i><br/>
+             <%= text_area_tag 'comments', @comments[line_num].comments, "cols" => 120, "rows" => 5 %> 
+           <% else %>
+             <%= text_area_tag 'comments', '', "cols" => 120, "rows" => 5 %>
+           <% end %>
+           <%= submit_tag "Save Comments for line #{line_num}" %>
+        <%= end_form_tag %>
+      </td>
+    </tr>
   <% end %>
 
 </table>

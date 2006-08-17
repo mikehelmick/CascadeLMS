@@ -213,6 +213,35 @@ class Instructor::TurninsController < Instructor::InstructorBase
     end
   end
   
+  def file_comment
+    return unless load_course( params[:course] )
+    return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_grade_individual' )
+    
+    @assignment = Assignment.find( @params[:assignment] )
+    return unless assignment_in_course( @course, @assignment )
+    
+    @utf = UserTurninFile.find( params[:id] )  
+    return unless turnin_file_downloadable( @utf )
+    @turnin = @utf.user_turnin 
+    return unless turnin_for_assignment( @turnin, @assignment )
+    
+    line_number = params[:line]
+    inst_comments = params[:comments]
+    
+    comment = FileComment.find(:first, :conditions => ["user_turnin_file_id=? and line_number=?", @utf.id, inst_comments] )
+    if comment.nil?
+      comment = FileComment.new
+    end
+    comment.user_turnin_file = @utf
+    comment.line_number = line_number
+    comment.user = @user
+    comment.comments = inst_comments
+    
+    comment.save
+    
+    render :nothing => true
+  end
+  
   def view_file
     return unless load_course( params[:course] )
     return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_grade_individual' )
@@ -241,23 +270,12 @@ class Instructor::TurninsController < Instructor::InstructorBase
     filename = "#{directory}#{relative_name}"
     
     begin      
-      ## to be moved
-      command = "#{@app['enscript_command']} -C --pretty-print=#{FileManager.enscript_language(@utf.extension)} --language=html --color -p- -B #{filename}"
-      formatted =`#{command}`
-      
-      @lines = Array.new
-      pull = false
-      formatted.each_line do |line|
-        if !line.upcase.index('<PRE>').nil?
-          pull = true
-        elsif !line.upcase.index('</PRE>').nil?
-          pull = false
-        elsif pull
-          @lines << line.chomp.gsub(/  /, "&nbsp;&nbsp;" ).gsub(/\t/,"&nbsp;&nbsp;&nbsp;&nbsp;")
-        end
+      @lines = FileManager.format_file( @app['enscript_command'], filename, @utf.extension )
+
+      @comments = Hash.new
+      @utf.file_comments.each do |fc|
+        @comments[fc.line_number] = fc
       end
-      
-      ## end to be moved
       
     rescue
       flash[:badnotice] = "Error loading selected file.  Please contact your system administrator."

@@ -691,3 +691,8 @@ a img {
 	padding: 0px 2px 0px 2px;
 	border-left: 1px solid #D9D9D9;
 }
+
+.codetable .formcell {
+	padding-left: 50px;
+	background: #DCDDDE;
+}

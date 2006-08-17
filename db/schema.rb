@@ -2,7 +2,7 @@
 # migrations feature of ActiveRecord to incrementally modify your database, and
 # then regenerate this schema definition.
 
-ActiveRecord::Schema.define(:version => 33) do
+ActiveRecord::Schema.define(:version => 34) do
 
   create_table "announcements", :force => true do |t|
     t.column "headline", :string
@@ -132,6 +132,16 @@ ActiveRecord::Schema.define(:version => 33) do
     t.column "size", :string
     t.column "published", :boolean, :default => true, :null => false
   end
+
+  create_table "file_comments", :force => true do |t|
+    t.column "user_turnin_file_id", :integer, :default => 0, :null => false
+    t.column "line_number", :integer, :default => 0, :null => false
+    t.column "user_id", :integer, :default => 0, :null => false
+    t.column "comments", :string
+  end
+
+  add_index "file_comments", ["user_turnin_file_id", "line_number"], :name => "file_comments_file_line_number_idx", :unique => true
+  add_index "file_comments", ["user_turnin_file_id"], :name => "file_line_number_idx"
 
   create_table "grade_categories", :force => true do |t|
     t.column "category", :string

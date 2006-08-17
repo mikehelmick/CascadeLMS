@@ -58,8 +58,25 @@ class FileManager
     return format
   end
   
-  def FileManager.format_file( path )
+  def FileManager.format_file( enscript, path, extension )
+    ## to be moved
+    command = "#{enscript} -C --pretty-print=#{FileManager.enscript_language(extension)} --language=html --color -p- -B #{path}"
+    formatted =`#{command}`
     
+    lines = Array.new
+    pull = false
+    formatted.each_line do |line|
+      if !line.upcase.index('<PRE>').nil?
+        pull = true
+      elsif !line.upcase.index('</PRE>').nil?
+        pull = false
+      elsif pull
+        lines << line.chomp.gsub(/  /, "&nbsp;&nbsp;" ).gsub(/\t/,"&nbsp;&nbsp;&nbsp;&nbsp;")
+      end
+    end
+    ## end to be moved
+  
+    return lines
   end
               
   def FileManager.icon( extension ) 
