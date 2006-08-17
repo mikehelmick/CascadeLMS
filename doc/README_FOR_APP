@@ -11,3 +11,6 @@ Assignments:
   term/:term_id/course/:course_id/assignments/handouts/handout_:id.extension
 Student Turnins
   term/:term_id/course/:course_id/assignments/turnins/:user_id/files
+
+Requires
+  GNU enscript

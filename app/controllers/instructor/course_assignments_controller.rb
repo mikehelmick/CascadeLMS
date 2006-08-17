@@ -5,7 +5,7 @@ class Instructor::CourseAssignmentsController < Instructor::InstructorBase
  
   def index
     return unless load_course( params[:course] )
-    return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_assignments' )
+    return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_assignments' ) || ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_grade_individual' )
   
   end
   

@@ -1,0 +1,26 @@
+<h2>'<%= @assignment.title %>' turn-ins for '<%= @student.display_name %>'</h2>
+<h3>Course: <%= @course.title %> (<%= @course.term.semester%>)</h3>
+
+<p><%= link_to "Back turn-in for #{@student.display_name}", :controller => '/instructor/turnins', :action => 'view_student', :course => @course, :assignment => @assignment, :id => @student %></p>
+
+
+<table class="codetable" cellpadding="0" cellspacing="0">
+  <tr class="header">
+   <th>Line#</th>
+   <th>Comments</th>
+   <th align="center">Line from file</th>
+  </tr>
+
+  <% line_num = 0 %>
+  <% for line in @lines %>
+    <% line_num = line_num.next 
+	   odd = "odd"
+	   odd = "even" if line_num.even?
+  	%>
+	<tr class="<%=odd%> hover" id="line_<%=line_num%>">
+	  <td align="right" nowrap="nowrap"><%=line_num%></td>
+	  <td>--</td>
+      <td><code><%= line %></code></td>
+  <% end %>
+
+</table>

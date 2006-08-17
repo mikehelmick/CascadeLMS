@@ -1,8 +1,11 @@
+require 'Syntaxi'
+
 class Instructor::TurninsController < Instructor::InstructorBase
   
   before_filter :ensure_logged_in
   before_filter :set_tab
   
+  layout 'application'
   
   
   def index
@@ -95,6 +98,51 @@ class Instructor::TurninsController < Instructor::InstructorBase
     
   end
   
+  def submit_grade
+    return unless load_course( params[:course] )
+    return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_grade_individual' )
+    
+    @assignment = Assignment.find( @params[:assignment] )
+    return unless assignment_in_course( @course, @assignment )
+    
+    @student = User.find( params[:id] )
+    if ! @student.student_in_course?( @course.id )
+      flash[:badnotice] = "Invalid student record requested."
+      redirect_to :action => 'index'
+    end
+    
+    # get grade
+    # load grades
+    @grade_item = GradeItem.find(:first, :conditions => ["assignment_id = ?", @assignment.id] )
+    if @grade_item
+      @grade_entry = GradeEntry.find(:first, :conditions => ["grade_item_id=? and user_id=?", @grade_item.id, @student.id ] )
+      if @grade_entry
+        @grade_entry.update_attributes( params[:grade_entry] )
+      else
+        @grade_entry = GradeEntry.new( params[:grade_entry] )
+        @grade_entry.course = @course
+        @grade_entry.user = @student
+        @grade_entry.grade_item = @grade_item
+      end
+      
+      if @grade_entry.points.to_s.eql?('')
+        @grade_entry.destroy
+        @grade_entry = nil
+      end
+    else 
+      flash[:badnotice] = "Application error - there is not grade item for this assignment.  Set on up in the GradeBook."
+    end
+    
+    if @grade_entry.nil?
+      flash[:notice] = "Grade for '#{@student.display_name}' has been deleted for this assignment (Since no point value was entered)."
+    elsif @grade_entry.save
+      flash[:notice] = "Grade for '#{@student.display_name}' has been updated to '#{@grade_entry.points}' for this assignment."
+    else
+      flash[:badnotice] = "Error updating student grade - results not saved."
+    end
+    redirect_to :action => 'view_student', :id => @student
+  end
+  
   def download_set
     return unless load_course( params[:course] )
     return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_grade_individual' )
@@ -163,6 +211,60 @@ class Instructor::TurninsController < Instructor::InstructorBase
       flash[:badnotice] = "Sorry - the requested document has been deleted or is corrupt.  Please notify your system administrator if this problem continues."
       redirect_to :action => 'view_student', :course => @course, :assignment => @assignment, :id => @utf.user_id
     end
+  end
+  
+  def view_file
+    return unless load_course( params[:course] )
+    return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_grade_individual' )
+    
+    @assignment = Assignment.find( @params[:assignment] )
+    return unless assignment_in_course( @course, @assignment )
+    
+    @student = User.find( params[:student] )
+    return unless student_in_course( @course, @student )
+    
+    @utf = UserTurninFile.find( params[:id] )  
+    return unless turnin_file_downloadable( @utf )
+    @turnin = @utf.user_turnin 
+    return unless turnin_for_assignment( @turnin, @assignment )
+    
+    directory = @turnin.get_dir( @app['external_dir'] )
+    
+    # resolve file name
+    relative_name = @utf.filename
+    walker = @utf
+    while walker.directory_parent > 0 
+      walker = UserTurninFile.find( walker.directory_parent )
+      relative_name = "#{walker.filename}/#{relative_name}"
+    end
+    
+    filename = "#{directory}#{relative_name}"
+    
+    begin      
+      ## to be moved
+      command = "#{@app['enscript_command']} -C --pretty-print=#{FileManager.enscript_language(@utf.extension)} --language=html --color -p- -B #{filename}"
+      formatted =`#{command}`
+      
+      @lines = Array.new
+      pull = false
+      formatted.each_line do |line|
+        if !line.upcase.index('<PRE>').nil?
+          pull = true
+        elsif !line.upcase.index('</PRE>').nil?
+          pull = false
+        elsif pull
+          @lines << line.chomp.gsub(/  /, "&nbsp;&nbsp;" ).gsub(/\t/,"&nbsp;&nbsp;&nbsp;&nbsp;")
+        end
+      end
+      
+      ## end to be moved
+      
+    rescue
+      flash[:badnotice] = "Error loading selected file.  Please contact your system administrator."
+      redirect_to :action => 'view_student', :course => @course, :assignment => @assignment, :student => nil, :id => @student
+      return
+    end
+    
   end
   
   ## BEGIN PRIVATE UTILITY METHODS

@@ -96,6 +96,15 @@ class ApplicationController < ActionController::Base
     return false
   end
   
+  def student_in_course( course, student )
+    if ! @student.student_in_course?( @course.id )
+      flash[:badnotice] = "Invalid student record requested, the student is not enrolled in this course."
+      redirect_to :action => 'index'
+      return false
+    end
+    true
+  end
+  
   def assignment_in_course( assignment, course, redirect = true )
     unless assignment.course_id == course.id 
       flash[:badnotice] = "The requested assignment could not be found."

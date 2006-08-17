@@ -26,6 +26,41 @@ class FileManager
                   'tex' => true, 
                   'txt' => true, 
                   'readme' => true }
+     
+  @@enscripts = {    
+     'asm' => 'asm',
+     's' => 'asm',
+     'c' => 'c',
+     'cpp' => 'cpp',
+     'c++' => 'cpp',
+     'cxx' => 'cpp',
+     'cc' => 'cpp',
+     'html' => 'html',
+     'htm' => 'html',
+     'rhtml' => 'html',
+     'xml' => 'html',
+     'idl' => 'idl',
+     'java' => 'java',
+     'aj' => 'java',
+     'js' => 'javascript',
+     'm' => 'objc',
+     'pas' => 'pascal',
+     'pl' => 'perl',
+     'py' => 'python',
+     'sc' => 'scheme',
+     'sh' => 'sh',
+     'sql' => 'sql'
+  }
+              
+  def FileManager.enscript_language( extension )
+    format = @@enscripts[extension]
+    format = 'java' if format.nil?
+    return format
+  end
+  
+  def FileManager.format_file( path )
+    
+  end
               
   def FileManager.icon( extension ) 
     icn = @@icons[extension]

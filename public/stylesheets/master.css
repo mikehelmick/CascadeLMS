@@ -649,4 +649,45 @@ a img {
 	color: #0000FF;
 }
 
+.codetable {
+	border: 1px solid #666666;
+}
 
+.codetable tr.hover:hover
+{
+	background: #bfd5ff;
+}
+
+.codetable tr.fheader a
+{
+	color: #000000;
+	font-weight: normal;
+}
+
+.codetable tr.fheader a:hover
+{
+	color: #000000;
+	font-weight: normal;
+	text-decoration: none;
+}
+
+.codetable a:visited {
+	color: #000000;
+}
+
+.codetable tr.odd
+{
+	background-color: #fff;
+}
+
+.codetable tr.even
+{
+	background-color: #fff;
+}
+
+.codetable tbody tr td {
+	font-family: "times", verdana, sans-serif;
+	font-size: 10pt;
+	padding: 0px 2px 0px 2px;
+	border-left: 1px solid #D9D9D9;
+}
