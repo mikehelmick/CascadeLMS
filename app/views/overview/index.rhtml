@@ -1,4 +1,4 @@
 <h2><%= @course.title %> 
 <% if @course.short_description %>, <%= @course.short_description %><%end%></h2>
 
-<%= render :partial => "fresh" %>
+<%= render :partial => "fresh", :locals => { :public => false } %>

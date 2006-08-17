@@ -63,6 +63,12 @@
               <li><%= link_to 'Documents', { :controller => '/public/documents', :course =>@course }, { :id => 'current' } %></li>
             <% end %>
 
+			<% if @tab.nil? || !@tab.eql?('course_assignments') %>
+		 	  <li><%= link_to 'Assignments', :controller => '/public/assignments', :course => @course %></li>
+			<% else %>
+			  <li><%= link_to 'Assignments', { :controller => '/public/assignments', :course => @course }, { :id => 'current' } %></li>
+			<% end %>
+
 		<% end %>
 	</ul>
 	
