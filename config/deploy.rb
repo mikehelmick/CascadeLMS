@@ -38,7 +38,7 @@ role :db,  "mydb.csamu.org", :primary => true
 set :deploy_to, "/srv/www/rails/#{application}" # defaults to "/u/apps/#{application}"
 set :user, "helmicmt"            # defaults to the currently logged in user
 # set :scm, :darcs               # defaults to :subversion
-# set :svn, "/path/to/svn"       # defaults to searching the PATH
+set :svn, "/usr/local/bin/svn"       # defaults to searching the PATH
 # set :darcs, "/path/to/darcs"   # defaults to searching the PATH
 # set :cvs, "/path/to/cvs"       # defaults to searching the PATH
 # set :gateway, "gate.host.com"  # default to no gateway
