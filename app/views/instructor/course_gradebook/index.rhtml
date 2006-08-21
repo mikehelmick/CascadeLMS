@@ -1,5 +1,8 @@
 <%= link_to 'Back', :controller => '/instructor/index', :course => @course %> |
 <%= link_to 'Grade Book Settings', :action => 'settings', :course => @course %> |
+<% if @course.gradebook && @course.gradebook.weight_grades %>
+  <%= link_to 'Set Weighting', :action => 'set_weights', :course => @course %> |
+<% end %>
 <%= link_to 'Add New Item', :action => 'item', :course => @course %>
 
 <h2>Grade Book for <%= @course.title %></h2>
@@ -23,6 +26,9 @@
 	     <%= link_to "#{image_tag 'book_edit'}", :action => 'item', :course => @course, :id => gi.id %>
 	   </a>
 	   <acronym title="Enter Grades"><%= link_to "#{image_tag 'calculator'}", :action => 'enter', :course => @course, :id => gi.id %></a>
+	    <% if @course.gradebook.weight_grades %><br/>
+	     Cat Weight: <%= sprintf("%.2f", @weight_map[gi.grade_category.id] ) %>
+	    <% end %>
 	</th>
    <% end %>
    <th class="cell"  nowrap="nowrap">Total Points<br/><%=@total_points%></th>
@@ -56,7 +62,8 @@
 	
 	<td class="cell"><%= @student_totals[student.id] %></td>
 	<td class="cell">
-	  <% if @course.gradebook.weight_grades %>TODO
+	  <% if @course.gradebook.weight_grades %>
+	    <%= sprintf( "%.2f", @student_weighted[student.id] ) %>
       <% else %>
 		<% if @total_points > 0 %>
 		  <%= sprintf( "%.2f", @student_totals[student.id] / @total_points * 100 )%>%

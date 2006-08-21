@@ -1,0 +1,35 @@
+<h2>GradeBook Weighting for <%= @course.title %></h2>
+
+<div id="form_area">
+
+<%= start_form_tag :action => 'save_weights', :id => @course %>
+
+<p class="blockintro">Enter category weights, they must total 100%</p>
+<table class="fancy">
+  <tr class="header"> 
+   <th nowrap="nowrap">Category</th>
+   <th nowrap="nowrap">Weight %</th>
+  </tr>
+
+<% count = 0 %>
+<% for weight in @weights %>
+  <% count = count.next 
+	   odd = "odd"
+	   odd = "even" if count.even?
+	  %>
+  <tr class="<%=odd%> hover" id="weight_<%=weight.id%>">
+    <td nowrap="nowrap"><%=h weight.grade_category.category %></td>
+    <td nowrap="nowrap"><%= text_field_tag "weight_#{weight.id}", sprintf( "%.2f", @matrix[weight.id] ), :size => 10 %> </td>
+  </tr>
+<% end %>
+</table>
+
+<br/>
+ 
+<div class="submit">
+  <%= submit_tag 'Save Weights' %>
+</div>
+<%= end_form_tag %>
+</div>
+
+<%= link_to 'Cancel', :controller => '/instructor/course_gradebook', :course => @course, :action => 'index' %>

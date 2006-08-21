@@ -4,6 +4,8 @@
 <table class="fancy">
   <tr class="header">
     <th>Assignment</th>
+    <th>Category</th>
+    <% if @course.gradebook.weight_grades %><th>Category Weight</th><% end %>
     <th>Date</th>
     <th>Your Score</th>
     <th>Possible Points</th>
@@ -25,6 +27,8 @@
           <%= grade_item.name %>
 	    <% end %>
 	  </td>
+	  <td><%= grade_item.grade_category.category %></td>
+	  <% if @course.gradebook.weight_grades %><td align="right"><%= sprintf("%.2f", @weight_map[grade_item.grade_category.id] ) %>%</td><% end %>
       <td><%= grade_item.date.to_formatted_s(:long) %></td>
       <td align="right" class="cell">
         <% if @grade_map[grade_item.id].nil? %>
@@ -46,11 +50,22 @@
 
   <% if @course.gradebook && @course.gradebook.show_total %>
     <tr class="summary">
-      <td colspan="2">&nbsp;</td>
+      <% width = 3
+         width = 4 if @course.gradebook.weight_grades  
+       %>
+      <td colspan="<%=width%>" align="right">Points Summary:</td>
       <td class="summaryCell"><%= sprintf( "%.1f", @total_points ) %></td>
       <td class="summaryCell"><%= sprintf( "%.1f", @total_points_possible ) %></td> 
       <td class="summaryCell"><%= sprintf( "%.2f", @total_points / @total_points_possible * 100 ) rescue '--' %>% </td>
     </tr>
+    <% if @course.gradebook.weight_grades %>
+      <tr class="summary">
+        <td colspan="4" align="right">Weighted Average:</td>
+        <td class="summaryCell"><%= sprintf( "%.2f", @weighted_average ) %>%</td>
+        <td class="summaryCell"> </td> 
+        <td class="summaryCell"> </td>
+      </tr>
+    <% end %>
   <% end %>
 
 </table>

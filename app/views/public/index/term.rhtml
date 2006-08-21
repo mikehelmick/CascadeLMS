@@ -38,7 +38,7 @@ options = ""
 	  <tr class="<%=odd%> hover" id="course_<%=course.id%>">
         <td nowrap="nowrap"><%=h course.title %></td>
         <td width="75%" nowrap="nowrap"><%= link_to "#{h course.short_description}", :controller => '/public/overview', :course => course %></td>
-        <td><%=h course.instructors.join(', ') %></td>
+        <td nowrap="nowrap"><%=h course.instructors.join(', ') %></td>
       </tr>
     <% end %>
   </table>

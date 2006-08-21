@@ -16,9 +16,32 @@ class Instructor::CourseGradebookController < Instructor::InstructorBase
     
     create_gradebook
     
+    if @course.gradebook.weight_grades
+      weights = GradeWeight.reconcile( @course )
+      @weight_map = Hash.new
+      weights.each { |x| @weight_map[x.grade_category_id] = x.percentage }
+      
+      cat_max_points = Hash.new
+      @grade_items.each do |gi|
+        if cat_max_points[gi.grade_category_id].nil?
+          cat_max_points[gi.grade_category_id] = gi.points
+        else
+          cat_max_points[gi.grade_category_id] += gi.points
+        end
+      end
+    end
+    
     if @students.size > 0
       @student_totals = Hash.new
-      @students.each { |s| @student_totals[s.id] = 0 }
+      @student_cat_total = Hash.new
+      @student_weighted = Hash.new
+      @students.each do |s| 
+        @student_totals[s.id] = 0
+        @student_cat_total[s.id] = Hash.new
+        @student_weighted[s.id] = 0
+      end
+      @category_total_points = Hash.new
+      @grade_items.each { |gi| @category_total_points[gi.id] = 0 }
       # initialize grade matrix - one hash for each student
       @grade_matrix = Hash.new
       @students.each { |s| @grade_matrix[s.id] = Hash.new }
@@ -36,7 +59,35 @@ class Instructor::CourseGradebookController < Instructor::InstructorBase
             @grade_matrix[ge.user_id][gi.id] = ge.points
             @averages[gi.id] += ge.points
             @student_totals[ge.user_id] += ge.points
+            
+            if @student_cat_total[ge.user_id][gi.grade_category_id].nil?
+              @student_cat_total[ge.user_id][gi.grade_category_id] = ge.points
+            else
+              @student_cat_total[ge.user_id][gi.grade_category_id] += ge.points
+            end
           end
+        end
+      end
+      
+      # acutually weight the grades
+      if @course.gradebook.weight_grades
+        @students.each do |student|
+          #puts "#{student.inspect}"
+          #puts "#{@student_cat_total[student.id].inspect}"
+          
+          weights.each do |weights|
+            #puts "----------------"
+            #puts "  gcid=#{weights.grade_category_id}"
+            #puts "  tpts=#{cat_max_points[weights.grade_category_id]}"
+            
+            new_weight = @student_cat_total[student.id][weights.grade_category_id] rescue new_weight = 0
+            #puts "  studentTotal=#{new_weight}"
+            new_weight = new_weight / cat_max_points[weights.grade_category_id] rescue new_weight = 0
+            new_weight = new_weight * (@weight_map[weights.grade_category_id]/ 100.0)
+            @student_weighted[student.id] += sprintf("%.2f",new_weight*100).to_f
+          end
+          
+          #puts "#{@student_weighted[student.id]}"
         end
       end
       
@@ -190,6 +241,51 @@ class Instructor::CourseGradebookController < Instructor::InstructorBase
     redirect_to :controller => '/instructor/course_gradebook', :course => @course
   end
   
+  def set_weights
+    return unless load_course( params[:course] )
+    return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_gradebook' )
+    return unless course_open( @course, :action => 'index' )
+    return unless course_weights_grades( @course )
+    
+    # get categories - and weights
+    @weights = GradeWeight.reconcile( @course )
+    
+    @matrix = Array.new
+    @weights.each { |w| @matrix[w.id] = w.percentage }    
+  end
+  
+  def save_weights
+    return unless load_course( params[:course] )
+    return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_gradebook' )
+    return unless course_open( @course, :action => 'index' )
+    return unless course_weights_grades( @course )
+    
+    # get categories - and weights
+    @weights = GradeWeight.reconcile( @course )
+    
+    ## update
+    total = 0
+    @weights.each do |w|
+      w.percentage = sprintf("%.2f", params["weight_#{w.id}"] ).to_f
+      total = total + w.percentage
+    end
+    
+    if sprintf("%.2f",total).eql?("100.00")
+      GradeWeight.transaction do 
+        @weights.each { |w| w.save }
+      end
+      flash[:notice] = 'Grade category weights have been updated.'
+      redirect_to :action => 'index'
+    else 
+      flash[:badnotice] = "Total is '#{total}'.  The total for all categories must add up to exactly 100.00."
+      @matrix = Array.new
+      @weights.each { |w| @matrix[w.id] = w.percentage }
+      render :action => :set_weights
+    end  
+  end
+  
+## private  
+  
   def set_tab
     @show_course_tabs = true
     @tab = "course_instructor"
@@ -212,6 +308,15 @@ class Instructor::CourseGradebookController < Instructor::InstructorBase
     end
   end
   
-  private :set_tab, :item_in_course, :create_gradebook
+  def course_weights_grades( course )
+    unless course.gradebook.weight_grades
+      flash[:notice] = "This course does not have grade weighting enabled."
+      redirect_to :controller => '/instructor/course_gradebook', :course => course
+      return false
+    end
+    return true
+  end
+  
+  private :set_tab, :item_in_course, :create_gradebook, :course_weights_grades
   
 end
