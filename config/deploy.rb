@@ -30,7 +30,7 @@ set :repository,
 
 role :web, "my.csamu.org", "my.csamu.org"
 role :app, "my.csamu.org", "my.csamu.org", "my.csamu.org"
-role :db,  "mydb.csamu.org", :primary => true
+role :db,  "my.csamu.org", :primary => true
 
 # =============================================================================
 # OPTIONAL VARIABLES
