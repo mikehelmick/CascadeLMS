@@ -29,8 +29,8 @@ role :db,  "mydb.csamu.org", :primary => true
 # =============================================================================
 # OPTIONAL VARIABLES
 # =============================================================================
-set :deploy_to, "/path/to/app" # defaults to "/u/apps/#{application}"
-set :user, "wwwrun"            # defaults to the currently logged in user
+set :deploy_to, "/srv/www/rails/#{application}" # defaults to "/u/apps/#{application}"
+set :user, "helmicmt"            # defaults to the currently logged in user
 # set :scm, :darcs               # defaults to :subversion
 # set :svn, "/path/to/svn"       # defaults to searching the PATH
 # set :darcs, "/path/to/darcs"   # defaults to searching the PATH
