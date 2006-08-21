@@ -19,6 +19,7 @@ Syntaxi
 Redcloth
 =======
   term/:term_id/course/:course_id/assignments/turnins/:user_id/files
+http://ruby-ldap.sourceforge.net/
 
 Requires
   GNU enscript
