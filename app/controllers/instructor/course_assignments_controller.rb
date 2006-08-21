@@ -40,6 +40,9 @@ class Instructor::CourseAssignmentsController < Instructor::InstructorBase
     # create the assignment
     @assignment = Assignment.new( params[:assignment] )
     
+    puts " FILE : #{params[:file]}"
+    puts " CLASS: #{params[:file].class.to_s}"
+    
     @assignment.course = @course
     @assignment.grade_category_id = params[:grade_category_id].to_i
     do_exit = process_file( params[:file] )
@@ -260,7 +263,7 @@ class Instructor::CourseAssignmentsController < Instructor::InstructorBase
   
   def process_file( file_param, supress_error = false )
     # see if we got a document
-    if file_param
+    if file_param && file_param.size > 0
       if file_param.nil? || file_param.class.to_s.eql?('String')
         flash[:badnotice] = "You must upload an assignment file, or enter a description." unless supress_error
         return true

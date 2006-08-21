@@ -1,4 +1,4 @@
-version: 0.0.33 20060816
+version: 0.0.34 20060821
 title: Miami University CSA
 
 organization: Miami University
@@ -9,7 +9,7 @@ blackboard: http://mymiami.muohio.edu
 smtp: mailfwd.muohio.edu
 
 #external_dir: /Users/Shared/courseware
-external_dir: /srv/www/rails/cscourseware/shared
+external_dir: /srv/www/rails/cscourseware/shared/storage
 
 temp_dir: /tmp
 
@@ -31,11 +31,11 @@ ldap_dc: dc=muohio,dc=edu
 ldap_ou: ou=people
 ldap_search: uid
 
-ldap_port: 389
+ldap_port: 636
 # 4001
 # 389
 # 636
-ldap_ssl: false
+ldap_ssl: true
 
 ldap_field_uid: uid
 ldap_field_nickname: eduPersonNickname
