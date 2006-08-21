@@ -34,4 +34,4 @@ production:
   database: csacourseware_prod
   username: csacourseware
   password: c1548cdis
-  host: mydb.csamu.org
+  host: localhost

@@ -38,11 +38,7 @@ class Instructor::CourseAssignmentsController < Instructor::InstructorBase
     
     do_exit = false
     # create the assignment
-    @assignment = Assignment.new( params[:assignment] )
-    
-    puts " FILE : #{params[:file]}"
-    puts " CLASS: #{params[:file].class.to_s}"
-    
+    @assignment = Assignment.new( params[:assignment] )    
     @assignment.course = @course
     @assignment.grade_category_id = params[:grade_category_id].to_i
     do_exit = process_file( params[:file] )

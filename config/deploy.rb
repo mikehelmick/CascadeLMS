@@ -128,5 +128,5 @@ end
 
 desc "Restart the web server"
 task :restart, :roles => :app do
-  sudo "/etc/initd/apache2 restart"
+  sudo "/etc/init.d/apache2 restart"
 end
