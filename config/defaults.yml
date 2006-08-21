@@ -8,7 +8,8 @@ blackboard: http://mymiami.muohio.edu
 
 smtp: mailfwd.muohio.edu
 
-external_dir: /Users/Shared/courseware
+#external_dir: /Users/Shared/courseware
+external_dir: /srv/www/rails/cscourseware/shared
 
 temp_dir: /tmp
 
