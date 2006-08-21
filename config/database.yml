@@ -31,7 +31,7 @@ test:
 
 production:
   adapter: mysql
-  database: cscourseware_production
-  username: root
-  password: 
-  host: localhost
+  database: csacourseware_prod
+  username: csacourseware
+  password: c1548cdis
+  host: mydb.csamu.org

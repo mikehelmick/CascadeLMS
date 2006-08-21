@@ -12,5 +12,13 @@ Assignments:
 Student Turnins
   term/:term_id/course/:course_id/assignments/turnins/:user_id/files
 
+
+## Required Gems
+Syntax
+Syntaxi
+Redcloth
+=======
+  term/:term_id/course/:course_id/assignments/turnins/:user_id/files
+
 Requires
   GNU enscript
