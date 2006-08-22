@@ -9,90 +9,7 @@ class Instructor::CourseGradebookController < Instructor::InstructorBase
     return unless load_course( params[:course] )
     return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_gradebook' )
     
-    # get the grade items and students
-    @grade_items = @course.grade_items
-    @students = @course.students
-    @total_points = 0
-    
-    create_gradebook
-    
-    if @course.gradebook.weight_grades
-      weights = GradeWeight.reconcile( @course )
-      @weight_map = Hash.new
-      weights.each { |x| @weight_map[x.grade_category_id] = x.percentage }
-      
-      cat_max_points = Hash.new
-      @grade_items.each do |gi|
-        if cat_max_points[gi.grade_category_id].nil?
-          cat_max_points[gi.grade_category_id] = gi.points
-        else
-          cat_max_points[gi.grade_category_id] += gi.points
-        end
-      end
-    end
-    
-    if @students.size > 0
-      @student_totals = Hash.new
-      @student_cat_total = Hash.new
-      @student_weighted = Hash.new
-      @students.each do |s| 
-        @student_totals[s.id] = 0
-        @student_cat_total[s.id] = Hash.new
-        @student_weighted[s.id] = 0
-      end
-      @category_total_points = Hash.new
-      @grade_items.each { |gi| @category_total_points[gi.id] = 0 }
-      # initialize grade matrix - one hash for each student
-      @grade_matrix = Hash.new
-      @students.each { |s| @grade_matrix[s.id] = Hash.new }
-      # hash hor average
-      @averages = Hash.new
-    
-      ## OK - now we can do the calculations
-      @grade_items.each do |gi|
-        @averages[gi.id] = 0
-        @total_points += gi.points
-        
-        gi.grade_entries.each do |ge|
-          # verify the student exists
-          unless @grade_matrix[ge.user_id].nil?
-            @grade_matrix[ge.user_id][gi.id] = ge.points
-            @averages[gi.id] += ge.points
-            @student_totals[ge.user_id] += ge.points
-            
-            if @student_cat_total[ge.user_id][gi.grade_category_id].nil?
-              @student_cat_total[ge.user_id][gi.grade_category_id] = ge.points
-            else
-              @student_cat_total[ge.user_id][gi.grade_category_id] += ge.points
-            end
-          end
-        end
-      end
-      
-      # acutually weight the grades
-      if @course.gradebook.weight_grades
-        @students.each do |student|
-          #puts "#{student.inspect}"
-          #puts "#{@student_cat_total[student.id].inspect}"
-          
-          weights.each do |weights|
-            #puts "----------------"
-            #puts "  gcid=#{weights.grade_category_id}"
-            #puts "  tpts=#{cat_max_points[weights.grade_category_id]}"
-            
-            new_weight = @student_cat_total[student.id][weights.grade_category_id] rescue new_weight = 0
-            #puts "  studentTotal=#{new_weight}"
-            new_weight = new_weight / cat_max_points[weights.grade_category_id] rescue new_weight = 0
-            new_weight = new_weight * (@weight_map[weights.grade_category_id]/ 100.0)
-            @student_weighted[student.id] += sprintf("%.2f",new_weight*100).to_f
-          end
-          
-          #puts "#{@student_weighted[student.id]}"
-        end
-      end
-      
-    end
-    
+    process_grades( @course )
   end
   
   def settings
@@ -284,12 +201,29 @@ class Instructor::CourseGradebookController < Instructor::InstructorBase
     end  
   end
   
+  def export
+    return unless load_course( params[:course] )
+    return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_gradebook' )    
+  end
+  
+  def export_csv
+    return unless load_course( params[:course] )
+    return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_gradebook' )
+   
+    process_grades( @course )
+   
+    response.headers['Content-Type'] = 'text/csv; charset=iso-8859-1; header=present'
+    response.headers['Content-Disposition'] = 'inline; filename=gradebook.csv'
+    
+    render :layout => false
+  end
+  
 ## private  
   
   def set_tab
     @show_course_tabs = true
     @tab = "course_instructor"
-    @title = "Course Settings"
+    @title = "Course GradeBook"
   end
   
   def item_in_course( course, item )
@@ -317,6 +251,97 @@ class Instructor::CourseGradebookController < Instructor::InstructorBase
     return true
   end
   
-  private :set_tab, :item_in_course, :create_gradebook, :course_weights_grades
+  def process_grades( course )
+    # get the grade items and students
+    @grade_items = course.grade_items
+    @students = course.students
+    @total_points = 0
+    
+    create_gradebook
+    
+    if @course.gradebook.weight_grades
+      weights = GradeWeight.reconcile( course )
+      @weight_map = Hash.new
+      weights.each do |x| 
+        puts "X: #{x.inspect}"
+        @weight_map[x.grade_category_id] = x.percentage 
+      end
+      
+      cat_max_points = Hash.new
+      @grade_items.each do |gi|
+        if cat_max_points[gi.grade_category_id].nil?
+          cat_max_points[gi.grade_category_id] = gi.points
+        else
+          cat_max_points[gi.grade_category_id] += gi.points
+        end
+      end
+    end
+    
+    if @students.size > 0
+      @student_totals = Hash.new
+      @student_cat_total = Hash.new
+      @student_weighted = Hash.new
+      @students.each do |s| 
+        @student_totals[s.id] = 0
+        @student_cat_total[s.id] = Hash.new
+        @student_weighted[s.id] = 0
+      end
+      @category_total_points = Hash.new
+      @grade_items.each { |gi| @category_total_points[gi.id] = 0 }
+      # initialize grade matrix - one hash for each student
+      @grade_matrix = Hash.new
+      @students.each { |s| @grade_matrix[s.id] = Hash.new }
+      # hash hor average
+      @averages = Hash.new
+    
+      ## OK - now we can do the calculations
+      @grade_items.each do |gi|
+        @averages[gi.id] = 0
+        @total_points += gi.points
+        
+        gi.grade_entries.each do |ge|
+          # verify the student exists
+          unless @grade_matrix[ge.user_id].nil?
+            @grade_matrix[ge.user_id][gi.id] = ge.points
+            @averages[gi.id] += ge.points
+            @student_totals[ge.user_id] += ge.points
+            
+            if @student_cat_total[ge.user_id][gi.grade_category_id].nil?
+              @student_cat_total[ge.user_id][gi.grade_category_id] = ge.points
+            else
+              @student_cat_total[ge.user_id][gi.grade_category_id] += ge.points
+            end
+          end
+        end
+      end
+      
+       
+      
+      # acutually weight the grades
+      if course.gradebook.weight_grades
+        @students.each do |student|
+          #puts "#{student.inspect}"
+          #puts "#{@student_cat_total[student.id].inspect}"
+          
+          weights.each do |weight|
+            #puts "----------------"
+            #puts "  gcid=#{weights.grade_category_id}"
+            #puts "  tpts=#{cat_max_points[weights.grade_category_id]}"
+            
+            new_weight = @student_cat_total[student.id][weight.grade_category_id] rescue new_weight = 0
+            #puts "  studentTotal=#{new_weight}"
+            new_weight = new_weight / cat_max_points[weight.grade_category_id] rescue new_weight = 0
+            new_weight = new_weight * (@weight_map[weight.grade_category_id]/ 100.0)
+            @student_weighted[student.id] += sprintf("%.2f",new_weight*100).to_f
+          end
+          
+          #puts "#{@student_weighted[student.id]}"
+        end
+      end
+      
+    end
+  end
+  
+  private :set_tab, :item_in_course, :create_gradebook, :course_weights_grades, :process_grades
   
 end

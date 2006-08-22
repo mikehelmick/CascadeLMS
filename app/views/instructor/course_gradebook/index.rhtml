@@ -3,6 +3,7 @@
 <% if @course.gradebook && @course.gradebook.weight_grades %>
   <%= link_to 'Set Weighting', :action => 'set_weights', :course => @course %> |
 <% end %>
+<%= link_to 'Export', :action => 'export', :course => @course %> |
 <%= link_to 'Add New Item', :action => 'item', :course => @course %>
 
 <h2>Grade Book for <%= @course.title %></h2>
@@ -27,7 +28,7 @@
 	   </a>
 	   <acronym title="Enter Grades"><%= link_to "#{image_tag 'calculator'}", :action => 'enter', :course => @course, :id => gi.id %></a>
 	    <% if @course.gradebook.weight_grades %><br/>
-	     Cat Weight: <%= sprintf("%.2f", @weight_map[gi.grade_category.id] ) %>
+	      Cat: <%= sprintf("%.2f", @weight_map[gi.grade_category.id] ) %>%
 	    <% end %>
 	</th>
    <% end %>

@@ -1,0 +1,11 @@
+<h2>Export Grade Book for <%= @course.title %></h2>
+
+<div class="standout">
+<p>
+<B>Caution:</b> These exported grades must treated as <a href="http://www.ed.gov/policy/gen/guid/fpco/ferpa/index.html">confidential data</a>.   Please treat this data carefully.</p>
+<p>
+<%= link_to "Export Grade Book Data", :action => 'export_csv', :course => @course %>
+</p>
+</div>
+
+<p><%= link_to 'Cancel', :action => 'index', :course => @course %></p>
