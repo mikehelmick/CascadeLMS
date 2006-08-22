@@ -215,6 +215,7 @@ class ApplicationController < ActionController::Base
         authdata = @request.env[key].to_s.split
         if authdata and authdata[0] == 'Basic' 
           user, pass = Base64.decode64(authdata[1]).split(':')[0..1] 
+          logger.info("#{user},#{pass}")
           return user, pass
         end
       end
