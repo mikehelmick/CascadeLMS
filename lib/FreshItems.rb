@@ -3,7 +3,7 @@ class FreshItems
   def FreshItems.fresh( course, limit, include_comments = true )
     # show the last X items (whatever they may be)
     blog_entries = Post.find(:all, :conditions => ["course_id=? and published=?",course.id,true], :order => "created_at DESC", :limit => limit  )
-    documents = Document.find(:all, :conditions => ["course_id=?",course.id], :order => "created_at DESC", :limit => limit  )
+    documents = Document.find(:all, :conditions => ["course_id=? and published=?",course.id, true], :order => "created_at DESC", :limit => limit  )
     time = Time.new
     assignments = Assignment.find(:all, :conditions => ["course_id=? and open_date<=? and close_date>=?",course.id,time,time], :order => "open_date DESC", :limit => limit  )
     
