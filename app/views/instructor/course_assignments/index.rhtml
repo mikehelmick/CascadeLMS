@@ -23,10 +23,10 @@
   	  %>
 	  <tr class="<%=odd%> hover" id="assignment_<%=assignment.id%>">
 	    <td align="right"><%= link_to "#{h assignment.position}", :action => 'edit', :id => assignment %></td>
-	    <td><%= link_to "#{image_tag 'page_edit', :align => 'absmiddle'} #{h assignment.title}", :action => 'edit', :id => assignment %></td>
-	    <td><%= link_to 'Turn-ins', :controller => '/instructor/turnins', :course => @course, :assignment => assignment %></td>
+	    <td nowrap="nowrap"><%= link_to "#{image_tag 'page_edit', :align => 'absmiddle'} #{h assignment.title}", :action => 'edit', :id => assignment %> <%if assignment.auto_grade %><br/> <%= link_to 'AutoGrade Settings', :action => 'autograde', :course => @course, :id => assignment.id %> <% end %></td>
+	    <td nowrap="nowrap"><%= link_to 'Turn-ins', :controller => '/instructor/turnins', :course => @course, :assignment => assignment %></td>
 	
-	    <td><%=h assignment.grade_category.category %></td>
+	    <td nowrap="nowrap"><%=h assignment.grade_category.category %></td>
 	    <td nowrap="nowrap">
 	    <% if assignment.upcoming? %><%= image_tag 'clock_error' %>
 	    <% elsif assignment.current? %><%= image_tag 'clock' %>
@@ -35,7 +35,7 @@
 	
 	    <%= assignment.open_date.to_formatted_s(:long) %></td>
 	    <td nowrap="nowrap"><%= assignment.due_date.to_formatted_s(:long) %></td>
-	    <td>
+	    <td nowrap="nowrap">		  
 	      <%= link_to 'Move Up', :action => 'move_up', :id => assignment %> |
 	      <%= link_to 'Move Down', :action => 'move_down', :id => assignment %> |
 	      <%= link_to 'Delete', { :action => 'destroy', :id => assignment }, :confirm => "Are you sure you want to delete the assignment '#{assignment.title}' and all of it's associated data? This action can no be undone." %>

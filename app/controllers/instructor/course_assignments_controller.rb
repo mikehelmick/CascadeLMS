@@ -108,6 +108,15 @@ class Instructor::CourseAssignmentsController < Instructor::InstructorBase
     redirect_to :action => 'index'
   end
   
+  def autograde
+    return unless load_course( params[:course] )
+    return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_assignments' )
+    return unless course_open( @course, :action => 'index' )
+    @assignment = Assignment.find( @params['id'] )
+    return unless assignment_in_course( @course, @assignment )
+    return unless assignment_uses_autograde( @course, @assignment )    
+  end
+  
   def edit
     return unless load_course( params[:course] )
     return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_assignments' )
@@ -274,6 +283,15 @@ class Instructor::CourseAssignmentsController < Instructor::InstructorBase
     end
   end 
   
-  private :set_tab, :set_title, :assignment_in_course
+  def assignment_uses_autograde( course, assignment )
+     unless assignment.auto_grade
+        redirect_to :action => 'index', :course => course
+        flash[:notice] = "The selected assignment does not have AutoGrade enabled."
+        return false
+      end
+      true    
+  end
+  
+  private :set_tab, :set_title, :assignment_in_course, :assignment_uses_autograde
   
 end

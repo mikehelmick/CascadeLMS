@@ -1,7 +1,7 @@
 <h2>Assignment '<%= @assignment.title %>' for '<%= @course.title%>'</h2>
 
 <p><%= link_to 'Back', :action => 'index' %>
-<% if @assignment.auto_grade %>| <a href="#autograde">AutoGrade Settings</a><% end %>
+<% if @assignment.auto_grade %>| <%= link_to 'AutoGrade Settings', :action => 'autograde', :course => @course, :id => @assignment %> <% end %>
 </p>
 
 <div id="form_area">
@@ -16,12 +16,6 @@
 </div>
 
 <%= end_form_tag %>
-
-<% if @assignment.auto_grade %>
-<hr/>
-<h2><a name="autograde">AutoGrading</a></h2>
-
-<% end %>
 
 <p><%= link_to 'Back', :action => 'index' %></p>
 
