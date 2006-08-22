@@ -58,9 +58,3 @@ my_formats = {
 }
 
 ActiveSupport::CoreExtensions::Time::Conversions::DATE_FORMATS.merge!(my_formats)
-
-
-require 'syntaxi'
-Syntaxi::line_number_method = 'floating'
-Syntaxi::wrap_enabled = true
-Syntaxi::wrap_at_column = 150

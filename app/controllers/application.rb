@@ -10,6 +10,25 @@ class ApplicationController < ActionController::Base
   before_filter :app_config
   after_filter :pull_msg
   
+  @@auth_locations = ['REDIRECT_REDIRECT_X_HTTP_AUTHORIZATION',
+                      'REDIRECT_X_HTTP_AUTHORIZATION',
+                      'X-HTTP_AUTHORIZATION', 'HTTP_AUTHORIZATION',
+                      'Authorization','AUTHORIZATION']
+  
+  def session_valid?
+     creation_time = session[:creation_time] || Time.now
+     if !session[:expiry_time].nil? and session[:expiry_time] < Time.now
+        # Session has expired. Clear the current session.
+        reset_session    
+        return false
+     end
+
+     # Assign a new expiry time, whether the session has expired or not.
+     session[:expiry_time] = (@app['session_limit'].to_i).seconds.from_now
+
+     return true
+  end
+  
   def pull_msg
     if session[:user] && session[:user].notice
       flash[:notice] = "#{flash[:notice]} #{session[:user].notice}"
@@ -70,6 +89,12 @@ class ApplicationController < ActionController::Base
  	    redirect_to :controller => '/index'
  	    return false
     end
+    
+    if !session_valid?
+      redirect_to :controller => '/index', :action => 'expired'
+      return false
+    end
+    
     # duplicate user - to keep session down
     @user = User.find(session[:user].id)
     return true
@@ -156,7 +181,7 @@ class ApplicationController < ActionController::Base
     end
   end
   
-  def rss_authorize(realm='RSS Authentication', errormessage="You must log in to view this page.") 
+  def rss_authorize(realm='Courseware RSS Authentication', errormessage='You must log in to view this page.') 
     ## if they are already in an HTTP session (using browser based reader)
     #unless session[:user].nil?
     #  return User.find(session[:user].id)
@@ -184,19 +209,18 @@ class ApplicationController < ActionController::Base
 
   def get_auth_data 
     user, pass = '', '' 
-    # extract authorisation credentials 
-    if request.env.has_key? 'X-HTTP_AUTHORIZATION' 
-      # try to get it where mod_rewrite might have put it 
-      authdata = @request.env['X-HTTP_AUTHORIZATION'].to_s.split 
-    elsif request.env.has_key? 'HTTP_AUTHORIZATION' 
-      # this is the regular location 
-      authdata = @request.env['HTTP_AUTHORIZATION'].to_s.split  
-    end 
-      # at the moment we only support basic authentication 
-    if authdata and authdata[0] == 'Basic' 
-      user, pass = Base64.decode64(authdata[1]).split(':')[0..1] 
-    end 
-    return [user, pass] 
+    
+    @@auth_locations.each do |key|
+      if request.env.has_key?(key)
+        authdata = @request.env[key].to_s.split
+        if authdata and authdata[0] == 'Basic' 
+          user, pass = Base64.decode64(authdata[1]).split(':')[0..1] 
+          return user, pass
+        end
+      end
+    end
+    
+    return user, pass
   end
 
   private :get_auth_data

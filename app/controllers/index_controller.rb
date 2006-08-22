@@ -10,6 +10,8 @@ class IndexController < ApplicationController
     @user = User.new
     if params[:out].eql?('out')
       flash[:notice] = "You have been logged out."
+    elsif params[:out].eql?('exp')
+      flash[:notice] = "Your session has expired due to inactivity, please log in again."
     end
   end
   
@@ -26,6 +28,11 @@ class IndexController < ApplicationController
     end
     
     authenticate( @user )
+  end
+  
+  def expired
+    reset_session
+    redirect_to :action => 'index', :out => 'exp'
   end
   
   def logout
