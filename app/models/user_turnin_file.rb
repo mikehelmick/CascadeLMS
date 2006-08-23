@@ -7,6 +7,21 @@ class UserTurninFile < ActiveRecord::Base
   
   has_many :file_comments, :dependent => :destroy
   
+  def full_filename( directory_map )
+    x = filename
+    if ( directory_parent > 0 )
+      x = "#{directory_map[directory_parent].full_filename( directory_map )}/#{x}"
+    end
+  end
+  
+  def file_comments_hash
+    comments = Hash.new
+    self.file_comments.each do |fc|
+      comments[fc.line_number] = fc
+    end
+    return comments
+  end
+  
   def icon()
     if ( self.directory_entry )
       "folder"

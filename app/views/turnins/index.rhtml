@@ -10,6 +10,10 @@
   <p><i>No turn-ins found found</i></p>
 <% else %>
 
+<% if @assignment.released %>
+<p><b><%= link_to 'View Instructor Feedback', :action => 'feedback', :course => @course, :assignment => @assignment %></b></p>
+<% end %>
+
 <%= render :partial => 'turnin' %>
 
 <br />

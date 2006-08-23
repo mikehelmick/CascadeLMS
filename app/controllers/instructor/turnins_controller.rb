@@ -46,6 +46,22 @@ class Instructor::TurninsController < Instructor::InstructorBase
     
   end
   
+  def toggle_released
+    return unless load_course( params[:course] )
+    return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_grade_individual' )
+    
+    @assignment = Assignment.find( @params[:assignment] )
+    return unless assignment_in_course( @course, @assignment )
+    return unless course_open( @course, :action => 'index' )
+    
+    @assignment.released = !@assignment.released
+    
+    unless @assignment.save
+      flash[:badnotice] = "Error changing assignment comments status."
+    end  
+    redirect_to :action => 'index', :course => @course, :assignment => @assignment
+  end
+  
   def view_student
     return unless load_course( params[:course] )
     return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_grade_individual' )
@@ -238,8 +254,8 @@ class Instructor::TurninsController < Instructor::InstructorBase
     comment.comments = inst_comments
     
     comment.save
-    
-    render :nothing => true
+    @line = line_number
+    render :layout => false
   end
   
   def view_file

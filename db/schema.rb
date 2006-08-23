@@ -2,7 +2,7 @@
 # migrations feature of ActiveRecord to incrementally modify your database, and
 # then regenerate this schema definition.
 
-ActiveRecord::Schema.define(:version => 35) do
+ActiveRecord::Schema.define(:version => 36) do
 
   create_table "announcements", :force => true do |t|
     t.column "headline", :string
@@ -42,6 +42,7 @@ ActiveRecord::Schema.define(:version => 35) do
     t.column "subversion_release_path", :string
     t.column "auto_grade", :boolean, :default => false, :null => false
     t.column "grade_category_id", :integer
+    t.column "released", :boolean, :default => false, :null => false
   end
 
   create_table "comments", :force => true do |t|

@@ -5,6 +5,11 @@
 <p><i>Warning - this assignment is not connected with an entry in the GradeBook.</i></p>
 <% end %>
 
+<% if @assignment.released %>
+<div class="GoodMessage">Comments entered on files and assignments are available to students.  (<%= link_to 'change', :action => 'toggle_released', :course => @course, :assignment => @assignment %>)</div>
+<% else %>
+<div class="errorExplanation">Comments entered on files and assignments are NOT available to students.  (<%= link_to 'change', :action => 'toggle_released', :course => @course, :assignment => @assignment %>)</div>
+<% end %>
 
 <table class="fancy">
   <tr class="header">

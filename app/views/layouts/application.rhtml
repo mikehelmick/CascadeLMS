@@ -8,8 +8,8 @@
 	
 	<%= javascript_include_tag :defaults %>
 	
-	<%= stylesheet_link_tag "master", :media => "screen" %>
-	<%= stylesheet_link_tag "calendar/red/style" %>
+	<%= stylesheet_link_tag "master", :media => "all" %>
+	<%= stylesheet_link_tag "calendar/red/style", :media => "all" %>
 	
 	<% if @course %>
 	<%= auto_discovery_link_tag(:rss, {:controller => 'feed', :course => @course }) %>

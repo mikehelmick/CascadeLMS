@@ -263,7 +263,6 @@ class Instructor::CourseGradebookController < Instructor::InstructorBase
       weights = GradeWeight.reconcile( course )
       @weight_map = Hash.new
       weights.each do |x| 
-        puts "X: #{x.inspect}"
         @weight_map[x.grade_category_id] = x.percentage 
       end
       

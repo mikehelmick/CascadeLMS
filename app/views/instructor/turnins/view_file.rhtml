@@ -18,7 +18,7 @@
   	%>
 	<tr class="<%=odd%> hover" id="line_<%=line_num%>">
 	  <td align="right" nowrap="nowrap" <%= 'style="background-color: #0C0;"' if @comments[line_num] %>><%=line_num%></td>
-	  <td align="center" <%= 'style="background-color: #0C0;"' if @comments[line_num] %>>
+	  <td align="center" id="status_<%=line_num%>" <%= 'style="background-color: #0C0;"' if @comments[line_num] %>>
 	    <% if @comments[line_num] %>
 	      <%= link_to_function "view", visual_effect(:toggle_slide, "comments_line_#{line_num}" ) %>
 	    <% else %>
@@ -29,7 +29,7 @@
     </tr>
     <tr id="comments_line_<%=line_num%>" style="display: none;">
       <td colspan="3" class="formcell">
- 		<%= form_remote_tag :url => { :controller => "/instructor/turnins", :action => "file_comment", :course => @course, :assignment => @assignment, :student => @student, :id => @utf.id }, :success => "new Effect.Highlight( 'line_#{line_num}' )", :failure => "alert('There was an error saving the comment for line #{line_num}, please refresh the page.');"  %>
+ 		<%= form_remote_tag :url => { :controller => "/instructor/turnins", :action => "file_comment", :course => @course, :assignment => @assignment, :student => @student, :id => @utf.id }, :success => "new Effect.Highlight( 'line_#{line_num}' );", :failure => "alert('There was an error saving the comment for line #{line_num}, please refresh the page.');", :update => "status_#{line_num}"  %>
 <!-- 
         <%= form_tag( :controller => "/instructor/turnins", :action => "file_comment", :course => @course, :assignment => @assignment, :student => @student, :id => @utf.id ) %> -->
            <%= hidden_field_tag 'line', line_num.to_s %>
@@ -46,3 +46,5 @@
   <% end %>
 
 </table>
+
+<p><%= link_to "Back turn-in for #{@student.display_name}", :controller => '/instructor/turnins', :action => 'view_student', :course => @course, :assignment => @assignment, :id => @student %></p>

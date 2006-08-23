@@ -1,0 +1,72 @@
+<h2>Assignment: <%= @assignment.title %></h2>
+<h3>Course: <%= @course.title %></h3>
+
+<h3>Feedback for <%= @user.display_name %></h3>
+
+<p><%= link_to 'Back to my turn-ins', :controller => 'turnins', :course => @course, :assignment => @assignment %> | <%= link_to 'Back to assignment', :controller => 'assignments', :course => @course, :id => @assignment, :action => 'view', :assignment => nil %></p>
+
+<% if @grade_item %>
+  <% unless @grade_entry %>
+    <p><i>No grade has been submitted.</i></p>
+  <% else %> 
+    <div class="standout">
+    <p><b>Your grade:</b> <%= sprintf("%.1f",@grade_entry.points) %> out of <%= sprintf("%.1f",@grade_item.points) %> possible points</p>
+    <p><b>Instructor Comments:</b> <%= @grade_entry.comment %></p>
+    </div>
+  <% end %>
+<% end %>
+
+<% if @current_turnin %>
+
+ <div class="SectionHeader"><div class="Full">
+ <a name="contents">Jump to file</a>
+ </div></div>
+ <ul>
+ <% for utf in @current_turnin.user_turnin_files %>
+  <% unless utf.directory_entry? %>
+    <li><a href="#file_<%=utf.id%>"> <%= image_tag utf.icon %> <%= utf.full_filename( @directories ) %></a></li>
+  <% end %>
+ <% end %>
+ </ul>
+
+  <% for utf in @current_turnin.user_turnin_files %>
+    <div class="SectionHeader"><div class="Full">
+    <%= image_tag utf.icon %>
+    <% if utf.directory_entry? %>Directory:
+    <% else %>File:
+    <% end %><a name="file_<%=utf.id%>"><b><%= utf.full_filename( @directories ) %></b></a>
+        <a href="#contents"><%= image_tag 'arrow_up' %></a>
+    </div></div>
+
+	<% if utf.directory_entry? %>
+	  <p><i>Directory entry</i></p>
+	<% else %>
+	  <% directory = @current_turnin.get_dir( @app['external_dir'] )
+	     lines = FileManager.format_file( @app['enscript_command'], "#{directory}#{utf.full_filename( @directories )}", utf.extension )
+	     comment_hash = utf.file_comments_hash
+	   %>
+	 
+	   <% line_num = 0 %>
+	   <div class="codeout">
+	     <% for line in lines %>
+	       <% line_num = line_num.next %>
+	       <% numbers = line_num.to_s 
+	          numbers.size.upto(8) { |x| numbers = "&nbsp;#{numbers}" } %>
+	       <%= numbers %>: <%= line %><br/>
+	
+	       <% if comment_hash[line_num] %>
+	          <div class="codecomment">
+	<i>Comment on line <%=line_num%> left by <%= comment_hash[line_num].user.display_name %></i><br/>
+	<%= comment_hash[line_num].comments %>
+	
+	          </div>
+	       <% end %>
+	     <% end %>
+	   </div>
+	<% end %>
+
+  <% end %>
+
+<% else %>
+ <p><i>No turn-in found</i></p>
+<% end %>

@@ -638,6 +638,22 @@ a img {
   font-weight: bold;
 }
 
+.codeout {
+	background: #EEEEEE;
+	border: 1px solid #990000;
+	margin: 5px 5px 5px 5px;
+	padding: 10px 10px 10px 10px;
+	font-family: "times", verdana, sans-serif;
+	font-size: 10pt;
+}
+
+.codecomment {
+	background: #FFFFCC;
+	border: 1px dashed #009900;
+	margin: 1px 1px 1px 1px;
+	padding: 1px 10px 1px 10px;	
+}
+
 .standout {
 	background: #FFFFCC;
 	border: 1px solid #990000;

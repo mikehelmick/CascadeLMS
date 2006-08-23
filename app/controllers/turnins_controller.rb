@@ -309,6 +309,38 @@ class TurninsController < ApplicationController
     
   end
   
+  def feedback
+    return unless load_course( params[:course] )
+    return unless allowed_to_see_course( @course, @user )
+    
+    @assignment = Assignment.find(params[:assignment]) rescue @assignment = Assignment.new
+    return unless assignment_in_course( @assignment, @course )
+    return unless assignment_available( @assignment )
+    return unless comments_released( @assignment )
+    
+    @turnins = UserTurnin.find( :all, :conditions => [ "assignment_id = ? and user_id = ?", @assignment.id, @user.id ], :order => "position desc" )
+    @current_turnin = nil
+    @current_turnin = @turnins[0] if @turnins.size > 0
+    
+    if @current_turnin
+      @directories = Hash.new
+      @current_turnin.user_turnin_files.each do |utf|
+        @directories[utf.id] = utf if utf.directory_entry?
+      end
+    end
+    
+    @grade_item = GradeItem.find( :first, :conditions => ['assignment_id = ?', @assignment.id] )
+    if ( @grade_item )
+      @grade_entry = GradeEntry.find( :first, :conditions => ['grade_item_id = ? and user_id = ?', @grade_item.id, @user.id] )
+    end
+    
+    @now = Time.now
+    set_title
+    
+    
+    render :layout => 'noright'
+  end
+  
 private
 
   def get_parent( list, current ) 
@@ -370,6 +402,15 @@ private
       return false
     end
     true    
+  end
+  
+  def comments_released( assignment, redirect = true  )
+    unless assignment.released
+      flash[:badnotice] = "Instructor comments are not yet available for this assignment."
+      redirect_to :action => 'index' if redirect
+      return false
+    end
+    true
   end
 
   def set_tab
