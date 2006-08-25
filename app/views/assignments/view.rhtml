@@ -81,9 +81,9 @@
   <div class="block" id="subversion_setup_area">
 
   <% unless @user.student_in_course?( @course.id )%>
-    <% if @course.open %>
       <p><i>Subversion controls are only available to users who are registered in this course as students.  Please contact your instructor if you feel you should be able to see this information.</i></p>
     <% else %>
+     <% if @course.open %>
       <%= form_remote_tag( :update => 'svn_results', :url => { :action => 'svn_command', :course => @course, :id => @assignment }, :before => "new Element.toggle('svn_submit', 'svn_spinner'); new Effect.BlindUp('svn_results');", :complete => "new Effect.BlindDown('svn_results'); new Element.toggle('svn_submit', 'svn_spinner');" ) %>
 	  <label for="password" class="required">Subversion Password:</label> <%= password_field_tag 'password', '' %><br/>
 	  <label for="command" class="required">Command:</label>
@@ -104,10 +104,11 @@
 	  <div id="svn_results" style="display: none;"> </div>
 	  <p></p>
       <%= end_form_tag %>
-    <% end %>
-  <% else %>
-    <p><i><b>Disabled:</b> this course is in archive status.</i></p>
-  <% end %>
+ 
+    <% else %>
+      <p><i><b>Disabled:</b> this course is in archive status.</i></p>
+    <% end %>  
+   <% end %>
  
   </div>
 <% end %>

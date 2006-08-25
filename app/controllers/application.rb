@@ -84,14 +84,18 @@ class ApplicationController < ActionController::Base
   end
  	
  	def ensure_logged_in
+ 	  redirect_uri = "#{request.protocol()}#{request.host()}#{request.port_string}#{request.request_uri()}"
+ 	
  	  if session[:user].nil?
- 	    flash[:notice] = "Please log in."
+ 	    flash[:notice] = "Please log in before proceeding."
+ 	    session[:post_login] = redirect_uri
  	    redirect_to :controller => '/index'
  	    return false
     end
     
     if !session_valid?
       redirect_to :controller => '/index', :action => 'expired'
+      session[:post_login] = redirect_uri
       return false
     end
     
@@ -169,7 +173,12 @@ class ApplicationController < ActionController::Base
     begin
       @user = auth.authenticate( user.uniqueid, user.password )
       session[:user] = User.find( @user.id )
-      redirect_to :controller => 'home' if redirect 
+      session[:current_term] = Term.find_current
+      if ( redirect && session[:post_login].nil? )
+        redirect_to :controller => 'home' 
+      else 
+        redirect_to_url session[:post_login]
+      end
       return true
     rescue SecurityError => doh
       if redirect
