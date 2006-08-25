@@ -84,6 +84,10 @@
 	<%= radio_button 'course_settings', 'ta_view_student_files', true %> Yes
 	<%= radio_button 'course_settings', 'ta_view_student_files', false %> No</p>
 
+<p><label for="course_settings_ta_send_email" class="required">TA can send email:</label>
+    <%= radio_button 'course_settings', 'ta_send_email', true %> Yes
+    <%= radio_button 'course_settings', 'ta_send_email', false %> No</p>
+
 <p><label for="course_settings_ta_grate_individual" class="required">TA can ender grades for individual assignments</label>
 	<%= radio_button 'course_settings', 'ta_grade_individual', true %> Yes
 	<%= radio_button 'course_settings', 'ta_grade_individual', false %> No</p>

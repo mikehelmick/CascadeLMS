@@ -1,0 +1,52 @@
+<p><%= link_to "#{image_tag 'arrow_left' } Back", :controller => '/instructor/index', :course => @course.id %></p>
+
+<h3>Send Email to users (select below)</h3>
+
+<div id="form_area">
+<%= start_form_tag :action => 'send_email', :id => @course %>
+
+<hr/>
+<h2>TA/Grader(s) for <%= @course.title %></h2>
+<div id="assistant_error"> </div>
+<div id="assistant">
+  <div class="block">
+<% @users = @course.assistants %>
+    <% for user in @users %>
+      <%= check_box_tag("user_#{user.id}", value = "1", checked = true ) %> <%= user.display_name %> <br/>
+    <% end %>
+  </div>
+</div>
+
+<hr/>
+<h2>Students(s) for <%= @course.title %></h2>
+<div id="student_error"> </div>
+<div id="student">
+  <div class="block">
+<% @users = @course.students %>
+    <% for user in @users %>
+      <%= check_box_tag("user_#{user.id}", value = "1", checked = true ) %> <%= user.display_name %> <br/>
+    <% end %>
+  </div>
+</div>
+
+
+<hr/>
+<h2>Guest(s) for <%= @course.title %></h2>
+<div id="guest_error"> </div>
+<div id="guest">
+  <div class="block">
+<% @users = @course.guests %>
+    <% for user in @users %>
+      <%= check_box_tag("user_#{user.id}", value = "1", checked = true ) %> <%= user.display_name %> <br/>
+    <% end %>
+  </div>
+</div>
+
+<div class="submit">
+  <%= submit_tag 'Send Email' %>
+</div>
+<%= end_form_tag %>
+</div>
+
+<hr/>
+<p><%= link_to "#{image_tag 'arrow_left' } Back", :controller => '/instructor/index', :course => @course.id %></p>

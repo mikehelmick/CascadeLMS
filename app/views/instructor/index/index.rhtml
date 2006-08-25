@@ -14,11 +14,11 @@
   </tr>
   <tr>
 	<td><%= link_to "#{image_tag 'cog', :align => 'absmiddle'} Course Documents", :controller => '/instructor/course_docs', :course => @course %></td>
-	<td><%= link_to "#{image_tag 'cog', :align => 'absmiddle'} Course Blog", :controller => '/instructor/blog', :course => @course %></td>
+	<td><%= link_to "#{image_tag 'cog', :align => 'absmiddle'} Send Email", :controller => '/instructor/email', :course => @course %></td>
   </tr>
   <tr>
 	<td><%= link_to "#{image_tag 'cog', :align => 'absmiddle'} Assignments", :controller => '/instructor/course_assignments', :course => @course %></td>
-	<td><%= link_to "#{image_tag 'cog', :align => 'absmiddle'} Settings", :controller => '/instructor/course_setting', :course => @course %></td>
+	<td><%= link_to "#{image_tag 'cog', :align => 'absmiddle'} Course Blog", :controller => '/instructor/blog', :course => @course %></td>
   </tr>
   <tr> 
     <td>
@@ -26,7 +26,7 @@
 	  <%= link_to "#{image_tag 'cog', :align => 'absmiddle'} Gradebook", :controller => '/instructor/course_gradebook', :course => @course %>
 	<% end %>
 	</td>
-    <td>&nbsp;</td>
+	<td><%= link_to "#{image_tag 'cog', :align => 'absmiddle'} Settings", :controller => '/instructor/course_setting', :course => @course %></td>
   </tr>
   <% else %>
   <tr>
@@ -85,7 +85,9 @@
 	      <%= image_tag 'cancel', :align => 'absmiddle' %><s>Gradebook</s>
 	    <% end %>
 	</td>
-    <td>&nbsp;</td>
+    <td>&nbsp;
+
+    </td>
   </tr>
   <% end %>
 
