@@ -1,5 +1,3 @@
-require 'Syntaxi'
-
 class Instructor::TurninsController < Instructor::InstructorBase
   
   before_filter :ensure_logged_in

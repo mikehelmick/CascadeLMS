@@ -279,14 +279,14 @@ class TurninsController < ApplicationController
     dir_name = ""
     while( mover.directory_parent > 0 )
       dir_name = prepend_dir( mover.filename, dir_name )
-      puts "DIRNAME: #{dir_name}"
+      #puts "DIRNAME: #{dir_name}"
       mover = get_parent( @current_turnin.user_turnin_files, mover )
     end
     # dir - is the name of the directory on the file system
     
     dir_name = "#{@current_turnin.get_dir(@app['external_dir'])}/#{dir_name}"
     
-    puts "DIR NAME: #{dir_name}"
+    #puts "DIR NAME: #{dir_name}"
     
     UserTurnin.transaction do
       if @utf.create_file( file_field, dir_name )

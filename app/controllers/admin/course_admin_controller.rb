@@ -115,7 +115,7 @@ class Admin::CourseAdminController < ApplicationController
     @course = Course.find(params[:course])
     @course.courses_users.each do |u|
       if u.user_id.to_i == params[:id].to_i
-        puts "found correct user: #{u.user}"
+        #puts "found correct user: #{u.user}"
         u.course_student = false if @utype.eql?('student')
         u.course_instructor = false if @utype.eql?('instructor')
         u.course_assistant = false if @utype.eql?('assistant')

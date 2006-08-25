@@ -45,9 +45,9 @@ class UserTurninFile < ActiveRecord::Base
       FileUtils.mkdir_p path
     
       file_name = "#{path}#{self.filename}"
-      puts "FILE NAME: #{file_name}" 
+      #puts "FILE NAME: #{file_name}" 
       File.open( file_name, "w") { |f| f.write(file_field.read) }
-      puts "FILE WRITTEN"
+      #puts "FILE WRITTEN"
     end
     
     save_res

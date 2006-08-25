@@ -25,7 +25,7 @@ class Course < ActiveRecord::Base
   
   def merge( other )
     Course.transaction do
-      puts "in a transaction?"
+      #puts "in a transaction?"
       
       # merge course details
       self.title = "#{self.title} #{other.title}"
