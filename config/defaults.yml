@@ -1,12 +1,11 @@
-version: 0.0.43 20060825
+version: 0.0.44 20060826
 title: Miami University CSA
 
 organization: Miami University
 
-email: helmicmt@muohio.edu
+email: mike.helmick@muohio.edu
 blackboard: http://mymiami.muohio.edu
 
-smtp: mailfwd.muohio.edu
 
 #external_dir: /Users/Shared/courseware
 external_dir: /srv/www/rails/cscourseware/shared/storage

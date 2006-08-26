@@ -52,6 +52,13 @@ end
 
 # Include your application configuration below
 
+# Include your application configuration below
+ActionMailer::Base.server_settings = {
+  :address  => 'mailfwd.muohio.edu',
+  :port  => 25, 
+  :domain  => 'muohio.edu'
+    }
+
 my_formats = {
   :friendly_date => '%A %B %d, %Y %I:%M:%S %p %Z',
   :friendly_time => '%I:%M:%S %p %Z'

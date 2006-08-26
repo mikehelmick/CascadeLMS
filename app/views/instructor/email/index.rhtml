@@ -3,7 +3,7 @@
 <h3>Send Email to users (select below)</h3>
 
 <div id="form_area">
-<%= start_form_tag :action => 'send_email', :id => @course %>
+<%= start_form_tag :action => 'send_email', :id => nil %>
 
 <hr/>
 <h2>TA/Grader(s) for <%= @course.title %></h2>
@@ -12,7 +12,7 @@
   <div class="block">
 <% @users = @course.assistants %>
     <% for user in @users %>
-      <%= check_box_tag("user_#{user.id}", value = "1", checked = true ) %> <%= user.display_name %> <br/>
+      <%= check_box_tag("user_#{user.id}", value = "1", checked = @users_hash[user.id] ) %> <%= user.display_name %> (<%= user.email %>) <br/>
     <% end %>
   </div>
 </div>
@@ -24,7 +24,7 @@
   <div class="block">
 <% @users = @course.students %>
     <% for user in @users %>
-      <%= check_box_tag("user_#{user.id}", value = "1", checked = true ) %> <%= user.display_name %> <br/>
+      <%= check_box_tag("user_#{user.id}", value = "1", checked = @users_hash[user.id] ) %> <%= user.display_name %> (<%= user.email %>) <br/>
     <% end %>
   </div>
 </div>
@@ -37,10 +37,16 @@
   <div class="block">
 <% @users = @course.guests %>
     <% for user in @users %>
-      <%= check_box_tag("user_#{user.id}", value = "1", checked = true ) %> <%= user.display_name %> <br/>
+      <%= check_box_tag("user_#{user.id}", value = "1", checked = @users_hash[user.id] ) %> <%= user.display_name %> (<%= user.email %>) <br/>
     <% end %>
   </div>
 </div>
+
+<p><label for="email_subject" class="required">Email Subject:</label>
+<%= text_field_tag 'email_subject', @email_subject %></p>
+
+<p><label for="email_body" class="required">Email Body:</label>
+<%= text_area_tag 'email_body', @email, :cols => 75, :rows => 15  %></p>
 
 <div class="submit">
   <%= submit_tag 'Send Email' %>
