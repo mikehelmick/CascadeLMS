@@ -1,5 +1,3 @@
-require 'Notifier'
-
 class Instructor::EmailController < Instructor::InstructorBase
   
   before_filter :ensure_logged_in
