@@ -177,7 +177,7 @@ class ApplicationController < ActionController::Base
       if ( redirect && session[:post_login].nil? )
         redirect_to :controller => 'home' 
       else 
-        redirect_to_url session[:post_login]
+        redirect_to_url session[:post_login] if redirect
       end
       return true
     rescue SecurityError => doh
@@ -191,10 +191,11 @@ class ApplicationController < ActionController::Base
   end
   
   def rss_authorize(realm='Courseware RSS Authentication', errormessage='You must log in to view this page.') 
-    ## if they are already in an HTTP session (using browser based reader)
-    #unless session[:user].nil?
-    #  return User.find(session[:user].id)
-    #end
+    # if they are already in an HTTP session (using browser based reader)
+    unless session[:user].nil?
+      @user = User.find(session[:user].id)
+      return @user
+    end
     
     username, passwd = get_auth_data 
     passwd = '' if passwd.nil?
@@ -205,6 +206,7 @@ class ApplicationController < ActionController::Base
     user.uniqueid = username
     user.password = passwd 
     
+    session[:post_login] = nil
     if authenticate( user, false )
       return @user         
     else  
