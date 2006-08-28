@@ -85,6 +85,7 @@ class AssignmentsController < ApplicationController
       path = @assignment.release_path_replace(@user.uniqueid) if params[:command].eql?('list_rel')
       
       svn = SubversionManager.new( @app['subversion_command'] )
+      svn.logger = logger
       begin
         @list_entries = svn.list( @user.uniqueid, params[:password], @assignment.subversion_server, path )  
         @path = "#{path}"
@@ -96,6 +97,7 @@ class AssignmentsController < ApplicationController
       
     elsif params[:command].eql?('create_dev')
       svn = SubversionManager.new( @app['subversion_command'] )
+      svn.logger = logger
       begin
         flash[:notice] = svn.create_directory( @user.uniqueid, params[:password], @assignment.subversion_server, @assignment.development_path_replace(@user.uniqueid) )
         @list_entries = svn.list( @user.uniqueid, params[:password], @assignment.subversion_server, @assignment.development_path_replace(@user.uniqueid) )  
@@ -111,6 +113,7 @@ class AssignmentsController < ApplicationController
       return unless course_open( @course, :action => 'index' )
       
       svn = SubversionManager.new( @app['subversion_command'] )
+      svn.logger = logger
       begin
         output = ""
         if params[:command].eql?('release')
