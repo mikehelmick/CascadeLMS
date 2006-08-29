@@ -15,6 +15,10 @@
   <tr class="header">
     <th valign="bottom">UniqueID</th>
     <th valign="bottom">Student</th>
+    <% if @assignment.use_subversion %>
+      <th valign="bottom">SVN Repo</th>
+    <% end %>
+
     <% if @assignment.use_subversion || @assignment.enable_upload %>
       <th valign="bottom">Files<br/>Submitted</th>
     <% end %>
@@ -40,6 +44,10 @@
 	<tr class="<%=odd%> hover" id="student_<%=@students%>">
       <td><%=h student.uniqueid %></td>
       <td><%=h student.display_name %></td>
+
+	  <% if @assignment.use_subversion %>
+	    <td><a href="<%=@assignment.subversion_server%><%=@assignment.development_path_replace( student.uniqueid )%>" target="_blank">dev</a> | <a href="<%=@assignment.subversion_server%><%=@assignment.release_path_replace( student.uniqueid )%>"  target="_blank">rel</a></td>
+	  <% end %>
 
       <% if @assignment.use_subversion || @assignment.enable_upload %>
         <td><% if @turnin_sets[student.id] %>Yes
