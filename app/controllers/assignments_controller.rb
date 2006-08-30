@@ -24,8 +24,10 @@ class AssignmentsController < ApplicationController
       @journals = @user.assignment_journals( @assignment )
       
       elapsed = 0;
-      @journals.each do |journal|
-        elapsed += journal.end_time - journal.start_time - journal.interruption_time*60
+      if !@jourals.nil? && @journals.size ? 0
+        @journals.each do |journal|
+          elapsed += journal.end_time - journal.start_time - journal.interruption_time*60
+        end
       end
       elapsed = (elapsed / 60).truncate #down to minutes
       @minutes = elapsed % 60
