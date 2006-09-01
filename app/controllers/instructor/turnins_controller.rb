@@ -1,3 +1,6 @@
+require 'SimpleProgramRunner'
+require 'FileManager'
+
 class Instructor::TurninsController < Instructor::InstructorBase
   
   before_filter :ensure_logged_in
@@ -281,10 +284,29 @@ class Instructor::TurninsController < Instructor::InstructorBase
       relative_name = "#{walker.filename}/#{relative_name}"
     end
     
+    # fix double slashes
+    relative_name.gsub!(/\/\//,"/")
     filename = "#{directory}#{relative_name}"
     
     begin      
       @lines = FileManager.format_file( @app['enscript_command'], filename, @utf.extension )
+      
+      if @utf.extension.eql?("java")
+        @lines.each do |line| 
+          public_index = line.index('public') 
+          static_index = line.index('static') 
+          void_index = line.index('void') 
+          main_index = line.index('main') 
+          #puts "p:#{public_index} s:#{static_index} v:#{void_index} m:#{main_index} line:#{line}"
+          # line must contain all of these
+          if( !public_index.nil? && !static_index.nil? && !void_index.nil? && !main_index.nil? &&
+              static_index > public_index && void_index > public_index &&
+              main_index > public_index && main_index > static_index && main_index > void_index )
+            @java_main = true
+            break
+          end
+        end
+      end
 
       @comments = Hash.new
       @utf.file_comments.each do |fc|
@@ -295,6 +317,26 @@ class Instructor::TurninsController < Instructor::InstructorBase
       flash[:badnotice] = "Error loading selected file.  Please contact your system administrator."
       redirect_to :action => 'view_student', :course => @course, :assignment => @assignment, :student => nil, :id => @student
       return
+    end
+    
+    ## Execution interception
+    if @java_main && params[:execute_java].eql?('true')
+      absolute_directory = filename[0...filename.rindex('/')]
+      base_file = filename[filename.rindex('/')+1..-1]
+      
+      @display_java_execute = true
+      
+      pl = ProgrammingLanguage.find_by_extension( @utf.extension )
+      if pl.nil?
+        flash[:badnotice] = "There was an error loading the programming language runtime for this language."
+      else
+        runner = SimpleProgramRunner.new( pl, absolute_directory, base_file, logger )
+        @compile_out = runner.compile()
+        @compile_success = runner.did_compile?()
+        if @compile_success
+          @execute_out = runner.execute()
+        end
+      end
     end
     
   end

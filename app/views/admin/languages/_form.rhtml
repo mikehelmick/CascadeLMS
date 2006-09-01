@@ -3,8 +3,10 @@
 
 <!--[form:programming_language]-->
 <div class="block">
-<p><label for="programming_language_name">Language Name:</label>
+<p><label for="programming_language_name" class="required">Language Name:</label>
 <%= text_field 'programming_language', 'name'  %></p>
+<p><label for="programming_language_extension" class="required">File Extension:</label>
+<%= text_field 'programming_language', 'extension'  %></p>
 </div>
 
 <div class="blockintro"><p>This setting says wether your language is compiled or interpreted.   For a complied language, like Java, you will have a compile step <code>javac</code> and an execute step <code>java</code>.</p></div>
@@ -33,7 +35,7 @@
 <p><label for="programming_language_executable_name">Executable name:</label>
 <%= text_field 'programming_language', 'executable_name', :size => 100  %></p>
 
-<p><label for="programming_language_execute_command">Execute command:</label>
+<p><label for="programming_language_execute_command" class="required">Execute command:</label>
 <%= text_field 'programming_language', 'execute_command', :size => 100  %></p>
 </div>
 <!--[eoform:programming_language]-->
