@@ -63,6 +63,33 @@ class Instructor::TurninsController < Instructor::InstructorBase
     redirect_to :action => 'index', :course => @course, :assignment => @assignment
   end
   
+  def rollback
+    return unless load_course( params[:course] )
+    return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_grade_individual' )
+    
+    @assignment = Assignment.find( params[:assignment] )
+    return unless assignment_in_course( @course, @assignment )
+    
+    # make sure the student exists
+    @student = User.find(params[:id])
+    if ! @student.student_in_course?( @course.id )
+      flash[:badnotice] = "Invalid student record requested."
+      redirect_to :action => 'index'
+    end
+    
+    # get turn-in sets
+    @turnins = UserTurnin.find(:all, :conditions => ["user_id=? and assignment_id=?", @student.id, @assignment.id ], :order => "position DESC" )
+    @current_turnin = @turnins[0] rescue @current_turnin = nil
+   
+    if @current_turnin.user_turnin_files.size == 1
+      @current_turnin.destroy
+    else
+      flash[:badnotice] = "Can not rollback the current turn-in set for this student, it is not empty."
+    end
+    
+    redirect_to :action => 'view_student', :course => @course, :assignment => @assignment, :id => @student
+  end
+  
   def view_student
     return unless load_course( params[:course] )
     return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_grade_individual' )

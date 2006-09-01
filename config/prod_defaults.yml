@@ -1,7 +1,7 @@
-version: 0.0.50 20060901
-title: College
+version: 0.0.47b 20060830
+title: Miami University CSA
 
-organization: College
+organization: Miami University
 
 email: mike.helmick@muohio.edu
 blackboard: http://mymiami.muohio.edu
@@ -25,8 +25,8 @@ enscript_command: /usr/bin/enscript
 subversion_command: /usr/local/bin/svn
 
 # either ldap or basic
-authtype: basic
-#authtype: ldap
+#authtype: basic
+authtype: ldap
 # the setting below need to be filled in if LDAP is being used
 #ldapserver: 127.0.0.1
 ldapserver: ldapsun1.muohio.edu

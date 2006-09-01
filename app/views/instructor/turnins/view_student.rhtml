@@ -54,6 +54,10 @@ Last Updated: <%= @display_turnin.updated_at.to_formatted_s(:friendly_date) %><b
 
 <p><b>Download entire turn-in set:</b> <%= link_to 'as tar file', :action => 'download_set', :id => @display_turnin.id %></p>
 
+<% if @display_turnin.id == @current_turnin.id && @current_turnin.user_turnin_files.size == 1 && @turnins.size > 1 %>
+<div class="errorExplanation">This student's current turn-in set does not have any files in it, and there are previous turn-in sets.  You may <%= link_to 'rollback to the previous turn-in set', :action => 'rollback', :id => @student %></div>
+<% end %>
+
 <% parent_spaces = Hash.new 
    parent_spaces[0.to_s] = 0
 %>
