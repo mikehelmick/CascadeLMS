@@ -1,3 +1,5 @@
+require 'date'
+
 class SimpleProgramRunner
   
   def initialize( programming_language, directory, filename, logger = nil )
@@ -40,15 +42,27 @@ class SimpleProgramRunner
     @compile_success
   end
   
-  def execute()
+  def execute( args = '', standard_in = nil )
     if did_compile?
-      command = "cd #{@directory}; #{@pl.execute_command}"
+      command = "cd #{@directory}; #{@pl.execute_command} #{args}"
+      
+      stdin_fn = nil
+      unless standard_in.nil?
+        stdin_fn = "#{Time.now.to_f}_standard_in.private.txt"
+        file = File.new("#{@directory}/#{stdin_fn}",  "w")
+        file << standard_in
+        file << "\n"
+        file.close
+        
+        command = "#{command} < #{stdin_fn}"
+      end
+      
       command = escape_commands( command, @filename )
       log( "SimpleProgramRunner: #{command}" )
       
       run_out = `#{command} 2>&1`
       
-      cleanup_generated_file
+      cleanup_generated_file( stdin_fn )
       return run_out
     else
       return '!!!!DID NOT EXECUTE!!!!'
@@ -57,10 +71,16 @@ class SimpleProgramRunner
   
   private
   
-  def cleanup_generated_file
+  def cleanup_generated_file( extra_file = nil )
     command = "cd #{@directory}; rm #{@pl.executable_name}"
     command = escape_commands( command, @filename )
     `#{command} 2>&1`
+    
+    unless extra_file.nil?
+      command = "cd #{@directory}; rm #{extra_file}"
+      `#{command} 2>&1`
+    end
+    
   end
   
   def escape_commands( command, filename )

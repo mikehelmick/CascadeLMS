@@ -361,7 +361,9 @@ class Instructor::TurninsController < Instructor::InstructorBase
         @compile_out = runner.compile()
         @compile_success = runner.did_compile?()
         if @compile_success
-          @execute_out = runner.execute()
+          @command_line_arguments = params[:command_line_arguments]
+          @standard_in = params[:standard_in]
+          @execute_out = runner.execute( params[:command_line_arguments], params[:standard_in] )
         end
       end
     end

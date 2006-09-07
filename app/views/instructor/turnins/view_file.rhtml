@@ -6,15 +6,15 @@
 <% if @java_main %>
 <div class="standout" id="execute_java">
 <p>This files appears to be a Java file containing a main method.   This gives you the option to simply compile and run this single file.  If you need to pull in more source files, consider configuring AutoGrade for this assignment.</p>
-<p>Before compiling and running this file - please check the file for malicious code (deletion/creation of files, network usage, System.exec, infinite loops).</p>
+<p>Before compiling and running this file - please check the file for malicious code (deletion/creation of files, network usage, System.exec, infinite loops).  <b>Code that expects more input than is provided will not terminate.</b></p>
 
 <%= start_form_tag( {:course => @course, :assignment => @assignment, :student => @student, :action => 'view_file', :id => @utf }, :onsubmit => "new Element.toggle('button', 'spinner');" ) %>
   <%= hidden_field_tag 'execute_java', true %>
 <p>
-	<!--
-  <label for="command_line_arguments">Command line arguments:</label> <%= text_field_tag 'command_line_arguments' %><br/>
-  <label for="standard_in">Standard in:</label> <%= text_area_tag 'standard_in', '', :rows => 3, :cols => 50 %>
- -->
+
+  <label for="command_line_arguments">Command line arguments:</label> <%= text_field_tag 'command_line_arguments', @command_line_arguments, :size => 50 %><br/>
+  <label for="standard_in">Standard in:</label> <%= text_area_tag 'standard_in', @standard_in, :rows => 5, :cols => 50 %>
+
 </p>
 
   
