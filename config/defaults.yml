@@ -1,4 +1,4 @@
-version: 0.0.52 20060907
+version: 0.0.54 20060911
 title: Miami University CSA
 
 organization: Miami University
@@ -25,7 +25,7 @@ enscript_command: /usr/bin/enscript
 subversion_command: /usr/local/bin/svn
 
 # either ldap or basic
-authtype: basic
+authtype: ldap
 #authtype: ldap
 # the setting below need to be filled in if LDAP is being used
 #ldapserver: 127.0.0.1

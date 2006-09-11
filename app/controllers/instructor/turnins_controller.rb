@@ -272,7 +272,7 @@ class Instructor::TurninsController < Instructor::InstructorBase
     line_number = params[:line]
     inst_comments = params[:comments]
     
-    comment = FileComment.find(:first, :conditions => ["user_turnin_file_id=? and line_number=?", @utf.id, inst_comments] )
+    comment = FileComment.find(:first, :conditions => ["user_turnin_file_id=? and line_number=?", @utf.id, line_number] ) rescue comment = nil
     if comment.nil?
       comment = FileComment.new
     end
@@ -364,6 +364,18 @@ class Instructor::TurninsController < Instructor::InstructorBase
           @command_line_arguments = params[:command_line_arguments]
           @standard_in = params[:standard_in]
           @execute_out = runner.execute( params[:command_line_arguments], params[:standard_in] )
+          
+          @execute_out_html = ""
+          0.upto(@execute_out.size-1) do |i|
+            str = @execute_out[i...i+1]
+            if str.eql?("\n")
+              @execute_out_html << "<br/>"
+            elsif str.eql?(" ")
+              @execute_out_html << "&nbsp;"
+            else 
+              @execute_out_html << str
+            end
+          end
         end
       end
     end

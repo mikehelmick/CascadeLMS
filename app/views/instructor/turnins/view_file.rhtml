@@ -27,13 +27,15 @@
 <% if @display_java_execute %>
 <div class="standout" id="execute_java_results">
 <p><b>Compiler output:</b><br/>
-	<%= textilize(@compile_out.gsub(/ /,'&nbsp;')) %> 
- </p>
+	<%= @compile_out.gsub(/\n/, "<br/>" ).gsub(/ /,'&nbsp;') %> 
+</p>
 
 <% if @compile_success %>
 <p><b>Execution Output:</b><br/>
-	<%= textilize(@execute_out) %> 
- </p>
+<code>
+<%= @execute_out_html %> 
+</code>
+</p>
 <% else %>
 <p><i>There was an error during compilation - execution was aborted.</i></p>
 <% end %>
