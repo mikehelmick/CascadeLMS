@@ -54,26 +54,26 @@
 		<% end %>
 	</td>
 	<td>
-		<% if @course.course_setting.ta_course_blog_post %>
-		  <%= image_tag 'cog', :align => 'absmiddle' %> Course Blog
+		<% if @course.course_setting.ta_send_email %>
+		  <%= link_to "#{image_tag 'cog', :align => 'absmiddle'} Send Email", :controller => '/instructor/email', :course => @course %>
 		<% else %>
-		  <%= image_tag 'cancel', :align => 'absmiddle' %><s>Course Blog</s>
+		  <%= image_tag 'cancel', :align => 'absmiddle' %><s>Send Email</s>
 		<% end %>
 	</td>
   </tr>
   <tr>
 	<td>
-		<% if @course.course_setting.ta_course_assignments %>
-		  <%= image_tag 'cog', :align => 'absmiddle' %> Assignments
+		<% if @course.course_setting.ta_course_assignments || @course.course_setting.ta_view_student_files || @course.course_setting.ta_course_assignments %>
+		  <%= link_to "#{image_tag 'cog', :align => 'absmiddle'} Assignments", :controller => '/instructor/course_assignments', :course => @course %> 
 		<% else %>
 		  <%= image_tag 'cancel', :align => 'absmiddle' %><s>Assignments</s>
 		<% end %>
 	</td>
 	<td>
-		<% if @course.course_setting.ta_course_settings %>
-		  <%= link_to "#{image_tag 'cog', :align => 'absmiddle'} Settings", :controller => '/instructor/course_setting', :course => @course %>
+		<% if @course.course_setting.ta_course_blog_post %>
+		  <%= link_to "#{image_tag 'cog', :align => 'absmiddle'} Course Blog", :controller => '/instructor/blog', :course => @course %>
 		<% else %>
-		  <%= image_tag 'cancel', :align => 'absmiddle' %><s>Settings</s>
+		  <%= image_tag 'cancel', :align => 'absmiddle' %><s>Course Blog</s>
 		<% end %>
 	</td>
   </tr>
@@ -85,8 +85,12 @@
 	      <%= image_tag 'cancel', :align => 'absmiddle' %><s>Gradebook</s>
 	    <% end %>
 	</td>
-    <td>&nbsp;
-
+    <td>
+	  	<% if @course.course_setting.ta_course_settings %>
+		  <%= link_to "#{image_tag 'cog', :align => 'absmiddle'} Settings", :controller => '/instructor/course_setting', :course => @course %>
+		<% else %>
+		  <%= image_tag 'cancel', :align => 'absmiddle' %><s>Settings</s>
+		<% end %>
     </td>
   </tr>
   <% end %>

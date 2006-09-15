@@ -11,8 +11,7 @@ class Instructor::TurninsController < Instructor::InstructorBase
   
   def index
     return unless load_course( params[:course] )
-    return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_grade_individual' )
-    
+    return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_grade_individual', 'ta_view_student_files', 'ta_grade_individual' )
     @assignment = Assignment.find( @params[:assignment] )
     return unless assignment_in_course( @course, @assignment )
     
@@ -65,7 +64,7 @@ class Instructor::TurninsController < Instructor::InstructorBase
   
   def rollback
     return unless load_course( params[:course] )
-    return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_grade_individual' )
+    return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_view_student_files', 'ta_grade_individual' )
     
     @assignment = Assignment.find( params[:assignment] )
     return unless assignment_in_course( @course, @assignment )
@@ -92,7 +91,7 @@ class Instructor::TurninsController < Instructor::InstructorBase
   
   def view_student
     return unless load_course( params[:course] )
-    return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_grade_individual' )
+    return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_view_student_files', 'ta_grade_individual' )
     
     @assignment = Assignment.find( params[:assignment] )
     return unless assignment_in_course( @course, @assignment )
@@ -189,7 +188,7 @@ class Instructor::TurninsController < Instructor::InstructorBase
   
   def download_set
     return unless load_course( params[:course] )
-    return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_grade_individual' )
+    return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_view_student_files', 'ta_grade_individual' )
     
     @assignment = Assignment.find( @params[:assignment] )
     return unless assignment_in_course( @course, @assignment )
@@ -226,7 +225,7 @@ class Instructor::TurninsController < Instructor::InstructorBase
   
   def download_file
     return unless load_course( params[:course] )
-    return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_grade_individual' )
+    return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_view_student_files', 'ta_grade_individual' )
     
     @assignment = Assignment.find( @params[:assignment] )
     return unless assignment_in_course( @course, @assignment )
@@ -259,7 +258,7 @@ class Instructor::TurninsController < Instructor::InstructorBase
   
   def file_comment
     return unless load_course( params[:course] )
-    return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_grade_individual' )
+    return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_view_student_files', 'ta_grade_individual' )
     
     @assignment = Assignment.find( @params[:assignment] )
     return unless assignment_in_course( @course, @assignment )
@@ -288,7 +287,7 @@ class Instructor::TurninsController < Instructor::InstructorBase
   
   def view_file
     return unless load_course( params[:course] )
-    return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_grade_individual' )
+    return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_view_student_files', 'ta_grade_individual' )
     
     @assignment = Assignment.find( @params[:assignment] )
     return unless assignment_in_course( @course, @assignment )
