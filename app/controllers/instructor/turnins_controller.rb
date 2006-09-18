@@ -225,7 +225,7 @@ class Instructor::TurninsController < Instructor::InstructorBase
     #first_part = directory[0...directory.rindex('/')]
     
     tar_cmd = "cd #{temp_dir}#{file_tmp_dir}; tar -czf #{tf.filename} *"
-    puts "#{tar_cmd}"
+    #puts "#{tar_cmd}"
     result = `#{tar_cmd} 2>&1`
   
     if result.size > 0 
@@ -243,7 +243,7 @@ class Instructor::TurninsController < Instructor::InstructorBase
     end
     
     # cleanup 
-    `cd #{temp_dir}; rm -r #{file_tmp_dir}`
+    result = `cd #{temp_dir}; rm -r #{file_tmp_dir}`
   end
   
   def download_set
