@@ -26,11 +26,13 @@ class Instructor::TurninsController < Instructor::InstructorBase
       end
     end
     
+    @any_turnins = false
     if @assignment.use_subversion || @assignment.enable_upload
       # see if turnins
       @turnin_sets = Hash.new
       @students.each do |s|
         @turnin_sets[s.id] = UserTurnin.count( :conditions => ["user_id=? and assignment_id=?", s.id, @assignment.id ] ) > 0
+        @any_turnins = @any_turnins || @turnin_sets[s.id]
       end
     end
     
@@ -184,6 +186,64 @@ class Instructor::TurninsController < Instructor::InstructorBase
       flash[:badnotice] = "Error updating student grade - results not saved."
     end
     redirect_to :action => 'view_student', :id => @student
+  end
+  
+  def download_all_files
+    return unless load_course( params[:course] )
+    return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_view_student_files', 'ta_grade_individual' )
+    
+    @assignment = Assignment.find( @params[:assignment] )
+    return unless assignment_in_course( @course, @assignment )
+    
+    ## create temp file for the archive
+    tf = TempFiles.new
+    tf.filename = "#{@app['temp_dir']}/#{@user.uniqueid}_assignment_#{@assignment.id}_all_files.tar.gz"
+    tf.save_until = Time.now + 60*24*24
+    tf.save
+    
+    ## copy each of the latest turnins to a central point
+    temp_dir = "#{@app['temp_dir']}/"
+    file_tmp_dir = "#{Time.now.to_i}_#{@user.uniqueid}_assignment_#{@assignment.id}"
+    
+    FileUtils.mkdir_p( "#{temp_dir}#{file_tmp_dir}" )
+    
+    students = @course.students
+    # copy turnins
+    students.each do |s|
+      uts = UserTurnin.find(:first, :conditions => ["user_id=? and assignment_id=?", s.id, @assignment.id ], :order => "created_at desc" )
+      FileUtils.mkdir_p( "#{temp_dir}#{file_tmp_dir}/#{s.uniqueid}" )
+      unless uts.nil?
+        dir = uts.get_dir("#{@app['external_dir']}")
+        command = "cd #{dir}; cp -R * #{temp_dir}#{file_tmp_dir}/#{s.uniqueid}"
+        result = `#{command} 2>&1`
+      end
+    end
+    
+    
+    #directory = @turnin.get_dir( @app['external_dir'] )
+    #last_part = directory[directory.rindex('/')+1...directory.size]
+    #first_part = directory[0...directory.rindex('/')]
+    
+    tar_cmd = "cd #{temp_dir}#{file_tmp_dir}; tar -czf #{tf.filename} *"
+    puts "#{tar_cmd}"
+    result = `#{tar_cmd} 2>&1`
+  
+    if result.size > 0 
+      flash[:badnotice] = "There was an error creating the download file, please try again later."
+      redirect_to :action => 'index', :id => nil
+      return
+    end
+  
+    begin  
+      send_file tf.filename, :filename => "#{@user.uniqueid}_assignment_#{@assignment.id}_all_files.tar.gz"
+      rescue
+        flash[:badnotice] = "There was an error creating the download file, please try again later."
+        redirect_to :action => 'view_student', :id => @turnin.user_id
+      
+    end
+    
+    # cleanup 
+    `cd #{temp_dir}; rm -r #{file_tmp_dir}`
   end
   
   def download_set

@@ -11,6 +11,10 @@
 <div class="errorExplanation">Comments entered on files and assignments are NOT available to students.  (<%= link_to 'change', :action => 'toggle_released', :course => @course, :assignment => @assignment %>)</div>
 <% end %>
 
+<% if( (@assignment.use_subversion || @assignment.enable_upload) &&  @any_turnins  ) %>
+<p><%= link_to "Download all student files.", :action => 'download_all_files', :course => @course, :assignment => @assignment, :alert => "Press OK to gather and download students files.  This make take several minutes depending on class size." %></p>
+<% end %>
+
 <table class="fancy">
   <tr class="header">
     <th valign="bottom">UniqueID</th>
