@@ -1,10 +1,12 @@
 require 'FileManager'
+require 'MyString'
 
 class TurninsController < ApplicationController
   
   before_filter :ensure_logged_in
   before_filter :set_tab
   
+
   
   # list the turnins for this assignment ( shows most recent )
   def index
@@ -332,6 +334,7 @@ class TurninsController < ApplicationController
     @grade_item = GradeItem.find( :first, :conditions => ['assignment_id = ?', @assignment.id] )
     if ( @grade_item )
       @grade_entry = GradeEntry.find( :first, :conditions => ['grade_item_id = ? and user_id = ?', @grade_item.id, @user.id] )
+      @feedback_html = @grade_entry.comment.to_html
     end
     
     @now = Time.now

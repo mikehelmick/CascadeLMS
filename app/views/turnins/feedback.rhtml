@@ -11,7 +11,11 @@
   <% else %> 
     <div class="standout">
     <p><b>Your grade:</b> <%= sprintf("%.1f",@grade_entry.points) %> out of <%= sprintf("%.1f",@grade_item.points) %> possible points</p>
-    <p><b>Instructor Comments:</b> <%= @grade_entry.comment %></p>
+    <p><b>Instructor Comments:</b> 
+      <div class="fixedWidth">
+        <%= @feedback_html %>
+      </div>
+    </p>
     </div>
   <% end %>
 <% end %>
@@ -57,7 +61,7 @@
 	       <% if comment_hash[line_num] %>
 	          <div class="codecomment">
 	<i>Comment on line <%=line_num%> left by <%= comment_hash[line_num].user.display_name %></i><br/>
-	<%= comment_hash[line_num].comments %>
+	<%= comment_hash[line_num].comments.to_html %>
 	
 	          </div>
 	       <% end %>

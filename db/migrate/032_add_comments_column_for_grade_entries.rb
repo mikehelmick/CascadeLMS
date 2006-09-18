@@ -1,6 +1,6 @@
 class AddCommentsColumnForGradeEntries < ActiveRecord::Migration
   def self.up
-    add_column( :grade_entries, :comment, :string, :null => true )
+    add_column( :grade_entries, :comment, :text, :null => true )
   end
 
   def self.down

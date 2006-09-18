@@ -14,6 +14,7 @@ class UserTurninFile < ActiveRecord::Base
     end
   end
   
+  # accepts an optional code block to transform comments before display
   def file_comments_hash
     comments = Hash.new
     self.file_comments.each do |fc|

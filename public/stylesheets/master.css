@@ -638,12 +638,17 @@ a img {
   font-weight: bold;
 }
 
+.fixedWidth {
+	font-family:  "courier", verdana, sans-serif;
+	font-size:  10pt;
+}
+
 .codeout {
 	background: #EEEEEE;
 	border: 1px solid #990000;
 	margin: 5px 5px 5px 5px;
 	padding: 10px 10px 10px 10px;
-	font-family: "times", verdana, sans-serif;
+	font-family: "courier", verdana, sans-serif;
 	font-size: 10pt;
 }
 

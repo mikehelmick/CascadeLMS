@@ -4,7 +4,7 @@ class CreateFileComments < ActiveRecord::Migration
       t.column :user_turnin_file_id, :integer, :null => false
       t.column :line_number, :integer, :null => false
       t.column :user_id, :integer, :null => false
-      t.column :comments, :string
+      t.column :comments, :text
       # t.column :name, :string
     end
     
