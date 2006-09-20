@@ -31,6 +31,10 @@ class Journal < ActiveRecord::Base
     end
   end
   
+  def before_save
+    self.interruption_time = 0 if self.interruption_time.nil?
+  end
+  
   def before_destroy
     JournalEntryTask.destroy_all( ["journal_id = ?", self.id ] )
     JournalEntryStopReason.destroy_all( ["journal_id = ?", self.id ] )
