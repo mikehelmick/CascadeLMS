@@ -46,6 +46,7 @@ class Instructor::TurninsController < Instructor::InstructorBase
       end
     end
     
+    @title = "Turnins for #{@assignment.title}"
   end
   
   def toggle_released
@@ -127,19 +128,23 @@ class Instructor::TurninsController < Instructor::InstructorBase
       @turnins.each { |x| @display_turnin = x if x.id == params[:ut].to_i }
     end
     
-    # calculate time
-    elapsed = 0;
-    @journals.each do |journal|
-      elapsed += journal.end_time - journal.start_time - journal.interruption_time*60
-    end
-    elapsed = (elapsed / 60).truncate #down to minutes
-    @minutes = elapsed % 60
-    elapsed -= @minutes
+    if @assignment.journal_field.start_time && @assignment.journal_field.end_time
+      # calculate time
+      elapsed = 0;
+      @journals.each do |journal|
+        elapsed += journal.end_time - journal.start_time - journal.interruption_time*60
+      end
+      elapsed = (elapsed / 60).truncate #down to minutes
+      @minutes = elapsed % 60
+      elapsed -= @minutes
 
-    @days = (elapsed / 1440).truncate
-    elapsed -= @days * 1440
+      @days = (elapsed / 1440).truncate
+      elapsed -= @days * 1440
 
-    @hours = (elapsed / 60).truncate
+      @hours = (elapsed / 60).truncate
+    end 
+    
+    @title = "#{@student.display_name} (#{@student.uniqueid}) - #{@assignment.title}"
     
   end
   
@@ -373,6 +378,8 @@ class Instructor::TurninsController < Instructor::InstructorBase
     # fix double slashes
     relative_name.gsub!(/\/\//,"/")
     filename = "#{directory}#{relative_name}"
+    
+    @title = "#{relative_name} - #{@student.display_name} (#{@student.uniqueid}) - #{@assignment.title}"
     
     begin      
       @lines = FileManager.format_file( @app['enscript_command'], filename, @utf.extension )

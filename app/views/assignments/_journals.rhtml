@@ -2,18 +2,36 @@
   <p><i>You have no journals for this assignment.</i></p>
 <% else %>
 
+<% if @assignment.journal_field.start_time && @assignment.journal_field.end_time %>
  <p>According to your journals, you have spent <%= pluralize( @days, 'day') %>, <%= pluralize( @hours, 'hour') %>, <%= pluralize( @minutes, 'minute') %> on this assignment.</p>
+<% end %>
 
+<% width = 0 %>
 
  <table width="100%" cellpadding="0" cellspacing="0" class="fancy">
    <tr>
-     <% if @assignment.journal_field.start_time %><th>Start</th><% end %>
-     <% if @assignment.journal_field.end_time %><th>End</th><% end %>
-     <% if @assignment.journal_field.interruption_time %><th>Intr.</th><% end %>
-     <% if @assignment.journal_field.task %><th>Tasks</th><% end %>
-     <% if @assignment.journal_field.reason_for_stopping %><th>Stop Reason</th><% end %>
-     <% if @assignment.journal_field.completed %><th>Complete?</th><% end %>
-     <% unless @assignment.closed? %><th>Controls</th><% end %>
+	 <th>Entry</th>
+     <% if @assignment.journal_field.start_time 
+	      width += 1
+	  %><th>Start</th><% end %>
+     <% if @assignment.journal_field.end_time
+	      width += 1
+      %><th>End</th><% end %>
+     <% if @assignment.journal_field.interruption_time
+	      width += 1
+      %><th>Intr.</th><% end %>
+     <% if @assignment.journal_field.task
+	      width += 1
+      %><th>Tasks</th><% end %>
+     <% if @assignment.journal_field.reason_for_stopping
+	      width += 1
+      %><th>Stop Reason</th><% end %>
+     <% if @assignment.journal_field.completed
+	      width += 1
+      %><th>Complete?</th><% end %>
+     <% unless @assignment.closed?
+	      width += 1
+      %><th>Controls</th><% end %>
    </tr>
 
    <% count = 0 %>
@@ -23,6 +41,7 @@
 	     odd = "even" if count.even?
 	   %>
      <tr class="<%=odd%> hover" id="journal_<%=journal.id%>">
+	   <td><%= count %></td>
        <% if @assignment.journal_field.start_time %><td><%=h journal.start_time.to_formatted_s(:short) %></td><% end %>
        <% if @assignment.journal_field.end_time %><td><%=h journal.end_time.to_formatted_s(:short) %></td><% end %>
        <% if @assignment.journal_field.interruption_time %><td><%=h journal.interruption_time %></td><% end %>
@@ -40,11 +59,18 @@
        <% end %>
        <% if @assignment.journal_field.completed %><td><%=journal.completed_text%></td><% end %>
        <% unless @assignment.closed? %>       
-       <td>
+       <td width="75%">
         <%= link_to 'Edit', :controller => 'journals', :action => 'edit', :course => @course, :assignment => @assignment.id, :id => journal.id %> 
        </td> 
        <% end %>
      </tr>
+   
+     <% if @assignment.journal_field.comments %>
+     <tr class="<%=odd%> hover">
+	   <td>Comments:</td>
+	   <td colspan="<%= width - 1 %>"><%= journal.comments %></td>
+	 </tr>
+     <% end %>
    <% end %>
  </table>
 
