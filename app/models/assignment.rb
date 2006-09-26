@@ -10,6 +10,8 @@ class Assignment < ActiveRecord::Base
   
   has_many :journals, :dependent => :destroy
   
+  has_one :grade_item
+  
   validates_presence_of :title
   # NEEDS extended validations
   # open < due <= close dates

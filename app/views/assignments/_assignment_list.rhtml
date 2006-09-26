@@ -9,6 +9,7 @@
       <th>#</th>
       <th>Title</th>
       <th>Category</th>
+      <% if !public %><th>Graded?</td><% end %>
       <th>Available</th>
       <th>Due</th>
      </tr>
@@ -23,6 +24,15 @@
 	    <td align="right"><%= link_to "#{h assignment.position}", :action => 'view', :id => assignment %></td>
 	    <td><%= link_to "#{h assignment.title}", :action => 'view', :id => assignment %></td>
 	    <td><%=h assignment.grade_category.category %></td>
+	    <% if !public %>
+	    <td nowrap="nowrap" align="right">
+	      <% if assignment.released && !assignment.grade_item.nil? %>
+	        <%= link_to 'Yes', :controller => '/turnins', :course => @course, :assignment => assignment, :action => 'feedback' %><%= image_tag 'lightbulb' %>
+	      <% else %>
+	        No <%= image_tag 'lightbulb_off' %>
+	      <% end %>
+	    </td>
+	    <% end %>
 	    <td nowrap="nowrap">
 	    <% if assignment.upcoming? %><%= image_tag 'clock_error', :align => 'absmiddle' %>
 	    <% elsif assignment.current? %><%= image_tag 'clock', :align => 'absmiddle' %>

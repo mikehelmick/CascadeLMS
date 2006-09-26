@@ -5,6 +5,8 @@ class GradeItem < ActiveRecord::Base
   
   has_many :grade_entries, :dependent => :destroy
   
+  belongs_to :assignment
+  
   validates_presence_of :name, :display_type
   validates_numericality_of :points
   

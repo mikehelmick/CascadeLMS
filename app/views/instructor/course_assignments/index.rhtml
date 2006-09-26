@@ -9,6 +9,7 @@
     <th>#</th>
     <th>Title</th>
     <th>Turn-ins</th>
+    <th>Graded</th>
     <th>Category</th>
     <th>Available</th>
     <th>Due</th>
@@ -39,6 +40,16 @@
 	      <% end %>
 	    </td>
 	    <td nowrap="nowrap"><%= link_to 'Turn-ins', :controller => '/instructor/turnins', :course => @course, :assignment => assignment %></td>
+	
+		<td align="right" nowrap="nowrap">
+		  <% if assignment.grade_item.nil? %>
+		    No Link <%= image_tag 'link_break' %>
+		  <% elsif assignment.released %>
+	        Yes <%= image_tag 'lightbulb' %>
+	      <% else %>
+	        No <%= image_tag 'lightbulb_off' %>
+	      <% end %>
+		</td>
 	
 	    <td nowrap="nowrap"><%=h assignment.grade_category.category %></td>
 	    <td nowrap="nowrap">

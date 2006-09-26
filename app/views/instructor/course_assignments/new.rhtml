@@ -6,6 +6,12 @@
 
   <%= render :partial => 'form', :locals => { :edit_mode => false } %>
 
+<div class="blockintro">If you enter a point value, a GradeBook item will be created and associated with this assignment.</div>
+<div class="block">
+<p><label for="point_value" class="required">Points:</label>
+  <%= text_field_tag 'point_value', @points  %></p>
+</div>
+
 <div class="submit">
   <div id="button"><%= submit_tag "Create" %></div>
   <div id="spinner" style="display: none;"><%= image_tag 'spinner.gif' %></div>

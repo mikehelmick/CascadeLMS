@@ -59,9 +59,16 @@ class Instructor::TurninsController < Instructor::InstructorBase
     
     @assignment.released = !@assignment.released
     
+    
     unless @assignment.save
       flash[:badnotice] = "Error changing assignment comments status."
-    end  
+    end
+    
+    unless @assignment.grade_item.nil?
+      @assignment.grade_item.visible = @assignment.released
+      @assignment.grade_item.save
+    end
+      
     redirect_to :action => 'index', :course => @course, :assignment => @assignment
   end
   
@@ -177,7 +184,9 @@ class Instructor::TurninsController < Instructor::InstructorBase
         @grade_entry.grade_item = @grade_item
       end
       
-      if @grade_entry.points.to_s.eql?('')
+      @grade_entry.points = 0 if @grade_entry.points.to_s.eql?('')
+      
+      if @grade_entry.points < 0
         @grade_entry.destroy
         @grade_entry = nil
       end

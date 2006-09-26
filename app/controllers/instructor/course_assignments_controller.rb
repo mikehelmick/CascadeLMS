@@ -39,6 +39,8 @@ class Instructor::CourseAssignmentsController < Instructor::InstructorBase
     return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_assignments' )
     return unless course_open( @course, :action => 'index' )
     
+    @points = params[:point_value]
+    
     do_exit = false
     # create the assignment
     @assignment = Assignment.new( params[:assignment] )    
@@ -56,6 +58,22 @@ class Instructor::CourseAssignmentsController < Instructor::InstructorBase
        unless @asgm_document.nil?
          @asgm_document.create_file( params[:file], @app['external_dir'] )
        end
+       
+       # create grade item
+       if !@points.nil? && @points.to_i > 0
+         gi = GradeItem.new
+         gi.name = @assignment.title
+         gi.date = @assignment.due_date.to_date
+         gi.points = @points.to_f
+         gi.display_type = "s"
+         gi.visible = false
+         gi.grade_category_id = @assignment.grade_category_id
+         gi.assignment_id = @assignment.id
+         gi.course_id = @course.id
+         
+         gi.save
+       end
+       
        
        flash[:notice] = 'Assignment was successfully created, you may now upload additional documents and specify auto-grading parameters.'
        redirect_to :action => 'index'

@@ -14,7 +14,7 @@
   <%= start_form_tag :action => 'submit_grade', :id => @student, :course => @course, :assignment => @assignment %>
     <%= error_messages_for 'grade_entry' %>    
 
-	<p class="blockintro">You can enter general assignment comments here.   You also have the ability to comment on individual files below as well as to make annotations tied to specific line numbers for text files.   If you leave the point value blank, the student's grade for this assignment will be deleted (including the comments entered below).</p>
+	<p class="blockintro">You can enter general assignment comments here.   You also have the ability to comment on individual files below as well as to make annotations tied to specific line numbers for text files.   <b>If you enter a negative point value, the student's grade for this assignment will be deleted (including the comments entered below).</b> Leaving the points value blank, results in a score of zero.</p>
 	<div class="block">
 	  <p><label for="document_title">Points:</label>
 	  <%= text_field 'grade_entry', 'points', :size => 10  %> / <%= sprintf("%0.1f", @grade_item.points ) %></p>
