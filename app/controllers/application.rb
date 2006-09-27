@@ -7,13 +7,28 @@ class ApplicationController < ActionController::Base
   
   layout 'application'
   
-  before_filter :app_config
+  before_filter :app_config, :browser_check
   after_filter :pull_msg
   
   @@auth_locations = ['REDIRECT_REDIRECT_X_HTTP_AUTHORIZATION',
                       'REDIRECT_X_HTTP_AUTHORIZATION',
                       'X-HTTP_AUTHORIZATION', 'HTTP_AUTHORIZATION',
                       'Authorization','AUTHORIZATION']
+                      
+  def browser_check
+    if request.env['HTTP_USER_AGENT'] && request.env['HTTP_USER_AGENT'].include?('MSIE')
+      if !cookies[:ie_override].nil? && cookies[:ie_override].eql?( true.to_s )
+        return true
+      else
+        if controller_name.eql?("browser")
+          return true
+        else
+          redirect_to :controller => '/browser', :action => 'index'
+          return false
+        end
+      end
+    end
+  end
   
   def session_valid?
      creation_time = session[:creation_time] || Time.now
