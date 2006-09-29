@@ -6,7 +6,7 @@
 <p><%= link_to 'Back to my turn-ins', :controller => 'turnins', :course => @course, :assignment => @assignment %> | <%= link_to 'Back to assignment', :controller => 'assignments', :course => @course, :id => @assignment, :action => 'view', :assignment => nil %></p>
 
 <% if @grade_item %>
-  <% unless @grade_entry %>
+  <% unless @grade_entry.nil? %>
     <p><i>No grade has been submitted.</i></p>
   <% else %> 
     <div class="standout">
