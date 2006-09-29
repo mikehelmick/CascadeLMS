@@ -334,7 +334,7 @@ class TurninsController < ApplicationController
     @grade_item = GradeItem.find( :first, :conditions => ['assignment_id = ?', @assignment.id] )
     if ( @grade_item )
       @grade_entry = GradeEntry.find( :first, :conditions => ['grade_item_id = ? and user_id = ?', @grade_item.id, @user.id] )
-      @feedback_html = @grade_entry.comment.to_html
+      @feedback_html = @grade_entry.comment.to_html rescue @feedback_html = ''
     end
     
     @now = Time.now
