@@ -2,8 +2,15 @@
 <%= error_messages_for 'user', :class => "ErrorExplanation"  %>
 
 <% if @login_error %>
-<div class="errorExplanation"><%= @login_error %></div>
+<div class="errorExplanation"><%= @login_error %>
+</div>
 <% end %>
+
+<% if session && ! session[:post_login].nil? && ! session[:post_login].eql?('') %>
+<div class="errorExplanation">Your previous previous request has been saved and will be processed after logging in.</div>
+<% end %>	
+
+
 
 <div id="form_area">
 <%= start_form_tag :action => 'login' %>

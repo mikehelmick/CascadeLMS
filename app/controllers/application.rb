@@ -111,6 +111,7 @@ class ApplicationController < ActionController::Base
     if !session_valid?
       redirect_to :controller => '/index', :action => 'expired'
       session[:post_login] = redirect_uri
+      
       return false
     end
     
@@ -189,6 +190,7 @@ class ApplicationController < ActionController::Base
       @user = auth.authenticate( user.uniqueid, user.password )
       session[:user] = User.find( @user.id )
       session[:current_term] = Term.find_current
+      
       if ( redirect && session[:post_login].nil? )
         redirect_to :controller => 'home' 
       else 
