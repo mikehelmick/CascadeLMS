@@ -14,9 +14,56 @@ class ForumsController < ApplicationController
     set_title
   end
   
+  def toggle_open
+    return unless load_course( params[:course] )
+    return unless ensure_course_instructor( @course, @user )
+    return unless course_open( @course, :action => 'index' )
+    
+    @topic = ForumTopic.find(params[:id])
+    return unless topic_in_course( @course, @topic )
+    
+    @topic.allow_posts = ! @topic.allow_posts
+    if @topic.save
+      set_highlight "topic_#{@topic.id}"
+      flash[:notice] = "Forum status changed."
+      redirect_to :action => 'index'
+    else
+      flash[:badnotice] = "Error changing forum status."
+      redirect_to :action => 'index'
+    end
+    
+  end
+  
+  def move_up
+    return unless load_course( params[:course] )
+    return unless ensure_course_instructor( @course, @user )
+    return unless course_open( @course, :action => 'index' )
+    
+    @topic = ForumTopic.find(params[:id])
+    return unless topic_in_course( @course, @topic )
+    
+    (@course.forum_topics.to_a.find {|s| s.id == @topic.id}).move_higher
+    set_highlight "topic_#{@topic.id}"
+    redirect_to :action => 'index'
+  end
+  
+  def move_down
+    return unless load_course( params[:course] )
+    return unless ensure_course_instructor( @course, @user )
+    return unless course_open( @course, :action => 'index' )
+    
+    @topic = ForumTopic.find(params[:id])
+    return unless topic_in_course( @course, @topic )
+    
+    (@course.forum_topics.to_a.find {|s| s.id == @topic.id}).move_lower
+    set_highlight "topic_#{@topic.id}"
+    redirect_to :action => 'index'    
+  end
+  
   def new_post
     return unless load_course( params[:course] )
     return unless allowed_to_see_course( @course, @user )
+    return unless course_open( @course, :action => 'index' )
     
     @topic = ForumTopic.find(params[:topic])
     return unless topic_in_course( @course, @topic )
@@ -26,13 +73,98 @@ class ForumsController < ApplicationController
   end
   
   def delete
-    # TODO
+    return unless load_course( params[:course] )
+    return unless ensure_course_instructor( @course, @user )
+    
+    @post = ForumPost.find(params[:id])
+    @parent = @post if @post.id == params[:parent].to_i
+    @parent = ForumPost.find(params[:parent]) if @parent.nil?
+    @topic = @parent.forum_topic
+    return unless topic_in_course( @course, @topic )
+    
+    if @parent.id == @post.id
+      # delete root
+      @next = ForumPost.find(:first, :conditions => ["parent_post = ?", @parent.id], :order => "created_at asc" )
+      
+      unless @next.nil?
+        success = false
+        ForumPost.transaction do 
+          @next.replies = @post.replies - 1
+          @next.parent_post = 0
+          @next.last_user_id = @user.id
+          @next.save
+          
+          ForumPost.update_all( "parent_post = #{@next.id}","parent_post = #{@post.id}" )
+        
+          @topic.post_count = @topic.post_count - 1
+          @topic.user = @user
+          @topic.save
+          
+          @post.destroy
+       
+          success = true
+        end
+        
+        if success
+          flash[:notice] = "Post deleted - second post has been promoted to the topic leader."
+        else
+          flash[:notice] = "There was an error deleting the selected post."
+        end
+        redirect_to :action => 'read', :id => @next.id
+        
+      else
+        # there is no next
+        success = false
+        ForumPost.transaction do
+          @post.destroy
+          @topic.post_count = @topic.post_count - 1
+          @topic.user = @user
+          @topic.save
+          success = true
+        end
+        
+        if success
+          flash[:notice] = "Post deleted.   Since it was the only post, the entire topic has been removed."
+          redirect_to :action => 'view_topic', :id => @topic
+        else
+          flash[:notice] = "Error deleting post."
+          redirect_to :action => 'read', :id => @post
+        end
+      end
+      
+    else
+      
+      success = false
+      ForumPost.transaction do
+        @post.destroy
+        
+        @topic.post_count = @topic.post_count - 1
+        @topic.user = @user
+        @topic.save
+        
+        @parent.replies = @parent.replies - 1
+        @parent.last_user_id = @user.id
+        @parent.save
+        
+        success = true
+      end
+      
+      if success
+        flash[:notice] = "Post deleted."
+        redirect_to :action => 'read', :id => @parent
+      else
+        flash[:notice] = "Error deleting post."
+        redirect_to :action => 'read', :id => @parent
+      end
+      
+    end
     
   end
   
   def submit_post
     return unless load_course( params[:course] )
     return unless allowed_to_see_course( @course, @user )
+    return unless course_open( @course, :action => 'index' )
     
     @topic = ForumTopic.find(params[:topic])
     return unless topic_in_course( @course, @topic )

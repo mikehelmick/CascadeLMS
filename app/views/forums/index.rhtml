@@ -1,10 +1,11 @@
 
+<% if @user.instructor_in_course?(@course.id) %>
+<p><%= link_to "#{image_tag 'layout_add'} Create new forum", :course => @course, :action => 'new_forum' %></p>
+<% end %>
+
 <% if @topics.size == 0 %>
 	<p><i>There are no forum topics in this course.</i></p>
 <% else %>
-
-<p><%= link_to "#{image_tag 'layout_add'} Create new forum", :course => @course, :action => 'new_forum' %></p>
-
 
 <table class="fancy" width="99%">
   <tr class="header">
@@ -12,6 +13,10 @@
 	  <th>Last Poster</th>
 	  <th>When</th>
 	  <th>Posts</th>
+	
+	  <% if @user.instructor_in_course?(@course.id) %>
+	    <th>Controls</th>
+	  <% end %>
 	</tr>
 
   <% count = 0 %>
@@ -20,10 +25,23 @@
 	     odd = "odd"
 	     odd = "even" if count.even? %> 
     <tr class="<%=odd%> hover" id="topic_<%=topic.id%>">
-	  <th nowrap="nowrap" align="left"><%= link_to "#{h topic.topic}", :action => 'view_topic', :course => @course, :id => topic.id %></th>
-	  <th nowrap="nowrap" align="left"><%=h topic.user.display_name %></th>
-	  <th nowrap="nowrap" align="left"><%= distance_of_time_in_words_to_now( topic.updated_at, true ) %> ago</th>
-	  <th nowrap="nowrap" align="left"><%= topic.post_count %></th>
+	  <td nowrap="nowrap" align="left"><%= link_to "#{h topic.topic}", :action => 'view_topic', :course => @course, :id => topic.id %>
+	    <% unless topic.allow_posts %> <i> <%= image_tag 'door' %> forum closed</i><% end %>	
+	  </td>
+	  <td nowrap="nowrap" align="left"><%=h topic.user.display_name %></td>
+	  <td nowrap="nowrap" align="left"><%= distance_of_time_in_words_to_now( topic.updated_at, true ) %> ago</td>
+	  <td nowrap="nowrap" align="left"><%= topic.post_count %></td>
+	  <% if @user.instructor_in_course?(@course.id) %>
+	    <td nowrap="nowrap" align="left">
+		  <%= link_to "#{image_tag 'arrow_up'} Move Up", :action => 'move_up', :id => topic %> |
+		  <%= link_to "#{image_tag 'arrow_down'} Move Down", :action => 'move_down', :id => topic %> |
+		  <% if topic.allow_posts %>
+		    <%= link_to "#{image_tag 'door_open'} Close Topic", :action => 'toggle_open', :id => topic %>
+		  <% else %>
+		    <%= link_to "#{image_tag 'door'} Open Topic", :action => 'toggle_open', :id => topic %>
+		  <% end %>
+	    </td>
+	  <% end %>
 	</tr>
   <% end %>
 </table>
