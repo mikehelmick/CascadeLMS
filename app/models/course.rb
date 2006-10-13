@@ -11,6 +11,7 @@ class Course < ActiveRecord::Base
   
   has_many :documents, :order => "position", :dependent => :destroy
   has_many :assignments, :order => "position", :dependent => :destroy
+  has_many :forum_topics, :order => "position", :dependent => :destroy
   
   has_many :courses_users
   has_many :users, :through => :courses_users

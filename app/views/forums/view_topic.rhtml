@@ -1,0 +1,59 @@
+
+<h2>Course: <%= @course.title %></h2>
+<h3>Forum: <%= @topic.topic %></h3>
+
+<p><%= link_to 'New post in this forum. ', :action => 'new_post', :topic => @topic.id, :course => @course %> | <%= link_to 'All Forums', :action => 'index', :course => @course %></p>
+
+
+<% if @posts.size == 0 %>
+ <p><i>There are no posts in this forum.</i></p>
+
+<% else %>
+
+<table class="fancy">
+  <tr class="header">
+	  <th width="50%">Title</th>
+	  <th>Topic Starter</th>
+	  <th>Last Update</th>
+	  <th>Replies</th>
+	  <th>Last Post By</th>
+	</tr>
+
+  <% count = 0 %>
+  <% for post in @posts %>
+    <% count = count.next 
+	     odd = "odd"
+	     odd = "even" if count.even? %> 
+    <tr class="<%=odd%> hover" id="post_<%=post.id%>">
+	  <td align="left">
+	    <% if post.hot? %><%= image_tag 'medal_gold_1' %>
+	    <% elsif post.medium? %><%= image_tag 'medal_silver_1' %>
+	    <% else %><%= image_tag 'medal_bronze_1' %><% end %>
+	     <%= link_to "#{h post.headline}", :course => @course, :action => 'read', :id => post %></td>
+	  <td align="left" nowrap="nowrap"><%= post.user.display_name %></td>
+	  <td align="left" nowrap="nowrap"><%= distance_of_time_in_words_to_now( post.updated_at, true ) %> ago</td>
+	  <td align="center" nowrap="nowrap">
+		<% if post.replies.nil? %>0<% else %><%= post.replies%><% end %>
+	  </td>
+  	  <td align="center" nowrap="nowrap">
+	    <% if post.last_user.nil? %> -
+	    <% else %>
+	      <%= post.last_user.display_name %>
+	    <% end %>
+	  </td>
+	</tr>
+  <% end %>
+</table>
+
+<p><%= link_to 'New post in this forum. ', :action => 'new_post', :topic => @topic.id, :course => @course %></p>
+<% if @post_pages.page_count > 1 %><p>Page: 
+<% 1.upto(@post_pages.page_count) do |i| %>
+ <% if i == @page %>
+   <%= i %>
+ <% else %>
+     <%= link_to i, { :page => i } %>
+ <% end %>
+<% end %></p>
+<% end %>
+
+<% end %>

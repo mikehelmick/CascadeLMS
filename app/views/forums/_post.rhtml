@@ -1,0 +1,50 @@
+<tr>
+  <td class="headline" colspan="2">
+	<b><%= post.headline %></b>
+  </td>
+</tr>
+<tr>
+  <td class="poster" nowrap="nowrap" valign="top" align="left">
+    <p><b><%= post.user.display_name %></b>
+	  <% if post.user.instructor_in_course?( @course.id ) %> <%= image_tag 'user_suit' %> <br/> instructor
+	  <% elsif post.user.assistant_in_course?( @course.id ) %> <%= image_tag 'user_gray' %> <br/> assistant
+	  <% elsif post.user.student_in_course?( @course.id ) %> <%= image_tag 'user' %> <br/> student
+	  <% else %> <%= image_tag 'user_red' %> <br/> guest
+	  <% end %>
+	  <br/>
+	  
+	  <% if parent.id == post.id %>
+	  posted:<br/>
+	  <%= post.created_at.to_date.to_formatted_s(:long) %> <br/>
+	  at <%= post.created_at.to_time.to_formatted_s(:friendly_time) %> <br/>
+	  (<b><%= distance_of_time_in_words_to_now( post.created_at, true ) %> ago</b>)
+	  <% else %>
+	  replied <br/>
+	  <b><%= distance_of_time_in_words( post.created_at, parent.created_at, true ) %> later</b> <br/>
+	  (<%= post.created_at.to_date.to_formatted_s(:long) %> <br/>
+	  at <%= post.created_at.to_time.to_formatted_s(:friendly_time) %>)
+	  <% end %>
+	
+	</p>
+  </td>
+  <td class="post" width="85%" valign="top" align="left">
+	<% if controls.nil? || controls == true %>
+	<div class="forum_control">
+		<% if post.user.id == @user.id %>
+		  <% nowT = Time.now
+		     since_post = (nowT - post.created_at).to_i
+		   %>
+		  <% if since_post < 900 %>
+		    <%= link_to "Edit Post #{image_tag 'comment_edit'}", :action => 'edit', :parent => parent.id, :id => post.id %> (<i>for the next <%= distance_of_time_in_words( nowT, post.created_at + 900 ) %></i>)|
+		  <% end %>
+		<% end %>
+		<%= link_to "Reply #{image_tag 'comment_add'}", :action => 'reply', :parent => parent.id, :id => post.id %>
+		<% if @user.instructor_in_course?( @course.id ) %>
+		  <%= link_to "Delete #{image_tag 'comment_delete'}", {:action => 'delete', :parent => parent.id, :id => post.id }, :confirm => "Delete post?" %>
+		<% end %>
+	</div>
+	<% end %>
+	
+	<%= post.post_html %>
+  </td>
+</tr>

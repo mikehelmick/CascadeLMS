@@ -74,6 +74,14 @@
 			  <% else %>
 			    <li><%= link_to 'Assignments', { :controller => '/assignments', :course => @course }, { :id => 'current' } %></li>
 			  <% end %>
+			
+			<% if @course.course_setting.enable_forum %>
+			  <% if @tab.nil? || !@tab.eql?('course_forum') %>
+			    <li><%= link_to 'Forums', :controller => '/forums', :course => @course %></li> 
+			  <% else %>
+	            <li><%= link_to 'Forums', { :controller => '/forums', :course => @course }, { :id => 'current' } %></li>
+	          <% end %>
+	         <% end %>
 		    
 		    <% if @user.student_in_course?(@course.id) && @course.course_setting.enable_gradebook %>
 		  	  <% if @tab.nil? || !@tab.eql?('course_grades') %>

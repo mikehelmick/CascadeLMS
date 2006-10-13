@@ -12,6 +12,17 @@
 	<%= radio_button 'course_settings', 'blog_comments', false %> No</p>
 </div>
 
+<p class="blockintro">Discussion forums allow users in the course to communicate with you and each other.   This is a threaded style discussion forum.</p>
+<div class="block"> 
+<p><label for="course_settings_enable_forum" class="required">Enable Forum:</label>
+ <%= radio_button 'course_settings', 'enable_forum', true %> Yes
+ <%= radio_button 'course_settings', 'enable_forum', false %> No</p>
+
+<p><label for="course_settings_enable_forum_topic_create" class="required">All users to create new topics:</label>
+ <%= radio_button 'course_settings', 'enable_forum_topic_create', true %> Yes
+ <%= radio_button 'course_settings', 'enable_forum_topic_create', false %> No</p>
+</div>
+
 <p class="blockintro">This system offers a fully functional gradebook.  If you are going to keep track of your grades in a different application (Blackboard, Excel, etc...) then you should disable the gradebook in this application.</p>
 <div class="block">
 <p><label for="course_settings_enable_gradebook" class="required">Enable gradebook:</label>

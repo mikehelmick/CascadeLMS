@@ -1,0 +1,15 @@
+<%= error_messages_for 'topic' %>
+
+<!--[form:post]-->
+<p class="blockintro">Creating a new topic will allow users to create sub-topics (posts) and replies to those sub-topics.</p>
+<div class="block">
+<p><label for="forum_topic"  class="required">Topic Name:</label>
+<%= text_field 'topic', 'topic'  %></p>
+
+<p><label for="topic_allow_posts" class="required">Allow Posts:</label>
+	<%= radio_button 'topic', 'allow_posts', true %> Yes
+	<%= radio_button 'topic', 'allow_posts', false %> No</p>
+
+
+</div>
+<!--[eoform:post]-->

@@ -120,6 +120,19 @@ class ApplicationController < ActionController::Base
     return true
   end
   
+  def ensure_course_instructor( course, user )
+    user.courses_users.each do |cu|
+      if cu.course_id == course.id
+        if cu.course_instructor
+          return true
+        end
+      end  
+    end
+    flash[:badnotice] = "You are not authorized to perform that action."
+    redirect_to :controller => '/overview', :course => course.id
+    return false    
+  end
+  
   def course_is_public( course )
     unless course.public
       flash[:badnotice] = "The selected course is not available to the public."

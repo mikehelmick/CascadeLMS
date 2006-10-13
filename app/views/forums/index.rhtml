@@ -1,0 +1,32 @@
+
+<% if @topics.size == 0 %>
+	<p><i>There are no forum topics in this course.</i></p>
+<% else %>
+
+<p><%= link_to "#{image_tag 'layout_add'} Create new forum", :course => @course, :action => 'new_forum' %></p>
+
+
+<table class="fancy" width="99%">
+  <tr class="header">
+	  <th width="65%">Topic</th>
+	  <th>Last Poster</th>
+	  <th>When</th>
+	  <th>Posts</th>
+	</tr>
+
+  <% count = 0 %>
+  <% for topic in @topics %>
+    <% count = count.next 
+	     odd = "odd"
+	     odd = "even" if count.even? %> 
+    <tr class="<%=odd%> hover" id="topic_<%=topic.id%>">
+	  <th nowrap="nowrap" align="left"><%= link_to "#{h topic.topic}", :action => 'view_topic', :course => @course, :id => topic.id %></th>
+	  <th nowrap="nowrap" align="left"><%=h topic.user.display_name %></th>
+	  <th nowrap="nowrap" align="left"><%= distance_of_time_in_words_to_now( topic.updated_at, true ) %> ago</th>
+	  <th nowrap="nowrap" align="left"><%= topic.post_count %></th>
+	</tr>
+  <% end %>
+</table>
+
+<% end %>
+

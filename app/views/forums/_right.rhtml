@@ -1,0 +1,8 @@
+<% if @user.instructor_in_course?( @course.id ) %>
+<h2>Forum Control</h2>
+<p><%= link_to 'Create new forum', :course => @course, :action => 'new_forum' %></p>
+
+
+<% else %>
+  <%= render :partial => 'overview/right' %>
+<% end %>

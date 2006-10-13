@@ -2,7 +2,7 @@
 # migrations feature of ActiveRecord to incrementally modify your database, and
 # then regenerate this schema definition.
 
-ActiveRecord::Schema.define(:version => 38) do
+ActiveRecord::Schema.define(:version => 42) do
 
   create_table "announcements", :force => true do |t|
     t.column "headline", :string
@@ -43,6 +43,9 @@ ActiveRecord::Schema.define(:version => 38) do
     t.column "auto_grade", :boolean, :default => false, :null => false
     t.column "grade_category_id", :integer
     t.column "released", :boolean, :default => false, :null => false
+  end
+
+  create_table "basic_graders", :force => true do |t|
   end
 
   create_table "comments", :force => true do |t|
@@ -86,6 +89,8 @@ ActiveRecord::Schema.define(:version => 38) do
     t.column "ta_view_student_files", :boolean, :default => true, :null => false
     t.column "ta_grade_individual", :boolean, :default => true, :null => false
     t.column "ta_send_email", :boolean, :default => false, :null => false
+    t.column "enable_forum", :boolean, :default => true, :null => false
+    t.column "enable_forum_topic_create", :boolean, :default => false, :null => false
   end
 
   add_index "course_settings", ["course_id"], :name => "course_settings_course_id_index", :unique => true
@@ -139,11 +144,35 @@ ActiveRecord::Schema.define(:version => 38) do
     t.column "user_turnin_file_id", :integer, :default => 0, :null => false
     t.column "line_number", :integer, :default => 0, :null => false
     t.column "user_id", :integer, :default => 0, :null => false
-    t.column "comments", :string
+    t.column "comments", :text
   end
 
   add_index "file_comments", ["user_turnin_file_id", "line_number"], :name => "file_comments_file_line_number_idx", :unique => true
   add_index "file_comments", ["user_turnin_file_id"], :name => "file_line_number_idx"
+
+  create_table "forum_posts", :force => true do |t|
+    t.column "headline", :string, :default => "", :null => false
+    t.column "post", :text, :default => "", :null => false
+    t.column "post_html", :text, :default => "", :null => false
+    t.column "forum_topic_id", :integer, :default => 0, :null => false
+    t.column "parent_post", :integer, :default => 0, :null => false
+    t.column "user_id", :integer, :default => 0, :null => false
+    t.column "created_at", :datetime, :null => false
+    t.column "updated_at", :datetime, :null => false
+    t.column "replies", :integer
+    t.column "last_user_id", :integer
+  end
+
+  create_table "forum_topics", :force => true do |t|
+    t.column "course_id", :integer, :default => 0, :null => false
+    t.column "topic", :string, :default => "", :null => false
+    t.column "position", :integer, :default => 0, :null => false
+    t.column "allow_posts", :boolean, :default => true, :null => false
+    t.column "user_id", :integer, :default => 0, :null => false
+    t.column "created_at", :datetime, :null => false
+    t.column "updated_at", :datetime, :null => false
+    t.column "post_count", :integer, :default => 0, :null => false
+  end
 
   create_table "grade_categories", :force => true do |t|
     t.column "category", :string
@@ -157,7 +186,7 @@ ActiveRecord::Schema.define(:version => 38) do
     t.column "points", :float
     t.column "created_at", :datetime
     t.column "updated_at", :datetime
-    t.column "comment", :string
+    t.column "comment", :text
   end
 
   add_index "grade_entries", ["grade_item_id"], :name => "grade_entries_grade_item_id_index"

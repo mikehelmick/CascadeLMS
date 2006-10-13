@@ -383,6 +383,56 @@ div.Right .col h2 {
 
 /** table **/
 
+.forum {
+	border:  1px solid #666666;
+	width: 95%;
+	text-align: center;
+}
+
+.forum .poster {
+	background-color: #84CA82;
+	border-right:  1px dashed #990000;
+	padding: 2px 4px 2px 4px;
+	margin: 0;
+}
+
+.forum .post {
+	padding: 2px 4px 2px 4px;
+	margin: 0;
+}
+
+.forum .headline {
+	background-color: #CDE8FB;
+	padding: 2px 4px 2px 4px;
+	text-align:  center;
+}
+
+
+.forum .replies {
+	background-color:  #F3B902;
+	text-align: center;
+	padding: 5px 0 5px 0;
+}
+
+.forum_control {
+	border-bottom:  1px dashed #666666;
+	padding: 0 5px 2px 5px;
+	margin: 0 0 4px 0;
+	text-align: right;
+	width:  98%;
+	display: block;
+}
+
+.quote {
+	display:  block;
+	background-color: #cccccc;
+	border:  1px dashed #111111;
+	padding: 4px 4px 4px 4px;
+	text-align: left;
+	margin: 15px;
+}
+
+
 .fancy {
 	border: 1px solid #666666;
 }
