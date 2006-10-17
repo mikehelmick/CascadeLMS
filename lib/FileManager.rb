@@ -69,7 +69,7 @@ class FileManager
       if !line.upcase.index('<PRE>').nil?
         pull = true
       elsif !line.upcase.index('</PRE>').nil? && line.upcase.index('</PRE>') > 0 ## no newline after last line
-        lines << line[0...-6].chomp.gsub(/  /, "&nbsp;&nbsp;" ).gsub(/\t/,"&nbsp;&nbsp;&nbsp;&nbsp;")
+        lines << line[0..-6].chomp.gsub(/  /, "&nbsp;&nbsp;" ).gsub(/\t/,"&nbsp;&nbsp;&nbsp;&nbsp;")
         pull = false
       elsif !line.upcase.index('</PRE>').nil?
         pull = false
