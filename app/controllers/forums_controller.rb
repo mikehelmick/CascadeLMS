@@ -193,7 +193,6 @@ class ForumsController < ApplicationController
       @post.parent_post = 0
       @post.user = @user
       
-      puts "parent #{params[:parent]}"
       
       if !params[:parent].nil? && !params[:parent].eql?('')
         @post.parent_post = params[:parent].to_i
@@ -297,7 +296,6 @@ class ForumsController < ApplicationController
     return unless topic_in_course( @course, @topic )
     return unless topic_open( @course, @topic )
     
-    puts (Time.now - @post.created_at).to_i
     if (Time.now - @post.created_at).to_i > 900
       flash[:notice] = "This post was created more than 15 minutes ago, and can no longer be edited."
       redirect_to :action => 'read', :id => params[:parent]
