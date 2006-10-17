@@ -68,6 +68,9 @@ class FileManager
     formatted.each_line do |line|
       if !line.upcase.index('<PRE>').nil?
         pull = true
+      elsif line.upcase.index('</PRE>') > 0 ## no newline after last line
+        lines << line[0...line.upcase.index('</PRE>')].chomp.gsub(/  /, "&nbsp;&nbsp;" ).gsub(/\t/,"&nbsp;&nbsp;&nbsp;&nbsp;")
+        pull = false
       elsif !line.upcase.index('</PRE>').nil?
         pull = false
       elsif pull
