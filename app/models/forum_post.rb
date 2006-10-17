@@ -1,3 +1,5 @@
+require 'MyString'
+
 class ForumPost < ActiveRecord::Base
 
   belongs_to :forum_topic
@@ -24,7 +26,12 @@ class ForumPost < ActiveRecord::Base
   end
   
   def transform_markup
-	  self.post_html = HtmlEngine.apply_textile( self.post )
+	  
+	  temp_post = self.post
+	  temp_post = temp_post.apply_code_tag
+    temp_post = temp_post.apply_quote_tag
+    
+    self.post_html = HtmlEngine.apply_textile( temp_post )
   end
   
   protected :transform_markup

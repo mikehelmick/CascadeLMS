@@ -693,6 +693,15 @@ a img {
 	font-size:  10pt;
 }
 
+.code {
+	background: #EEEEEE;
+	border: 1px solid #84CA82;
+	margin: 2px 2px 2px 2px;
+	padding: 2px 2px 2px 2px;
+	font-family: "courier", verdana, sans-serif;
+	font-size: 10pt;
+}
+
 .codeout {
 	background: #EEEEEE;
 	border: 1px solid #990000;

@@ -317,7 +317,7 @@ class ForumsController < ApplicationController
     
     @post = ForumPost.new
     @post.headline = "RE: #{@reply_to.headline}"
-    @post.post = "<div class=\"quote\">_posted by #{@reply_to.user.display_name} at #{@reply_to.created_at.to_formatted_s(:short)}_ \n\n #{@reply_to.post}\n</quote>"
+    @post.post = "[quote]_posted by #{@reply_to.user.display_name} at #{@reply_to.created_at.to_formatted_s(:short)}_ \n\n #{@reply_to.post}\n[/quote]"
   end
   
   private
