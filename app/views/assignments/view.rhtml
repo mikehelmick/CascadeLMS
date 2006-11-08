@@ -25,6 +25,20 @@
           <td valign="top"><%= @assignment.close_date.to_formatted_s(:friendly_date) %></td></tr>
       <tr><td class="label" width="15%" nowrap="nowrap" valign="top">Journals Required:</td>
 	      <td valign="top"><%=  @assignment.enable_journal.yes_no %></td></tr>
+	  <% unless @assignment.grade_item.nil? %>
+	    <tr><td class="label" width="15%" nowrap="nowrap" valign="top">Grade Category:</td>
+		    <td valign="top"><%=  @assignment.grade_item.grade_category.category %></td></tr>
+		<tr><td class="label" width="15%" nowrap="nowrap" valign="top">Possible Points:</td>
+		    <td valign="top"><%=  @assignment.grade_item.points %></td></tr>
+		<tr><td class="label" width="15%" nowrap="nowrap" valign="top">Assignment Graded:</td>
+			<td valign="top">
+			  <% if @assignment.released %>
+			    <%= link_to 'Yes', :controller => '/turnins', :course => @course, :assignment => @assignment, :action => 'feedback' %><%= image_tag 'lightbulb' %>
+			  <% else %>
+			    No <%= image_tag 'lightbulb_off' %>
+			  <% end %>
+			</td></tr>
+	  <% end %>
 	  <tr><td class="label" width="15%" nowrap="nowrap" valign="top">Turnin methods:</td>
 		  <td valign="top">
 		   <% if @assignment.use_subversion && @assignment.enable_upload %> Subversion or Upload to this site.
