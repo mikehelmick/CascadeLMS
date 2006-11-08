@@ -21,6 +21,10 @@ class User < ActiveRecord::Base
     Journal.find(:all, :conditions => ["assignment_id = ? and user_id = ?", assignment.id, self.id], :order => 'created_at asc' )
   end
   
+  def grade_for_grade_item( grade_item ) 
+    GradeEntry.find(:first, :conditions => ["user_id = ? and grade_item_id =?", self.id, grade_item.id ] )
+  end
+  
   def display_name
     unless self.preferred_name.nil?
       "#{self.preferred_name} #{self.last_name}"

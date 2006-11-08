@@ -9,7 +9,7 @@
       <th>#</th>
       <th>Title</th>
       <th>Category</th>
-      <% if !public %><th>Graded?</td><% end %>
+      <% if !public %><th colspan="2">Graded?</td><% end %>
       <th>Available</th>
       <th>Due</th>
      </tr>
@@ -30,6 +30,15 @@
 	        <%= link_to 'Yes', :controller => '/turnins', :course => @course, :assignment => assignment, :action => 'feedback' %><%= image_tag 'lightbulb' %>
 	      <% else %>
 	        No <%= image_tag 'lightbulb_off' %>
+	      <% end %>
+	    </td>
+	    <td nowrap="nowrap" align="right">
+	      <% if assignment.released && !assignment.grade_item.nil? %>
+	        <%= @user.grade_for_grade_item(assignment.grade_item).points %>/<%= assignment.grade_item.points %>
+	      <% elsif !assignment.grade_item.nil? %>
+	        <acronym title="no grade yet"><%= image_tag 'bullet_error' %></acronym>/<%= assignment.grade_item.points %>
+	      <% else %>
+	        &nbsp;
 	      <% end %>
 	    </td>
 	    <% end %>
