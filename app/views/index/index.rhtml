@@ -18,7 +18,7 @@
   <p class="blockintro">Please enter your username and password.</p>
   <div class="block">
   <label for="user_uniqueid" class="required">Username:</label>
-  <%= text_field 'user', 'uniqueid' %> <br/>
+  <%= text_field 'user', 'uniqueid', 'tabindex' => '1' %> <br/>
 
   <label for="user_password" class="required">Password:</label>
    <%= password_field 'user', 'password' %>
@@ -33,3 +33,7 @@
 <h2>Public Access</h2>
 
 <p>Some courses provide public access to the course material, please <%= link_to "take look at the list of courses offering public access. #{image_tag 'world'}", :controller => '/public' %></p>
+
+<SCRIPT LANGUAGE="JavaScript">
+ document.forms[0].elements[0].focus();
+</SCRIPT>
