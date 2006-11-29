@@ -21,10 +21,10 @@
   <%= text_field 'user', 'uniqueid', 'tabindex' => '1' %> <br/>
 
   <label for="user_password" class="required">Password:</label>
-   <%= password_field 'user', 'password' %>
+   <%= password_field 'user', 'password', 'tabindex' => '2' %>
   </div>
   <div class="submit">
-    <%= submit_tag 'Login' %>
+    <%= submit_tag 'Login', 'tabindex' => '3' %>
   </div>
 
 <%= end_form_tag %>
