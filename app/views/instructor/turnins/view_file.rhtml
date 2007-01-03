@@ -81,9 +81,9 @@
            <%= hidden_field_tag 'line', line_num.to_s %>
            <% if @comments[line_num] %>
              <i>Comment by <%= @comments[line_num].user.display_name %></i><br/>
-             <%= text_area_tag 'comments', @comments[line_num].comments, "cols" => 120, "rows" => 5 %> 
+             <%= text_area_tag 'comments', @comments[line_num].comments, "cols" => 120, "rows" => 8 %> 
            <% else %>
-             <%= text_area_tag 'comments', '', "cols" => 120, "rows" => 5 %>
+             <%= text_area_tag 'comments', '', "cols" => 120, "rows" => 8 %>
            <% end %>
            <%= submit_tag "Save Comments for line #{line_num}" %>
         <%= end_form_tag %>

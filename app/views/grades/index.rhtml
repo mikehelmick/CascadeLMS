@@ -5,7 +5,7 @@
   <tr class="header">
     <th>Assignment</th>
     <th>Category</th>
-    <% if @course.gradebook.weight_grades %><th>Category Weight</th><% end %>
+    <% if !@course.gradebook.nil? && @course.gradebook.weight_grades %><th>Category Weight</th><% end %>
     <th>Date</th>
     <th>Your Score</th>
     <th>Possible Points</th>

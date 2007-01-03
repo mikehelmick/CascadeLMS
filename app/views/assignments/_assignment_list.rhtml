@@ -29,7 +29,7 @@
 	      <% if assignment.released && !assignment.grade_item.nil? %>
 	        <%= link_to 'Yes', :controller => '/turnins', :course => @course, :assignment => assignment, :action => 'feedback' %><%= image_tag 'lightbulb' %>
 	      <% else %>
-	        No <%= image_tag 'lightbulb_off' %>
+	        <%= link_to 'No', :controller => '/turnins', :course => @course, :assignment => assignment, :action => 'feedback' %> <%= image_tag 'lightbulb_off' %>
 	      <% end %>
 	    </td>
 	    <td nowrap="nowrap" align="right">

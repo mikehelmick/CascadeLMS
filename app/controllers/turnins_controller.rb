@@ -148,6 +148,14 @@ class TurninsController < ApplicationController
     
     return unless assignment_open( @assignment )
     
+    
+    count_todays_turnins( @app["turnin_limit"].to_i )
+    if @remaining_count <= 0 && @assignment.auto_grade_setting.any_student_grade?
+      flash[:badnotice] = "You have reached your finalize limit for today.   The files in this turn-in set will still be submitted to your instructor for evaluation, but you can not finalize the set and run the AutoGrader.   You may archive this set and start a new one if you need to."
+      redirect_to :action => 'index'   
+      return
+    end
+    
     # load turnin sets
     @turnins = UserTurnin.find( :all, :conditions => [ "assignment_id = ? and user_id = ?", @assignment.id, @user.id ], :order => "position desc" )
     @current_turnin = nil

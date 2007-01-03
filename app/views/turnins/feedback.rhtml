@@ -72,8 +72,8 @@
 	
 	       <% if comment_hash[line_num] %>
 	          <div class="codecomment">
-	<i>Comment on line <%=line_num%> left by <%= comment_hash[line_num].user.display_name %></i><br/>
-	<%= comment_hash[line_num].comments.to_html %>
+	<i>Instructor comment on line <%=line_num%></i><br/>
+	<b><%= comment_hash[line_num].comments.to_html %></b>
 	          </div>
 	       <% end %>
 	       <% if style_hash[line_num] %>
