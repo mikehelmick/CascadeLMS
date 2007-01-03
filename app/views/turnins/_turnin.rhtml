@@ -2,6 +2,8 @@
   <div class="GoodMessage">This is your current turn-in set.
   <% if @assignment.closed? %>
     <b>This assignment is closed - the files below are the ones submitted to your instructor.</b>
+  <% elsif ! @current_turnin.sealed %>
+    <b>This turn-in is open and can accept more files.</b>  Please remember to finalize this turn-in set.
   <% end %>
   </div>
 <% else %>

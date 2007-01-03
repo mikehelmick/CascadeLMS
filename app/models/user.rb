@@ -36,7 +36,7 @@ class User < ActiveRecord::Base
   def courses_in_term( term )
     cur = Array.new
     courses_users.each do |cu|
-      cur << cu if cu.course.term_id == term.id && cu.course
+        cur << cu if cu.course.term_id == term.id && cu.course
     end
     cur.sort! { |x,y| x.course.title <=> y.course.title }    
   end

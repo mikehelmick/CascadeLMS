@@ -135,7 +135,31 @@ class Instructor::CourseAssignmentsController < Instructor::InstructorBase
     return unless course_open( @course, :action => 'index' )
     @assignment = Assignment.find( @params['id'] )
     return unless assignment_in_course( @course, @assignment )
-    return unless assignment_uses_autograde( @course, @assignment )    
+    return unless assignment_uses_autograde( @course, @assignment )  
+    
+    if @assignment.auto_grade_setting.nil?
+      @assignment.auto_grade_setting = AutoGradeSetting.new
+      @assignment.save
+    end
+    
+    @auto_grade_setting = @assignment.auto_grade_setting
+  end
+  
+  def save_autograde
+    return unless load_course( params[:course] )
+    return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_assignments' )
+    return unless course_open( @course, :action => 'index' )
+    @assignment = Assignment.find( @params['id'] )
+    return unless assignment_in_course( @course, @assignment )
+    return unless assignment_uses_autograde( @course, @assignment )  
+    
+    if @assignment.auto_grade_setting.update_attributes( params[:assignment] ) 
+      flash[:notice] = "AutoGrade settings changed."
+    else
+      flash[:badnotice] = "There was an error saving autograde settings."
+    end
+    
+    redirect_to :action => 'autograde', :id => @assignment
   end
   
   def edit
@@ -190,6 +214,64 @@ class Instructor::CourseAssignmentsController < Instructor::InstructorBase
         
   end
   
+  def pmd_settings
+      return unless load_course( params[:course] )
+      return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_assignments' )
+      return unless course_open( @course, :action => 'index' )
+      @assignment = Assignment.find( @params['id'] )
+      return unless assignment_in_course( @course, @assignment )
+      return unless assignment_uses_autograde( @course, @assignment )
+      return unless assignment_uses_pmd( @course, @assignment )
+      
+      # this isn't fun - make sure that pmd setting are available
+      if @assignment.assignment_pmd_settings.size == 0
+        unless @assignment.ensure_style_defaults
+          flash[:badnotice] = "There was an error initialize the default Java style checks, please try again later."
+          redirect_to :action => 'index', :course => @course
+        else 
+          flash[:notice] = "Initialized PMD settings to default values."
+        end
+      end
+  end
+  
+  def save_pmd
+    return unless load_course( params[:course] )
+    return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_assignments' )
+    return unless course_open( @course, :action => 'index' )
+    @assignment = Assignment.find( @params['id'] )
+    return unless assignment_in_course( @course, @assignment )
+    return unless assignment_uses_autograde( @course, @assignment )
+    return unless assignment_uses_pmd( @course, @assignment )
+    
+    begin
+      AssignmentPmdSetting.transaction do
+        pmds = @assignment.pmd_hash
+        pmds.each do |id,pmd|
+          puts "KEY=#{id}"
+          puts pmd.inspect 
+          puts params["apmd_#{id}"]
+          
+          if params["apmd_#{id}"].nil?
+            if pmd.enabled == true
+              pmd.enabled = false
+              raise "error saving" unless pmd.save
+            end
+          else
+            unless pmd.enabled.to_s.eql?( params["apmd_#{id}"].to_s )
+              pmd.enabled = ! pmd.enabled
+              raise "error saving" unless pmd.save
+            end
+          end
+        end
+      end
+      
+      flash[:notice] = "PMD settings have been saved."
+    rescue
+      flash[:badnotice] = "There was an error updating the PMD setting for this assignment."
+    end
+  
+    redirect_to :action => 'pmd_settings', :course => @course, :id => @assignment
+  end
   
   def file_move_up
     return unless load_course( params[:course] )
@@ -313,6 +395,16 @@ class Instructor::CourseAssignmentsController < Instructor::InstructorBase
       true    
   end
   
-  private :set_tab, :set_title, :assignment_in_course, :assignment_uses_autograde
+  def assignment_uses_pmd( course, assignment )
+    return false if assignment.auto_grade_setting.nil?
+    unless assignment.auto_grade_setting.student_style || assignment.auto_grade_setting.style
+      redirect_to :action => 'index', :course => course
+      flash[:notice] = "The selected assignment does not have PMD style checking enabled."
+      return false
+    end
+    return true
+  end
+  
+  private :set_tab, :set_title, :assignment_in_course, :assignment_uses_autograde, :assignment_uses_pmd
   
 end

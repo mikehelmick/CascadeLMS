@@ -6,6 +6,7 @@ class UserTurninFile < ActiveRecord::Base
   validates_uniqueness_of :filename, :scope => [:user_turnin_id, :directory_parent]
   
   has_many :file_comments, :dependent => :destroy
+  has_many :file_styles, :dependent => :destroy
   
   def full_filename( directory_map )
     x = filename
@@ -21,6 +22,19 @@ class UserTurninFile < ActiveRecord::Base
       comments[fc.line_number] = fc
     end
     return comments
+  end
+  
+  def file_style_hash( include_suppressed = false )
+    style = Hash.new
+    self.file_styles.each do |fs|
+      if include_suppressed || !fs.suppressed 
+        if style[fs.begin_line].nil?
+          style[fs.begin_line] = Array.new
+        end
+        style[fs.begin_line] << fs
+      end
+    end
+    return style
   end
   
   def icon()

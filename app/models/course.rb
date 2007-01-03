@@ -22,7 +22,7 @@ class Course < ActiveRecord::Base
   
   
   
-  before_create :create_settings
+  before_create :solidify
   
   def merge( other )
     Course.transaction do
@@ -146,7 +146,7 @@ class Course < ActiveRecord::Base
     end
   end
   
-  def create_settings
+  def solidify
     self.course_setting = CourseSetting.new if self.course_setting.nil?
   end
   

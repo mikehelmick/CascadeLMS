@@ -1,0 +1,32 @@
+<h3>PMD Settings for '<%= @assignment.title %>'</h3>
+
+<p><%= link_to 'Back', :action => 'autograde', :id => @assignment %></p>
+
+<p><i>PMD</i> is a package for checking the style of Java code against community standards.   You can choose exactly which style checks are enabled and disabled for each assignment.</p>
+
+<div id="form_area">
+  <%= start_form_tag( { :action => 'save_pmd', :id => @assignment } ) %>
+
+  <% count = 0 %>
+  <% @assignment.assignment_pmd_settings.each do |apmd| %>	
+    <% count = count.next %>
+	<p><label for="apmd_<%=apmd.style_check_id%>" class="required"><%= count %>) <%= link_to_function "#{apmd.style_check.name}", visual_effect(:toggle_slide, "description_#{apmd.style_check_id}" )  %>:</label>
+	   	<%= radio_button_tag "apmd_#{apmd.style_check_id}", true, apmd.enabled == true %> Yes
+	    <%= radio_button_tag "apmd_#{apmd.style_check_id}", false, apmd.enabled == false %> No
+	    <div id="description_<%=apmd.style_check_id%>" style="display: none;">
+		<ul>
+		  <li><b>Description:</b> <%= apmd.style_check.description %></li>
+		  <li><b>Example:</b> <div class="code"><%= apmd.style_check.example %></div></li>
+		</ul>
+		</div>
+    </p>  
+  <% end %>
+
+  <div class="submit">
+    <div id="button"><%= submit_tag "Save PMD Settings" %></div>
+  </div>
+<%= end_form_tag %>
+
+<p><%= link_to 'Back', :action => 'autograde', :id => @assignment %></p>
+
+</div>

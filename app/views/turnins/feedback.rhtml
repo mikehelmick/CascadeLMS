@@ -18,6 +18,15 @@
     </p>
     </div>
   <% end %>
+
+<% elsif !@assignment.released%>
+  <div class="standout">
+  <p><%= image_tag 'flag_red' %><i>Grades and instructor feedback are not yet available.</i>
+    <% if @assignment.auto_grade_setting.any_student_grade? %>	
+      <br/>Scroll down for results from the AutoGrader.
+    <% end%>
+  </p>
+  </div>
 <% end %>
 
 <% if @current_turnin %>
@@ -47,7 +56,10 @@
 	<% else %>
 	  <% directory = @current_turnin.get_dir( @app['external_dir'] )
 	     lines = FileManager.format_file( @app['enscript_command'], "#{directory}#{utf.full_filename( @directories )}", utf.extension )
-	     comment_hash = utf.file_comments_hash
+	     comment_hash = Hash.new
+	     comment_hash = utf.file_comments_hash if @assignment.released
+	     style_hash = Hash.new
+	     style_hash = utf.file_style_hash if @assignment.auto_grade_setting.student_style
 	   %>
 	 
 	   <% line_num = 0 %>
@@ -62,9 +74,25 @@
 	          <div class="codecomment">
 	<i>Comment on line <%=line_num%> left by <%= comment_hash[line_num].user.display_name %></i><br/>
 	<%= comment_hash[line_num].comments.to_html %>
-	
 	          </div>
 	       <% end %>
+	       <% if style_hash[line_num] %>
+	          <% for fs in style_hash[line_num] %>
+	            <div class="codestyle">
+		           <i>PMD Code Style:</i> From line <%= fs.begin_line %>:<%= fs.begin_column %> to line <%= fs.end_line %>:<%= fs.end_column %><br/>
+		           <ul>
+			         <li><b><%= fs.message %></b></li>
+			         <li><b>Explanation:</b> <%= fs.style_check.description %> </li>
+			         <li><b><%= link_to_function "View Example: #{image_tag 'folder_bug'}", visual_effect(:toggle_appear, "example_#{fs.id}" )  %></b></li>
+			       <ul>
+				   
+				       <div class="code_example" id="example_<%=fs.id%>" style="display: none;">
+					     <%= fs.style_check.example %>
+					   </div>
+		        </div>
+	          <% end %>
+	       <% end %>
+	
 	     <% end %>
 	   </div>
 	<% end %>

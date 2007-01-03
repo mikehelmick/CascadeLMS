@@ -13,8 +13,11 @@ class ApplicationController < ActionController::Base
   @@auth_locations = ['REDIRECT_REDIRECT_X_HTTP_AUTHORIZATION',
                       'REDIRECT_X_HTTP_AUTHORIZATION',
                       'X-HTTP_AUTHORIZATION', 'HTTP_AUTHORIZATION',
-                      'Authorization','AUTHORIZATION']
-                      
+                      'Authorization','AUTHORIZATION']                      
+     
+  @@app = nil            
+  @@external_dir = nil            
+                    
   def browser_check
     if request.env['HTTP_USER_AGENT'] && request.env['HTTP_USER_AGENT'].include?('MSIE')
       if !cookies[:ie_override].nil? && cookies[:ie_override].eql?( true.to_s )
@@ -50,6 +53,24 @@ class ApplicationController < ActionController::Base
       session[:user].notice = nil
     end
   end
+  
+  
+  def ApplicationController.external_dir
+    ApplicationController.app
+    @@external_dir
+  end
+  
+  def ApplicationController.root_dir
+    return RAILS_ROOT
+  end
+  
+  def ApplicationController.app
+    if @@app.nil?
+      @@app = YAML.load( File.open("#{RAILS_ROOT}/config/defaults.yml") )
+ 		  @@external_dir ||= @@app['external_dir']
+ 		end
+ 		return @@app
+  end
 
   def app_config
  		@app ||= YAML.load( File.open("#{RAILS_ROOT}/config/defaults.yml") )
@@ -65,7 +86,7 @@ class ApplicationController < ActionController::Base
   end
   
   def ensure_admin
-    unless session[:user].admin?
+    unless session[:user].admin? || (!@user.nil? && @user.admin?)
       flash[:badnotice] = "You do not have the rights to view the requested page."
       redirect_to :controller => '/home'
       return false
@@ -201,6 +222,7 @@ class ApplicationController < ActionController::Base
     
     begin
       @user = auth.authenticate( user.uniqueid, user.password )
+      flash[:notice] = @user.notice if @user.notice
       session[:user] = User.find( @user.id )
       session[:current_term] = Term.find_current
       

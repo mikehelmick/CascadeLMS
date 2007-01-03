@@ -39,14 +39,26 @@ class Admin::CourseAdminController < ApplicationController
     @course.term = @term
     
     # if a CRN was provided...
-    unless params[:crn].nil?
+    crn = Crn.find(:first, :conditions => ["crn = ?", params[:crn] ] ) rescue crn = nil
+    
+    if crn
+      puts "A"
+      @course.crns << crn
+      
+    elsif !params[:crn].nil? && !params[:crn].eql?('')
+      puts "B"
       crn = Crn.new()
       crn.crn = params[:crn]
       crn.name = @course.title
       crn.save
       @course.crns << crn
-    end
     
+    else
+      puts "C"
+      @course.crns << Crn.find(:first, :conditions => ["crn = ?", 'NONE'] )
+      
+    end
+  
     if @course.save
       flash[:notice] = "New course '#{@course.title}' has been created.  Please edit this course to add an instructor to it."
       redirect_to :action => 'index'

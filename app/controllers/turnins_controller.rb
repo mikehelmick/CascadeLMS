@@ -31,6 +31,8 @@ class TurninsController < ApplicationController
       end
       @directory = ""
     end
+  
+    count_todays_turnins( @app["turnin_limit"].to_i )
     
     @now = Time.now
     set_title
@@ -111,6 +113,10 @@ class TurninsController < ApplicationController
     return unless user_owns_turnin( @user, @turnin )
     return unless turnin_for_assignment( @turnin, @assignment )
     
+    
+    count_todays_turnins
+    return unless submissions_remaining()
+    
     # get the file and download it :)
     directory = @turnin.get_dir( @app['external_dir'] )
     
@@ -130,6 +136,65 @@ class TurninsController < ApplicationController
       flash[:badnotice] = "Sorry - the requested document has been deleted or is corrupt.  Please notify your instructor of the problem."
       redirect_to :action => 'index'
     end
+  end
+  
+  def finalize
+    return unless load_course( params[:course] )
+    return unless allowed_to_see_course( @course, @user )
+    
+    @assignment = Assignment.find(params[:assignment]) rescue @assignment = Assignment.new
+    return unless assignment_in_course( @assignment, @course )
+    return unless assignment_available( @assignment )
+    
+    return unless assignment_open( @assignment )
+    
+    # load turnin sets
+    @turnins = UserTurnin.find( :all, :conditions => [ "assignment_id = ? and user_id = ?", @assignment.id, @user.id ], :order => "position desc" )
+    @current_turnin = nil
+    @current_turnin = @turnins[0] if @turnins.size > 0
+    
+    @current_turnin.finalized = true
+    @current_turnin.sealed = true
+    if @current_turnin.save
+      flash[:notice] = "Your most recent turn-in set has been finalied and submitted to your instructor."
+      
+      unless @assignment.auto_grade_setting.nil?
+        queue = GradeQueue.new
+        queue.user = @user
+        queue.assignment = @assignment
+        queue.user_turnin = @current_turnin
+        if queue.save
+          
+          begin
+            MiddleMan.schedule_worker(
+              :class => :auto_grade_worker,
+              :args => queue.id,
+              :trigger_args => {
+                    :start => Time.now + 1.seconds
+                  }
+            )
+          rescue
+            flash[:badnotice] = "The AutoGrade server wasn't running - but I've started it up and your grading will be begin shortly."
+            ## bounce the server - the stop and then the start (stop has no effect if not running)
+            `#{RAILS_ROOT}/script/backgroundrb stop`
+            `#{RAILS_ROOT}/script/backgroundrb start`
+          end
+            
+          ## need to do a different rediect
+          redirect_to :controller => 'wait', :action => 'grade', :id => queue.id
+          return
+        else
+          flash[:badnotice] = "There was an error scheduling your turn-in set for automatic evaluation, pleae inform your instructor or try again."    
+        end
+        
+      end
+      
+    else
+      flash[:badnotice] = "There was an error finalizing your turn-in set, please try again."
+    end
+    
+    
+    redirect_to :action => 'index'   
   end
   
   def create_set
@@ -318,7 +383,7 @@ class TurninsController < ApplicationController
     @assignment = Assignment.find(params[:assignment]) rescue @assignment = Assignment.new
     return unless assignment_in_course( @assignment, @course )
     return unless assignment_available( @assignment )
-    return unless comments_released( @assignment )
+    #return unless comments_released( @assignment )
     
     @turnins = UserTurnin.find( :all, :conditions => [ "assignment_id = ? and user_id = ?", @assignment.id, @user.id ], :order => "position desc" )
     @current_turnin = nil
@@ -331,10 +396,12 @@ class TurninsController < ApplicationController
       end
     end
     
-    @grade_item = GradeItem.find( :first, :conditions => ['assignment_id = ?', @assignment.id] )
-    if ( @grade_item )
-      @grade_entry = GradeEntry.find( :first, :conditions => ['grade_item_id = ? and user_id = ?', @grade_item.id, @user.id] )
-      @feedback_html = @grade_entry.comment.to_html rescue @feedback_html = ''
+    if @assignment.released
+      @grade_item = GradeItem.find( :first, :conditions => ['assignment_id = ?', @assignment.id] )
+      if ( @grade_item )
+        @grade_entry = GradeEntry.find( :first, :conditions => ['grade_item_id = ? and user_id = ?', @grade_item.id, @user.id] )
+        @feedback_html = @grade_entry.comment.to_html rescue @feedback_html = ''
+      end
     end
     
     @now = Time.now
@@ -345,6 +412,15 @@ class TurninsController < ApplicationController
   end
   
 private
+
+  def submissions_remaining
+    unless @remaining_count
+      flash[:badnotice] = "You have no remaining submissions for this assignment today."
+      redirect_to :action => 'index'
+      return false
+    end
+    return true
+  end
 
   def get_parent( list, current ) 
     return nil if current.directory_parent == 0
@@ -407,14 +483,7 @@ private
     true    
   end
   
-  def comments_released( assignment, redirect = true  )
-    unless assignment.released
-      flash[:badnotice] = "Instructor comments are not yet available for this assignment."
-      redirect_to :action => 'index' if redirect
-      return false
-    end
-    true
-  end
+
 
   def set_tab
     @show_course_tabs = true
@@ -424,6 +493,14 @@ private
 
   def set_title
     @title = "Submitted Files for #{@assignment.title} - #{@course.title}" 
+  end
+  
+  def count_todays_turnins( max = 3 )
+    now = Time.now
+    begin_time = Time.local( now.year, now.mon, now.day, 0, 0, 0 )
+    end_time = begin_time + 60*60*24 # plus a day
+    @today_count = UserTurnin.count( :conditions => [ "assignment_id = ? and user_id = ? and finalized = ? and updated_at >= ? and updated_at < ?", @assignment.id, @user.id, true, begin_time, end_time ] )
+    @remaining_count = max - @today_count 
   end
   
   

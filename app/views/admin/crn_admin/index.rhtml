@@ -1,0 +1,51 @@
+<h2>CRN Admin</h2>
+
+<p><b>Current Term:</b> <%= @term.semester %> (<%= @term.term %>)</p>
+
+<% if @crns.size == 0 %>
+	<p><i>There are no CRNs in this term.</i></p>
+<% else %>
+
+ <table class="fancy">
+	<tr>
+	  <th>ID</th><th>CRN</th><th>Name</th><th>Title</th>
+	</tr>
+	
+	<% count = 0 %>
+	<% for crn in @crns %>
+	<% count = count.next 
+	   odd = "odd"
+	   odd = "even" if count.even?
+	%>
+
+	  <tr class="<%=odd%> hover" id="item_<%=crn.id%>">
+	    <td><%= crn.id %></td>
+	    <td><%= crn.crn %></td>
+	    <td><%= crn.name %></td>
+	    <td><%= crn.title %></td>
+	  </tr>
+	<% end %>
+ </table>
+
+<% end %>
+	
+<hr/>
+
+<div id="form_area">
+<%= start_form_tag :action => 'load_crns' %>
+<h2>Load new CRNs from external source</h2>
+
+<div class="block_intro">
+The subjects to load are a space separated list of the subjects areas to load CRNs for.   These are usually department codes, i.e. "CSA" for "Computer Science and Systems Analysis."	<b>This may take a while, especially if more than 1 department is entered.</b>
+</div>
+	
+<div class="block">
+<label for='course_title' class="required">Subjects to Load:</label>
+<%= text_field_tag 'subjects', @subjects, :size => 80  %><br/>
+</div>
+
+<div class="submit">
+  <%= submit_tag "Load..." %>
+</div>
+<% end_form_tag %>
+</div>

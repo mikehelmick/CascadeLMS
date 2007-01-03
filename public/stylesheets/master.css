@@ -693,8 +693,25 @@ a img {
 	font-size:  10pt;
 }
 
+.has_comment {
+	background: #6BBA70;
+}
+
+.has_style {
+	background: #FF0084;
+}
+
 .code {
 	background: #EEEEEE;
+	border: 1px solid #84CA82;
+	margin: 2px 2px 2px 2px;
+	padding: 2px 2px 2px 2px;
+	font-family: "courier", verdana, sans-serif;
+	font-size: 10pt;
+}
+
+.code_example {
+	background: #CDEB8B;
 	border: 1px solid #84CA82;
 	margin: 2px 2px 2px 2px;
 	padding: 2px 2px 2px 2px;
@@ -716,6 +733,13 @@ a img {
 	border: 1px dashed #009900;
 	margin: 1px 1px 1px 1px;
 	padding: 1px 10px 1px 10px;	
+}
+
+.codestyle {
+	background: #C3D9FF;
+	border: 1px dashed #009900;
+	margin: 1px 1px 1px 1px;
+	padding: 1px 10px 1px 10px;
 }
 
 .standout {

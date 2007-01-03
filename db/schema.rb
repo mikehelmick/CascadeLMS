@@ -2,7 +2,7 @@
 # migrations feature of ActiveRecord to incrementally modify your database, and
 # then regenerate this schema definition.
 
-ActiveRecord::Schema.define(:version => 42) do
+ActiveRecord::Schema.define(:version => 49) do
 
   create_table "announcements", :force => true do |t|
     t.column "headline", :string
@@ -21,6 +21,12 @@ ActiveRecord::Schema.define(:version => 42) do
     t.column "created_at", :datetime, :null => false
     t.column "extension", :string
     t.column "size", :string
+  end
+
+  create_table "assignment_pmd_settings", :force => true do |t|
+    t.column "assignment_id", :integer
+    t.column "style_check_id", :integer
+    t.column "enabled", :boolean, :default => true, :null => false
   end
 
   create_table "assignments", :force => true do |t|
@@ -44,6 +50,18 @@ ActiveRecord::Schema.define(:version => 42) do
     t.column "grade_category_id", :integer
     t.column "released", :boolean, :default => false, :null => false
   end
+
+  create_table "auto_grade_settings", :id => false, :force => true do |t|
+    t.column "assignment_id", :integer
+    t.column "student_style", :boolean, :default => true, :null => false
+    t.column "style", :boolean, :default => true, :null => false
+    t.column "student_io_check", :boolean, :default => false, :null => false
+    t.column "io_check", :boolean, :default => false, :null => false
+    t.column "student_autograde", :boolean, :default => false, :null => false
+    t.column "autograde", :boolean, :default => false, :null => false
+  end
+
+  add_index "auto_grade_settings", ["assignment_id"], :name => "auto_grade_settings_assignment_id_index", :unique => true
 
   create_table "basic_graders", :force => true do |t|
   end
@@ -124,6 +142,7 @@ ActiveRecord::Schema.define(:version => 42) do
   create_table "crns", :force => true do |t|
     t.column "crn", :string, :limit => 20, :default => "", :null => false
     t.column "name", :string, :default => "", :null => false
+    t.column "title", :string
   end
 
   create_table "documents", :force => true do |t|
@@ -149,6 +168,21 @@ ActiveRecord::Schema.define(:version => 42) do
 
   add_index "file_comments", ["user_turnin_file_id", "line_number"], :name => "file_comments_file_line_number_idx", :unique => true
   add_index "file_comments", ["user_turnin_file_id"], :name => "file_line_number_idx"
+
+  create_table "file_styles", :force => true do |t|
+    t.column "user_turnin_file_id", :integer, :default => 0, :null => false
+    t.column "begin_line", :integer
+    t.column "begin_column", :integer
+    t.column "end_line", :integer
+    t.column "end_column", :integer
+    t.column "package", :string
+    t.column "class_name", :string
+    t.column "message", :text
+    t.column "style_check_id", :integer
+    t.column "suppressed", :boolean, :default => false, :null => false
+  end
+
+  add_index "file_styles", ["user_turnin_file_id"], :name => "file_line_number_idx"
 
   create_table "forum_posts", :force => true do |t|
     t.column "headline", :string, :default => "", :null => false
@@ -201,6 +235,17 @@ ActiveRecord::Schema.define(:version => 42) do
     t.column "grade_category_id", :integer
     t.column "assignment_id", :integer
     t.column "course_id", :integer, :default => 0, :null => false
+  end
+
+  create_table "grade_queues", :force => true do |t|
+    t.column "user_id", :integer, :default => 0, :null => false
+    t.column "assignment_id", :integer, :default => 0, :null => false
+    t.column "user_turnin_id", :integer, :default => 0, :null => false
+    t.column "created_at", :datetime, :null => false
+    t.column "updated_at", :datetime, :null => false
+    t.column "serviced", :boolean, :default => false, :null => false
+    t.column "acknowledged", :boolean, :default => false, :null => false
+    t.column "queued", :boolean, :default => false, :null => false
   end
 
   create_table "grade_weights", :force => true do |t|
@@ -295,6 +340,15 @@ ActiveRecord::Schema.define(:version => 42) do
 
   add_index "sessions", ["session_id"], :name => "sessions_session_id_index"
 
+  create_table "style_checks", :force => true do |t|
+    t.column "name", :string
+    t.column "description", :text
+    t.column "example", :text
+    t.column "bias", :boolean, :default => true, :null => false
+  end
+
+  add_index "style_checks", ["name"], :name => "style_checks_name_index", :unique => true
+
   create_table "temp_files", :force => true do |t|
     t.column "filename", :text
     t.column "save_until", :datetime
@@ -327,6 +381,7 @@ ActiveRecord::Schema.define(:version => 42) do
     t.column "sealed", :boolean, :default => false, :null => false
     t.column "created_at", :datetime, :null => false
     t.column "updated_at", :datetime, :null => false
+    t.column "finalized", :boolean, :default => false, :null => false
   end
 
   create_table "users", :force => true do |t|

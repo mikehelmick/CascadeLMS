@@ -10,7 +10,11 @@ class Assignment < ActiveRecord::Base
   
   has_many :journals, :dependent => :destroy
   
+  has_many :assignment_pmd_settings, :dependent => :destroy
+  
   has_one :grade_item
+  
+  has_one :auto_grade_setting, :dependent => :destroy
   
   validates_presence_of :title
   # NEEDS extended validations
@@ -19,6 +23,27 @@ class Assignment < ActiveRecord::Base
   # if a SVN path is given, that is is appropriate 
   
   before_save :transform_markup
+  
+  def ensure_style_defaults
+    pmds = StyleCheck.find(:all, :order => "name asc" )
+    # create a new assignment_pmd_setting object for each pmd
+    pmds.each do |pmd|
+      a_pmd_s = AssignmentPmdSetting.new
+      a_pmd_s.assignment = @assignment
+      a_pmd_s.style_check = pmd
+      a_pmd_s.enabled = pmd.bias
+      self.assignment_pmd_settings << a_pmd_s
+    end
+    return self.save
+  end
+  
+  def pmd_hash
+    h = Hash.new
+    assignment_pmd_settings.each do |apmd|
+      h[apmd.style_check.id.to_i] = apmd
+    end
+    return h
+  end
   
   def summary_date
     open_date.to_date.to_formatted_s(:short)

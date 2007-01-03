@@ -5,6 +5,8 @@ class CreateCrns < ActiveRecord::Migration
       t.column :name, :string, :null => false
       # t.column :name, :string
     end
+    
+    Crn.create :crn => 'NONE', :name => 'NONE'
   end
 
   def self.down

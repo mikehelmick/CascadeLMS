@@ -24,11 +24,20 @@
  <tr>
   <td align="left"><div id="headerleft"><%=@app['title']%></div></td>
   <td align="right"><div id="headerright">
-<%if session[:user]%>Logged in as <%=session[:user].display_name%> (<%= link_to "log out #{image_tag 'lock_go'}", :controller => '/index', :action => 'logout' %>) 
-  <% if @user.courses_in_term(session[:current_term]).size > 1 %><br/>
+<% if session[:user] %>
+    <% unless @app['dir_link'].nil? %> 
+     Logged in as <a href="<%=@app['dir_link']%><%= session[:user].uniqueid %>" target="_blank"><%=session[:user].display_name%></a>
+    <% else %>
+     Logged in as <%=session[:user].display_name%>
+    <% end %>
+     (<%= link_to "log out #{image_tag 'lock_go'}", :controller => '/index', :action => 'logout' %>) 
+  
+  <% unless @user.nil? %>
+   <% if @user.courses_in_term(session[:current_term]).size > 1 %><br/>
     <% for cu in @user.courses_in_term(session[:current_term] ) %>
       <%= link_to "#{cu.course.title}", :controller => '/overview', :course => cu.course.id %>  
     <% end %>
+   <% end %>
   <% end %>
 <%else%>You are not logged in.
 <%end%>

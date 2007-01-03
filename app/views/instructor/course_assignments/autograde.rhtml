@@ -1,4 +1,37 @@
 <h3>AutoGrade Settings</h3>
 
-<p>At this time, the built in grading functionality is limited to passing command line arguments, providing standard input, and comparing standard output.   You may access this functionality for individual files containing a main method (Java only) when grading files.</p>
+<p><i>AutoGrading</i> is divided up into 3 distinct areas: style checking, automated execution via the <i>AutoGrader</i> framework, and executing programs with strict output checking (programming competition style).</p>
+
+
+<div id="form_area">
+
+<%= start_form_tag( { :action => 'save_autograde', :id => @assignment } ) %>
+
+<div class="blockintro">Java style checking using PMD.</div>
+<div class="block">
+<p><label for="auto_grade_setting[student_style]" class="required">Allow students to run PMD:</label>
+  <%= radio_button 'auto_grade_setting', 'student_style', true %> Yes
+  <%= radio_button 'auto_grade_setting', 'student_style', false %> No</p>
+<p><label for="auto_grade_setting[style]" class="required">Enable automatic PMD on turnin:</label>
+  <%= radio_button 'auto_grade_setting', 'style', true %> Yes
+  <%= radio_button 'auto_grade_setting', 'style', false %> No</p>
+
+<% if @auto_grade_setting.student_style || @auto_grade_setting.style %>
+ <p><%= image_tag 'cog' %> <%= link_to 'Enable/Disable specific PMD tests.', :action => 'pmd_settings', :id => @assignment %></p>
+<% end %>
+</div>
+
+
+
+
+<div class="submit">
+  <div id="button"><%= submit_tag "Save AutoGrade Settings" %></div>
+</div>
+
+<%= end_form_tag %>
+
+<p><%= link_to 'Back', :action => 'index' %></p>
+
+</div>
+
 

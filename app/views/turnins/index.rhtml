@@ -3,22 +3,68 @@
 <p><%= link_to 'Back', :controller => '/assignments', :course => @course, :action => 'view', :id => @assignment, :assignment => nil %></p>
 
 <% if !@assignment.closed? && @assignment.enable_upload %>
-<p><%= link_to 'Create new turn-in set (and seal current).', :action => 'create_set', :course => @course, :assignment => @assignment %></p>
+
+<% unless @assignment.auto_grade_setting.nil? %>
+  <% if @assignment.auto_grade_setting.student_style || @assignment.auto_grade_setting.student_io_check || @assignment.auto_grade_setting.student_autograde %> 
+  <div class="standout">
+	  <p><%= image_tag 'information' %> This assignment has automatic grading enabled.   Each time you finalize a turn-in set, the files will be evaluated and you will receive instant feedback.   Because automatic grading is enabled, you are <b>limited to <%= @app['turnin_limit'] %> submissions per day.</b></p>
+	  <p>You have finalized <%= @today_count %> turn-in sets today, and you may finalize <b><%= @remaining_count %>  more turn-in sets today.</b></p>
+	</div>
+	<% end %>
+<% end %>
+
+
+  <% if @turnins.size == 0 %> 
+    <p><%= link_to "#{image_tag 'add'} Create First Turn-in Set.", :action => 'create_set', :course => @course, :assignment => @assignment %></p>
+  <% else %>
+    <p><%= link_to "#{image_tag 'add'} Archive your current turn-in set and create a new one.", :action => 'create_set', :course => @course, :assignment => @assignment %></p>
+  <% end %>
+
+  <% unless @current_turnin.nil? %>
+    <% unless @current_turnin.sealed %>
+      <div class="errorExplanation"><p><%= image_tag 'flag_red' %> Your most recent turn-in set has not been finalized.<br/>
+	  <b>You must finalize the turn-in set once you are done uploading all of your files for the assignment.</b></p>
+	  </div>
+	<% else %>
+	  <div class="GoodMessage"><p>This turn-in set has been finalized, no further action is required to have these files graded.</p>
+		
+		<% if @assignment.released %>
+		  <p><b><%= link_to 'View Instructor Feedback', :action => 'feedback', :course => @course, :assignment => @assignment %></b></p>
+		<% elsif @current_turnin.finalized && @assignment.auto_grade_setting.any_student_grade? %>
+		  <p><b><%= link_to "#{image_tag 'flag_green'} View AutoGrade Results for Current Turnin", :action => 'feedback', :course => @course, :assignment => @assignment %></b></p>
+		<% end %>
+		
+		</div>
+    <% end %>
+  <% end %>
+
+
+
 <% end %>
 
 <% if @turnins.size == 0 %>
   <p><i>No turn-ins found found</i></p>
 <% else %>
 
-<% if @assignment.released %>
-<p><b><%= link_to 'View Instructor Feedback', :action => 'feedback', :course => @course, :assignment => @assignment %></b></p>
-<% end %>
-
 <%= render :partial => 'turnin' %>
 
 <br />
 
-<% if !@assignment.closed? && @assignment.enable_upload %>
+<% if @current_turnin.sealed %>
+<p><b>This turn-in set is finalized, no changes can be made.</b></p>
+<% end %>
+
+<% if !@assignment.closed? && @assignment.enable_upload && !@current_turnin.sealed%>
+<div id="form_area">
+  <%= start_form_tag( { :action => "finalize" }, :onsubmit => "new Element.toggle('finalize_button', 'finalize_spinner');" ) %>
+  <p class="blockintro">Finalize</p>
+  <div class="block">
+	  <div id="finalize_button"><%= submit_tag "Finalize This Turn-In Set" %></div>
+	  <div id="finalize_spinner" style="display: none;"><%= image_tag 'spinner.gif' %></div>
+  </div>
+  <%= end_form_tag %>
+</div>
+
 <div id="form_area">
 
   <%= error_messages_for 'utf' %>
@@ -60,7 +106,10 @@
 <table class="fancy">
   <tr class="header">
     <th>#</th>
-    <th>Previous Set</th><th>View</th>
+    <th>Previous Set (Last Updated Time)</th>    
+    <th>Archived</th>
+    <th>Finalized</th>
+    <th>View</th>
   </tr>
 
 <% count = @turnins.size + 1 %>
@@ -74,6 +123,8 @@
     <td><%=h ut.updated_at.to_formatted_s(:long) %>
       <% if ut.id == @current_turnin.id %><b>current</b> <%end%>
     </td>
+    <td><% if ut.sealed %> <%= image_tag 'accept' %> <% else %> <%= image_tag 'cross' %> <% end %></td>
+    <td><% if ut.finalized %> <%= image_tag 'accept' %> <% else %> <%= image_tag 'cross' %> <% end %></td>
     <td><%= link_to 'View', :action => 'view', :id => ut.id %></td>
   </tr>
 <% end %>

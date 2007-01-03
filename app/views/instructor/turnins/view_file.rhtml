@@ -45,9 +45,10 @@
 
 <table class="codetable" cellpadding="0" cellspacing="0">
   <tr class="header">
-   <th>Line#</th>
-   <th>Comments</th>
-   <th align="center">Line from file</th>
+   <th nowrap="nowrap">Line#</th>
+   <th class="has_comment" nowrap="nowrap">Comments</th>
+   <th class="has_style" nowrap="nowrap">Style</th>
+   <th align="center" nowrap="nowrap">Line from file</th>
   </tr>
 
   <% line_num = 0 %>
@@ -57,18 +58,23 @@
 	   odd = "even" if line_num.even?
   	%>
 	<tr class="<%=odd%> hover" id="line_<%=line_num%>">
-	  <td align="right" nowrap="nowrap" <%= 'style="background-color: #0C0;"' if @comments[line_num] %>><%=line_num%></td>
-	  <td align="center" id="status_<%=line_num%>" <%= 'style="background-color: #0C0;"' if @comments[line_num] %>>
+	  <td align="right" nowrap="nowrap" <%= 'class="has_comment"' if @comments[line_num] %>><%=line_num%></td>
+	  <td align="center" id="status_<%=line_num%>" <%= 'class="has_comment"' if @comments[line_num] %>>
 	    <% if @comments[line_num] %>
 	      <%= link_to_function "view", visual_effect(:toggle_slide, "comments_line_#{line_num}" ) %>
 	    <% else %>
 	      <%= link_to_function "new", visual_effect(:toggle_slide, "comments_line_#{line_num}" ) %>	      
 	    <% end %>
 	  </td>
+	  <td align="center" id="style_<%=line_num%>" <%= 'class="has_style"' if @styles[line_num] %>>
+		<% if @styles[line_num] %>
+		  <%= link_to_function "view - #{@styles[line_num].size}", visual_effect(:toggle_appear, "style_line_#{line_num}") %>
+		<% end %>
+	  </td>
       <td><code><%= line %></code></td>
     </tr>
     <tr id="comments_line_<%=line_num%>" style="display: none;">
-      <td colspan="3" class="formcell">
+      <td colspan="4" class="formcell">
  		<%= form_remote_tag :url => { :controller => "/instructor/turnins", :action => "file_comment", :course => @course, :assignment => @assignment, :student => @student, :id => @utf.id }, :success => "new Effect.Highlight( 'line_#{line_num}' );", :failure => "alert('There was an error saving the comment for line #{line_num}, please refresh the page.');", :update => "status_#{line_num}"  %>
 <!-- 
         <%= form_tag( :controller => "/instructor/turnins", :action => "file_comment", :course => @course, :assignment => @assignment, :student => @student, :id => @utf.id ) %> -->
@@ -83,6 +89,33 @@
         <%= end_form_tag %>
       </td>
     </tr>
+    <% if @styles[line_num] %>
+      <tr id="style_line_<%=line_num%>" style="display: none;">
+	    <td colspan="4" class="has_style">
+		   	<% for fs in @styles[line_num] %>
+	            <div class="codestyle">
+		           <i>PMD Code Style:</i> From line <%= fs.begin_line %>:<%= fs.begin_column %> to line <%= fs.end_line %>:<%= fs.end_column %><br/>
+		           <% if fs.suppressed %>
+		              <%= image_tag 'exclamation' %> - Currently suppressed in student view.
+		           <% else %>
+		              <%= image_tag 'accept' %> - Visible to student.
+		           <% end %>
+		
+		<%= link_to_remote( "Toggle", :url => { :controller => '/instructor/turnins', :action => 'toggle_style_item', :course => @course.id, :assignment => @assignment, :id => @utf.id, :line => line_num, :file_style => fs.id }, :update => "style_line_#{line_num}" ) %>
+		
+		           <ul>
+			         <li><b><%= fs.message %></b></li>
+			         <li><b>Explanation:</b> <%= fs.style_check.description %> </li>
+			         <li><b>Example:</b></li>
+			       <ul>
+				   <div class="code_example" id="example_<%=fs.id%>" >
+					     <%= fs.style_check.example %>
+				   </div>
+		        </div>
+	        <% end %>
+		</td>
+	  </tr>
+    <% end %>
   <% end %>
 
 </table>

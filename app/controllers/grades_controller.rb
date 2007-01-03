@@ -23,7 +23,7 @@ class GradesController < ApplicationController
     @grade_items.each {|x| @total_points_possible += x.points if x.visible }
     
     # Weighting
-    if @course.gradebook.weight_grades
+    if !@course.gradebook.nil? && @course.gradebook.weight_grades
       weights = GradeWeight.reconcile( @course )
       @weight_map = Hash.new
       weights.each { |x| @weight_map[x.grade_category_id] = x.percentage }

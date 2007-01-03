@@ -361,6 +361,34 @@ class Instructor::TurninsController < Instructor::InstructorBase
     render :layout => false
   end
   
+  def toggle_style_item
+    return unless load_course( params[:course] )
+    return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_view_student_files', 'ta_grade_individual' )
+    
+    @assignment = Assignment.find( @params[:assignment] )
+    return unless assignment_in_course( @course, @assignment )
+    
+    @utf = UserTurninFile.find( params[:id] )  
+    return unless turnin_file_downloadable( @utf )
+    @turnin = @utf.user_turnin 
+    return unless turnin_for_assignment( @turnin, @assignment )
+    
+    line_number = params[:line]
+    style_item = params[:file_style]
+    
+    style = FileStyle.find( style_item.to_i ) rescue comment = nil
+    
+    style.suppressed = !style.suppressed
+    
+    style.save
+    
+    @line = line_number
+    
+    @styles = FileStyle.find( :all, :conditions => ["user_turnin_file_id = ? and begin_line = ?", @utf.id, @line] )
+    
+    render :layout => false
+  end
+  
   def view_file
     return unless load_course( params[:course] )
     return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_view_student_files', 'ta_grade_individual' )
@@ -412,10 +440,8 @@ class Instructor::TurninsController < Instructor::InstructorBase
         end
       end
 
-      @comments = Hash.new
-      @utf.file_comments.each do |fc|
-        @comments[fc.line_number] = fc
-      end
+      @comments = @utf.file_comments_hash
+      @styles = @utf.file_style_hash( true )
       
     rescue
       flash[:badnotice] = "Error loading selected file.  Please contact your system administrator."
@@ -457,6 +483,7 @@ class Instructor::TurninsController < Instructor::InstructorBase
       end
     end
     
+    render :layout => 'noright'
   end
   
   ## BEGIN PRIVATE UTILITY METHODS

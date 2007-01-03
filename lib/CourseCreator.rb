@@ -6,9 +6,11 @@ class CourseCreator
     @subjects = subjects
     @format = format
   end
+
   
   def reconcile
     status = ""
+    created = 0
     
     terms = Array.new
     # first check term
@@ -28,7 +30,7 @@ class CourseCreator
         term.current = true
         term.save
         
-        status += "Created, and made current, the newly discovered term: #{term.term}.<br/>"
+        status = "#{status} Created, and made current, the newly discovered term: #{term.term}.<br/>"
       end
       # for they are lined up with the CRNs
       terms << term
@@ -45,14 +47,17 @@ class CourseCreator
         # create the crn
         crn = Crn.new
         crn.crn = crn_txt
-        crn.name = description
+        crn.name = "#{crn_txt} - Could not figure out automatically"
+        crn.title = "created for #{@user.uniqueid}"
         crn.save
+      end
         
-        # create the course
+      if crn.courses.size == 0
+        # create the course if there is not a course associated with this CRN
         course = Course.new
         course.term = terms[i]
-        course.title = description
-        course.short_description = nil
+        course.title = crn.name
+        course.short_description = crn.title
         course.open = true
         
         course.crns << crn
@@ -64,12 +69,16 @@ class CourseCreator
         
         course.courses_users << courseuser
         course.save
-        status += "Created, and made you the instructor of, course: #{crn.crn}, #{crn.name}.<br/>"
+        status = "#{status} Created, and made you the instructor of, course: #{crn.crn}, #{crn.name}.<br/>"
+        
+        created = created.next
       end
-      
-    end
+    end  
     
     status = nil if status.eql?('')
+    if created > 0
+      status = "#{status} Please visit the Instructor, Course Information page for each course of your to enter the appropraite course title and description.   We recommend doing this before merging courses." 
+    end
     return status
   end
   
