@@ -7,11 +7,14 @@ require 'application'
 class AutoGradeWorker < BackgrounDRb::Worker::RailsBase
   
   def do_work(args)
+    queue = GradeQueue.find(args.to_i)
+    begin
+    
     # This method is called in it's own new thread when you
     # call new worker. args is set to :args
     logger.info("Handling grading request number #{args.to_i}")
     
-    queue = GradeQueue.find(args.to_i)
+    
     unless queue.acknowledged 
       queue.acknowledged = true
       queue.save
@@ -42,7 +45,9 @@ class AutoGradeWorker < BackgrounDRb::Worker::RailsBase
            end
          end
          
-         result = `#{command} #{files.join(' ')}`
+         command = "#{command} #{files.join(' ')}"
+         logger.info("SHELL: #{command}")
+         result = `#{command}`
         
          #### Parse results
          yaml_res = YAML.load( result )
@@ -52,16 +57,14 @@ class AutoGradeWorker < BackgrounDRb::Worker::RailsBase
          checks = Hash.new
          filter = Hash.new
          user_turnin.assignment.assignment_pmd_settings.each do |pmd|
-           logger.info( "XXXX #{pmd.inspect}" )
            if !pmd.enabled
              filter[pmd.style_check.name] = true
            end
            checks[pmd.style_check.name] = pmd.style_check
          end
-         
-         logger.info(checks.inspect)
-         
+          
          count = 0
+         ## ERROR ON THIS LINE
          while !yaml_res["violation#{count}"].nil?
            summary = yaml_res["violation#{count}"]
            
@@ -115,9 +118,19 @@ class AutoGradeWorker < BackgrounDRb::Worker::RailsBase
       logger.info("Request #{args.to_i} already acknowledged")
     end
     
-    results[:do_work_time] = Time.now.to_s
-    results[:done_with_do_work] = true
-    delete
+    
+    rescue => doh
+      logger.error("Request failed #{doh.message}")
+      unless queue.nil?
+        queue.serviced=true
+        queue.failed=true
+        queue.message = doh.message
+        quque.save
+      end
+    end
+      results[:do_work_time] = Time.now.to_s
+      results[:done_with_do_work] = true
+      delete
   end
 
 end

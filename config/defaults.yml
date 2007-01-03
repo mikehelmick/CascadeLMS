@@ -1,4 +1,4 @@
-version: 0.1.06 20070102
+version: 0.1.07 20070103
 title: Miami University CSA
 
 organization: Miami University
@@ -73,7 +73,8 @@ default_subjects: CSA MTH MIS IMS
 turnin_limit: 3
 
 ## Auto Grading
-java: /usr/bin/java
+ruby: /usr/bin/env ruby
+java: /usr/bin/env java 
 pmd_main: edu.muohio.csa.cscourseware.CheckStyle
 pmd_libs:
     - jakarta-oro-2.0.8.jar

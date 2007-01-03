@@ -176,8 +176,8 @@ class TurninsController < ApplicationController
           rescue
             flash[:badnotice] = "The AutoGrade server wasn't running - but I've started it up and your grading will be begin shortly."
             ## bounce the server - the stop and then the start (stop has no effect if not running)
-            `#{RAILS_ROOT}/script/backgroundrb stop`
-            `#{RAILS_ROOT}/script/backgroundrb start`
+            `#{@app['ruby']} #{RAILS_ROOT}/script/backgroundrb stop`
+            `#{@app['ruby']} #{RAILS_ROOT}/script/backgroundrb start`
           end
             
           ## need to do a different rediect

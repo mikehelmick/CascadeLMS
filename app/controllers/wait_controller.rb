@@ -7,7 +7,10 @@ class WaitController < ApplicationController
   def grade
     @queue = GradeQueue.find( params[:id] ) 
     
-    if @queue.serviced
+    if @queue.failed
+      redirect_to :action => 'failed', :id => params[:id]
+      
+    elsif @queue.serviced
       flash[:notice] = "Automatic grading of your assignment has completed."
       redirect_to :controller => '/turnins', :action => 'feedback', :course => @queue.assignment.course, :assignment => @queue.assignment
     
@@ -16,6 +19,30 @@ class WaitController < ApplicationController
     
     else
       flash[:notice] = "Your assignment is in the queue to be graded, please wait."
+      
+    end
+  end
+  
+  def failed
+    @queue = GradeQueue.find( params[:id] ) 
+    unless !@queue.failed
+      redirect_to :action => 'grade', :id => params[:id]
+    end
+  end
+  
+  def retry
+    @queue = GradeQueue.find( params[:id] ) 
+    unless !@queue.failed
+      if !queue.assignment.closed?
+        flash[:notice] = "Your turn-in set was not reopened, the assignment is past due."
+      else
+        flash[:notice] = "Your turn-in set has been reopened, please finalize before the due date."
+        @queue.user_turnin.sealed = false
+        @queue.user_turnin.finalized = false
+        @queue.user_turnin.save
+      end
+      
+      redirect_to :controller => '/turnins', :course => @queue.assignment.course, :assignment => @queue.assignment
       
     end
   end
