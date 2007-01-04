@@ -81,6 +81,26 @@ class FileManager
   
     return lines
   end
+  
+  def FileManager.java_main?( path )
+    rtn = false
+    if path.reverse[0..4].eql?("avaj.")
+      File.open( path ).each do |line|
+        public_index = line.index('public') 
+        static_index = line.index('static') 
+        void_index = line.index('void') 
+        main_index = line.index('main') 
+        #puts "p:#{public_index} s:#{static_index} v:#{void_index} m:#{main_index} line:#{line}"
+        # line must contain all of these
+        if( !public_index.nil? && !static_index.nil? && !void_index.nil? && !main_index.nil? &&
+            static_index > public_index && void_index > public_index &&
+            main_index > public_index && main_index > static_index && main_index > void_index )
+          rtn = true
+        end
+      end
+    end
+    return rtn
+  end
               
   def FileManager.icon( extension ) 
     icn = @@icons[extension]

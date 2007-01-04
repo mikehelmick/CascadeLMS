@@ -63,6 +63,8 @@ class UserTurninFile < ActiveRecord::Base
       #puts "FILE NAME: #{file_name}" 
       File.open( file_name, "w") { |f| f.write(file_field.read) }
       #puts "FILE WRITTEN"
+      
+      self.main_candidate = FileManager.java_main?( file_name )
     end
     
     save_res

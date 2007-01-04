@@ -2,7 +2,7 @@
 # migrations feature of ActiveRecord to incrementally modify your database, and
 # then regenerate this schema definition.
 
-ActiveRecord::Schema.define(:version => 50) do
+ActiveRecord::Schema.define(:version => 51) do
 
   create_table "announcements", :force => true do |t|
     t.column "headline", :string
@@ -372,6 +372,8 @@ ActiveRecord::Schema.define(:version => 50) do
     t.column "filename", :string, :default => "", :null => false
     t.column "created_at", :datetime, :null => false
     t.column "extension", :string
+    t.column "main", :boolean, :default => false, :null => false
+    t.column "main_candidate", :boolean, :default => false, :null => false
   end
 
   add_index "user_turnin_files", ["user_turnin_id", "filename", "directory_parent"], :name => "unique_filename_idx", :unique => true

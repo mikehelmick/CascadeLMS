@@ -66,6 +66,9 @@ Last Updated: <%= @display_turnin.updated_at.to_formatted_s(:friendly_date) %><b
   <tr class="header">
     <th>File</th>
 	<th>Date</th>
+	<% if @assignment.programming %>
+	  <th>Main?</th>
+	<% end %>
 	<th>Download</th>
 	<th>Review / Comment</th>
   </tr>
@@ -100,6 +103,16 @@ Last Updated: <%= @display_turnin.updated_at.to_formatted_s(:friendly_date) %><b
       <%=h @tif.filename %> 
     </td>
     <td> <i><%= @tif.created_at.to_formatted_s(:short) %></i> </td>
+    <% if @assignment.programming %>
+      <td>
+      	<% if @tif.main %>
+	      <%= image_tag 'accept' %> <b>Current</b>
+	    <% elsif @tif.main_candidate && ! (@display_turnin.sealed || @display_turnin.finalized) %>
+	      <%= image_tag 'add' %> <b>Candidate</b>
+	         </acronym>
+	    <% end %>
+	  </td>
+    <% end %>
     <td>
      <% if @tif.directory_entry %>
        <s>Download</s>

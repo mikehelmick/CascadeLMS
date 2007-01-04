@@ -26,6 +26,9 @@ Last Updated: <%= @display_turnin.updated_at.to_formatted_s(:friendly_date) %><b
   <tr class="header">
     <th>File</th>
 	<th>Date</th>
+	<% if @assignment.programming %>
+	  <th>Main?</th>
+	<% end %>
 	<th>Controls</th>
   </tr>
 
@@ -59,6 +62,17 @@ Last Updated: <%= @display_turnin.updated_at.to_formatted_s(:friendly_date) %><b
       <%=h @tif.filename %> 
     </td>
     <td> <i><%= @tif.created_at.to_formatted_s(:short) %></i> </td>
+    <% if @assignment.programming %>
+      <td>
+	    <% if @tif.main %>
+	      <acronym title="This is the class that will be run when graded."><%= image_tag 'accept' %> <b>Current</b></acronym>
+	    <% elsif @tif.main_candidate && ! (@display_turnin.sealed || @display_turnin.finalized) %>
+	      <acronym title="Make this the main class when grading.">
+	        <%= link_to "#{image_tag 'add'} Select", :action => 'change_main', :course => @course, :assignment => @assignment, :id => @tif %>
+	         </acronym>
+	    <% end %>
+	  </td>
+    <% end%>
     <td>
      <% if @tif.directory_entry %>
        <s>Download</s>

@@ -314,6 +314,56 @@ class TurninsController < ApplicationController
     redirect_to :action => 'index'
   end
   
+  def change_main
+    return unless load_course( params[:course] )
+    return unless allowed_to_see_course( @course, @user )
+    
+    @assignment = Assignment.find(params[:assignment]) rescue @assignment = Assignment.new
+    return unless assignment_in_course( @assignment, @course )
+    return unless assignment_available( @assignment )
+    
+    return unless assignment_open( @assignment ) 
+    
+    @turnins = UserTurnin.find( :all, :conditions => [ "assignment_id = ? and user_id = ?", @assignment.id, @user.id ], :order => "position desc" )
+    @current_turnin = nil
+    @current_turnin = @turnins[0] if @turnins.size > 0
+    
+    # all results to the same redirect
+    redirect_to :action => 'index'
+    
+    if @current_turnin.nil?
+      flash[:badnotice] = "No turnin set exists."
+      return
+    end
+    
+    utf = UserTurninFile.find( params[:id] ) 
+    unless utf.main_candidate
+      flash[:badnotice] = "The selected file '#{utf.filename}' does not contain a main function."
+      return  
+    end 
+    
+    if utf.user_turnin_id == @current_turnin.id
+      UserTurnin.transaction do
+         
+         @current_turnin.user_turnin_files.each do |this_file|
+           if this_file.id == utf.id
+             this_file.main = true
+           else
+             this_file.main = false 
+           end
+           this_file.save
+         end
+      end
+      
+      flash[:notice] = "'#{utf.filename}' will be the main file for grading."
+      
+    else
+      flash[:badnotice] = "Selected file is not in the current turnin set."
+    end
+    
+  end
+  
+  
   def upload_file
     return unless load_course( params[:course] )
     return unless allowed_to_see_course( @course, @user )
@@ -373,6 +423,8 @@ class TurninsController < ApplicationController
           @utf.move_higher
         end
         @current_turnin.save
+        
+        @current_turnin.calculate_main
 
         flash[:notice] = "File '#{@utf.filename}' uploaded and stored, you can download the file to verify it was received."
       else
@@ -509,6 +561,7 @@ private
     end_time = begin_time + 60*60*24 # plus a day
     @today_count = UserTurnin.count( :conditions => [ "assignment_id = ? and user_id = ? and finalized = ? and updated_at >= ? and updated_at < ?", @assignment.id, @user.id, true, begin_time, end_time ] )
     @remaining_count = max - @today_count 
+    @remaining_count = 0 if @remaining_count < 0
   end
   
   

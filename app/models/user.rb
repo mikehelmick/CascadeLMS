@@ -27,7 +27,7 @@ class User < ActiveRecord::Base
   
   def display_name
     unless self.preferred_name.nil?
-      "#{self.preferred_name} #{self.last_name}"
+      "#{self.first_name} (#{self.preferred_name}) #{self.middle_name} #{self.last_name}"
     else
       "#{self.first_name} #{self.middle_name} #{self.last_name}"
     end
