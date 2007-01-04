@@ -52,9 +52,18 @@
 		    <% end %>
 		  </td>
 		  <td><% unless document.folder %><%= link_to "#{document.filename}", :action => 'download', :course => @course.id, :id => document %><% end %> &nbsp;</td>
+		
 		<% else %>
-		  <td><%= link_to "#{image_tag document.icon_file, :align=> 'absmiddle'} #{document.title}", :controller => '/public/documents', :action => 'download', :course => @course.id, :id => document %></td>
-		  <td><%= link_to "#{document.filename}", :controller => '/public/documents', :action => 'download', :course => @course.id, :id => document %></td>
+		
+		  <td>
+		    <% if document.folder %>   
+		      <%= link_to "#{image_tag document.icon_file, :align=> 'absmiddle'} #{document.title}", :controller => '/public/documents', :action => 'index', :course => @course.id, :id => document %> 
+		    <% else %>
+		      <%= link_to "#{image_tag document.icon_file, :align=> 'absmiddle'} #{document.title}", :controller => '/public/documents', :action => 'download', :course => @course.id, :id => document %>
+		    <% end %>
+		  </td>
+		  <td><% unless document.folder %><%= link_to "#{document.filename}", :controller => '/public/documents', :action => 'download', :course => @course.id, :id => document %> <% end %>&nbsp;</td>
+		
 		<% end %>
 		<td><% unless document.folder %><%=h document.size_text %><% end %> &nbsp;</td>
 		<td><%=h document.created_at.to_formatted_s(:long) %></td>

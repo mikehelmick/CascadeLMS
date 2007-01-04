@@ -1,4 +1,4 @@
-version: 0.1.11 20070104
+version: 0.1.12 20070104
 title: Miami University CSA
 
 organization: Miami University
@@ -35,11 +35,11 @@ ldap_dc: dc=muohio,dc=edu
 ldap_ou: ou=people
 ldap_search: uid
 
-ldap_port: 389
+ldap_port: 636
 # 4001
 # 389
 # 636
-ldap_ssl: false
+ldap_ssl: true
 
 ldap_field_uid: uid
 ldap_field_nickname: eduPersonNickname

@@ -6,12 +6,13 @@ class Public::DocumentsController < ApplicationController
   def index
     return unless load_course( params[:course] )
     return unless course_is_public( @course )
+    return unless load_folder( params[:id].to_i )
   
     @page = @params[:page].to_i
     @page = 1 if @page.nil? || @page == 0
-    @document_pages = Paginator.new self, Document.count(:conditions => ["course_id = ?", @course.id]), 30, @page
-    @documents = Document.find(:all, :conditions => ['course_id = ? and published = ?', @course.id, true], :order => 'position', :limit => 30, :offset => @document_pages.current.offset)  
-  
+    @document_pages = Paginator.new self, Document.count(:conditions => ["course_id = ? and document_parent = ?", @course.id, @folder_id]), 50, @page
+    @documents = Document.find(:all, :conditions => ['course_id = ? and document_parent = ?', @course.id, @folder_id], :order => 'position', :limit => 50, :offset => @document_pages.current.offset)  
+
     set_title
   end
   
@@ -57,6 +58,24 @@ class Public::DocumentsController < ApplicationController
     @title = "#{@course.title} (Course Documents - Public Access)"
   end
   
-  private :set_tab, :set_title
+  def load_folder( folder_id )
+    @folder_id = folder_id
+    @folder_id = 0 if @folder_id.nil?
+    
+    @folder = nil
+    if @folder_id > 0 
+      @folder = Document.find(@folder_id) rescue @folder=nil
+      
+      if @folder.nil? || @folder.course_id != @course.id
+        flash[:badnotice] = "The requested folder could not be found in this course or does not exist."
+        redirect_to :action => 'index', :id => nil
+        return false
+      end
+      
+    end
+    return true
+  end
+  
+  private :set_tab, :set_title, :load_folder
   
 end
