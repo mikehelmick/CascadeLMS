@@ -18,7 +18,11 @@ class RedirectController < ApplicationController
         redirect_to :controller => '/blog', :course => comment.post.course, :action => 'post', :id => comment.post, :anchor => "comment_#{comment.id}"
       elsif ( type.eql?('Document') ) 
         document = Document.find(id)
-        redirect_to :controller => '/documents', :course => document.course, :action => 'download', :id => document
+        if document.folder
+          redirect_to :controller => '/documents', :course => document.course, :action => 'index', :id => document
+        else
+          redirect_to :controller => '/documents', :course => document.course, :action => 'download', :id => document
+        end
       else
         redirect_to :controller => '/home', :type => nil, :id => nil   
       end

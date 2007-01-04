@@ -35,7 +35,7 @@
   <% unless @user.nil? %>
    <% if @user.courses_in_term(session[:current_term]).size > 1 %><br/>
     <% for cu in @user.courses_in_term(session[:current_term] ) %>
-      <%= link_to "#{cu.course.title}", :controller => '/overview', :course => cu.course.id %>  
+      <%= image_tag 'bullet_go', :align => 'absmiddle' %><%= link_to "#{cu.course.title}", :controller => '/overview', :course => cu.course.id %> 
     <% end %>
    <% end %>
   <% end %>
