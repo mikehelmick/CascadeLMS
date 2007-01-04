@@ -1,7 +1,13 @@
 <h2>Editing document '<%= @document.title %>'</h2>
 
+<% unless @folder.nil? %>
+<p>Document nested in the folder:<br>
+<b><%= @folder.relative_path() %></b>
+</p>
+<% end %>
+
 <div id="form_area">
-<%= start_form_tag( { :action => 'update', :id => @document }, :multipart => true )%>
+<%= start_form_tag( { :action => 'update', :id => @document, :folder => @folder_id }, :multipart => true )%>
   <%= render :partial => 'form' %>
 <div class="submit"> 
   <%= submit_tag 'Edit' %>
@@ -10,4 +16,4 @@
 
 </div>
 
-<%= link_to 'Back', :action => 'index' %>
+<%= link_to 'Back', :action => 'index', :id => @document.document_parent %>

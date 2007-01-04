@@ -129,6 +129,6 @@ end
 desc "Restart the web server"
 task :restart, :roles => :app do
   sudo "/etc/init.d/apache2 restart"
-  sudo "sudo -u wwwrun /usr/bin/env ruby #{release_path}/script/backgroundrb stop"
-  sudo "sudo -u wwwrun /usr/bin/env ruby #{release_path}/script/backgroundrb start"  
+  #sudo "-u wwwrun /usr/bin/env ruby #{release_path}/script/backgroundrb stop"
+  #sudo "-u wwwrun /usr/bin/env ruby #{release_path}/script/backgroundrb start"  
 end

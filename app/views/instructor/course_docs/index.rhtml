@@ -1,9 +1,30 @@
 <h2>Documents for <%= @course.title %></h2>
 
-<p><%= link_to "Back", :controller => "/instructor/index", :course => @course %> | <%= link_to 'New document', :action => 'new' %></p>
+<p><%= link_to "Back", :controller => "/instructor/index", :course => @course %> | <%= link_to 'New document', :action => 'new', :id => @folder_id %> | <%= link_to 'New Folder', :action => 'new_folder', :id => @folder_id %></p>
+
+<p><b>Folder Navigation: </b>
+  <%= link_to 'root://', :action => 'index', :id => 0 %>	
+  
+  <% dir_arr = Array.new
+   unless @folder.nil?
+     cur_f = @folder
+     while !cur_f.nil?     
+       dir_arr << link_to( "#{cur_f.title}", :action => 'index', :id => cur_f )
+	   cur_f = cur_f.parent_document()
+	 end
+   end
+   dir_arr.reverse!
+   for fold in dir_arr
+   %>
+     <%= fold %> /
+   <% end %>
+
+     
+
+</p>
 
 <% if @documents.size == 0 %>
- <p><i>There are no documents for this class.</i></p>
+ <p><i>There are no documents in this folder.</i></p>
 <% else %>
 
 <table class="fancy">
@@ -25,24 +46,40 @@
   <tr class="<%=odd%> hover" id="document_<%=document.id%>">
     <td><%= document.position %></td>
     <td><%= image_tag "#{document.icon_file}", :align => 'absmiddle' %> <%=h document.title %></td>
-    <td><%=h document.size_text %></td>
+    <td><% unless document.folder %><%=h document.size_text %><% end %>&nbsp;</td>
     <td><%=h document.published %></td>
     <td><%=h document.created_at.to_formatted_s(:long) %></td>
 
-    <td><%= link_to 'Download', :action => 'download', :id => document %> |
-    <%= link_to 'Move Up', :action => 'move_up', :id => document %> |
-    <%= link_to 'Move Down', :action => 'move_down', :id => document %> |
-    <%= link_to 'Edit', :action => 'edit', :id => document %> |
-    <%= link_to 'Delete', { :action => 'destroy', :id => document }, :confirm => 'Are you sure you want to permanently delete this file?', :post => true %></td>
+    <td>
+	  <% if document.folder %>
+	    <%= link_to 'Open', :action => 'index', :id => document %>
+	  <% else %>
+        <%= link_to 'Download', :action => 'download', :id => document %>
+	  <% end %>
+	 |
+    <%= link_to 'Move Up', :action => 'move_up', :id => document, :folder => @folder_id %> |
+    <%= link_to 'Move Down', :action => 'move_down', :id => document, :folder => @folder_id %> |
+ 
+      <% if document.folder %>
+        <%= link_to 'Edit', :action => 'edit_folder', :id => document %> |
+      <% else %>
+        <%= link_to 'Edit', :action => 'edit', :id => document %> |
+      <% end %>
+
+      <% if document.folder %>
+        <%= link_to 'Delete', { :action => 'destroy', :id => document }, :confirm => 'Are you sure you want to permanently delete this folder AND ALL NEXTED FOLDERS AND DOCUMENTS.  This action can not be undone.?', :post => true %>
+      <%else %> 
+        <%= link_to 'Delete', { :action => 'destroy', :id => document }, :confirm => 'Are you sure you want to permanently delete this file?  This action can not be undone.', :post => true %>
+      <% end %></td>
   </tr>
 <% end %>
 </table>
 
-<%= link_to 'Previous page', { :page => @document_pages.current.previous } if @document_pages.current.previous %>
-<%= link_to 'Next page', { :page => @document_pages.current.next } if @document_pages.current.next %> 
+<%= link_to 'Previous page', { :page => @document_pages.current.previous, :id => @folder_id } if @document_pages.current.previous %>
+<%= link_to 'Next page', { :page => @document_pages.current.next, :id => @folder_id } if @document_pages.current.next %> 
 
 <% end %>
 
 <br />
 
-<p><%= link_to "Back", :controller => "/instructor/index", :course => @course %> | <%= link_to 'New document', :action => 'new' %></p>
+<p><%= link_to "Back", :controller => "/instructor/index", :course => @course%> | <%= link_to 'New document', :action => 'new', :id => @folder_id  %> | <%= link_to 'New Folder', :action => 'new_folder', :id => @folder_id %></p>

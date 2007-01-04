@@ -2,7 +2,8 @@ require 'FileManager'
 
 class Document < ActiveRecord::Base
   belongs_to :course
-  acts_as_list :scope => :course
+  #acts_as_list :scope => :course
+  acts_as_list :scope => 'course_id = #{course_id} AND document_parent = #{document_parent}'
   
   validates_presence_of :title
   
@@ -38,6 +39,25 @@ class Document < ActiveRecord::Base
   
   def icon
     'page'
+  end
+  
+  def after_destroy
+    docs = Document.find( :all, :conditions => ["document_parent = ? and course_id = ?", self.id, self.course_id ] )
+    docs.each { |x| x.destroy }
+  end
+  
+  def relative_path( append = "" )
+    if self.document_parent == 0
+      return "/ #{self.title} / #{append}"
+    else
+      parent = Document.find( self.document_parent )
+      return relative_path( "#{self.title} / #{append}" )
+    end
+  end
+  
+  def parent_document
+    return nil if self.document_parent == 0
+    return Document.find( self.document_parent )
   end
   
   ##   term/:term_id/course/:course_id/documents/doc_:id.extension
@@ -83,7 +103,11 @@ class Document < ActiveRecord::Base
   end
   
   def icon_file
-    FileManager.icon(self.extension)
+    if self.folder
+      'folder'
+    else
+      FileManager.icon(self.extension)
+    end
   end
   
   def transform_markup

@@ -1,0 +1,20 @@
+<h2>New Folder</h2>
+
+<% unless @folder.nil? %>
+<p>New folder nested in:<br>
+<b><%= @folder.relative_path() %></b>
+</p>
+<% end %>
+
+<div id="form_area">
+<%= start_form_tag( :action => 'create_folder', :id => @folder_id ) %>
+  <%= render :partial => 'folder_form' %>
+
+<div class="submit">
+  <%= submit_tag "Create Folder" %>
+</div>
+<%= end_form_tag %>
+
+</div>
+
+<%= link_to 'Back', :action => 'index', :id => @folder %>

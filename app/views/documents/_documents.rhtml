@@ -2,8 +2,29 @@
 
 <h2>Documents for <%= @course.title %></h2>
 
+<p><b>Folder Navigation: </b>
+  <%= link_to 'root://', :action => 'index', :id => 0 %>	
+  
+  <% dir_arr = Array.new
+   unless @folder.nil?
+     cur_f = @folder
+     while !cur_f.nil?     
+       dir_arr << link_to( "#{cur_f.title}", :action => 'index', :id => cur_f )
+	   cur_f = cur_f.parent_document()
+	 end
+   end
+   dir_arr.reverse!
+   for fold in dir_arr
+   %>
+     <%= fold %> /
+   <% end %>
+
+     
+
+</p>
+
 <% if @documents.size == 0 %>
-  <p><i>There are no documents in this course.</i></p>
+  <p><i>There are no documents in this folder.</i></p>
 <% else %>
 
 <%= render :partial => '/documents/pages' %>
@@ -23,19 +44,27 @@
 	     odd = "even" if count.even? %>
 	  <tr class="<%=odd%> hover" id="documet_<%=document.id%>">
 	    <% unless public %>
-		  <td><%= link_to "#{image_tag document.icon_file, :align=> 'absmiddle'} #{document.title}", :action => 'download', :course => @course.id, :id => document %></td>
-		  <td><%= link_to "#{document.filename}", :action => 'download', :course => @course.id, :id => document %></td>
+		  <td>
+		    <% if document.folder %>   
+		      <%= link_to "#{image_tag document.icon_file, :align=> 'absmiddle'} #{document.title}", :action => 'index', :course => @course.id, :id => document %> 
+		    <% else %>
+		      <%= link_to "#{image_tag document.icon_file, :align=> 'absmiddle'} #{document.title}", :action => 'download', :course => @course.id, :id => document %>
+		    <% end %>
+		  </td>
+		  <td><% unless document.folder %><%= link_to "#{document.filename}", :action => 'download', :course => @course.id, :id => document %><% end %> &nbsp;</td>
 		<% else %>
 		  <td><%= link_to "#{image_tag document.icon_file, :align=> 'absmiddle'} #{document.title}", :controller => '/public/documents', :action => 'download', :course => @course.id, :id => document %></td>
 		  <td><%= link_to "#{document.filename}", :controller => '/public/documents', :action => 'download', :course => @course.id, :id => document %></td>
 		<% end %>
-		<td><%=h document.size_text %></td>
-		<td><%=h document.created_at.to_formatted_s(:short) %></td>
+		<td><% unless document.folder %><%=h document.size_text %><% end %> &nbsp;</td>
+		<td><%=h document.created_at.to_formatted_s(:long) %></td>
 	  </tr>
+	  <% if !document.comments.nil? && !document.comments.eql?('') %>
 	  <tr>
 		<td><b>Comments:</b></td>
 	    <td colspan="3"><%= document.comments_html %></td>
 	  </tr>
+	  <% end %>
     <% end %>
 
   </table>

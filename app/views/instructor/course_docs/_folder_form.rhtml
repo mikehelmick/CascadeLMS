@@ -1,0 +1,20 @@
+<%= error_messages_for 'document' %>
+
+<!--[form:document]-->
+<p class="blockintro">Create a new folder to hold course documents.</p>
+<div class="block">
+<p><label for="document_title" class="required">Folder Name:</label>
+<%= text_field 'document', 'title'  %></p>
+
+<p><label for="document_comments">Comments (optional):</label>
+<%= text_area 'document', 'comments'  %></p>
+</div>
+
+<p class="blockintro">Setting a folder to unpublished prevents all documents in the folder from being seen by students.</p>
+<div class="block">
+<p><label for="document_published" class="required">Published:</label>
+	<%= radio_button 'document', 'published', true %> Yes
+	<%= radio_button 'document', 'published', false %> No</p>
+</div>
+<!--[eoform:document]-->
+
