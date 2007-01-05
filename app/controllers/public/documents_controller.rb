@@ -10,9 +10,9 @@ class Public::DocumentsController < ApplicationController
   
     @page = @params[:page].to_i
     @page = 1 if @page.nil? || @page == 0
-    @document_pages = Paginator.new self, Document.count(:conditions => ["course_id = ? and document_parent = ?", @course.id, @folder_id]), 50, @page
-    @documents = Document.find(:all, :conditions => ['course_id = ? and document_parent = ?', @course.id, @folder_id], :order => 'position', :limit => 50, :offset => @document_pages.current.offset)  
-
+    @document_pages = Paginator.new self, Document.count(:conditions => ["course_id = ? and published = ? and document_parent = ?", @course.id, true, @folder_id]), 25, @page
+    @documents = Document.find(:all, :conditions => ['course_id = ? and published = ? and document_parent = ?', @course.id, true, @folder_id], :order => 'position', :limit => 25, :offset => @document_pages.current.offset)  
+   
     set_title
   end
   
