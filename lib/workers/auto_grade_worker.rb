@@ -1,4 +1,5 @@
 require 'application'
+require 'yaml'
 
 # Put your code that runs your task inside the do_work method it will be
 # run automatically in a thread. You have access to all of your rails
@@ -46,11 +47,15 @@ class AutoGradeWorker < BackgrounDRb::Worker::RailsBase
          end
          
          command = "#{command} #{files.join(' ')}"
-         logger.info("SHELL: #{command}")
+         logger.info("SHELL (#{queue.id}): #{command}")
          result = `#{command}`
         
          #### Parse results
          yaml_res = YAML.load( result )
+         
+         if yaml_res.nil?
+           yaml_res = Array.new
+         end
          
          # get the PMD settings
          user_turnin.assignment.ensure_style_defaults # make sure that default settings exist

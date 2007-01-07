@@ -5,6 +5,7 @@ class WaitController < ApplicationController
   layout 'wait'
 
   def grade
+    @auto_refresh = true
     @queue = GradeQueue.find( params[:id] ) 
     
     if @queue.failed
