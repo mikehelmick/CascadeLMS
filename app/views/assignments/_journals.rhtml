@@ -13,13 +13,13 @@
 	 <th>Entry</th>
      <% if @assignment.journal_field.start_time 
 	      width += 1
-	  %><th>Start</th><% end %>
+	  %><th nowrap="nowrap">Start</th><% end %>
      <% if @assignment.journal_field.end_time
 	      width += 1
       %><th>End</th><% end %>
      <% if @assignment.journal_field.interruption_time
 	      width += 1
-      %><th>Intr.</th><% end %>
+      %><th nowrap="nowrap">Intr.</th><% end %>
      <% if @assignment.journal_field.task
 	      width += 1
       %><th>Tasks</th><% end %>
@@ -28,10 +28,10 @@
       %><th>Stop Reason</th><% end %>
      <% if @assignment.journal_field.completed
 	      width += 1
-      %><th>Complete?</th><% end %>
+      %><th>Done?</th><% end %>
      <% unless @assignment.closed?
 	      width += 1
-      %><th>Controls</th><% end %>
+      %><th>Edit</th><% end %>
    </tr>
 
    <% count = 0 %>
@@ -42,24 +42,28 @@
 	   %>
      <tr class="<%=odd%> hover" id="journal_<%=journal.id%>">
 	   <td><%= count %></td>
-       <% if @assignment.journal_field.start_time %><td><%=h journal.start_time.to_formatted_s(:short) %></td><% end %>
-       <% if @assignment.journal_field.end_time %><td><%=h journal.end_time.to_formatted_s(:short) %></td><% end %>
-       <% if @assignment.journal_field.interruption_time %><td><%=h journal.interruption_time %></td><% end %>
+       <% if @assignment.journal_field.start_time %><td nowrap="nowrap"><%=h journal.start_time.to_formatted_s(:short) %></td><% end %>
+       <% if @assignment.journal_field.end_time %><td nowrap="nowrap"><%=h journal.end_time.to_formatted_s(:short) %></td><% end %>
+       <% if @assignment.journal_field.interruption_time %><td nowrap="nowrap"><%=h journal.interruption_time %></td><% end %>
        <% if @assignment.journal_field.task %><td>
+	     <ul>
          <% for task in journal.journal_tasks %>
-           <%= task.task %><br/>
+           <li><%= task.task %></li>
          <% end %>
+         </ul>
          </td>
        <% end %>
        <% if @assignment.journal_field.reason_for_stopping %><td>
+	     <ul>
          <% for sr in journal.journal_stop_reasons %>
-           <%= sr.reason %><br/>
+           <li><%= sr.reason %></li>
          <% end %>
+         </ul>
          </td>
        <% end %>
        <% if @assignment.journal_field.completed %><td><%=journal.completed_text%></td><% end %>
        <% unless @assignment.closed? %>       
-       <td width="75%">
+       <td>
         <%= link_to 'Edit', :controller => 'journals', :action => 'edit', :course => @course, :assignment => @assignment.id, :id => journal.id %> 
        </td> 
        <% end %>
@@ -68,7 +72,7 @@
      <% if @assignment.journal_field.comments %>
      <tr class="<%=odd%> hover">
 	   <td>Comments:</td>
-	   <td colspan="<%= width - 1 %>"><%= journal.comments %></td>
+	   <td colspan="<%= width  %>"><%= journal.comments %></td>
 	 </tr>
      <% end %>
    <% end %>

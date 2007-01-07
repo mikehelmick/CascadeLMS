@@ -172,16 +172,23 @@ class ForumsController < ApplicationController
     
     if ( params[:id] ) 
       @post = ForumPost.find( params[:id] )
+      
+      unless @user.id != @post.user_id || @user.instructor_in_course?( @course.id ) || @user.assistant_in_course_with_privilege?( @course.id, 'ta_course_blog_edit')
+        flash[:badnotice] = "You don't have permission to edit this post."
+        redirect_for_post( @post )
+        return
+      end
+    
       @post.update_attributes( params[:post] ) 
+      
+      if @user.id != @post.user_id
+        @post.post = "#{@post.post} \n _Edited by #{@user.display_name} on #{Time.now.to_formatted_s(:long)}_"
+      end
       
       if @post.save
         flash[:notice] = "Your post has been edited."
         
-         if ( @post.parent_post == 0 )
-            redirect_to :action => 'read', :id => @post.id
-         else
-            redirect_to :action => 'read', :id => @post.parent_post
-         end
+         redirect_for_post( @post )
         
       else
         render :action => 'edit'
@@ -213,11 +220,7 @@ class ForumsController < ApplicationController
       
       if success
         flash[:notice] = 'New post created in this forum.'
-        if ( @post.parent_post == 0 )
-            redirect_to :action => 'read', :id => @post.id
-         else
-            redirect_to :action => 'read', :id => @post.parent_post
-         end
+        redirect_for_post( @post )
       else
         render :action => 'new_post' 
       end
@@ -296,7 +299,12 @@ class ForumsController < ApplicationController
     return unless topic_in_course( @course, @topic )
     return unless topic_open( @course, @topic )
     
-    if (Time.now - @post.created_at).to_i > 900
+    if @user.instructor_in_course?( @course.id ) || @user.assistant_in_course_with_privilege?( @course.id, 'ta_course_blog_edit')
+      if @user.id != @post.user_id
+        flash[:notice] = "You are editing some else's post as a instrcutor or TA.  Any edit you make will be appended to the end of the post with your name on it."
+      end
+      
+    elsif (Time.now - @post.created_at).to_i > 900
       flash[:notice] = "This post was created more than 15 minutes ago, and can no longer be edited."
       redirect_to :action => 'read', :id => params[:parent]
     end
@@ -355,6 +363,14 @@ class ForumsController < ApplicationController
   
   def set_title
     @title = "#{@course.title} (Course Forum)"
+  end
+  
+  def redirect_for_post( post )
+    if ( post.parent_post == 0 )
+        redirect_to :action => 'read', :id => post.id
+    else
+        redirect_to :action => 'read', :id => post.parent_post
+    end
   end
   
   

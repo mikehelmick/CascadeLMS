@@ -61,8 +61,16 @@ class User < ActiveRecord::Base
     blank_in_course( course_id ) { |x| x.course_student }
   end
   
-  def assistant_in_course?( course_id )
+  def assistant_in_course?( course_id )  
     blank_in_course( course_id ) { |x| x.course_assistant }
+  end
+  
+  def assistant_in_course_with_privilege?( course_id, privilege )
+    if blank_in_course( course_id ) { |x| x.course_assistant }
+       setting = CopurseSetting.find( course_id )
+       return setting.ta_course_blog_edit
+     end
+     return false
   end
   
   def guest_in_course?( course_id )
