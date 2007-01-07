@@ -121,11 +121,12 @@ class AutoGradeWorker < BackgrounDRb::Worker::RailsBase
     
     rescue => doh
       logger.error("Request failed #{doh.message}")
+      logger.error( "#{doh.backtrace}" )
       unless queue.nil?
         queue.serviced=true
         queue.failed=true
         queue.message = doh.message
-        quque.save
+        queue.save
       end
     end
       results[:do_work_time] = Time.now.to_s
