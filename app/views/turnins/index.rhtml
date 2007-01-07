@@ -30,7 +30,7 @@
 		
 		<% if @assignment.released %>
 		  <p><b><%= link_to 'View Instructor Feedback', :action => 'feedback', :course => @course, :assignment => @assignment %></b></p>
-		<% elsif @current_turnin.finalized && @assignment.auto_grade_setting.any_student_grade? %>
+		<% elsif @current_turnin.finalized && !@assignment.auto_grade_setting.nil? @assignment.auto_grade_setting.any_student_grade? %>
 		  <p><b><%= link_to "#{image_tag 'flag_green'} View AutoGrade Results for Current Turnin", :action => 'feedback', :course => @course, :assignment => @assignment %></b></p>
 		<% end %>
 		
