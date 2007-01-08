@@ -1,0 +1,12 @@
+<%= render :partial => 'instructor/index/right' %>
+
+<% unless @current_period.nil? %>
+  <h2>Open Class Period</h2>
+   
+  <ul>
+	<li>Open At: <%= @current_period.created_at %></li>
+	<ul><li>(<%= distance_of_time_in_words_to_now( @current_period.created_at ) %> ago)</li></ul>
+	<li>Attendance Key: <b><%= @current_period.key %></b></li>
+  </ul>
+	
+<% end %>

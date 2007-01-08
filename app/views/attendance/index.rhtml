@@ -1,0 +1,70 @@
+
+<% unless @current_period.nil? %>
+<% unless @attending_current %>
+<h2>Record You Attendance</h2>
+<div id="form_area">
+<%= start_form_tag :action => 'record_attendance' %>
+<p><label for="key"  class="required">Class Key: </label>
+<%= text_field_tag 'key'  %> (<i>Key is only available in the classroom.</i>)</p>
+<div class="submit">
+  <%= submit_tag "I'm Here!" %>
+</div>
+<% end_form_tag %>
+</div>
+<% end %>
+<% end %>
+
+<% num_att = 0 %>
+<% num_miss = 0 %>
+<% if @periods.size > 0 %>
+	<table class="fancy">
+	  <tr class="header">
+	    <th>#</th>
+		<th>Class Date</th>
+	    <th>Did you attend?</th>
+	  </tr>
+
+	<% count = 0%> 
+	<% for period in @periods %>
+	<% count = count.next 
+	   odd = "odd"
+	   odd = "even" if count.even?
+	%>
+	  <tr class="<%=odd%> hover" id="period_<%=period.id%>">
+		<td><%= period.position %></td>
+		<td><%= Date::MONTHNAMES[period.created_at.mon] %>
+			<%= period.created_at.mday %>, <%= period.created_at.year %>
+			</td>
+		<% if @class_matrix[period.id.to_s].nil? %>
+		  <td>No</td>
+		  <% num_miss = num_miss.next %>
+		<% elsif ! @class_matrix[period.id.to_s].correct_key %>
+		  <td>No - Incorrect Key Entered</td>
+		  <% num_miss = num_miss.next %>
+		<% else %>
+          <td>Yes</td>
+          <% num_att = num_att.next %>
+        <% end %>
+	  </tr>
+	<% end %>
+	
+	<tr>
+	  <td>##</td>
+	  <td align="right"># Attending</td>
+	  <td><%= num_att %></td>
+	</tr>
+	
+	<tr>
+	  <td>##</td>
+	  <td align="right"># Missed</td>
+	  <td><%= num_miss %></td>
+	</tr>	
+	
+	<tr>
+	  <td>##</td>
+	  <td align="right">Attendance Percentage</td>
+	  <td><%= sprintf("%.2f", num_att.to_f / (num_att + num_miss) * 100 ) %>%</td>
+	</tr>
+	
+	</table>
+<% end %>

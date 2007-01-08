@@ -1,0 +1,2 @@
+module Instructor::AttendanceHelper
+end

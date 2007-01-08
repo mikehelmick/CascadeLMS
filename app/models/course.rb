@@ -20,7 +20,7 @@ class Course < ActiveRecord::Base
   has_many :journal_tasks, :dependent => :destroy
   has_many :journal_stop_reasons, :dependent => :destroy
   
-  
+  has_many :class_periods, :order => "position", :dependent => :destroy
   
   before_create :solidify
   
@@ -144,6 +144,11 @@ class Course < ActiveRecord::Base
       end
       res
     end
+  end
+  
+  def open_class_period?
+    period = ClassPeriod.find(:first, :conditions => ["course_id = ? and open = ?", self.id, true] )
+    return ! period.nil?
   end
   
   def solidify

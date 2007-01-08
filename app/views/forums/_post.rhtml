@@ -45,7 +45,9 @@
 		    <%= link_to "Edit Post #{image_tag 'comment_edit'}", :action => 'edit', :parent => parent.id, :id => post.id %> (<i>for the next <%= distance_of_time_in_words( nowT, post.created_at + 900 ) %></i>)|
 		  <% end %>
 		<% end %>
-		<%= link_to "Reply #{image_tag 'comment_add'}", :action => 'reply', :parent => parent.id, :id => post.id %>
+		<% if @topic.allow_posts %>
+		  <%= link_to "Reply #{image_tag 'comment_add'}", :action => 'reply', :parent => parent.id, :id => post.id %>
+		<% end %>
 		<% if @user.instructor_in_course?( @course.id ) %>
 		  <%= link_to "Delete #{image_tag 'comment_delete'}", {:action => 'delete', :parent => parent.id, :id => post.id }, :confirm => "Delete post?" %>
 		<% end %>

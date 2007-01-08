@@ -2,7 +2,7 @@
 <h2>Course: <%= @course.title %></h2>
 <h3>Forum: <%= @topic.topic %></h3>
 
-<p><%= link_to 'New post in this forum. ', :action => 'new_post', :topic => @topic.id, :course => @course %> | <%= link_to 'All Forums', :action => 'index', :course => @course %></p>
+<p><% if @topic.allow_posts %><%= link_to 'New post in this forum. ', :action => 'new_post', :topic => @topic.id, :course => @course %> |<% end %> <%= link_to 'All Forums', :action => 'index', :course => @course %></p>
 
 
 <% if @posts.size == 0 %>
@@ -45,7 +45,7 @@
   <% end %>
 </table>
 
-<p><%= link_to 'New post in this forum. ', :action => 'new_post', :topic => @topic.id, :course => @course %></p>
+<p><% if @topic.allow_posts %><%= link_to 'New post in this forum. ', :action => 'new_post', :topic => @topic.id, :course => @course %><% end %></p>
 <% if @post_pages.page_count > 1 %><p>Page: 
 <% 1.upto(@post_pages.page_count) do |i| %>
  <% if i == @page %>

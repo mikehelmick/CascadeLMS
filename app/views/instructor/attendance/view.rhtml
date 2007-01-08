@@ -1,0 +1,28 @@
+<h2>Attendance for class on <%= Date::MONTHNAMES[@period.created_at.mon] %>
+	<%= @period.created_at.mday %>, <%= @period.created_at.year %></h2>
+
+<p><%= link_to 'Back', :controller => '/instructor/attendance', :course => @course, :id => nil %></p>
+
+	<table class="fancy">
+	  <tr class="header">
+	    <th>uniqueid</th>
+	    <th>Name</th>
+	    <th>Attendance Record</th>
+	    <th>Correct key</th>
+	  </tr>
+
+	<% count = 0%> 
+	<% for user in @course.students %>
+	<% count = count.next 
+	   odd = "odd"
+	   odd = "even" if count.even?
+	%>
+	  <tr class="<%=odd%> hover" id="user_<%=user.id%>">
+        <td><%= user.uniqueid %></td>
+        <td><%= user.display_name %></td>
+        <td><% if @attendees[user.id] %>Yes<% else %><b>No</b><% end %></td>
+        <td><% if @correct_key[user.id] %>Yes<% else %><b>No</b><% end %></td>
+      </tr>
+    <% end %> 
+  </table>
+ 

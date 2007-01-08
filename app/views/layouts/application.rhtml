@@ -103,6 +103,15 @@
 		        <li><%= link_to 'Grades', { :controller => '/grades', :course => @course }, { :id => 'current' } %></li>
 		      <% end %>		
 		    <% end %>
+		
+			<% if @user.student_in_course?(@course.id) && @course.course_setting.enable_attendance %>
+		  	  <% if @tab.nil? || !@tab.eql?('course_attendance') %>
+			    <li><%= link_to 'Attendance', :controller => '/attendance', :course => @course %></li>
+		      <% else %>
+		        <li><%= link_to 'Attendance', { :controller => '/attendance', :course => @course }, { :id => 'current' } %></li>
+		      <% end %>		
+		    <% end %>
+		
 		    <% if @user.instructor_in_course?(@course.id) || @user.assistant_in_course?(@course.id) %>
 		      <% if @tab.nil? || !@tab.eql?('course_instructor') %>
 		        <li style="padding-left: 25px"><%= link_to 'Instructor', { :controller => '/instructor/index', :course => @course } %></li>
@@ -143,6 +152,10 @@
 <% if @course && !@course.open %>
 <div class="errorExplanation" align="center"><b>This course is now in archive mode, no changes may be made.</b></div>
 <% end  %>
+
+<% if @course && @course.course_setting.enable_attendance && @user.student_in_course?(@course.id) && @course.open_class_period? %>
+<div class="GoodMessage"><%= link_to 'Attendance reporting is open right now for this class.', :controller => '/attendance', :course => @course %></div>
+<% end %>
 
 <%= @content_for_layout %>
 

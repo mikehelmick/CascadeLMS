@@ -30,6 +30,13 @@
 	<%= radio_button 'course_settings', 'enable_gradebook', false %> No</p>
 </div>
 
+<p class="blockintro">The attendance feature is suited for classes that take place in a computer lab or a room where each student has access to a terminal during the class.</p>
+<div class="block">
+<p><label for="course_Settings_enable_attendance" class="required">Enable Attendance</label>
+	<%= radio_button 'course_settings', 'enable_attendance', true %> Yes
+	<%= radio_button 'course_settings', 'enable_attendance', false %> No</p>
+</div>
+
 <p class="blockintro">Enabling RSS will allow your students to receive notification of new assignments and blog posts in their web browser or news aggregator. RSS feeds are fully password protected and are only readable by users associated with your course. <%= link_to "More information on RSS. #{image_tag 'feed'}", "http://www.feedburner.com/fb/a/aboutrss", :popup => true %></p>
 <div class="block">
 	<p><label for="course_settings_enable_rss" class="required">Enable RSS Feed:</label>

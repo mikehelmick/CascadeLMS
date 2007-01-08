@@ -95,6 +95,13 @@
   </tr>
   <% end %>
 
+  <% if @course.course_setting.enable_attendance %>
+  <tr>
+    <td><%= link_to "#{image_tag 'cog', :align => 'absmiddle'} Attendance", :controller => '/instructor/attendance', :course => @course %></td>
+    <td>&nbsp;</td>
+  </tr>
+  <% end %>
+
 </table>
 
 <table class="FadeTable" cellspacing="0">

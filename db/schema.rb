@@ -2,7 +2,7 @@
 # migrations feature of ActiveRecord to incrementally modify your database, and
 # then regenerate this schema definition.
 
-ActiveRecord::Schema.define(:version => 52) do
+ActiveRecord::Schema.define(:version => 54) do
 
   create_table "announcements", :force => true do |t|
     t.column "headline", :string
@@ -66,6 +66,22 @@ ActiveRecord::Schema.define(:version => 52) do
   create_table "basic_graders", :force => true do |t|
   end
 
+  create_table "class_attendances", :force => true do |t|
+    t.column "class_period_id", :integer, :default => 0, :null => false
+    t.column "user_id", :integer, :default => 0, :null => false
+    t.column "course_id", :integer, :default => 0, :null => false
+    t.column "correct_key", :boolean, :default => true, :null => false
+  end
+
+  create_table "class_periods", :force => true do |t|
+    t.column "course_id", :integer, :default => 0, :null => false
+    t.column "open", :boolean, :default => true, :null => false
+    t.column "key", :string, :default => "", :null => false
+    t.column "created_at", :datetime, :null => false
+    t.column "updated_at", :datetime, :null => false
+    t.column "position", :integer
+  end
+
   create_table "comments", :force => true do |t|
     t.column "post_id", :integer, :default => 0, :null => false
     t.column "user_id", :integer, :default => 0, :null => false
@@ -109,6 +125,7 @@ ActiveRecord::Schema.define(:version => 52) do
     t.column "ta_send_email", :boolean, :default => false, :null => false
     t.column "enable_forum", :boolean, :default => true, :null => false
     t.column "enable_forum_topic_create", :boolean, :default => false, :null => false
+    t.column "enable_attendance", :boolean, :default => false, :null => false
   end
 
   add_index "course_settings", ["course_id"], :name => "course_settings_course_id_index", :unique => true

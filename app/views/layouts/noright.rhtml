@@ -90,6 +90,15 @@
 		        <li><%= link_to 'Grades', { :controller => '/grades', :course => @course }, { :id => 'current' } %></li>
 		      <% end %>
 		    <% end %>
+		
+			<% if @user.student_in_course?(@course.id) && @course.course_setting.enable_attendance %>
+		  	  <% if @tab.nil? || !@tab.eql?('course_attendance') %>
+			    <li><%= link_to 'Attendance', :controller => '/attendance', :course => @course %></li>
+		      <% else %>
+		        <li><%= link_to 'Attendance', { :controller => '/attendance', :course => @course }, { :id => 'current' } %></li>
+		      <% end %>		
+		    <% end %>
+		
 		    <% if @user.instructor_in_course?(@course.id) || @user.assistant_in_course?(@course.id) %>
 		      <% if @tab.nil? || !@tab.eql?('course_instructor') %>
 		        <li style="padding-left: 25px"><%= link_to 'Instructor', { :controller => '/instructor/index', :course => @course } %></li>
