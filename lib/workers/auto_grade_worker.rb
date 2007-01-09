@@ -48,7 +48,17 @@ class AutoGradeWorker < BackgrounDRb::Worker::RailsBase
          
          command = "#{command} #{files.join(' ')}"
          logger.info("SHELL (#{queue.id}): #{command}")
+         
+         retry_count = 0
          result = `#{command}`
+         
+         if (result.nil? || result.eql?('')) && retry_count < 3
+           logger.info("RESULTS (#{queue.id}): EMPTY - RETRYING #{retry_count}")
+           sleep(1)
+           
+           result = `#{command}`
+           retry_count = retry_count.next
+         end
          logger.info("RESULTS (#{queue.id}): #{result}")
         
          #### Parse results
