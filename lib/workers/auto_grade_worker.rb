@@ -49,6 +49,7 @@ class AutoGradeWorker < BackgrounDRb::Worker::RailsBase
          command = "#{command} #{files.join(' ')}"
          logger.info("SHELL (#{queue.id}): #{command}")
          result = `#{command}`
+         logger.info("RESULTS (#{queue.id}): #{result}")
         
          #### Parse results
          yaml_res = YAML.load( result )

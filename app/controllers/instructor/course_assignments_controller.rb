@@ -53,10 +53,21 @@ class Instructor::CourseAssignmentsController < Instructor::InstructorBase
       @assignment.journal_field = @journal_field
     end
     
+    if @assignment.auto_grade
+      # make sure autograde setting exist
+      ags = AutoGradeSetting.new
+      @assignment.auto_grade_setting = ags
+    end
+    
     # do the save
     if !do_exit && @assignment.save
        unless @asgm_document.nil?
          @asgm_document.create_file( params[:file], @app['external_dir'] )
+       end
+       
+       ## style defaults
+       if @assignment.auto_grade
+         @assignment.ensure_style_defaults
        end
        
        # create grade item

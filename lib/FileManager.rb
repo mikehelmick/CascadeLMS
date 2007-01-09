@@ -25,7 +25,8 @@ class FileManager
                   'c' => true, 
                   'tex' => true, 
                   'txt' => true, 
-                  'readme' => true }
+                  'readme' => true,
+                  'vb' => true }
      
   @@enscripts = {    
      'asm' => 'asm',

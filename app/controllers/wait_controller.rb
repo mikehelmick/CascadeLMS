@@ -26,7 +26,7 @@ class WaitController < ApplicationController
   
   def failed
     @queue = GradeQueue.find( params[:id] ) 
-    unless !@queue.failed
+    if ! @queue.failed
       redirect_to :action => 'grade', :id => params[:id]
     end
   end
