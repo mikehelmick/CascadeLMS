@@ -68,8 +68,53 @@ class Instructor::AttendanceController < Instructor::InstructorBase
       end
     end
     
-   
+  end
+  
+  def mark_attending
+    return unless load_course( params[:course] )
+    return unless attendance_enabled( @course )
+    return unless ensure_course_instructor_on_assistant( @course, @user )
     
+    return unless load_period(params[:id])
+    student = User.find( params[:user].to_i ) 
+    return unless student_in_course( @course, student)
+    
+    att = ClassAttendance.find(:first, :conditions => ["class_period_id = ? and course_id = ? and user_id = ?", @period.id, @course.id, student.id ] ) rescue att = nil
+    if att.nil?
+      att = ClassAttendance.new
+      att.class_period = @period
+      att.user = student
+      att.course = @course
+    end
+    att.correct_key = true
+    
+    if att.save
+      flash[:notice] = "Marked '#{student.display_name}' as attending."
+    else
+      flash[:badnotice] = "Attendance update for '#{student.display_name}' failed."
+    end
+    
+    redirect_to :action => 'view', :id => @period, :user => nil, :course => @course
+  end
+  
+  def mark_missing
+    return unless load_course( params[:course] )
+    return unless attendance_enabled( @course )
+    return unless ensure_course_instructor_on_assistant( @course, @user )
+    
+    return unless load_period(params[:id])
+    student = User.find( params[:user].to_i ) 
+    return unless student_in_course( @course, student)
+    
+    att = ClassAttendance.find(:first, :conditions => ["class_period_id = ? and course_id = ? and user_id = ?", @period.id, @course.id, student.id ] ) rescue att = nil
+    
+    if att.nil? || att.destroy()
+      flash[:notice] = "Marked '#{student.display_name}' as not attending."
+    else
+      flash[:badnotice] = "Attendance update for '#{student.display_name}' failed."
+    end
+    
+    redirect_to :action => 'view', :id => @period, :user => nil, :course => @course
   end
   
   
@@ -84,6 +129,7 @@ class Instructor::AttendanceController < Instructor::InstructorBase
     end
     return true
   end
+  
   
   def attendance_enabled( course )
     unless course.course_setting.enable_attendance

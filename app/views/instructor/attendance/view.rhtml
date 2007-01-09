@@ -9,6 +9,7 @@
 	    <th>Name</th>
 	    <th>Attendance Record</th>
 	    <th>Correct key</th>
+	    <th>Controls</th>
 	  </tr>
 
 	<% count = 0%> 
@@ -22,6 +23,9 @@
         <td><%= user.display_name %></td>
         <td><% if @attendees[user.id] %>Yes<% else %><b>No</b><% end %></td>
         <td><% if @correct_key[user.id] %>Yes<% else %><b>No</b><% end %></td>
+        <td><%= link_to 'Mark Attending', :action => 'mark_attending', :user => user.id, :course => @course, :id => @period %> |
+            <%= link_to 'Mark Missing', :action => 'mark_missing', :user => user.id, :course => @course, :id => @period %>
+        </td>
       </tr>
     <% end %> 
   </table>

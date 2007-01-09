@@ -52,7 +52,7 @@ class AutoGradeWorker < BackgrounDRb::Worker::RailsBase
          retry_count = 0
          result = `#{command}`
          
-         if (result.nil? || result.eql?('')) && retry_count < 3
+         while (result.nil? || result.eql?('')) && retry_count < 3
            logger.info("RESULTS (#{queue.id}): EMPTY - RETRYING #{retry_count}")
            sleep(1)
            

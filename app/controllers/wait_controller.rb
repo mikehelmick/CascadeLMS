@@ -34,7 +34,7 @@ class WaitController < ApplicationController
   def retry
     @queue = GradeQueue.find( params[:id] ) 
     unless !@queue.failed
-      if !queue.assignment.closed?
+      if !@queue.assignment.closed?
         flash[:notice] = "Your turn-in set was not reopened, the assignment is past due."
       else
         flash[:notice] = "Your turn-in set has been reopened, please finalize before the due date."
