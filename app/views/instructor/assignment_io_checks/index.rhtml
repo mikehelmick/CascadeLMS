@@ -1,0 +1,45 @@
+<h3>IO AutoGrade Settings for '<%= @assignment.title %>'</h3>
+
+<p><%= link_to 'Back', :controller => '/instructor/course_assignments', :action => 'autograde', :id => @assignment, :course => @course, :assignment => nil %> |
+   <%= link_to 'New I/O Test', :action => 'new' %>
+</p>
+
+<% if @io_checks.size == 0 %>
+	<p><i>There are no I/O checks configured for this assignment.</i></p>
+<% else %>
+    
+<p>Current IO tests:</p>
+<table class="fancy">
+  <tr>
+	<th valign="bottom">Name</th>
+	<th>Visible<br/>before release</th>
+	<th>Input available<br/>after release</th>
+	<th>Controls</th>
+  </tr>
+
+   <% count = 0 %>
+   <% for check in @io_checks %>
+     <% count = count.next 
+	   odd = "odd"
+	   odd = "even" if count.even?
+  	  %>
+	  <tr class="<%=odd%> hover" id="check_<%=check.id%>">
+		 <td><%= check.name %></td>
+		 <td><% if check.student_level %><%= image_tag 'thumb_up' %> Yes <% else %><%= image_tag 'thumb_down' %> No <%end %></td>
+		 <td><% if check.show_input %><%= image_tag 'thumb_up' %> Yes <% else %><%= image_tag 'thumb_down' %> No <%end %></td>
+		 <td>
+		   <%= link_to 'Edit', :action => 'edit', :id => check, :course => @course, :assignment => @assignment %> |
+		   <%= link_to 'Delete', { :action => 'destroy', :id => check, :course => @course, :assignment => @assignment  }, :confirm => "Are you sure you want to delete the I/O Test '#{check.name}' and all of it's associated data including reports of previously run student code? This action can no be undone.", :post => true %>	
+		 
+		 </td>
+      </tr>
+   <% end %>
+</table>
+
+<% end %>
+
+
+<p><%= link_to 'Back', :controller => '/instructor/course_assignments', :action => 'autograde', :id => @assignment, :course => @course, :assignment => nil %> |
+   <%= link_to 'New I/O Test', :action => 'new' %>
+</p>
+

@@ -3,42 +3,13 @@
 
 <p><%= link_to 'Back to all students', :controller => '/instructor/turnins', :course => @course, :assignment => @assignment %></p>
 
-<div class="SectionHeader"><div class="Full">
-  <h2>Grade</h2>
-</div></div>
-
-<% unless @grade_item %>
-<p><i>Warning - this assignment is not connected with an entry in the GradeBook.</i></p>
-<% else %>
-  <div id="form_area">
-  <%= start_form_tag :action => 'submit_grade', :id => @student, :course => @course, :assignment => @assignment %>
-    <%= error_messages_for 'grade_entry' %>    
-
-	<p class="blockintro">You can enter general assignment comments here.   You also have the ability to comment on individual files below as well as to make annotations tied to specific line numbers for text files.   <b>If you enter a negative point value, the student's grade for this assignment will be deleted (including the comments entered below).</b> Leaving the points value blank, results in a score of zero.</p>
-	<div class="block">
-	  <p><label for="document_title">Points:</label>
-	  <%= text_field 'grade_entry', 'points', :size => 10  %> / <%= sprintf("%0.1f", @grade_item.points ) %></p>
-
-      <p><label for="document_comments">General comments:</label>
-      <%= text_area 'grade_entry', 'comment', "cols" => 90, "rows" => 12  %></p>
-
-    </div>
-
-  	<div class="submit">
-	  <div id="button"><%= submit_tag "Submit Grade and Comments" %></div>
-	</div>
-  <%= end_form_tag %>
-  </div>
-
-<% end %>
-
-
 <!-- files -->
 
 <div class="SectionHeader"><div class="Full">
   <h2>Turn-in Sets</h2>
 </div></div>
-
+<div class="Section">
+	
 <% if @display_turnin %>
 
 <% if @display_turnin.id == @current_turnin.id %>
@@ -57,20 +28,26 @@ Last Updated: <%= @display_turnin.updated_at.to_formatted_s(:friendly_date) %><b
 <% if @display_turnin.id == @current_turnin.id && @current_turnin.user_turnin_files.size == 1 && @turnins.size > 1 %>
 <div class="errorExplanation">This student's current turn-in set does not have any files in it, and there are previous turn-in sets.  You may <%= link_to 'rollback to the previous turn-in set', :action => 'rollback', :id => @student %></div>
 <% end %>
+</div>
 
 <% parent_spaces = Hash.new 
    parent_spaces[0.to_s] = 0
+   any_java = @display_turnin.any_java_files?
 %>
 
 <table class="fancy">
   <tr class="header">
-    <th>File</th>
-	<th>Date</th>
+    <th valign="bottom">File</th>
+	<th valign="bottom">Date</th>
 	<% if @assignment.programming %>
-	  <th>Main?</th>
+	  <th valign="bottom">Main?</th>
+	  <% if any_java %>
+	    <th valign="bottom">Clean Java?</th>
+	    <th valign="bottom">Instructor<br/> Override?</th>
+	  <% end %>
 	<% end %>
-	<th>Download</th>
-	<th>Review / Comment</th>
+	<th valign="bottom">Download</th>
+	<th valign="bottom">Review / Comment</th>
   </tr>
 
 <% count = 0 %>
@@ -112,7 +89,32 @@ Last Updated: <%= @display_turnin.updated_at.to_formatted_s(:friendly_date) %><b
 	         </acronym>
 	    <% end %>
 	  </td>
+	
+	   <% if any_java %>
+	    <td>
+		  <% if @tif.extension.eql?('java') ## will need to expand later w/ other languages %>
+		    <% if @tif.gradable %>
+		      <%= image_tag 'accept' %> 
+		    <% else %>
+		      <%= image_tag 'cross' %> <b><%= link_to_function "Details", visual_effect(:toggle_appear, "dirty_details_#{@tif.id}" ) %></b>
+		    <% end %>
+		  <% end %>
+		</td>
+		<td>
+		  <% if @tif.extension.eql?('java') ## will need to expand later w/ other languages %>
+		    <% if ! @tif.gradable %>
+		      <% if @tif.gradable_override %>
+		        <%= image_tag 'accept' %> Yes
+		      <% else %>
+		        <%= image_tag 'cross' %> No
+		      <% end %>
+		    <% end %>
+		  <% end %>
+		</td>	
+	  <% end %>
+	
     <% end %>
+
     <td>
      <% if @tif.directory_entry %>
        <s>Download</s>
@@ -128,12 +130,22 @@ Last Updated: <%= @display_turnin.updated_at.to_formatted_s(:friendly_date) %><b
         <% if @tif.is_text_file? %>
           <%= link_to 'View/Comment', :action => 'view_file', :course => @course, :assignment => @assignment, :student => @student, :id => @tif %>
         <% else %>
-          <%= link_to 'View/Comment', :action => 'view_binary_file', :course => @course, :assignment => @assignment, :student => @student, :id => @tif %>
+          <%= link_to 'Download', :action => 'download_file', :course => @course, :assignment => @assignment, :student => @student, :id => @tif %>
         <% end %>
       <% end %>
     </td>
 
   </tr>
+
+  <% if any_java && @tif.extension.eql?('java') && !@tif.gradable %>
+    <tr style="display: none;" id="dirty_details_<%=@tif.id%>">
+	  <td colspan="5">
+		 <p><b>Can not AutoGrade your assignment because '<%= @tif.filename %>' it contains the following disallowed strings.</b></p>
+	    <p><%= @tif.gradable_message.to_html %></p>
+	  </td>
+	</tr>
+  <% end %>
+
   <% previous_tif = @tif %>
 <% end %>
 </table>
@@ -143,32 +155,51 @@ Last Updated: <%= @display_turnin.updated_at.to_formatted_s(:friendly_date) %><b
   <p><i>No files submitted</i></p>
 <% end %>
 
+<!-- AutoGrade area -->
+<% if @assignment.auto_grade_setting.io_check? ## Only kind of autograde supported %>
+ <div class="SectionHeader"><div class="Full"> 
+   <h2>AutoGrade Results</h2>
+ </div></div>
 
-<h2>Previous Turn-in sets (read-only)</h2>
-
-<table class="fancy">
-  <tr class="header">
-    <th>#</th>
-    <th>Previous Set</th><th>View</th>
-  </tr>
-
-<% count = @turnins.size + 1 %>
-<% for ut in @turnins %>
-  <% count = count - 1  
-     odd = "odd"
-     odd = "even" if count.even?
-   %>
-  <tr class="<%=odd%> hover" id="user_turnin_<%=ut.id%>">
-    <td align="right"><%= count %></td>
-    <td><%=h ut.updated_at.to_formatted_s(:long) %>
-      <% if ut.id == @current_turnin.id %><b>current</b> <%end%>
-    </td>
-    <td><%= link_to 'View', :action => 'view_student', :course => @course, :assignment => @assignment, :id => @student, :ut => ut.id %></td>
-  </tr>
+ <div class="Section">
+    <p><%= link_to "View I/O Check results for #{@student.display_name}.", :course => @course, :assignment => @assignment, :student => @student, :action => 'view_io_tests' %> <b>From this screen you can also re-run the automatic tests.</b></p>
+ </div>
 <% end %>
-</table>
 
-<hr/>
+
+<!-- begin grade area -->
+<div class="SectionHeader"><div class="Full">
+  <h2>Grade</h2>
+</div></div>
+
+<% unless @grade_item %>
+<p><i>Warning - this assignment is not connected with an entry in the GradeBook.</i></p>
+<% else %>
+  <div id="form_area">
+  <%= start_form_tag :action => 'submit_grade', :id => @student, :course => @course, :assignment => @assignment %>
+    <%= error_messages_for 'grade_entry' %>    
+
+	<p class="blockintro">You can enter general assignment comments here.   You also have the ability to comment on individual files below as well as to make annotations tied to specific line numbers for text files.   <b>If you enter a negative point value, the student's grade for this assignment will be deleted (including the comments entered below).</b> Leaving the points value blank, results in a score of zero.</p>
+	<div class="block">
+	  <p><label for="document_title">Points:</label>
+	  <%= text_field 'grade_entry', 'points', :size => 10  %> / <%= sprintf("%0.1f", @grade_item.points ) %></p>
+
+      <p><label for="document_comments">General comments:</label><br/>
+      <%= text_area 'grade_entry', 'comment', "cols" => 90, "rows" => 12, :class=>'short'  %><br/>
+      <%= link_to_function "More room to type", "Form.Element.toggleHeight(this, 'grade_entry_comment'); return false;", :class => 'bottab more' %>
+</p>
+
+    </div>
+
+  	<div class="submit">
+	  <div id="button"><%= submit_tag "Submit Grade and Comments" %></div>
+	</div>
+  <%= end_form_tag %>
+  </div>
+
+<% end %>
+<!-- END GRADE AREA -->
+
 <!-- journals -->
 
 <div class="SectionHeader"><div class="Full">
@@ -226,3 +257,36 @@ Last Updated: <%= @display_turnin.updated_at.to_formatted_s(:friendly_date) %><b
 </table>
 
 <% end %>
+
+
+<!-- previous turn-in sets -->
+<div class="SectionHeader"><div class="Full">
+  <h2>Previous Turn-in sets (read-only)</h2>
+</div></div>
+<div class="Section">
+
+<p>Previous turn-in sets for <%= @student.display_name %>.   By selecting these previous turn-in sets you can view the files and AutoGrade reports to see how students progressed during development.  Any comments entered on previous turn-in sets are ultimately available to students as they browse their own turn-in history.</p>
+
+<table class="fancy">
+  <tr class="header">
+    <th>#</th>
+    <th>Previous Set</th><th>View</th>
+  </tr>
+
+<% count = @turnins.size + 1 %>
+<% for ut in @turnins %>
+  <% count = count - 1  
+     odd = "odd"
+     odd = "even" if count.even?
+   %>
+  <tr class="<%=odd%> hover" id="user_turnin_<%=ut.id%>">
+    <td align="right"><%= count %></td>
+    <td><%=h ut.updated_at.to_formatted_s(:long) %>
+      <% if ut.id == @current_turnin.id %><b>current</b> <%end%>
+    </td>
+    <td><%= link_to 'View', :action => 'view_student', :course => @course, :assignment => @assignment, :id => @student, :ut => ut.id %></td>
+  </tr>
+<% end %>
+</table>
+
+</div>

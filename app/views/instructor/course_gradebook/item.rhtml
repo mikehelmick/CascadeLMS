@@ -34,7 +34,6 @@
 
 <p><label for="grade_item_assignment">Link to Assignment (optional):</label>
 <%= select("grade_item", "assignment_id", @course.assignments.collect {|a| [ a.title, a.id ] }, { :include_blank => true }) %></p>
-
 </div>
  
 <div class="submit">
@@ -44,4 +43,3 @@
 </div>
 
 <%= link_to 'Cancel', :controller => '/instructor/course_gradebook', :course => @course, :action => 'index' %>
-</div>

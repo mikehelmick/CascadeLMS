@@ -166,7 +166,7 @@ class TurninsController < ApplicationController
     if @current_turnin.save
       flash[:notice] = "Your most recent turn-in set has been finalied and submitted to your instructor."
       
-      unless @assignment.auto_grade_setting.nil?
+      if @assignment.auto_grade && !@assignment.auto_grade_setting.nil?
         queue = GradeQueue.new
         queue.user = @user
         queue.assignment = @assignment
@@ -182,7 +182,7 @@ class TurninsController < ApplicationController
                   }
             )
           rescue
-            flash[:badnotice] = "The AutoGrade server wasn't running - but I've started it up and your grading will be begin shortly."
+            flash[:badnotice] = "The AutoGrade server wasn't running - but I've started it up and your grading will be begin shortl (may take up to 60 seconds)."
             ## bounce the server - the stop and then the start (stop has no effect if not running)
             `#{@app['ruby']} #{RAILS_ROOT}/script/backgroundrb stop`
             `#{@app['ruby']} #{RAILS_ROOT}/script/backgroundrb start`
@@ -240,6 +240,15 @@ class TurninsController < ApplicationController
       else
         utf.position=@current_turnin.position+1
         @current_turnin.sealed = true
+        
+        time = Time.now
+        time = Time.local( time.year, time.month, time.mday )
+        
+        if @current_turnin.updated_at < time && @current_turnin.finalized 
+          ## If it was finalized yesterday - we need to un-finalize
+          @current_turnin.finalized = false
+        end
+        
       end
     
       # save and create directories
@@ -414,7 +423,7 @@ class TurninsController < ApplicationController
     #puts "DIR NAME: #{dir_name}"
     
     UserTurnin.transaction do
-      if @utf.create_file( file_field, dir_name )
+      if @utf.create_file( file_field, dir_name, @app['banned_java'] )
         @current_turnin.user_turnin_files << @utf
         @current_turnin.save
       
@@ -461,6 +470,16 @@ class TurninsController < ApplicationController
       if ( @grade_item )
         @grade_entry = GradeEntry.find( :first, :conditions => ['grade_item_id = ? and user_id = ?', @grade_item.id, @user.id] )
         @feedback_html = @grade_entry.comment.to_html rescue @feedback_html = ''
+      end
+    end
+    
+    if  @assignment.auto_grade_setting.student_io_check || @assignment.released
+      @student_io_check = Hash.new
+      @assignment.io_checks.each do |check|
+         student_check = IoCheckResult.find(:first, :conditions => ["io_check_id = ? && user_turnin_id = ?", check.id, @current_turnin.id ] )
+         unless student_check.nil?
+           @student_io_check[check.id] = student_check
+         end
       end
     end
     

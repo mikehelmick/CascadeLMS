@@ -1,7 +1,9 @@
 <h3>AutoGrade Settings</h3>
 
-<p><i>AutoGrading</i> is divided up into 3 distinct areas: style checking, automated execution via the <i>AutoGrader</i> framework, and executing programs with strict output checking (programming competition style).</p>
+<p><%= link_to 'Back to Assignment', :action => 'edit', :id => @assignment %> | 
+   <%= link_to 'Back to All Assignments', :action => 'index', :id => nil %></p>
 
+<p><i>AutoGrading</i> is divided up into 3 distinct areas: style checking, automated execution via the <i>AutoGrader</i> framework, and executing programs with strict output checking (programming competition style).</p>
 
 <div id="form_area">
 
@@ -21,8 +23,7 @@
 <% end %>
 </div>
 
-<!--
-<div class="blockintro">Standard In/Standard Out Execution.</div>
+<div class="blockintro">Standard In/Standard Out (I/O) Execution.</div>
 <div class="block">
 <p><label for="auto_grade_setting[student_io_check]" class="required">Allow students to run stdin/stdout tests:</label>
    <%= radio_button 'auto_grade_setting', 'student_io_check', true %> Yes
@@ -31,8 +32,10 @@
    <%= radio_button 'auto_grade_setting', 'io_check', true %> Yes
    <%= radio_button 'auto_grade_setting', 'io_check', false %> No</p>
 
+<% if @auto_grade_setting.student_io_check || @auto_grade_setting.io_check %>
+ <p><%= image_tag 'cog' %> <%= link_to 'Configure I/O Tests.', :controller => '/instructor/assignment_io_checks', :action => 'index', :course => @course, :assignment => @assignment %></p>
+<% end %>
 </div>
--->
 
 
 <div class="submit">

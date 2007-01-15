@@ -1,0 +1,19 @@
+<h2>Editing I/O Test '<%= @io_check.name %>' for '<%= @assignment.title %>'</h2>
+
+<p><%= link_to 'Back / Cancel', :action => 'index' %></p>
+
+<div id="form_area">
+
+<%= start_form_tag :action => 'update', :id => @io_check  %>
+  <%= render :partial => 'form' %>
+ 
+  <div class="submit">
+    <%= submit_tag "Save Changes" %>
+  </div>
+<%= end_form_tag %>
+
+</div>
+
+<p><%= link_to 'Back / Cancel', :action => 'index' %></p>
+
+

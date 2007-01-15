@@ -15,6 +15,19 @@ class String
     return html
   end
   
+  def newline_to_break
+     html = ""
+     0.upto(self.size-1) do |i|
+      str = self[i...i+1]
+      if str.eql?("\n")
+        html << "<br/>"
+      else 
+        html << str
+      end
+    end
+    return html    
+  end
+  
   def apply_code_tag
     output = self
     # transform others

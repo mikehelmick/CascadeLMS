@@ -2,7 +2,7 @@
 # migrations feature of ActiveRecord to incrementally modify your database, and
 # then regenerate this schema definition.
 
-ActiveRecord::Schema.define(:version => 54) do
+ActiveRecord::Schema.define(:version => 57) do
 
   create_table "announcements", :force => true do |t|
     t.column "headline", :string
@@ -283,6 +283,31 @@ ActiveRecord::Schema.define(:version => 54) do
 
   add_index "gradebooks", ["course_id"], :name => "gradebooks_course_id_index", :unique => true
 
+  create_table "io_check_results", :force => true do |t|
+    t.column "io_check_id", :integer, :default => 0, :null => false
+    t.column "user_id", :integer, :default => 0, :null => false
+    t.column "user_turnin_id", :integer, :default => 0, :null => false
+    t.column "output", :text, :default => "", :null => false
+    t.column "diff_report", :text, :default => "", :null => false
+    t.column "match_percent", :float, :default => 0.0, :null => false
+    t.column "created_at", :datetime, :null => false
+  end
+
+  create_table "io_checks", :force => true do |t|
+    t.column "name", :string, :default => "", :null => false
+    t.column "description", :text
+    t.column "assignment_id", :integer, :default => 0, :null => false
+    t.column "input", :text, :default => "", :null => false
+    t.column "output", :text, :default => "", :null => false
+    t.column "tolerance", :float, :default => 1.0, :null => false
+    t.column "ignore_newlines", :boolean, :default => false, :null => false
+    t.column "show_input", :boolean, :default => false, :null => false
+    t.column "student_level", :boolean, :default => false, :null => false
+  end
+
+  add_index "io_checks", ["name", "assignment_id"], :name => "io_checks_name_by_assignment", :unique => true
+  add_index "io_checks", ["assignment_id"], :name => "io_checks_assignment_id_index"
+
   create_table "journal_entry_stop_reasons", :id => false, :force => true do |t|
     t.column "journal_id", :integer
     t.column "journal_stop_reason_id", :integer
@@ -393,6 +418,9 @@ ActiveRecord::Schema.define(:version => 54) do
     t.column "extension", :string
     t.column "main", :boolean, :default => false, :null => false
     t.column "main_candidate", :boolean, :default => false, :null => false
+    t.column "gradable", :boolean, :default => false, :null => false
+    t.column "gradable_message", :text
+    t.column "gradable_override", :boolean, :default => false, :null => false
   end
 
   add_index "user_turnin_files", ["user_turnin_id", "filename", "directory_parent"], :name => "unique_filename_idx", :unique => true

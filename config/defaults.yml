@@ -1,5 +1,5 @@
-version: 0.1.20-B 20070109
-title: Miami University CSA
+version: v0.2.2 20070115
+title: Miami University Computer Science
 
 organization: Miami University
 
@@ -70,11 +70,24 @@ crn_format: YYYYTTNNNNN
 default_subjects: CSA MTH MIS IMS 
 
 ## Daily Turn-in limit
-turnin_limit: 3
+turnin_limit: 300
+# SET BACK TO 3
+
+
 
 ## Auto Grading
-ruby: /usr/bin/env ruby
-java: /usr/bin/env java 
+# PRODUCTION
+ruby: /usr/local/bin/ruby
+java: /usr/lib/java/bin/java
+javac: /usr/lib/java/bin/javac
+ant: /usr/bin/ant
+
+# DEVELOPMENT
+#ruby: /usr/local/bin/ruby
+#java: /usr/bin/java 
+#javac: /usr/bin/javac
+#ant: /usr/bin/ant
+
 pmd_main: edu.muohio.csa.cscourseware.CheckStyle
 pmd_libs:
     - jakarta-oro-2.0.8.jar
@@ -83,3 +96,18 @@ pmd_libs:
     - xercesImpl-2.6.2.jar
     - xmlParserAPIs-2.6.2.jar
     - checkStyle.jar
+    
+banned_java:
+    - java.io.File
+    - java.io.FileInputStream
+    - java.io.FileOutputStream
+    - java.io.FileReader
+    - java.io.FileWriter
+    - System.setIn
+    - System.setOut
+    - System.setErr
+    - System.loadLibrary
+    - System.setSecurityManager
+    - System.load
+    - Runtime.getRuntime
+    - java.io.*;

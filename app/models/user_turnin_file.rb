@@ -51,8 +51,9 @@ class UserTurninFile < ActiveRecord::Base
     FileManager.is_text_file( self.extension )
   end
   
-  def create_file( file_field, path )
+  def create_file( file_field, path, banned = Array.new )
     save_res = self.save
+    
     
     if save_res
       path = "#{path}/" unless path[-1] == '/'
@@ -64,7 +65,16 @@ class UserTurninFile < ActiveRecord::Base
       File.open( file_name, "w") { |f| f.write(file_field.read) }
       #puts "FILE WRITTEN"
       
-      self.main_candidate = FileManager.java_main?( file_name )
+      if FileManager.java?( file_name )
+        self.main_candidate = FileManager.java_main?( file_name )
+        banned_msg = FileManager.java_banned( file_name, banned )
+        if banned_msg.nil? || banned_msg.eql?('')
+          self.gradable = true
+        else
+          self.gradable = false
+          self.gradable_message = banned_msg
+        end
+      end
     end
     
     save_res

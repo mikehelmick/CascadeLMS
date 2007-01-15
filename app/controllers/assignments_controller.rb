@@ -147,6 +147,9 @@ class AssignmentsController < ApplicationController
         ut.user_turnin_files << utf
         ut.save
         
+        
+        ###### NEED TO CHECK THE UTFs FOR BAD JAVA!
+        
         first_parent = utf.id
         
         parent = utf.id

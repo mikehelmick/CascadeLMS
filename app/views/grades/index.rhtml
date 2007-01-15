@@ -30,6 +30,25 @@
 	  <td><%= grade_item.grade_category.category %></td>
 	  <% if @course.gradebook.weight_grades %><td align="right"><%= sprintf("%.2f", @weight_map[grade_item.grade_category.id] ) %>%</td><% end %>
       <td><%= grade_item.date.to_formatted_s(:long) %></td>
+
+      <% if grade_item.display_type.eql?( GradeItem::shown_type( GradeItem::COMPLETE ) ) %>
+		<td align="center" class="cell" colspan="3">
+			Assignment
+			<% if  @grade_map[grade_item.id].nil? %>
+			  <%= image_tag 'cross' %> Incomplete
+			<% else %>
+			  <%= image_tag 'accept' %> Complete
+			<% end %>
+		</td>
+      <% elsif grade_item.display_type.eql?( GradeItem::shown_type( GradeItem::PERCENTAGE ) ) %>
+ 		<td align="center" class="cell" colspan="3">
+	        Percentage: 
+			<% unless @grade_map[grade_item.id].nil? %>
+	          <%= sprintf( "%.2f",  @grade_map[grade_item.id] / grade_item.points * 100 ) %>%
+	        <% else %> --% <% end %>	
+		</td>
+      <% else %>
+
       <td align="right" class="cell">
         <% if @grade_map[grade_item.id].nil? %>
           <i>No Grade Reported</i> <%= image_tag 'bullet_error' %>
@@ -43,6 +62,9 @@
           <%= sprintf( "%.2f",  @grade_map[grade_item.id] / grade_item.points * 100 ) %>%
         <% else %> --% <% end %>
       </td>
+
+      <% end %>
+
     </tr>
    <% end %>
   <% end %>

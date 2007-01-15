@@ -4,6 +4,8 @@
 
   <p><b>Error Message: </b> <%= @queue.message %></p>
 
+<% if @user.id == @queue.user_turnin.user_id %>
+
   <ul><%= image_tag 'flag_red' %> You must do 1 of the following
 	<li><%= link_to 'Leave the turn-in set finalized and let instructor run autograder.', :controller => '/turnins', :course => @queue.assignment.course, :assignment => @queue.assignment %></li>
 	<% if ! @queue.assignment.closed? %>
@@ -12,5 +14,9 @@
 	</li>
 	<% end %>
   </ul>
-  
+
+<% else %>
+   <p><%= link_to "Return to grading of this assignment.", :controller => 'instructor/turnins', :course => @queue.assignment.course, :assignment => @queue.assignment, :student => @queue.user_turnin.user_id, :action => 'view_io_tests' %>
+<% end %>
+
 </div>

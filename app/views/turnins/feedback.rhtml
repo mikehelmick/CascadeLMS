@@ -30,8 +30,86 @@
 <% end %>
 
 <% if @current_turnin %>
+<!--  -->
+ <% if @assignment.auto_grade_setting.io_check? %>
+   <div class="SectionHeader"><div class="Full"><b>AutoGrade Results</b></div></div>
+   <div class="Section">
+	
+   <% if ! @current_turnin.safe_for_autograde? %>
+   <div class="standout"><%= image_tag 'flag_red' %> This turn-in set is not considered safe for automatic execution, an instructor needs to review the files first.</div>
+   <% end %>
+	
+   <p><ul><b>Output diff key:</b>
+	 <li><span class="diffAdd">Extra text, not appearing in expected output.</span></li>
+	 <li><span class="diffSub">Text missing from the expected output.</span></li>
+	 <li><span class="diffChange">Text that is in the same position, but is different form expected output.</span></li>
+    </ul></p>
+	
+   <% if @assignment.auto_grade_setting.student_io_check || @assignment.released %>
+     
+     <% io_count = 0  %>
+     <table width="100%">
+     <% for check in @assignment.io_checks %>     
+       <% if check.student_level %>
+         <% show_input = check.show_input && @assignment.released 
+            span = 2
+            span += 1 if show_input
+          %>
 
- <div class="SectionHeader"><div class="Full">
+		 
+		   <tr><th colspan="<%=span%>"><%= image_tag 'map' %> I/O Check: '<%= check.name %>'</th></tr>
+           <tr>
+	         <% if show_input %>
+	           <th><b>Test Input</b></th>
+	         <% else %>	        
+	           <th><b>Expected Output</b></th>
+	         <% end %>
+	         <th><B>Your Output</b>
+		       <% unless @student_io_check[check.id].nil? %>
+		       :: Match Percentage <b><%= sprintf( "%.2f", @student_io_check[check.id].match_percent ) %>%</b>
+		 
+		         <% if 100 - @student_io_check[check.id].match_percent < check.tolerance %>
+		           <%= image_tag 'accept' %>Pass
+		         <% else %> 
+		           <%= image_tag 'cancel' %>Failure
+		         <% end %>
+		 
+		       <% end %>
+		     </th>
+		   </tr>
+		
+		   <tr>
+			 <% if show_input %>
+	           <td class="diffReport" nowrap="nowrap" valign="top"><%= check.input.to_html %></td>
+	         <% else %>
+			   <td class="diffReport" nowrap="nowrap" valign="top">
+			     <%= check.output.to_html %>
+			   </td>
+	         <% end %>
+
+			 <% if @student_io_check[check.id].nil? %>
+			    <td class="diffReport" colspan="1" nowrap="nowrap" valign="top">
+			   <b><%= image_tag 'flag_red' %>No output found for this test.</b>
+			   </td>
+			 <% else %>
+			    <td class="diffReport"  nowrap="nowrap" valign="top">
+	  		      <%= @student_io_check[check.id].diff_report.newline_to_break %>
+	            </td>
+			 <% end %>
+
+		   </tr>
+		
+       <% end %>
+     <% end %>
+     </table>
+   <% else %>
+     <p><%= image_tag 'flag_yellow' %><i>Automatic grading by way of output verification is enabled for this assignment, but the results are hidden until the grades and instructor comments are released.</i></p>
+   <% end %>  
+   </div>
+ <% end %>
+
+<!-- FILES -->
+ <div class="SectionHeader"><div class="Full"><b>Turned in files</b><br/>
  <a name="contents">Jump to file</a>
  </div></div>
  <ul>
@@ -59,7 +137,7 @@
 	     comment_hash = Hash.new
 	     comment_hash = utf.file_comments_hash if @assignment.released
 	     style_hash = Hash.new
-	     style_hash = utf.file_style_hash if @assignment.auto_grade_setting.student_style
+	     style_hash = utf.file_style_hash if @assignment.auto_grade_setting.student_style || @assignment.released
 	   %>
 	 
 	   <% line_num = 0 %>

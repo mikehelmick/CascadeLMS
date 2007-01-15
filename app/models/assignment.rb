@@ -16,6 +16,8 @@ class Assignment < ActiveRecord::Base
   
   has_one :auto_grade_setting, :dependent => :destroy
   
+  has_many :io_checks, :dependent => :destroy
+  
   validates_presence_of :title
   # NEEDS extended validations
   # open < due <= close dates

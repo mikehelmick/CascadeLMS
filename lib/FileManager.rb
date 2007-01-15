@@ -83,6 +83,29 @@ class FileManager
     return lines
   end
   
+  def FileManager.java_banned( path, banned )
+    msg = ""
+    
+    line_num = 1
+    if path.reverse[0..4].eql?("avaj.")
+      File.open( path ).each do |line|
+        banned.each do |str|
+          
+          unless line.index( str ).nil?
+            msg = "#{msg}\nline #{line_num}: Contains disallowed string '#{str}'"
+            
+          end
+        end
+        line_num = line_num.next
+      end
+    end
+    return msg
+  end
+  
+  def FileManager.java?( path )
+    return path.reverse[0..4].eql?("avaj.")
+  end
+  
   def FileManager.java_main?( path )
     rtn = false
     if path.reverse[0..4].eql?("avaj.")

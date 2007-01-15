@@ -353,7 +353,36 @@ div.Right .col h2 {
 }
 #form_area textarea {
 	margin-top: 10px;
+	clear:right;
 }
+
+#form_area textarea.short {
+  height: 150px;
+
+}
+
+#form_area textarea.tall {
+  height: 500px;
+
+}
+
+.growable {
+	border: 1px dashed #f00;
+	display: block;
+}
+
+#form_area a.bottab {
+  background: #fff;
+  border: 1px solid #ccc;
+  border-top: 0;
+  padding: 4px 10px 4px 25px;
+  margin-top: 10px;
+  margin-right: 10px;
+}
+
+#form_area a.more { background: #fff url(/images/layout_add.png) 2% 50% no-repeat;}
+#form_area a.less { background: #fff url(/images/layout_delete.png) 2% 50% no-repeat;}
+
 
 #form_area radioLabel {
 	margin-top: 0px;	
@@ -799,4 +828,31 @@ a img {
 .codetable .formcell {
 	padding-left: 50px;
 	background: #DCDDDE;
+}
+
+
+/** DIFF **/
+
+.diffReport {
+	background: #EEEEEE;
+	border: 1px solid #84CA82;
+	margin: 2px 2px 2px 2px;
+	padding: 8px 8px 8px 8px;
+	font-family: "courier", verdana, sans-serif;
+	font-size: 10pt;
+}
+
+.diffSub {
+	border-bottom: 2px solid #EE2022;
+	margin-bottom: 3px;
+}
+
+.diffAdd {
+	border-bottom: 2px solid #0262DB;
+	margin-bottom: 3px;
+}
+
+.diffChange {
+	border-bottom: 2px solid #F0BA02;
+	margin-bottom: 3px;
 }

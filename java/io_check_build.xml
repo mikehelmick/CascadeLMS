@@ -1,0 +1,38 @@
+<!-- TEMPLATE ANT FILE FOR GRADING OF STUDENT PROGRAMS -->
+<project name="AutoGradeIO" default="execute" basedir="<%= base %>">
+   
+    <property name="compiler" location="<%= compiler %>" />
+	<property name="jvm" location="<%= jvm %>" />
+
+    <property name="base" location="<%= base %>" />
+	<property name="src" location="<%= src %>" />
+	<property name="build" location="<%= build %>" />
+	
+	<property name="origional" location="<%= origional %>" />
+	
+	<property name="input" location="<%= input %>" />
+	<property name="output" location="<%= output %>" />
+
+	<property name="classname" value="<%= classname %>" />
+
+	<target name="init">
+		<mkdir dir="${src}"/>
+        <mkdir dir="${build}"/>
+
+		<copy todir="${src}">
+		    <fileset dir="${origional}"/>
+		</copy>
+  	</target>
+
+    <target name="compile" depends="init">
+    	<!-- Compile the java code from ${src} into ${build} -->
+    	<javac srcdir="${src}" destdir="${build}" fork="true" executable="${compiler}" />
+  	</target>
+
+	<target name="execute" depends="compile">
+		<java classname="${classname}" classpath="${build}"
+	        jvm="${jvm}" dir="${build}" fork="true"
+	        input="${input}" output="${output}" />
+	</target>
+
+</project>

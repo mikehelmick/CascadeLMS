@@ -389,6 +389,104 @@ class Instructor::TurninsController < Instructor::InstructorBase
     render :layout => false
   end
   
+  def toggle_gradable_override
+    throw "error" unless load_course( params[:course] )
+    throw "error" unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_view_student_files', 'ta_grade_individual' )
+    
+    @assignment = Assignment.find( @params[:assignment] )
+    throw "error" unless assignment_in_course( @course, @assignment )
+    
+    @student = User.find( params[:student] )
+    throw "error" unless student_in_course( @course, @student )
+    
+    @utf = UserTurninFile.find( params[:id] )  
+    @turnin = @utf.user_turnin
+    throw "error" unless turnin_file_downloadable( @utf )
+    throw "error" unless turnin_for_assignment( @turnin, @assignment )
+    
+    @utf.gradable_override = ! @utf.gradable_override
+    @utf.save
+    
+    
+    render :layout => false
+  end
+  
+  def view_io_tests
+    return unless load_course( params[:course] )
+    return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_view_student_files', 'ta_grade_individual' )
+    
+    @assignment = Assignment.find( @params[:assignment] )
+    return unless assignment_in_course( @course, @assignment )
+    
+    @student = User.find( params[:student] )
+    return unless student_in_course( @course, @student )
+    
+    # get turn-in sets
+    @turnins = UserTurnin.find(:all, :conditions => ["user_id=? and assignment_id=?", @student.id, @assignment.id ], :order => "position DESC" )
+    @current_turnin = @turnins[0] rescue @current_turnin = nil
+    @display_turnin = @current_turnin
+    return unless turnin_for_assignment( @current_turnin, @assignment )   
+    
+    # turnins
+    @student_io_check = Hash.new
+    @assignment.io_checks.each do |check|
+       student_check = IoCheckResult.find(:first, :conditions => ["io_check_id = ? && user_turnin_id = ?", check.id, @current_turnin.id ] )
+       unless student_check.nil?
+         @student_io_check[check.id] = student_check
+       end
+    end
+    
+    render :layout => 'noright'
+  end
+  
+  def io_retest
+    return unless load_course( params[:course] )
+    return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_view_student_files', 'ta_grade_individual' )
+    
+    @assignment = Assignment.find( @params[:assignment] )
+    return unless assignment_in_course( @course, @assignment )
+    
+    @student = User.find( params[:student] )
+    return unless student_in_course( @course, @student )
+    
+    # get turn-in sets
+    @turnins = UserTurnin.find(:all, :conditions => ["user_id=? and assignment_id=?", @student.id, @assignment.id ], :order => "position DESC" )
+    @current_turnin = @turnins[0] rescue @current_turnin = nil
+    return unless turnin_for_assignment( @current_turnin, @assignment )   
+    
+    # submit for autograde
+    queue = GradeQueue.new
+    queue.user = @user
+    queue.assignment = @assignment
+    queue.user_turnin = @current_turnin
+    if queue.save
+      
+      begin
+        MiddleMan.schedule_worker(
+          :class => :auto_grade_worker,
+          :args => queue.id,
+          :trigger_args => {
+                :start => Time.now + 1.seconds
+              }
+        )
+      rescue
+        flash[:badnotice] = "The AutoGrade server wasn't running - but I've started it up and your grading will be begin shortl (may take up to 60 seconds)."
+        ## bounce the server - the stop and then the start (stop has no effect if not running)
+        `#{@app['ruby']} #{RAILS_ROOT}/script/backgroundrb stop`
+        `#{@app['ruby']} #{RAILS_ROOT}/script/backgroundrb start`
+      end
+        
+      ## need to do a different rediect
+      redirect_to :controller => '/wait', :action => 'grade', :id => queue.id, :course => nil, :assignment => nil, :student => nil
+      return
+      
+    else
+      flash[:badnotice] = "There was an error submitting this assignment to the AutoGrade queue, please try again."
+      redirect_to :course => @course, :assignment => @assignment, :student => @student, :action => 'view_io_tests'
+    end
+    
+  end
+  
   def view_file
     return unless load_course( params[:course] )
     return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_view_student_files', 'ta_grade_individual' )
