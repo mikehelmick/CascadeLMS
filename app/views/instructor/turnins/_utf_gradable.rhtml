@@ -2,7 +2,7 @@
   <% if !@utf.gradable_override %>
     
 	  <div class="errorExplanation"><p>This assignment can not be automatically graded for the following reasons:<br/>
-	    <b><%= @utf.gradable_message.to_html %>
+	    <b><% unless @utf.gradable_message.nil? %><%= @utf.gradable_message.to_html %><% end %>
       </p>
       <p>You may choose to override this assessment if you deem the operations in this file 'safe' and would allow them to be run on the server.</p>
 	  
