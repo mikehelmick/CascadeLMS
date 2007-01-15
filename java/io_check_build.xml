@@ -32,7 +32,7 @@
 	<target name="execute" depends="compile">
 		<java classname="${classname}" classpath="${build}"
 	        jvm="${jvm}" dir="${build}" fork="true"
-	        input="${input}" output="${output}" />
+	        input="${input}" output="${output}" timeout="30000" />
 	</target>
 
 </project>

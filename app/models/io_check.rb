@@ -8,6 +8,10 @@ class IoCheck < ActiveRecord::Base
   def before_save
     self.input.gsub!(/\r\n/, "\n" ) rescue self.input = ''
     self.output.gsub!(/\r\n/, "\n" ) rescue self.output = ''
+    
+    unless self.input.reverse[0..0].eql?("\n")
+      self.input = "#{self.input}\n"
+    end
   end
   
 end

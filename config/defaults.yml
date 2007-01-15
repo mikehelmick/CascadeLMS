@@ -1,4 +1,4 @@
-version: v0.2.2 20070115
+version: v0.2.3 20070115
 title: Miami University Computer Science
 
 organization: Miami University
@@ -70,7 +70,7 @@ crn_format: YYYYTTNNNNN
 default_subjects: CSA MTH MIS IMS 
 
 ## Daily Turn-in limit
-turnin_limit: 300
+turnin_limit: 3
 # SET BACK TO 3
 
 
