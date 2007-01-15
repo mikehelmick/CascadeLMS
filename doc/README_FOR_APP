@@ -17,6 +17,7 @@ Student Turnins
 Syntax
 Syntaxi
 Redcloth
+Diff-lcs
 =======
   term/:term_id/course/:course_id/assignments/turnins/:user_id/files
 http://ruby-ldap.sourceforge.net/
