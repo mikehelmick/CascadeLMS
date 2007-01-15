@@ -184,7 +184,7 @@ class AutoGradeWorker < BackgrounDRb::Worker::RailsBase
         File.open( "#{dest_dir}#{vars.output}" ).each do |line|
           ## Sometimes and puts a line int the file like
           ## Opening /tmp/autograde/helmicmt_20070115_F0D92E75C9/input_F0D92E75C9.txt
-          unless line.index("Opening #{dest_dir}#{vars.input}").nil?   
+          if line.index("Opening #{dest_dir}#{vars.input}").nil?   
             user_output = "#{user_output}#{line}"
           end
         end
