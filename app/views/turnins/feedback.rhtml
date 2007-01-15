@@ -50,7 +50,7 @@
      <% io_count = 0  %>
      <table width="100%">
      <% for check in @assignment.io_checks %>     
-       <% if check.student_level %>
+       <% if check.student_level || @assignment.released %>
          <% show_input = check.show_input && @assignment.released 
             span = 2
             span += 1 if show_input
