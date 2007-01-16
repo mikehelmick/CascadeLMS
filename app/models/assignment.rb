@@ -27,14 +27,21 @@ class Assignment < ActiveRecord::Base
   before_save :transform_markup
   
   def ensure_style_defaults
+    already_have = Hash.new
+    self.assignment_pmd_settings.each do |x|
+      already_have[x.style_check_id] = true
+    end
+    
     pmds = StyleCheck.find(:all, :order => "name asc" )
     # create a new assignment_pmd_setting object for each pmd
     pmds.each do |pmd|
-      a_pmd_s = AssignmentPmdSetting.new
-      a_pmd_s.assignment = @assignment
-      a_pmd_s.style_check = pmd
-      a_pmd_s.enabled = pmd.bias
-      self.assignment_pmd_settings << a_pmd_s
+      unless already_have[pmd.id]
+        a_pmd_s = AssignmentPmdSetting.new
+        a_pmd_s.assignment = @assignment
+        a_pmd_s.style_check = pmd
+        a_pmd_s.enabled = pmd.bias
+        self.assignment_pmd_settings << a_pmd_s
+      end
     end
     return self.save
   end
