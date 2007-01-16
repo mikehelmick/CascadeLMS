@@ -22,7 +22,7 @@
 <% elsif !@assignment.released%>
   <div class="standout">
   <p><%= image_tag 'flag_red' %><i>Grades and instructor feedback are not yet available.</i>
-    <% if @assignment.auto_grade_setting.any_student_grade? %>	
+    <% if @assignment.auto_grade && !@assignment.auto_grade_setting.nil? && @assignment.auto_grade_setting.any_student_grade? %>	
       <br/>Scroll down for results from the AutoGrader.
     <% end%>
   </p>
@@ -31,7 +31,7 @@
 
 <% if @current_turnin %>
 <!--  -->
- <% if @assignment.auto_grade_setting.io_check? %>
+ <% if @assignment.auto_grade && !@assignment.auto_grade_setting.nil? && @assignment.auto_grade_setting.io_check? %>
    <div class="SectionHeader"><div class="Full"><b>AutoGrade Results</b></div></div>
    <div class="Section">
 	
@@ -45,7 +45,7 @@
 	 <li><span class="diffChange">Text that is in the same position, but is different form expected output.</span></li>
     </ul></p>
 	
-   <% if @assignment.auto_grade_setting.student_io_check || @assignment.released %>
+   <% if @assignment.auto_grade && !@assignment.auto_grade_setting.nil? && (@assignment.auto_grade_setting.student_io_check || @assignment.released) %>
      
      <% io_count = 0  %>
      <table width="100%">
@@ -115,12 +115,17 @@
  <ul>
  <% for utf in @current_turnin.user_turnin_files %>
   <% unless utf.directory_entry? %>
-    <li><a href="#file_<%=utf.id%>"> <%= image_tag utf.icon %> <%= utf.full_filename( @directories ) %></a></li>
+    <% if FileManager.is_text_file( utf.extension ) %>
+      <li><a href="#file_<%=utf.id%>"> <%= image_tag utf.icon %> <%= utf.full_filename( @directories ) %></a></li>
+    <% else %>
+      <li><%= image_tag utf.icon %> <%= utf.full_filename( @directories ) %> (<%= link_to "download", :action => 'download_file', :id => utf.id %>)</li>
+    <% end %>
   <% end %>
  <% end %>
  </ul>
 
   <% for utf in @current_turnin.user_turnin_files %>
+   <% if FileManager.is_text_file( utf.extension ) %>
     <div class="SectionHeader"><div class="Full">
     <%= image_tag utf.icon %>
     <% if utf.directory_entry? %>Directory:
@@ -137,7 +142,7 @@
 	     comment_hash = Hash.new
 	     comment_hash = utf.file_comments_hash if @assignment.released
 	     style_hash = Hash.new
-	     style_hash = utf.file_style_hash if @assignment.auto_grade_setting.student_style || @assignment.released
+	     style_hash = utf.file_style_hash if @assignment.auto_grade && !@assignment.auto_grade_setting.nil? && ( @assignment.auto_grade_setting.student_style || @assignment.released)
 	   %>
 	 
 	   <% line_num = 0 %>
@@ -174,8 +179,8 @@
 	     <% end %>
 	   </div>
 	<% end %>
-
-  <% end %>
+   <% end ## if text file %>
+  <% end ## for loop %>
 
 <% else %>
  <p><i>No turn-in found</i></p>

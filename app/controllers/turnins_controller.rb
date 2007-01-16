@@ -473,7 +473,7 @@ class TurninsController < ApplicationController
       end
     end
     
-    if  @assignment.auto_grade_setting.student_io_check || @assignment.released
+    if  @assignment.auto_grade_setting && (@assignment.auto_grade_setting.student_io_check || @assignment.released)
       @student_io_check = Hash.new
       @assignment.io_checks.each do |check|
          student_check = IoCheckResult.find(:first, :conditions => ["io_check_id = ? && user_turnin_id = ?", check.id, @current_turnin.id ] )

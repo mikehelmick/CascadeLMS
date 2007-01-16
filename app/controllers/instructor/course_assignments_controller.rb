@@ -53,10 +53,11 @@ class Instructor::CourseAssignmentsController < Instructor::InstructorBase
       @assignment.journal_field = @journal_field
     end
     
-    if @assignment.auto_grade
-      # make sure autograde setting exist
-      ags = AutoGradeSetting.new
-      @assignment.auto_grade_setting = ags
+    ags = AutoGradeSetting.new
+    @assignment.auto_grade_setting = ags
+    if !@assignment.auto_grade
+      # get rid of defaults
+      @assignment.auto_grade_settings.disable!      
     end
     
     # do the save

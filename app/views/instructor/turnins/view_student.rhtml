@@ -156,7 +156,7 @@ Last Updated: <%= @display_turnin.updated_at.to_formatted_s(:friendly_date) %><b
 <% end %>
 
 <!-- AutoGrade area -->
-<% if @assignment.auto_grade_setting.io_check? ## Only kind of autograde supported %>
+<% if !@assignment.auto_grade_setting.nil? && @assignment.auto_grade_setting.io_check? ## Only kind of autograde supported %>
  <div class="SectionHeader"><div class="Full"> 
    <h2>AutoGrade Results</h2>
  </div></div>
