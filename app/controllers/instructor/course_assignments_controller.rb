@@ -263,9 +263,9 @@ class Instructor::CourseAssignmentsController < Instructor::InstructorBase
       AssignmentPmdSetting.transaction do
         pmds = @assignment.pmd_hash
         pmds.each do |id,pmd|
-          puts "KEY=#{id}"
-          puts pmd.inspect 
-          puts params["apmd_#{id}"]
+          #puts "KEY=#{id}"
+          #puts pmd.inspect 
+          #puts params["apmd_#{id}"]
           
           if params["apmd_#{id}"].nil?
             if pmd.enabled == true
