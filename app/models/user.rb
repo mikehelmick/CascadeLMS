@@ -67,7 +67,7 @@ class User < ActiveRecord::Base
   
   def assistant_in_course_with_privilege?( course_id, privilege )
     if blank_in_course( course_id ) { |x| x.course_assistant }
-       setting = CopurseSetting.find( course_id )
+       setting = CourseSetting.find( course_id )
        return setting.ta_course_blog_edit
      end
      return false
