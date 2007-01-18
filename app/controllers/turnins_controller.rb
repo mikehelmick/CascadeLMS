@@ -171,6 +171,7 @@ class TurninsController < ApplicationController
       unless queue.nil?
         ## need to do a different rediect
         redirect_to :controller => 'wait', :action => 'grade', :id => queue.id
+        return
       end
       
     else
