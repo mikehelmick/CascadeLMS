@@ -385,12 +385,12 @@ class TurninsController < ApplicationController
     @utf.filename = FileManager.base_part_of( file_field.original_filename )
     @utf.extension = @utf.filename.split('.').last.downcase
 
-    mover = get_parent( @current_turnin.user_turnin_files, @utf )
+    mover = UserTurninFile.get_parent( @current_turnin.user_turnin_files, @utf )
     dir_name = ""
     while( mover.directory_parent > 0 )
-      dir_name = prepend_dir( mover.filename, dir_name )
+      dir_name = UserTurninFile.prepend_dir( mover.filename, dir_name )
       #puts "DIRNAME: #{dir_name}"
-      mover = get_parent( @current_turnin.user_turnin_files, mover )
+      mover = UserTurninFile.get_parent( @current_turnin.user_turnin_files, mover )
     end
     # dir - is the name of the directory on the file system
     
