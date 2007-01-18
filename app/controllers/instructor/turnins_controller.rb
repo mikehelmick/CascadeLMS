@@ -502,6 +502,11 @@ class Instructor::TurninsController < Instructor::InstructorBase
     @turnin = @utf.user_turnin 
     return unless turnin_for_assignment( @turnin, @assignment )
     
+    @expand = nil
+    if params[:expand].eql?('true')
+      @expand = true
+    end
+    
     directory = @turnin.get_dir( @app['external_dir'] )
     
     # resolve file name

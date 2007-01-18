@@ -92,13 +92,17 @@
 
 <% if @assignment.use_subversion %>
   <div class="blockintro"><p><b>Subversion</b> <%= link_to_function "#{image_tag 'eye', :align => 'absmiddle'}", visual_effect(:toggle_slide, 'subversion_setup_area' ) %></p></div>
+  <% if @assignment.use_subversion && @assignment.auto_grade %>
+    <%= render :partial => '/turnins/agwarning' %>
+  <% end %> 
+
   <div class="block" id="subversion_setup_area">
 
   <% unless @user.student_in_course?( @course.id )%>
       <p><i>Subversion controls are only available to users who are registered in this course as students.  Please contact your instructor if you feel you should be able to see this information.</i></p>
     <% else %>
      <% if @course.open %>
-      <%= form_remote_tag( :update => 'svn_results', :url => { :action => 'svn_command', :course => @course, :id => @assignment }, :before => "new Element.toggle('svn_submit', 'svn_spinner'); new Effect.BlindUp('svn_results');", :complete => "new Effect.BlindDown('svn_results'); new Element.toggle('svn_submit', 'svn_spinner');" ) %>
+      <%= form_remote_tag( :update => 'svn_results', :url => { :action => 'svn_command', :course => @course, :id => @assignment }, :before => "new Element.toggle('svn_submit', 'svn_spinner')", :complete => "new Element.toggle('svn_submit', 'svn_spinner');" ) %>
 	  <label for="password" class="required">Subversion Password:</label> <%= password_field_tag 'password', '' %><br/>
 	  <label for="command" class="required">Command:</label>
 	  <%= radio_button_tag 'command', 'list_dev', true %>List Development Directory
@@ -115,7 +119,7 @@
 	
 	  <div id="svn_submit"><%= submit_tag "Run Subversion Command" %> | <%= link_to "Manage Submitted Files #{"and AutoGrade" if @assignment.auto_grade}", :controller => '/turnins', :course => @course, :assignment => @assignment, :action => 'index'  %></div> 
 	  <div id="svn_spinner" style="display: none;"><%= image_tag 'spinner.gif' %> Running Subversion commands - this may take up to 2 minutes.  Please wait for a response.</div> <br/>
-	  <div id="svn_results" style="display: none;"> </div>
+	  <div id="svn_results"> </div>
 	  <p></p>
       <%= end_form_tag %>
  

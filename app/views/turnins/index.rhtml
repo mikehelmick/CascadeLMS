@@ -4,16 +4,7 @@
 
 <% if !@assignment.closed? && @assignment.enable_upload %>
 
-<% if @assignment.auto_grade %>
- <% unless @assignment.auto_grade_setting.nil? %>
-  <% if @assignment.auto_grade_setting.student_style || @assignment.auto_grade_setting.student_io_check || @assignment.auto_grade_setting.student_autograde %> 
-  <div class="standout">
-	  <p><%= image_tag 'information' %> This assignment has automatic grading enabled.   Each time you finalize a turn-in set, the files will be evaluated and you will receive instant feedback.   Because automatic grading is enabled, you are <b>limited to <%= @app['turnin_limit'] %> submissions per day.</b></p>
-	  <p>You have finalized <%= @today_count %> turn-in sets today, and you may finalize <b><%= @remaining_count %>  more turn-in sets today.</b></p>
-	</div>
-	<% end %>
- <% end %>
-<% end %>
+<%= render :partial => 'agwarning' %>
 
 
   <% if @turnins.size == 0 %> 
@@ -21,6 +12,8 @@
   <% else %>
     <p><%= link_to "#{image_tag 'add'} Archive your current turn-in set and create a new one.", :action => 'create_set', :course => @course, :assignment => @assignment %></p>
   <% end %>
+
+<% end %>
 
   <% unless @current_turnin.nil? %>
     <% unless @current_turnin.sealed %>
@@ -40,9 +33,6 @@
     <% end %>
   <% end %>
 
-
-
-<% end %>
 
 <% if @turnins.size == 0 %>
   <p><i>No turn-ins found found</i></p>

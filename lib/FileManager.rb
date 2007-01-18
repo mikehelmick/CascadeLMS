@@ -103,7 +103,7 @@ class FileManager
   end
   
   def FileManager.java?( path )
-    return path.reverse[0..4].eql?("avaj.")
+    return path.downcase.reverse[0..4].eql?("avaj.")
   end
   
   def FileManager.java_main?( path )

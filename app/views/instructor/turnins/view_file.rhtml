@@ -47,6 +47,11 @@
 </div>
 <% end %>
 
+<% unless @expand %>
+  <p><%= link_to "Expand all comments / style guide", :action => 'view_file', :course => @course, :assignment => @assignment, :student => @student, :id => @utf, :expand => true %></p>
+<% else %>
+  <p><%= link_to "Collapse all comments / style guides", :action => 'view_file', :course => @course, :assignment => @assignment, :student => @student, :id => @utf, :expand => nil %></p>
+<% end %>
 <table class="codetable" cellpadding="0" cellspacing="0">
   <tr class="header">
    <th nowrap="nowrap">Line#</th>
@@ -77,7 +82,12 @@
 	  </td>
       <td><code><%= line %></code></td>
     </tr>
-    <tr id="comments_line_<%=line_num%>" style="display: none;">
+  
+    <% comment_style = 'display: none;'
+       if @comments[line_num] && @expand 
+	     comment_style = ''
+       end %>
+    <tr id="comments_line_<%=line_num%>" style="<%= comment_style %>">
       <td colspan="4" class="formcell">
  		<%= form_remote_tag :url => { :controller => "/instructor/turnins", :action => "file_comment", :course => @course, :assignment => @assignment, :student => @student, :id => @utf.id }, :success => "new Effect.Highlight( 'line_#{line_num}' );", :failure => "alert('There was an error saving the comment for line #{line_num}, please refresh the page.');", :update => "status_#{line_num}"  %>
 <!-- 
@@ -94,7 +104,11 @@
       </td>
     </tr>
     <% if @styles[line_num] %>
-      <tr id="style_line_<%=line_num%>" style="display: none;">
+      <% style_style = 'display: none;'
+        if @expand 
+          style_style = ''
+        end %>
+      <tr id="style_line_<%=line_num%>" style="<%= style_style %>">
 	    <td colspan="4" class="has_style">
 		   	<% for fs in @styles[line_num] %>
 	            <div class="codestyle">

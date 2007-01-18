@@ -1,0 +1,10 @@
+<% if @assignment.auto_grade %>
+ <% unless @assignment.auto_grade_setting.nil? %>
+  <% if @assignment.auto_grade_setting.student_style || @assignment.auto_grade_setting.student_io_check || @assignment.auto_grade_setting.student_autograde %> 
+  <div class="standout">
+	  <p><%= image_tag 'information' %> This assignment has automatic grading enabled.   Each time you finalize a turn-in set, the files will be evaluated and you will receive instant feedback.   Because automatic grading is enabled, you are <b>limited to <%= @app['turnin_limit'] %> submissions per day.</b></p>
+	  <p>You have finalized <%= @today_count %> turn-in sets today, and you may finalize <b><%= @remaining_count %>  more turn-in sets today.</b></p>
+	</div>
+	<% end %>
+ <% end %>
+<% end %>

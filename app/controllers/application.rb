@@ -288,6 +288,15 @@ class ApplicationController < ActionController::Base
     
     return user, pass
   end
+  
+  def count_todays_turnins( assignment, user, max = 3 )
+    now = Time.now
+    begin_time = Time.local( now.year, now.mon, now.day, 0, 0, 0 )
+    end_time = begin_time + 60*60*24 # plus a day
+    @today_count = UserTurnin.count( :conditions => [ "assignment_id = ? and user_id = ? and finalized = ? and updated_at >= ? and updated_at < ?", assignment.id, user.id, true, begin_time, end_time ] )
+    @remaining_count = max - @today_count 
+    @remaining_count = 0 if @remaining_count < 0
+  end
 
   private :get_auth_data
 

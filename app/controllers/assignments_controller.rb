@@ -1,4 +1,5 @@
 require 'SubversionManager'
+require 'auto_grade_helper'
 
 class AssignmentsController < ApplicationController
   
@@ -8,7 +9,7 @@ class AssignmentsController < ApplicationController
   def index
     return unless load_course( params[:course] )
     return unless allowed_to_see_course( @course, @user )
- 
+
     set_title
   end
   
@@ -19,6 +20,10 @@ class AssignmentsController < ApplicationController
     @assignment = Assignment.find(params[:id]) rescue @assignment = Assignment.new
     return unless assignment_in_course( @assignment, @course )
     return unless assignment_available( @assignment )
+    
+    if @assignment.use_subversion && @assignment.auto_grade
+      count_todays_turnins( @app["turnin_limit"].to_i )
+    end
     
     if @assignment.enable_journal
       @journals = @user.assignment_journals( @assignment )
@@ -126,6 +131,15 @@ class AssignmentsController < ApplicationController
         
         path = @assignment.release_path_replace(@user.uniqueid)
         
+        @turnins = UserTurnin.find( :all, :conditions => [ "assignment_id = ? and user_id = ?", @assignment.id, @user.id ], :order => "position desc" )
+        @current_turnin = nil
+        @current_turnin = @turnins[0] if @turnins.size > 0
+        if @current_turnin
+          if ! @current_turnin.sealed
+            @current_turnin.sealed = true
+            @current_turnin.save
+          end
+        end
         
         ut = UserTurnin.new
         ut.assignment = @assignment
@@ -146,9 +160,6 @@ class AssignmentsController < ApplicationController
         utf.filename = '/'
         ut.user_turnin_files << utf
         ut.save
-        
-        
-        ###### NEED TO CHECK THE UTFs FOR BAD JAVA!
         
         first_parent = utf.id
         
@@ -187,9 +198,35 @@ class AssignmentsController < ApplicationController
           if utf.directory_entry
             parent = utf.id
           end
+          
+          mover = UserTurninFile.get_parent( ut.user_turnin_files, utf )
+          fname = utf.filename
+          while( mover.directory_parent > 0 )
+            fname = UserTurninFile.prepend_dir( mover.filename, fname )
+            mover = UserTurninFile.get_parent( ut.user_turnin_files, mover )
+          end
+          dir_name = "#{ut.get_dir(@app['external_dir'])}/#{dir_name}"
+          utf.check_file( dir_name, @app['banned_java'] )
+          utf.save
+          
           output = "#{output} Submitted file: '#{utf.filename}'. "
         end
+        ut.calculate_main
+        unless @assignment.enable_upload
+          ut.sealed = true
+          ut.finalized = true 
+        end
+        
         ut.save
+        if ut.finalized
+          queue = AutoGradeHelper.schedule( @assignment, @user, ut, @app, flash )
+          unless queue.nil?
+            ## need to do a different rediect
+            @redir_url = url_for :only_path => false, :controller => 'wait', :action => 'grade', :id => queue.id 
+          end
+        end       
+       
+        
      
         @path = "#{path}"
         flash[:notice] = "#{output} <br/> <b>Please select 'Manage Submitted Files' to verify your files have been collected</b>"
@@ -247,6 +284,15 @@ class AssignmentsController < ApplicationController
     @title = "#{@assignment.title} - #{@course.title}" unless @assignment.nil?
   end
   
-  private :set_tab, :set_title, :assignment_available, :document_in_assignment, :assignment_open
+  def count_todays_turnins( max = 3 )
+    now = Time.now
+    begin_time = Time.local( now.year, now.mon, now.day, 0, 0, 0 )
+    end_time = begin_time + 60*60*24 # plus a day
+    @today_count = UserTurnin.count( :conditions => [ "assignment_id = ? and user_id = ? and finalized = ? and updated_at >= ? and updated_at < ?", @assignment.id, @user.id, true, begin_time, end_time ] )
+    @remaining_count = max - @today_count 
+    @remaining_count = 0 if @remaining_count < 0
+  end
+  
+  private :set_tab, :set_title, :assignment_available, :document_in_assignment, :assignment_open, :count_todays_turnins
   
 end

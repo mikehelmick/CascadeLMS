@@ -51,6 +51,20 @@ class UserTurninFile < ActiveRecord::Base
     FileManager.is_text_file( self.extension )
   end
   
+  def check_file( path, banned = Array )
+    file_name = "#{path}#{self.filename}"
+    if FileManager.java?( file_name )
+      self.main_candidate = FileManager.java_main?( file_name )
+      banned_msg = FileManager.java_banned( file_name, banned )
+      if banned_msg.nil? || banned_msg.eql?('')
+        self.gradable = true
+      else
+        self.gradable = false
+        self.gradable_message = banned_msg
+      end
+    end
+  end
+  
   def create_file( file_field, path, banned = Array.new )
     save_res = self.save
     
@@ -65,19 +79,19 @@ class UserTurninFile < ActiveRecord::Base
       File.open( file_name, "w") { |f| f.write(file_field.read) }
       #puts "FILE WRITTEN"
       
-      if FileManager.java?( file_name )
-        self.main_candidate = FileManager.java_main?( file_name )
-        banned_msg = FileManager.java_banned( file_name, banned )
-        if banned_msg.nil? || banned_msg.eql?('')
-          self.gradable = true
-        else
-          self.gradable = false
-          self.gradable_message = banned_msg
-        end
-      end
+      check_file( path, banned )
     end
     
     save_res
+  end
+  
+  def UserTurninFile.get_parent( list, current ) 
+    return nil if current.directory_parent == 0
+    list.each { |x| return x if x.id == current.directory_parent }
+  end
+
+  def UserTurninFile.prepend_dir( newpart, existing )
+    "#{newpart}/#{existing}"
   end
   
 end

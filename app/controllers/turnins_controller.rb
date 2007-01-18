@@ -1,5 +1,6 @@
 require 'FileManager'
 require 'MyString'
+require 'auto_grade_helper'
 
 class TurninsController < ApplicationController
   
@@ -166,35 +167,10 @@ class TurninsController < ApplicationController
     if @current_turnin.save
       flash[:notice] = "Your most recent turn-in set has been finalied and submitted to your instructor."
       
-      if @assignment.auto_grade && !@assignment.auto_grade_setting.nil?
-        queue = GradeQueue.new
-        queue.user = @user
-        queue.assignment = @assignment
-        queue.user_turnin = @current_turnin
-        if queue.save
-          
-          begin
-            MiddleMan.schedule_worker(
-              :class => :auto_grade_worker,
-              :args => queue.id,
-              :trigger_args => {
-                    :start => Time.now + 1.seconds
-                  }
-            )
-          rescue
-            flash[:badnotice] = "The AutoGrade server wasn't running - but I've started it up and your grading will be begin shortl (may take up to 60 seconds)."
-            ## bounce the server - the stop and then the start (stop has no effect if not running)
-            `#{@app['ruby']} #{RAILS_ROOT}/script/backgroundrb stop`
-            `#{@app['ruby']} #{RAILS_ROOT}/script/backgroundrb start`
-          end
-            
-          ## need to do a different rediect
-          redirect_to :controller => 'wait', :action => 'grade', :id => queue.id
-          return
-        else
-          flash[:badnotice] = "There was an error scheduling your turn-in set for automatic evaluation, pleae inform your instructor or try again."    
-        end
-        
+      queue = AutoGradeHelper.schedule( @assignment, @user, @current_turnin, @app, flash )
+      unless queue.nil?
+        ## need to do a different rediect
+        redirect_to :controller => 'wait', :action => 'grade', :id => queue.id
       end
       
     else
@@ -300,11 +276,11 @@ class TurninsController < ApplicationController
     utf.directory_parent = nested.id
     utf.filename = params[:newdir]
     
-    mover = get_parent( @current_turnin.user_turnin_files, utf )
+    mover = UserTurninFile.get_parent( @current_turnin.user_turnin_files, utf )
     fname = utf.filename
     while( mover.directory_parent > 0 )
-      fname = prepend_dir( mover.filename, fname )
-      mover = get_parent( @current_turnin.user_turnin_files, mover )
+      fname = UserTurninFile.prepend_dir( mover.filename, fname )
+      mover = UserTurninFile.get_parent( @current_turnin.user_turnin_files, mover )
     end
     
     UserTurnin.transaction do
@@ -501,14 +477,7 @@ private
     return true
   end
 
-  def get_parent( list, current ) 
-    return nil if current.directory_parent == 0
-    list.each { |x| return x if x.id == current.directory_parent }
-  end
 
-  def prepend_dir( newpart, existing )
-    "#{newpart}/#{existing}"
-  end
 
   def turnin_file_downloadable( tif )
     if tif.directory_entry

@@ -103,7 +103,7 @@ Last Updated: <%= @display_turnin.updated_at.to_formatted_s(:friendly_date) %><b
     <tr style="display: none;" id="dirty_details_<%=@tif.id%>">
 	  <td colspan="5">
 		 <p><b>Can not AutoGrade your assignment because '<%= @tif.filename %>' it contains the following disallowed strings.</b></p>
-	    <p><%= @tif.gradable_message.to_html %></p>
+	    <p><%= @tif.gradable_message.to_html rescue "" %></p>
 	  </td>
 	</tr>
   <% end %>

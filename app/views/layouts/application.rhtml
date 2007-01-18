@@ -153,7 +153,7 @@
 <div class="errorExplanation" align="center"><b>This course is now in archive mode, no changes may be made.</b></div>
 <% end  %>
 
-<% if @course && @course.course_setting.enable_attendance && @user.student_in_course?(@course.id) && @course.open_class_period? %>
+<% if @course && @course.course_setting && @course.course_setting.enable_attendance && @user.student_in_course?(@course.id) && @course.open_class_period? %>
 <div class="GoodMessage"><%= link_to 'Attendance reporting is open right now for this class.', :controller => '/attendance', :course => @course %></div>
 <% end %>
 
