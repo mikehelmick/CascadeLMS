@@ -57,7 +57,7 @@ class Instructor::CourseAssignmentsController < Instructor::InstructorBase
     @assignment.auto_grade_setting = ags
     if !@assignment.auto_grade
       # get rid of defaults
-      @assignment.auto_grade_settings.disable!      
+      @assignment.auto_grade_setting.disable!      
     end
     
     # do the save
