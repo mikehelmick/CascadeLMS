@@ -200,12 +200,13 @@ class AssignmentsController < ApplicationController
           end
           
           mover = UserTurninFile.get_parent( ut.user_turnin_files, utf )
-          fname = utf.filename
+          dir_name = ''
           while( mover.directory_parent > 0 )
-            fname = UserTurninFile.prepend_dir( mover.filename, fname )
+            dir_name = UserTurninFile.prepend_dir( mover.filename, dir_name )
             mover = UserTurninFile.get_parent( ut.user_turnin_files, mover )
           end
           dir_name = "#{ut.get_dir(@app['external_dir'])}/#{dir_name}"
+          #puts "#{dir_name}"
           utf.check_file( dir_name, @app['banned_java'] )
           utf.save
           
