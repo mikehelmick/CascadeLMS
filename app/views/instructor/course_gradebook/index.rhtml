@@ -85,8 +85,20 @@
 		<td class="summaryCell"> 
 		  <%= sprintf( "%.2f", @averages[gi.id]/@students.size ) %> 
 		</td>
-	<% end %>
-    
+	<% end %>  
+    <td class="summaryCell">*****</td>
+    <td class="summaryCell">*****</td>
+    <td class="summaryCell">*****</td>
+  </tr>
+
+  <tr class="summary">
+    <td colspan="2" class="summaryCell"><b>Item Averages w/o blanks and zeros</b></td>
+	
+	<% for gi in @grade_items %>
+		<td class="summaryCell"> 
+		  <%= sprintf( "%.2f", @averages[gi.id]/(@students.size - @average_no_blank[gi.id]) ) rescue 'xx' %> 
+		</td>
+	<% end %>  
     <td class="summaryCell">*****</td>
     <td class="summaryCell">*****</td>
     <td class="summaryCell">*****</td>

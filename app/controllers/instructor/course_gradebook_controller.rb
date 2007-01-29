@@ -290,12 +290,17 @@ class Instructor::CourseGradebookController < Instructor::InstructorBase
       # initialize grade matrix - one hash for each student
       @grade_matrix = Hash.new
       @students.each { |s| @grade_matrix[s.id] = Hash.new }
-      # hash hor average
+      # hash for average
       @averages = Hash.new
+      ## hash for average w/o empty and w/o zero
+      @average_no_blank = Hash.new
+      @average_no_zero  = Hash.new
     
       ## OK - now we can do the calculations
       @grade_items.each do |gi|
         @averages[gi.id] = 0
+        @average_no_blank[gi.id] = 0
+        
         @total_points += gi.points
         
         gi.grade_entries.each do |ge|
@@ -310,8 +315,17 @@ class Instructor::CourseGradebookController < Instructor::InstructorBase
             else
               @student_cat_total[ge.user_id][gi.grade_category_id] += ge.points
             end
+  
           end
         end
+        
+        ## need to calculate the empties
+        @students.each do |student|
+          if @grade_matrix[student.id][gi.id].nil? || @grade_matrix[student.id][gi.id] == 0
+            @average_no_blank[gi.id] = @average_no_blank[gi.id] + 1
+          end
+        end
+        
       end
       
        
