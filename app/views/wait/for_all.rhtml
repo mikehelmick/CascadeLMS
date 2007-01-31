@@ -31,8 +31,8 @@
 	    <td><%= queue.created_at.to_formatted_s(:rfc822) %></td>
 	    <td><%= queue.updated_at.to_formatted_s(:rfc822) %></td>
 	    <td><% if queue.acknowledged %><%= image_tag 'accept' %><% end %>&nbsp;</td>
-	    <td><% if queue.serviced %><% image_tag 'accept' %><% end %>&nbsp;</td>
-        <td><% if queue.failed %><% image_tag 'exclamation' %><% end %>&nbsp;</td>
+	    <td><% if queue.serviced %><%= image_tag 'accept' %><% end %>&nbsp;</td>
+        <td><% if queue.failed %><%= image_tag 'exclamation' %><% end %>&nbsp;</td>
       </tr>
     <% end %>
    	
