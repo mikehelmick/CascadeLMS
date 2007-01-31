@@ -501,13 +501,11 @@ class Instructor::TurninsController < Instructor::InstructorBase
         queue.batch = batch
         queue.save
       end
-      
-      flash[:notice] = "I've queued up grading requests for all students in #{@course.title} for the assignment '#{@assignment.title}.'   This may take a while... please be patient."
-      
-      redirect_to :controller => '/wait', :action => 'for_all', :course => @course, :assignment => @assignment, :student => nil, :id => batch
-      return
     end
-    
+      
+    flash[:notice] = "I've queued up grading requests for all students in #{@course.title} for the assignment '#{@assignment.title}.'   This may take a while... please be patient."
+      
+    redirect_to :controller => '/wait', :action => 'for_all', :course => @course, :assignment => @assignment, :student => nil, :id => batch
   end
   
   def io_retest
