@@ -27,7 +27,7 @@
 	   %>
 	  <tr class="<%=odd%> hover" id="queue_<%=queue.id%>">
 	    <td><%= queue.id %></td>
-	    <td><%= queue.user.display_name %></td>
+	    <td><%= queue.user_turnin.user.display_name %></td>
 	    <td><%= queue.created_at.to_formatted_s(:rfc822) %></td>
 	    <td><%= queue.updated_at.to_formatted_s(:rfc822) %></td>
 	    <td><% if queue.acknowledged %><%= image_tag 'accept' %><% end %>&nbsp;</td>
