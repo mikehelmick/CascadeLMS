@@ -164,6 +164,16 @@ Last Updated: <%= @display_turnin.updated_at.to_formatted_s(:friendly_date) %><b
  <div class="Section">
     <p><%= link_to "View I/O Check results for #{@student.display_name}.", :course => @course, :assignment => @assignment, :student => @student, :action => 'view_io_tests' %> <b>From this screen you can also re-run the automatic tests.</b></p>
  </div>
+
+<% elsif !@assignment.auto_grade_setting.nil? && @assignment.auto_grade_setting.check_style? %>
+<div class="SectionHeader"><div class="Full"> 
+  <h2>PMD Control</h2>
+</div></div>
+
+<div class="Section">
+	<p><%= image_tag 'flag_green' %><%= link_to 'Re-run PMD checks for the current turn-in set.', :course => @course, :assignment => @assignment, :student => @student, :action => 'io_retest' %></p>
+</div>
+
 <% end %>
 
 
