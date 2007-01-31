@@ -267,10 +267,25 @@ Last Updated: <%= @display_turnin.updated_at.to_formatted_s(:friendly_date) %><b
 
 <p>Previous turn-in sets for <%= @student.display_name %>.   By selecting these previous turn-in sets you can view the files and AutoGrade reports to see how students progressed during development.  Any comments entered on previous turn-in sets are ultimately available to students as they browse their own turn-in history.</p>
 
+<% if @assignment.auto_grade %>
+ <% unless @assignment.auto_grade_setting.nil? %>
+  <% if @assignment.auto_grade_setting.student_style || @assignment.auto_grade_setting.student_io_check || @assignment.auto_grade_setting.student_autograde %> 
+  <div class="standout">
+	  <p><%= image_tag 'information' %> This assignment has automatic grading enabled and is <b>limited to <%= @app['turnin_limit'] %> submissions per day.</b></p>
+	  <p><%= @student.display_name %> has finalized <%= @today_count %> turn-in sets today, and may finalize <b><%= @remaining_count %>  more turn-in sets today.</b>   If the student requires additional turn-in sets, you may reopen the most recent turn-in set, allowing them to submit additional turn-in sets in a single day.</p>
+	</div>
+	<% end %>
+ <% end %>
+<% end %>
+
 <table class="fancy">
   <tr class="header">
     <th>#</th>
-    <th>Previous Set</th><th>View</th>
+    <th>Previous Set</th>
+    <th>View</th>
+    <th>Archived</th>
+    <th>Finalized</th>
+    <th>Controls</th>
   </tr>
 
 <% count = @turnins.size + 1 %>
@@ -285,6 +300,17 @@ Last Updated: <%= @display_turnin.updated_at.to_formatted_s(:friendly_date) %><b
       <% if ut.id == @current_turnin.id %><b>current</b> <%end%>
     </td>
     <td><%= link_to 'View', :action => 'view_student', :course => @course, :assignment => @assignment, :id => @student, :ut => ut.id %></td>
+    <td><% if ut.sealed %> <%= image_tag 'accept' %> <% else %> <%= image_tag 'cross' %> <% end %></td>
+    <td><% if ut.finalized %> <%= image_tag 'accept' %> <% else %> <%= image_tag 'cross' %> <% end %></td>
+    <td id="reopen_<%= ut.id %>">
+	  <% if @current_turnin.id == ut.id && ut.finalized %>
+	    <%= link_to  'Reopen (unfinalized)', :controller => '/instructor/turnins', :action => 'unfinalize', :course => @course.id, :assignment => @assignment, :id => @student %>
+	  <% elsif @current_turnin.id == ut.id %>
+	    Most recent turn-in - but not finalized.
+	  <% else %>
+	    --
+	  <% end %>
+	</td>
   </tr>
 <% end %>
 </table>

@@ -10,7 +10,9 @@
   <% if @turnins.size == 0 %> 
     <p><%= link_to "#{image_tag 'add'} Create First Turn-in Set.", :action => 'create_set', :course => @course, :assignment => @assignment %></p>
   <% else %>
-    <p><%= link_to "#{image_tag 'add'} Archive your current turn-in set and create a new one.", :action => 'create_set', :course => @course, :assignment => @assignment %></p>
+    <p><%= link_to "#{image_tag 'add'} Archive your current turn-in set and create a new one.", :action => 'create_set', :course => @course, :assignment => @assignment %>
+	    <b>This does NOT count against submission limits.</b>
+	  </p>
   <% end %>
 
 <% end %>
@@ -51,7 +53,15 @@
   <%= start_form_tag( { :action => "finalize" }, :onsubmit => "new Element.toggle('finalize_button', 'finalize_spinner');" ) %>
   <p class="blockintro">Finalize</p>
   <div class="block">
-	  <div id="finalize_button"><%= submit_tag "Finalize This Turn-In Set" %></div>
+	  <div id="finalize_button"><%= submit_tag "Finalize This Turn-In Set" %>
+		<% if @assignment.auto_grade %>
+		 <% unless @assignment.auto_grade_setting.nil? %>
+		  <% if @assignment.auto_grade_setting.student_style || @assignment.auto_grade_setting.student_io_check || @assignment.auto_grade_setting.student_autograde %>
+	        <p>The finalize process will submit this turn-in set to the AutoGrader.   If you do not wish to submit this turn-in set for grading, you can <%= link_to "archive this turn-in set and create an empty one", :action => 'create_set', :course => @course, :assignment => @assignment %>.  Archiving does not count against your submission limit.</p>
+	      <% end %>
+	     <% end %>
+	    <% end %>
+	  </div>
 	  <div id="finalize_spinner" style="display: none;"><%= image_tag 'spinner.gif' %></div>
   </div>
   <%= end_form_tag %>

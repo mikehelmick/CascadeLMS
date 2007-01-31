@@ -3,6 +3,21 @@ class WaitController < ApplicationController
   before_filter :ensure_logged_in
   
   layout 'wait'
+  
+  def for_all
+    @auto_refresh = true
+    @queue = GradeQueue.find( :all, :conditions => ["assignment_id = ? and user_id = ? and batch = ?", params[:assignment], @user.id, params[:id] ] )
+  
+  
+    all_done = true
+    @queue.each { |item| all_done = false unless item.serviced || item.failed }
+    if all_done 
+      redirect_to :controller => 'instructor/turnins', :course => params[:course], :assignment => params[:assignment]
+      flash[:notice] = 'Grading for this assignment has finished.'
+      return
+    end
+  
+  end
 
   def grade
     @auto_refresh = true

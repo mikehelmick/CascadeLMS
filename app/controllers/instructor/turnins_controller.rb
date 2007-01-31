@@ -99,6 +99,41 @@ class Instructor::TurninsController < Instructor::InstructorBase
     redirect_to :action => 'view_student', :course => @course, :assignment => @assignment, :id => @student
   end
   
+  def unfinalize
+    return unless load_course( params[:course] )
+    return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_view_student_files', 'ta_grade_individual' )
+    
+    @assignment = Assignment.find( params[:assignment] )
+    return unless assignment_in_course( @course, @assignment )
+    
+    # make sure the student exists
+    @student = User.find(params[:id])
+    if ! @student.student_in_course?( @course.id )
+      flash[:badnotice] = "Invalid student record requested."
+      redirect_to :action => 'index'
+    end
+    
+    # get turn-in sets
+    @turnins = UserTurnin.find(:all, :conditions => ["user_id=? and assignment_id=?", @student.id, @assignment.id ], :order => "position DESC" )
+    @current_turnin = @turnins[0] rescue @current_turnin = nil
+    
+    unless @current_turnin.nil?
+      if @current_turnin.finalized || @current_turnin.sealed
+        @current_turnin.finalized = false
+        @current_turnin.sealed = false
+        
+        if @current_turnin.save
+          flash[:notice] = "Reopened the most recent turn-in set."
+        else
+          flash[:badnotice] = "Error reopening turn-in set, please try again."
+        end
+      else
+        flash[:notice] = "Most recent turn-in set is not sealed or finalized."
+      end
+    end
+    redirect_to :action => 'view_student', :id => @student
+  end
+  
   def view_student
     return unless load_course( params[:course] )
     return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_view_student_files', 'ta_grade_individual' )
@@ -152,6 +187,8 @@ class Instructor::TurninsController < Instructor::InstructorBase
       @hours = (elapsed / 60).truncate
      end
     end 
+    
+    count_todays_turnins( @app["turnin_limit"].to_i )
     
     @title = "#{@student.display_name} (#{@student.uniqueid}) - #{@assignment.title}"
     
@@ -439,6 +476,40 @@ class Instructor::TurninsController < Instructor::InstructorBase
     render :layout => 'noright'
   end
   
+  def autograde_all
+    return unless load_course( params[:course] )
+    return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_view_student_files', 'ta_grade_individual' )
+    
+    @assignment = Assignment.find( @params[:assignment] )
+    return unless assignment_in_course( @course, @assignment )
+    
+    @students = @course.students
+    
+    t = Time.now
+    batch = "#{t.strftime( "%Y%m%d%H%M%S" )}u#{@user.id}"
+    
+    
+    @students.each do |student|
+      @turnins = UserTurnin.find(:all, :conditions => ["user_id=? and assignment_id=?", student.id, @assignment.id ], :order => "position DESC" )
+      @current_turnin = @turnins[0] rescue @current_turnin = nil
+      
+      if ! @current_turnin.nil?
+        queue = GradeQueue.new
+        queue.user = @user
+        queue.assignment = @assignment
+        queue.user_turnin = @current_turnin
+        queue.batch = batch
+        queue.save
+      end
+      
+      flash[:notice] = "I've queued up grading requests for all students in #{@course.title} for the assignment '#{@assignment.title}.'   This may take a while... please be patient."
+      
+      redirect_to :controller => '/wait', :action => 'for_all', :course => @course, :assignment => @assignment, :student => nil, :id => batch
+      return
+    end
+    
+  end
+  
   def io_retest
     return unless load_course( params[:course] )
     return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_view_student_files', 'ta_grade_individual' )
@@ -590,7 +661,7 @@ class Instructor::TurninsController < Instructor::InstructorBase
   end
   
   ## BEGIN PRIVATE UTILITY METHODS
-  
+private  
   
   def set_tab
     @show_course_tabs = true
@@ -627,6 +698,13 @@ class Instructor::TurninsController < Instructor::InstructorBase
     true
   end
   
-  private :set_tab, :set_title, :assignment_in_course, :turnin_for_assignment, :turnin_file_downloadable
+  def count_todays_turnins( max = 3 )
+    now = Time.now
+    begin_time = Time.local( now.year, now.mon, now.day, 0, 0, 0 )
+    end_time = begin_time + 60*60*24 # plus a day
+    @today_count = UserTurnin.count( :conditions => [ "assignment_id = ? and user_id = ? and finalized = ? and updated_at >= ? and updated_at < ?", @assignment.id, @student.id, true, begin_time, end_time ] )
+    @remaining_count = max - @today_count 
+    @remaining_count = 0 if @remaining_count < 0
+  end
   
 end

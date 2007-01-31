@@ -10,7 +10,11 @@
 <% if @assignment.released %>
 <div class="GoodMessage">Comments entered on files and assignments are available to students.  (<%= link_to 'change', :action => 'toggle_released', :course => @course, :assignment => @assignment %>)</div>
 <% else %>
-<div class="errorExplanation">Comments entered on files and assignments are NOT available to students.  (<%= link_to 'change', :action => 'toggle_released', :course => @course, :assignment => @assignment %>)</div>
+  <div class="errorExplanation">Comments entered on files and assignments are NOT available to students.  (<%= link_to 'change', :action => 'toggle_released', :course => @course, :assignment => @assignment %>)</div>
+ <% if @assignment.auto_grade %>
+  <div class="standout"><%= link_to "#{image_tag 'bug'} Rerun AutoGrade for ALL students in this class.", :course => @course, :assignment => @assignment, :action => 'autograde_all' %></div>
+ <% end %>
+
 <% end %>
 
 <% if( (@assignment.use_subversion || @assignment.enable_upload) &&  @any_turnins  ) %>

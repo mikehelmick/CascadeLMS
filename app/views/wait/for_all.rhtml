@@ -1,0 +1,41 @@
+<div align="center">
+<%= image_tag 'spinner.gif' %>
+</div>
+
+<div class="standout">
+  
+  <p><b>Batch grading in progress ... please wait.</b></p>
+
+</div>
+
+  <table class="fancy">
+    <tr>
+	 <th>ID</th>
+	 <th>Student</th>
+	 <th>Submitted</th>
+	 <th>Last Update</th>
+	 <th>Started</th>
+	 <th>Finished</th>
+	 <th>Failed</th>
+	</tr>
+	
+	<% count = 0 %>
+   	<% for queue in @queue %>
+      <% count = count.next 
+	     odd = "odd"
+	     odd = "even" if count.even?
+	   %>
+	  <tr class="<%=odd%> hover" id="queue_<%=queue.id%>">
+	    <td><%= queue.id %></td>
+	    <td><%= queue.user.display_name %></td>
+	    <td><%= queue.created_at.to_formatted_s(:rfc822) %></td>
+	    <td><%= queue.updated_at.to_formatted_s(:rfc822) %></td>
+	    <td><% if queue.acknowledged %><%= image_tag 'accept' %><% end %>&nbsp;</td>
+	    <td><% if queue.serviced %><% image_tag 'accept' %><% end %>&nbsp;</td>
+        <td><% if queue.failed %><% image_tag 'exclamation' %><% end %>&nbsp;</td>
+      </tr>
+    <% end %>
+   	
+  </table>  
+
+  <p><i>This page will automatically refresh...</i></p>
