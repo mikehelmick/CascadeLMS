@@ -29,7 +29,7 @@
 	    <% unless topic.allow_posts %> <i> <%= image_tag 'door' %> forum closed</i><% end %>	
 	  </td>
 	  <td nowrap="nowrap" align="left"><%=h topic.user.display_name %></td>
-	  <td nowrap="nowrap" align="left"><%= distance_of_time_in_words_to_now( topic.updated_at, true ) %> ago</td>
+	  <td nowrap="nowrap" align="left"><%= distance_of_time_in_words_to_now( topic.last_post, true ) %> ago</td>
 	  <td nowrap="nowrap" align="left"><%= topic.post_count %></td>
 	  <% if @user.instructor_in_course?(@course.id) %>
 	    <td nowrap="nowrap" align="left">

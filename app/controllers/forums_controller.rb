@@ -212,6 +212,7 @@ class ForumsController < ApplicationController
       success = false
       ForumPost.transaction do
         @topic.post_count = @topic.post_count + 1
+        @topic.change_time
         @topic.user = @user
         success = @topic.save
         success = @post.save && success
@@ -245,6 +246,7 @@ class ForumsController < ApplicationController
     @topic.course = @course
     @topic.user = session[:user]
     @topic.post_count = 0
+    @topic.change_time
     @course.forum_topics << @topic
     
     if @course.save

@@ -7,6 +7,9 @@ class ForumTopic < ActiveRecord::Base
   
   validates_presence_of :topic
   
+  def change_time
+    self.last_post = Time.now
+  end
  
   
 end
