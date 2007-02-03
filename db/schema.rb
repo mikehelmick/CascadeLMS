@@ -2,7 +2,7 @@
 # migrations feature of ActiveRecord to incrementally modify your database, and
 # then regenerate this schema definition.
 
-ActiveRecord::Schema.define(:version => 64) do
+ActiveRecord::Schema.define(:version => 65) do
 
   create_table "announcements", :force => true do |t|
     t.column "headline", :string
@@ -405,6 +405,16 @@ ActiveRecord::Schema.define(:version => 64) do
   end
 
   add_index "style_checks", ["name"], :name => "style_checks_name_index", :unique => true
+
+  create_table "team_documents", :force => true do |t|
+    t.column "project_team_id", :integer, :default => 0, :null => false
+    t.column "user_id", :integer, :default => 0, :null => false
+    t.column "filename", :string, :default => "", :null => false
+    t.column "content_type", :string, :default => "", :null => false
+    t.column "extension", :string
+    t.column "size", :string
+    t.column "created_at", :datetime, :null => false
+  end
 
   create_table "team_emails", :force => true do |t|
     t.column "project_team_id", :integer, :default => 0, :null => false

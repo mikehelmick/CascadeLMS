@@ -194,9 +194,6 @@ class TeamController < ApplicationController
     
     @email = TeamEmail.find(:first, :conditions => ["project_team_id = ? and id = ?", @team.id, params['email'].to_i ] ) rescue @email = nil
     
-    puts "#{params['email']}"
-    puts "#{@email.inspect}"
-    
     if @email.nil?
       flash[:badnotice] = "Invalid email requested."
       redirect_to :action => 'email', :id => @team, :email => nil
@@ -243,6 +240,73 @@ class TeamController < ApplicationController
     redirect_to :action => 'email', :id => @team
   end
   
+  
+  ## deam documents
+  def files
+    return unless load_course( params[:course] )
+    return unless allowed_to_see_course( @course, @user )
+    return unless teams_enabled( @course )  
+    @team = ProjectTeam.find( params[:id] )
+    return unless on_team_or_instructor( @course, @team, @user )
+      
+    @documents = TeamDocument.find(:all, :conditions => ["project_team_id = ?", @team.id], :order => "created_at DESC")  
+  end
+  
+  def file_new
+    return unless load_course( params[:course] )
+    return unless allowed_to_see_course( @course, @user )
+    return unless teams_enabled( @course )  
+    @team = ProjectTeam.find( params[:id] )
+    return unless on_team_or_instructor( @course, @team, @user )
+    
+    @document = TeamDocument.new  
+  end
+  
+  def file_upload
+    return unless load_course( params[:course] )
+    return unless allowed_to_see_course( @course, @user )
+    return unless teams_enabled( @course )  
+    @team = ProjectTeam.find( params[:id] )
+    return unless on_team_or_instructor( @course, @team, @user )
+    
+    @document = TeamDocument.new
+    @document.project_team = @team
+    @document.user = @user
+    @document.set_file_props( params[:file] ) unless params[:file].class.to_s.eql?('String')
+    
+    if @document.save
+      @document.create_file( params[:file], @app['external_dir'] )
+        
+      flash[:notice] = 'Document was successfully created.'
+      redirect_to :action => 'files', :id => @team.id
+    else
+      render :action => 'file_new'
+    end
+  end
+  
+  def download
+    return unless load_course( params[:course] )
+    return unless allowed_to_see_course( @course, @user )
+    return unless teams_enabled( @course )  
+    @team = ProjectTeam.find( params[:id] )
+    return unless on_team_or_instructor( @course, @team, @user )
+    
+    @document = TeamDocument.find(:first, :conditions => ["project_team_id = ? and id = ?", @team.id, params['document'].to_i ] ) rescue @document = nil
+    
+    if @document.nil?
+      flash[:badnotice] = "Invalid document requested."
+      redirect_to :action => 'files', :id => @team, :document => nil
+      return
+    end
+    
+    begin  
+      send_file @document.resolve_file_name(@app['external_dir']), :filename => @document.filename, :type => "#{@document.content_type}", :disposition => 'inline'  
+    rescue
+      flash[:badnotice] = "Sorry - the requested document has been deleted or is corrupt.  Please notify your instructor of the problem and mention 'team document id #{@document.id}'."
+      redirect_to :action => 'files', :id => @team.id
+    end
+    
+  end
   
   private
   

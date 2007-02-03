@@ -40,13 +40,11 @@ class Instructor::CourseDocsController < Instructor::InstructorBase
     @document = Document.new(params[:document])
     @document.course = @course
     @document.set_file_props( params[:file] ) unless params[:file].class.to_s.eql?('String')
-    @document.document_parent = @folder_id
     
     if @document.save
       @document.create_file( params[:file], @app['external_dir'] )
-        
-      
-      flash[:notice] = 'Document was successfully created.'
+       
+      flash[:notice] = 'File was successfully uploaded.'
       redirect_to :action => 'index', :id => @folder_id
     else
       render :action => 'new'

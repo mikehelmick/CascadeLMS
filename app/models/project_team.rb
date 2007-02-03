@@ -6,7 +6,8 @@ class ProjectTeam < ActiveRecord::Base
   
   has_many :team_members, :dependent => :destroy
   has_many :team_wiki_pages, :dependent => :destroy
-  has_many :team_Emails, :dependent => :destroy
+  has_many :team_emails, :dependent => :destroy
+  has_many :team_documents, :dependent => :destroy
   
   def on_team?( user )
     team_members.each do |m|
