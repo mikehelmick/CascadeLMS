@@ -88,6 +88,14 @@
 			    <li><%= link_to 'Assignments', { :controller => '/assignments', :course => @course }, { :id => 'current' } %></li>
 			  <% end %>
 			
+			<% if @course.course_setting.enable_project_teams %>
+			  <% if @tab.nil? || !@tab.eql?('course_teams') %>
+			    <li><%= link_to 'Team Center', :controller => '/team', :course => @course %></li> 
+			  <% else %>
+	            <li><%= link_to 'Team Center', { :controller => '/team', :course => @course }, { :id => 'current' } %></li>
+	          <% end %>
+			<% end %>
+			
 			<% if @course.course_setting.enable_forum %>
 			  <% if @tab.nil? || !@tab.eql?('course_forum') %>
 			    <li><%= link_to 'Forums', :controller => '/forums', :course => @course %></li> 

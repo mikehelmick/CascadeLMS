@@ -1,0 +1,40 @@
+<h2>Team Center for <%= @course.title %></h2>
+<% if @team.nil? %>
+  <p><i>You are not assigned to a team.</i></p>	
+	
+<% else%>
+  <p>You are a member of team '<%= @team.name %>' (<%= @team.team_id %>)</p>
+
+  <p><b>Team Members</b></p>
+  <ul>
+  <% for member in @team.team_members %>
+    <li><%= member.user.display_name %> - <%= member.user.email %></li>
+  <% end %>
+  </ul>
+
+  <p><b>Team Actions</b></p>
+
+  <ul>
+	<li><%= image_tag 'layout_content', :align => 'middle' %><%= link_to 'Team Wiki', :action => 'wiki', :id => @team.id, :page => 'Home' %></li>
+	<li><%= image_tag 'folder', :align => 'middle' %><%= link_to 'Team Files', :action => 'files', :id => @team.id %></li>
+	<li><%= image_tag 'email', :align => 'middle' %><%= link_to 'Team Email', :action => 'email', :id => @team.id %></li>
+  </ul>
+
+<% end%>
+
+
+
+<% unless @all_teams.nil? %>
+  <hr/>
+  <h3>All Teams (Instructor view)</h3>
+  <ul>
+	<% for team in @all_teams %>
+	  <li><%= team.name %> (<%= team.team_id %>)</li>
+	  <ul>
+		<li><%= image_tag 'layout_content', :align => 'middle' %><%= link_to 'Team Wiki', :action => 'wiki', :id => team.id, :page => 'Home' %> |
+		    <%= image_tag 'folder', :align => 'middle' %><%= link_to 'Team Files', :action => 'files', :id => team.id %> |
+		    <%= image_tag 'email', :align => 'middle' %><%= link_to 'Team Email', :action => 'email', :id => team.id %></li>
+	  </ul>
+	<% end %>
+  </ul>
+<% end %>

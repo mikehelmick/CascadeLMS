@@ -99,6 +99,14 @@
 		      <% end %>		
 		    <% end %>
 		
+			<% if @course.course_setting.enable_project_teams %>
+			  <% if @tab.nil? || !@tab.eql?('course_teams') %>
+			    <li><%= link_to 'Team Center', :controller => '/team', :course => @course %></li> 
+			  <% else %>
+	            <li><%= link_to 'Team Center', { :controller => '/team', :course => @course }, { :id => 'current' } %></li>
+	          <% end %>
+			<% end %>
+		
 		    <% if @user.instructor_in_course?(@course.id) || @user.assistant_in_course?(@course.id) %>
 		      <% if @tab.nil? || !@tab.eql?('course_instructor') %>
 		        <li style="padding-left: 25px"><%= link_to 'Instructor', { :controller => '/instructor/index', :course => @course } %></li>

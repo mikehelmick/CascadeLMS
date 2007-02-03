@@ -1,9 +1,10 @@
-version: 0.2.16 (Someday) 20070201
+version: 0.3.1 (Discount Fireworks) 20070202
 title: Miami University
 
 organization: Miami University
 
 email: mike.helmick@muohio.edu
+error_email: mike.helmick@muohio.edu
 blackboard: http://mymiami.muohio.edu
 dir_link: http://netapps.muohio.edu/phpapps/directory/?searchstring=
 

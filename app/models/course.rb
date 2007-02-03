@@ -22,6 +22,8 @@ class Course < ActiveRecord::Base
   
   has_many :class_periods, :order => "position", :dependent => :destroy
   
+  has_many :project_teams, :order => "team_id", :dependent => :destroy
+  
   before_create :solidify
   
   def merge( other )

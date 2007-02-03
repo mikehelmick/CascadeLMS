@@ -15,7 +15,16 @@ class User < ActiveRecord::Base
   
   has_many :grade_entries, :dependent => :destroy
   
+  has_many :project_teams
+  
   attr_accessor :notice
+  
+  def team_for_course( course_id )
+    project_teams.each do |team|
+      return team if team.course_id == course_id
+    end
+    return nil
+  end
   
   def assignment_journals( assignment )
     Journal.find(:all, :conditions => ["assignment_id = ? and user_id = ?", assignment.id, self.id], :order => 'created_at asc' )

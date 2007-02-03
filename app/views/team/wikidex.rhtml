@@ -1,0 +1,17 @@
+<%= render :partial => 'wikihead' %>
+
+<hr/>
+<h2>All wiki pages for team '<%= @team.name %>'</h2>
+
+<% if @pages.size == 0 %>
+  <p><i>There are no wiki pages for this team.</i></p>
+<% else %>
+
+<ul>
+  <% for page in @pages %>
+    <li><%= link_to "#{page.page}", :action => 'wiki', :id => @team, :page => page.page %> :: Revision #<%= page.revision %> by <%= page.user.display_name %>, <%= distance_of_time_in_words_to_now( page.updated_at ) %> ago</li>
+  <% end %>
+</ul>
+
+
+<% end %>

@@ -1,0 +1,44 @@
+<h2>Project Teams for <%= @course.title %></h2>
+
+<p>
+ <%= link_to 'Back', :course => @course, :controller => '/instructor/index' %> |
+ <%= link_to 'New Project Team', :course => @course, :action => 'new' %>
+</p>
+<% if @teams.size == 0 %>
+	<p><i>There are no project teams for this course.</i></p>
+<% else %>
+
+<table class="fancy" width="100%">
+  <tr class="header">
+    <th>Team ID</th>
+    <th>Team Name</th>
+    <th>Controls</th>	
+  </tr>
+
+<% count = 0 %>  
+<% for team in @teams %>
+<% count = count.next 
+   odd = "odd"
+   odd = "even" if count.even?
+%>
+  <tr class="<%=odd%> hover" id="team_<%=team.id%>">
+    <td><%= team.team_id %></td>
+    <td><%= team.name %></td>
+    <td><%= link_to 'Edit', :action => 'edit', :id => team.id %> |
+	    <%= link_to 'Edit Team Members', :action => 'team_members', :id => team.id %></td>
+  </tr>
+  
+  <tr class="<%=odd%> hover" id="team_members_<%=team.id%>">
+    <td valign="top" align="right">Team Members:</td>
+    <td valign="top" align="left" colspan="2">
+	  <ul>
+	    <% for member in team.team_members %>
+	      <li><%= member.user.display_name %> (<i><%= member.user.uniqueid %></i>)</li>
+	    <% end %>
+	  </ul>
+	</td>
+  </tr>
+<% end %>
+</table>
+
+<% end %>

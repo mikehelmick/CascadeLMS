@@ -2,7 +2,7 @@
 # migrations feature of ActiveRecord to incrementally modify your database, and
 # then regenerate this schema definition.
 
-ActiveRecord::Schema.define(:version => 59) do
+ActiveRecord::Schema.define(:version => 64) do
 
   create_table "announcements", :force => true do |t|
     t.column "headline", :string
@@ -126,6 +126,7 @@ ActiveRecord::Schema.define(:version => 59) do
     t.column "enable_forum", :boolean, :default => true, :null => false
     t.column "enable_forum_topic_create", :boolean, :default => false, :null => false
     t.column "enable_attendance", :boolean, :default => false, :null => false
+    t.column "enable_project_teams", :boolean, :default => false, :null => false
   end
 
   add_index "course_settings", ["course_id"], :name => "course_settings_course_id_index", :unique => true
@@ -382,6 +383,12 @@ ActiveRecord::Schema.define(:version => 59) do
     t.column "extension", :string, :default => "", :null => false
   end
 
+  create_table "project_teams", :force => true do |t|
+    t.column "course_id", :integer, :default => 0, :null => false
+    t.column "team_id", :string, :default => "", :null => false
+    t.column "name", :string, :default => "", :null => false
+  end
+
   create_table "sessions", :force => true do |t|
     t.column "session_id", :string
     t.column "data", :text
@@ -398,6 +405,35 @@ ActiveRecord::Schema.define(:version => 59) do
   end
 
   add_index "style_checks", ["name"], :name => "style_checks_name_index", :unique => true
+
+  create_table "team_emails", :force => true do |t|
+    t.column "project_team_id", :integer, :default => 0, :null => false
+    t.column "user_id", :integer, :default => 0, :null => false
+    t.column "subject", :string, :default => "", :null => false
+    t.column "message", :text, :default => "", :null => false
+    t.column "created_at", :datetime, :null => false
+  end
+
+  create_table "team_members", :force => true do |t|
+    t.column "project_team_id", :integer, :default => 0, :null => false
+    t.column "user_id", :integer, :default => 0, :null => false
+    t.column "course_id", :integer, :default => 0, :null => false
+  end
+
+  add_index "team_members", ["user_id", "course_id"], :name => "team_members_user_id_index"
+
+  create_table "team_wiki_pages", :force => true do |t|
+    t.column "project_team_id", :integer, :default => 0, :null => false
+    t.column "page", :string, :default => "", :null => false
+    t.column "content", :text, :default => "", :null => false
+    t.column "content_html", :text, :default => "", :null => false
+    t.column "created_at", :datetime, :null => false
+    t.column "updated_at", :datetime, :null => false
+    t.column "user_id", :integer, :default => 0, :null => false
+    t.column "revision", :integer, :default => 1, :null => false
+  end
+
+  add_index "team_wiki_pages", ["project_team_id", "page", "revision"], :name => "team_wiki_pages_project_team_id_index", :unique => true
 
   create_table "temp_files", :force => true do |t|
     t.column "filename", :text

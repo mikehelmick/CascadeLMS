@@ -1,0 +1,11 @@
+<%= render :partial => 'wikihead' %>
+<hr/>
+
+<%= error_messages_for 'page' %>
+
+<h2><%= @page.page %></h2>
+
+<%= @page.content_html %>
+
+<hr/>
+<%= render :partial => 'wikifoot' %>

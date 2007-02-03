@@ -300,6 +300,24 @@ class ApplicationController < ActionController::Base
 
   private :get_auth_data
 
+  def log_error(exception) 
+    super(exception)
+
+    begin
+      ErrorMailer.deliver_snapshot(
+        @app['error_email'],
+        exception, 
+        clean_backtrace(exception), 
+        @session.instance_variable_get("@data"), 
+        @params, 
+        @request.env)
+    rescue => e
+      logger.error(e)
+    end
+  end
+  
+  protected :log_error
+
 end
 
 class TrueClass

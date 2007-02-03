@@ -1,113 +1,13 @@
 
 <%= error_messages_for 'post' %>
 
-<div id="formatting" style="display:none">
-  
-  <table cellspacing="0" cellpadding="4" class="fancy">
-    <tr>
-      <th>
-        To get this effect...
-      </th>
-      <th>
-        Type this...
-      </th>
-    </tr>
-    <tr>
-      <td>
-        <strong>Bold phrase</strong>
-      </td>
-      <td>
-        *Bold phrase*
-      </td>
-    </tr>
-    <tr>
-      <td>
-        <span style="font-style: italic;">Italic phrase</span>
-      </td>
-      <td>
-        _Italic phrase_
-      </td>
-    </tr>
-    <tr>
-      <td>
-        <ul>
-          <li>Bulleted list</li>
-          <li>Bulleted list</li>
-        </ul>
-      </td>
-      <td>
-          * Bulleted list<br />
-          * Bulleted list
-      </td>
-    </tr>
-    <tr>
-      <td>
-        <ul>
-          <li>
-            Bulleted list
-            <ul>
-              <li>Inner list</li>
-              <li>Inner list</li>
-            </ul>
-          </li>
-          <li>Bulleted list</li>
-        </ul>
-      </td>
-      <td>
-          * Bulleted list<br />
-          ** Inner list<br />
-          ** Inner list<br />
-          * Bulleted list
-      </td>
-    </tr>
-    <tr>
-      <td>
-        <ol>
-          <li>Numbered list</li>
-          <li>Numbered list</li>
-        </ol>
-      </td>
-      <td>
-          # Numbered list<br />
-          # Numbered list
-      </td>
-    </tr>
-    <tr>
-      <td>
-        <blockquote>Indented block</blockquote>
-      </td>
-      <td>
-          &gt; Indented block
-      </td>
-    </tr>
-    <tr>
-      <td><a href="http://www.google.com">Google</a></td>
-      <td>"Google":http://www.google.com</td>
-    </tr>
-
-    <tr>
-      <td><div class="quote">quote previous statement</div></td>
-      <td>[quote]quote previous statement[/quote]</td>
-	</tr>
-	
-	<tr>
-	  <td><div class="code">System.out.println("Hello,");<br/>System.out.println("World!");</div></td>
-	  <td>[code]<br/>System.out.println("Hello,");<br/>System.out.println("World!");<br/>[/code]</div></td>
-	</tr>
-
-    <tr class="formatting-actions">
-      <td colspan="2"><%= link_to_function( "Close Formatting Guidelines", "blindToggle('formatting')" ) %></td>
-    </tr>
-  </table>
-</div>
-
 <!--[form:post]-->
 <div class="block">
 	
 <p><label for="post_headline"  class="required">Title:</label>
 <%= text_field 'post', 'headline'  %></p>
 
-<p><%= link_to_function( "Formatting Guidelines #{image_tag('help')}", "blindToggle('formatting')" ) %></p>
+<%= render :partial => 'formatting'%>
 
 <p><label for="post_post" class="required">Post:</label>
 <%= text_area 'post', 'post', "cols" => 80, "rows" => 25  %></p>

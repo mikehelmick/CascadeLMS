@@ -1,0 +1,10 @@
+<%= render :partial => 'overview/right' %>
+
+<% unless @team.nil? %>
+<h2>Team '<%= @team.name %>'</h2>
+<ul>
+<% for member in @team.team_members %>
+  <li><%= member.user.display_name %><br/>&nbsp;&nbsp;<%= member.user.email %></li>
+<% end %>
+</ul>
+<% end %>

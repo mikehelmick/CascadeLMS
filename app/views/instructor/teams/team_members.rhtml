@@ -1,0 +1,44 @@
+<h2>Project Team '<%= @team.name %>' (<%= @team.team_id %>) for <%= @course.title %></h2>
+
+<div id="form_area">
+<p><%= link_to 'Cancel', :course => @course, :controller => '/instructor/teams' %></p>
+
+<%= start_form_tag :action => 'update_team_members', :id => @team %>
+
+<table class="fancy">
+  <tr class="header">
+	<th>On Team?</th>
+	<th align="left">Student</th>
+  </tr>
+	
+<% count = 0%>  
+<% for student in @students %>
+<% count = count.next 
+   odd = "odd"
+   odd = "even" if count.even?
+%>
+  <tr class="<%=odd%> hover" id="student_area_<%=student.id%>">
+    <td align="right">
+	 <% if @student_team[student.id].nil? %>
+       <%= check_box_tag( "student_#{student.id}", 1, false ) %>
+     <% elsif @student_team[student.id].project_team_id == @team.id %>
+       <%= check_box_tag( "student_#{student.id}", 1, true ) %>
+     <% else %>
+       <i><%= @student_team[student.id].project_team.team_id %> (<%= @student_team[student.id].project_team.name %>)</i>
+     <% end %>
+    </td>
+    <td><%= student.display_name %> - <%= student.uniqueid %></td>
+  </tr>
+<% end %>
+</table>
+
+<p>&nbsp;</p>
+
+<div class="submit">
+  <%= submit_tag 'Save Team Members' %>
+</div>
+<%= end_form_tag %>
+
+</div>
+
+<p><%= link_to 'Cancel', :course => @course, :controller => '/instructor/teams' %></p>

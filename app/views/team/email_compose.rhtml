@@ -1,0 +1,26 @@
+<%= render :partial => 'emailhead' %>
+
+<hr/>
+
+<div id="form_area">
+<h2>Send new email to team '<%= @team.name %>'</h2>
+<p><%= link_to 'Cancel', :course => @course, :action => 'email', :id => @team %></p>
+
+<%= start_form_tag :action => 'email_send', :id => @team %>
+ 
+<%= error_messages_for 'email' %>
+
+<p><label for="email_subject" class="required">Email Subject:</label>
+<%= text_field 'email', 'subject' %></p>
+
+<p><label for="email_message" class="required">Email Body:</label><br/>
+  <%= text_area 'email', 'message', "cols" => 90, "rows" => 12, :class=>'short'  %><br/>
+  <%= link_to_function "More room to type", "Form.Element.toggleHeight(this, 'email_message'); return false;", :class => 'bottab more' %>
+</p>
+
+<div class="submit">
+  <%= submit_tag 'Send Email' %>
+</div>
+<%= end_form_tag %>
+
+</div>

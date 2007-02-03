@@ -1,0 +1,9 @@
+<p>
+  <%= image_tag 'group', :align => 'middle' %> <%= link_to 'Team Center', :controller => '/team', :id => nil, :course => @course %> |
+  <%= link_to 'Wiki Home', :controller => '/team', :id => @team, :course => @course, :action => 'wiki', :page => 'Home' %> |
+  <% unless @page.nil? %>
+  <%= link_to "Edit Page '#{@page.page}'", :controller => '/team', :id => @team, :course => @course, :action => 'wikiedit', :page => @page.page %> |
+  <%= link_to "History for '#{@page.page}'", :controller => '/team', :id => @team, :course => @course, :action => 'wikipast', :page => @page.page %> |
+  <% end %>
+  <%= link_to 'All Wiki Pages', :controller => '/team', :id => @team, :course => @course, :action => 'wikidex' %>
+</p>

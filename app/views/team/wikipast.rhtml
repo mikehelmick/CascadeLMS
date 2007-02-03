@@ -1,0 +1,18 @@
+<%= render :partial => 'wikihead' %>
+<hr/>
+
+<h2>History for '<%= @page.page %>'</h2>
+
+
+<% for page in @pages %>
+<h3>Revision <%= page.revision %> by <%= page.user.display_name %></h3>
+<p>Saved at <%= page.updated_at.to_formatted_s(:long) %> (<%= distance_of_time_in_words_to_now( page.updated_at ) %> ago)</p>
+
+<%= page.content_html %>
+
+<p><i><%= image_tag 'page_refresh' %><%= link_to "Restore revision \##{page.revision}", { :action => 'wikirestore', :id => @team, :page => @page.page, :revision => page.revision}, :confirm => "Are you sure you want to make revision #{page.revision} the current version of this page?" %></i></p>
+<hr/>
+
+<% end %>
+
+<%= render :partial => 'wikifoot' %>

@@ -1,0 +1,15 @@
+<%= error_messages_for 'team' %>
+
+<!--[form:post]-->
+<p class="blockintro">After creating the team, you will have a chance to add team members.</p>
+<div class="block">
+
+<p><label for="team_team_id"  class="required">Team ID (for Subversion):</label>
+<%= text_field 'team', 'team_id'  %></p>
+
+<p><label for="team_name"  class="required">Team Name:</label>
+<%= text_field 'team', 'name'  %></p>
+
+</div>
+<!--[eoform:post]-->
+

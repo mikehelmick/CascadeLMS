@@ -1,0 +1,5 @@
+<p>
+  <%= image_tag 'group', :align => 'middle' %> <%= link_to 'Team Center', :controller => '/team', :id => nil, :course => @course %> | 
+  <%= image_tag 'email', :align => 'middle' %> <%= link_to 'Email Home', :controller => '/team', :id => @team, :course => @course, :action => 'email' %> |
+  <%= image_tag 'layout_content', :align => 'middle' %> <%= link_to 'Wiki Home', :controller => '/team', :id => @team, :course => @course, :action => 'wiki', :page => 'Home' %> 
+</p>

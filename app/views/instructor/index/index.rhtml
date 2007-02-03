@@ -95,6 +95,13 @@
   </tr>
   <% end %>
 
+  <% if @course.course_setting.enable_project_teams && @user.instructor_in_course?(@course.id)%>
+  <tr>
+	<td><%= link_to "#{image_tag 'cog', :align => 'absmiddle'} Project Teams", :controller => '/instructor/teams', :course => @course %></td>
+    <td>&nbsp;</td>
+  </tr>
+  <% end %>
+
   <% if @course.course_setting.enable_attendance %>
   <tr>
     <td><%= link_to "#{image_tag 'cog', :align => 'absmiddle'} Attendance", :controller => '/instructor/attendance', :course => @course %></td>
@@ -104,6 +111,7 @@
 
 </table>
 
+<% if @user.instructor_in_course?(@course.id) %>
 <table class="FadeTable" cellspacing="0">
   <tr class="header">
     <th class="full"><b>Course Availability for <%= @course.title %></b></th>
@@ -132,3 +140,4 @@
   </tr>
  
 </table>
+<% end %>
