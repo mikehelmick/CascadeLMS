@@ -28,7 +28,7 @@ subversion_command: /usr/local/bin/svn
 
 # either ldap or basic
 #authtype: basic
-authtype: basic
+authtype: ldap
 # the setting below need to be filled in if LDAP is being used
 #ldapserver: 127.0.0.1
 ldapserver: ldapsun1.muohio.edu
