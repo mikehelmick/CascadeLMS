@@ -21,6 +21,8 @@ class AssignmentsController < ApplicationController
     return unless assignment_in_course( @assignment, @course )
     return unless assignment_available( @assignment )
     
+    return unless load_team( @course, @assignment, @user )
+    
     if @assignment.use_subversion && @assignment.auto_grade
       count_todays_turnins( @app["turnin_limit"].to_i )
     end
@@ -82,16 +84,17 @@ class AssignmentsController < ApplicationController
     return render( :layout => false ) unless assignment_in_course( @assignment, @course )
     return render( :layout => false ) unless assignment_available( @assignment )
     
+    return render( :layout => false ) unless load_team( @course, @assignment, @user )
+    
     if params[:password].nil? || params[:password].size == 0 
       flash[:badnotice] = "You must enter your password."
-      sleep( 0.5 )
+      sleep( 0.2 )
       return render( :layout => false )
     end
     
     if params[:command].eql?('list_dev') || params[:command].eql?('list_rel')
-      
-      path = @assignment.development_path_replace(@user.uniqueid)
-      path = @assignment.release_path_replace(@user.uniqueid) if params[:command].eql?('list_rel')
+      path = @assignment.development_path_replace(@user.uniqueid, @team )
+      path = @assignment.release_path_replace(@user.uniqueid, @team ) if params[:command].eql?('list_rel')
       
       svn = SubversionManager.new( @app['subversion_command'] )
       svn.logger = logger
@@ -108,9 +111,9 @@ class AssignmentsController < ApplicationController
       svn = SubversionManager.new( @app['subversion_command'] )
       svn.logger = logger
       begin
-        flash[:notice] = svn.create_directory( @user.uniqueid, params[:password], @assignment.subversion_server, @assignment.development_path_replace(@user.uniqueid) )
-        @list_entries = svn.list( @user.uniqueid, params[:password], @assignment.subversion_server, @assignment.development_path_replace(@user.uniqueid) )  
-        @path = "#{@assignment.development_path_replace(@user.uniqueid)}"
+        flash[:notice] = svn.create_directory( @user.uniqueid, params[:password], @assignment.subversion_server, @assignment.development_path_replace(@user.uniqueid,@team) )
+        @list_entries = svn.list( @user.uniqueid, params[:password], @assignment.subversion_server, @assignment.development_path_replace(@user.uniqueid,@team) )  
+        @path = "#{@assignment.development_path_replace(@user.uniqueid,@team)}"
         render :layout => false, :partial => 'svnlist'
       rescue RuntimeError => re
         flash[:badnotice] = re.message
@@ -126,10 +129,10 @@ class AssignmentsController < ApplicationController
       begin
         output = ""
         if params[:command].eql?('release')
-          output = svn.create_release( @user.uniqueid, params[:password], @assignment.subversion_server, @assignment.development_path_replace(@user.uniqueid), @assignment.release_path_replace(@user.uniqueid) )  
+          output = svn.create_release( @user.uniqueid, params[:password], @assignment.subversion_server, @assignment.development_path_replace(@user.uniqueid,@team), @assignment.release_path_replace(@user.uniqueid,@team) )  
         end
         
-        path = @assignment.release_path_replace(@user.uniqueid)
+        path = @assignment.release_path_replace(@user.uniqueid,@team)
         
         @turnins = UserTurnin.find( :all, :conditions => [ "assignment_id = ? and user_id = ?", @assignment.id, @user.id ], :order => "position desc" )
         @current_turnin = nil
@@ -145,6 +148,9 @@ class AssignmentsController < ApplicationController
         ut.assignment = @assignment
         ut.user = @user
         ut.sealed = false
+        ut.position = 1
+        ut.position = @current_turnin.position + 1 unless @current_turnin.nil?
+        ut.project_team = @team unless @team.nil?
         @user.user_turnins << ut
         @user.save
         
@@ -158,6 +164,7 @@ class AssignmentsController < ApplicationController
         utf.directory_entry = true
         utf.directory_parent = 0
         utf.filename = '/'
+        utf.user = @user
         ut.user_turnin_files << utf
         ut.save
         
@@ -168,6 +175,7 @@ class AssignmentsController < ApplicationController
         ## create entries in database
         @list_entries.each do |le|
           utf = UserTurninFile.new
+          utf.user = @user
           utf.user_turnin = ut
           utf.directory_entry = le.dir?
           
@@ -227,8 +235,6 @@ class AssignmentsController < ApplicationController
           end
         end       
        
-        
-     
         @path = "#{path}"
         flash[:notice] = "#{output} <br/> <b>Please select 'Manage Submitted Files' to verify your files have been collected</b>"
         render :layout => false, :partial => 'svnlist'
@@ -244,6 +250,22 @@ class AssignmentsController < ApplicationController
     
   end
 
+  private
+  
+  def load_team( course, assignment, user )
+    @team = nil
+    if assignment.team_project
+      @team = course.team_for_user( user.id )
+      unless @team.nil?
+        return true
+      end
+      
+      flash[:badnotice] = "This is a group project and requires assignment to a team in order to turn in files.  Please contact your instructor to be assigned to a team."
+      redirect_to :controller => '/assignments', :action => 'view', :course => course.id, :id => assignment.id
+      return false
+    end
+    return true #no team required
+  end
 
   def assignment_available( assignment, redirect = true )
     unless assignment.open_date <= Time.now
@@ -289,11 +311,13 @@ class AssignmentsController < ApplicationController
     now = Time.now
     begin_time = Time.local( now.year, now.mon, now.day, 0, 0, 0 )
     end_time = begin_time + 60*60*24 # plus a day
-    @today_count = UserTurnin.count( :conditions => [ "assignment_id = ? and user_id = ? and finalized = ? and updated_at >= ? and updated_at < ?", @assignment.id, @user.id, true, begin_time, end_time ] )
+    if @team.nil?
+      @today_count = UserTurnin.count( :conditions => [ "assignment_id = ? and user_id = ? and finalized = ? and updated_at >= ? and updated_at < ?", @assignment.id, @user.id, true, begin_time, end_time ] )
+    else
+      @today_count = UserTurnin.count( :conditions => [ "assignment_id = ? and project_team_id = ? and finalized = ? and updated_at >= ? and updated_at < ?", @assignment.id, @team.id, true, begin_time, end_time ] )
+    end
     @remaining_count = max - @today_count 
     @remaining_count = 0 if @remaining_count < 0
   end
-  
-  private :set_tab, :set_title, :assignment_available, :document_in_assignment, :assignment_open, :count_todays_turnins
   
 end

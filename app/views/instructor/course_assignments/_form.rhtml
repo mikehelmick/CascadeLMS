@@ -30,6 +30,16 @@
 </table>
 </div>
 
+<% if @course.course_setting.enable_project_teams %>
+<div class="blockintro">Since this course has project teams enabled, you can make this assignment a team assignment.   By making the assignment a team assignment, all submission avenues will be shared by all the students on the same team, although you can assign separate grades to each team member.</div>
+<div class="block">
+	<p><b>Group Project:</b>
+		<%= radio_button 'assignment', 'team_project', true %> Yes
+		<%= radio_button 'assignment', 'team_project', false %> No
+	</p>	
+</div>
+<% end %>
+
 <div class="blockintro">You may either describe this assignment with text or upload a file.  If you choose to upload a file, you will be able to add additional files after the assignment is created.</div>
 <div class="block">
 
@@ -174,7 +184,7 @@
 	   svn_style = "display: none;" unless @assignment.use_subversion
 	%>
 	<div id="subversion_settings" class="sub_form" style="<%=svn_style%>">
-	  <p>For subversion, the server name is something like <code>http://svn.server/</code> and the path is something like <code>$uniqueid$/assignment4/release/$uniqueid$</code>.  The development and release paths allow you to pull student files during development, but limit final turn in to a 'release' directory.  If you only with to use 1 path, leave the release path blank.  The symbol <code>$uniqueid$</code> is expanded to each student's uniqueID in this system.  <b>To use Subversion - you must have read access to each student's repository.</b></p>
+	  <p>For subversion, the server name is something like <code>http://svn.server/</code> and the path is something like <code>$uniqueid$/assignment4/release/$uniqueid$</code>.  The development and release paths allow you to pull student files during development, but limit final turn in to a 'release' directory.  If you only with to use 1 path, leave the release path blank.  The symbol <code>$uniqueid$</code> is expanded to each student's uniqueID in this system. <% if @course.course_setting.enable_project_teams %> If this is a group assignment, the symbol <code>$teamid$</code> is expanded to each student's assigned teamId in this system. <% end %></p>
   	  <p><label for="assignment[subversion_server]" class="required">Subversion Server:</label>
       <%= text_field 'assignment', 'subversion_server'  %></p>
 	  <p><label for="assignment[subversion_development_path]" class="required">Subversion Development Path:</label>

@@ -7,8 +7,6 @@ class TurninsController < ApplicationController
   before_filter :ensure_logged_in
   before_filter :set_tab
   
-
-  
   # list the turnins for this assignment ( shows most recent )
   def index
     return unless load_course( params[:course] )
@@ -18,8 +16,9 @@ class TurninsController < ApplicationController
     return unless assignment_in_course( @assignment, @course )
     return unless assignment_available( @assignment )
     
-    # load turnin sets
-    @turnins = UserTurnin.find( :all, :conditions => [ "assignment_id = ? and user_id = ?", @assignment.id, @user.id ], :order => "position desc" )
+    return unless load_team( @course, @assignment, @user )
+    load_turnins
+    
     @current_turnin = nil
     @current_turnin = @turnins[0] if @turnins.size > 0
     
@@ -48,12 +47,12 @@ class TurninsController < ApplicationController
     return unless assignment_available( @assignment )
     
     @display_turnin = UserTurnin.find( params[:id] ) rescue @display_turnin = UserTurnin.new
-    return unless user_owns_turnin( @user, @display_turnin )
+    return unless load_team( @course, @assignment, @user )
+    return unless user_owns_turnin( @user, @display_turnin, @team )
     return unless turnin_for_assignment( @display_turnin, @assignment )
-    
+    load_turnins
     
     # load turnin sets
-    @turnins = UserTurnin.find( :all, :conditions => [ "assignment_id = ? and user_id = ?", @assignment.id, @user.id ], :order => "position desc" )
     @current_turnin = nil
     @current_turnin = @turnins[0] if @turnins.size > 0
     
@@ -70,7 +69,8 @@ class TurninsController < ApplicationController
     return unless assignment_available( @assignment )
   
     @turnin = UserTurnin.find( params[:id] ) rescue @turnin = UserTurnin.new
-    return unless user_owns_turnin( @user, @turnin )
+    return unless load_team( @course, @assignment, @user )
+    return unless user_owns_turnin( @user, @turnin, @team )
     return unless turnin_for_assignment( @turnin, @assignment )
     
     tf = TempFiles.new
@@ -111,7 +111,8 @@ class TurninsController < ApplicationController
     @utf = UserTurninFile.find( params[:id] )  
     return unless turnin_file_downloadable( @utf )
     @turnin = @utf.user_turnin 
-    return unless user_owns_turnin( @user, @turnin )
+    return unless load_team( @course, @assignment, @user )
+    return unless user_owns_turnin( @user, @turnin, @team )
     return unless turnin_for_assignment( @turnin, @assignment )
     
     
@@ -149,6 +150,7 @@ class TurninsController < ApplicationController
     
     return unless assignment_open( @assignment )
     
+    return unless load_team( @course, @assignment, @user )
     
     count_todays_turnins( @app["turnin_limit"].to_i )
     if @remaining_count <= 0 && @assignment.auto_grade_setting.any_student_grade?
@@ -158,7 +160,7 @@ class TurninsController < ApplicationController
     end
     
     # load turnin sets
-    @turnins = UserTurnin.find( :all, :conditions => [ "assignment_id = ? and user_id = ?", @assignment.id, @user.id ], :order => "position desc" )
+    load_turnins
     @current_turnin = nil
     @current_turnin = @turnins[0] if @turnins.size > 0
     
@@ -192,8 +194,10 @@ class TurninsController < ApplicationController
     
     return unless assignment_open( @assignment )
     
+    return unless load_team( @course, @assignment, @user )
+    
     # load turnin sets
-    @turnins = UserTurnin.find( :all, :conditions => [ "assignment_id = ? and user_id = ?", @assignment.id, @user.id ], :order => "position desc" )
+    load_turnins
     @current_turnin = nil
     @current_turnin = @turnins[0] if @turnins.size > 0
     
@@ -202,20 +206,27 @@ class TurninsController < ApplicationController
     ut.assignment = @assignment
     ut.user = @user
     ut.sealed = false
-    @user.user_turnins << ut
+    ut.finalized = false
+    ## if team - we need to add the team attribute
+    ut.project_team = @team unless @team.nil?   
+    
+    ##@user.user_turnins << ut 
+    ## The above line was removed in the transition to teams, but it is unnecessary anyway
+    
     # create root directory entry
     utf = UserTurninFile.new
     utf.user_turnin = ut
     utf.directory_entry = true
     utf.directory_parent = 0
     utf.filename = '/'
+    utf.user = @user
     
-    UserTurnin.transaction(ut,utf,@current_transaction) do
+    UserTurnin.transaction do
       if @current_turnin.nil?
         # this is a new 
-        utf.position=1
+        ut.position=1
       else
-        utf.position=@current_turnin.position+1
+        ut.position=@current_turnin.position+1
         @current_turnin.sealed = true
         
         time = Time.now
@@ -229,7 +240,7 @@ class TurninsController < ApplicationController
       end
     
       # save and create directories
-      @user.save
+      # @user.save ## should be no reason to save the user
       ut.make_dir( @app['external_dir'] )
       ut.user_turnin_files << utf
       ut.save
@@ -250,6 +261,8 @@ class TurninsController < ApplicationController
     
     return unless assignment_open( @assignment )
     
+    return unless load_team( @course, @assignment, @user )
+    
     ## Validations
     md = params[:newdir].match(/\w+/)
     if ( md.pre_match.size > 0 || md.post_match.size > 0 ) 
@@ -260,7 +273,7 @@ class TurninsController < ApplicationController
     end
     ## end
     
-    @turnins = UserTurnin.find( :all, :conditions => [ "assignment_id = ? and user_id = ?", @assignment.id, @user.id ], :order => "position desc" )
+    load_turnins
     @current_turnin = nil
     @current_turnin = @turnins[0] if @turnins.size > 0
     
@@ -276,6 +289,7 @@ class TurninsController < ApplicationController
     utf.directory_entry = true
     utf.directory_parent = nested.id
     utf.filename = params[:newdir]
+    utf.user = @user
     
     mover = UserTurninFile.get_parent( @current_turnin.user_turnin_files, utf )
     fname = utf.filename
@@ -310,7 +324,8 @@ class TurninsController < ApplicationController
     
     return unless assignment_open( @assignment ) 
     
-    @turnins = UserTurnin.find( :all, :conditions => [ "assignment_id = ? and user_id = ?", @assignment.id, @user.id ], :order => "position desc" )
+    return unless load_team( @course, @assignment, @user )
+    load_turnins
     @current_turnin = nil
     @current_turnin = @turnins[0] if @turnins.size > 0
     
@@ -360,7 +375,8 @@ class TurninsController < ApplicationController
     
     return unless assignment_open( @assignment )
     
-    @turnins = UserTurnin.find( :all, :conditions => [ "assignment_id = ? and user_id = ?", @assignment.id, @user.id ], :order => "position desc" )
+    return unless load_team( @course, @assignment, @user )
+    load_turnins
     @current_turnin = nil
     @current_turnin = @turnins[0] if @turnins.size > 0
 
@@ -385,6 +401,7 @@ class TurninsController < ApplicationController
     @utf.directory_parent = nested.id
     @utf.filename = FileManager.base_part_of( file_field.original_filename )
     @utf.extension = @utf.filename.split('.').last.downcase
+    @utf.user = @user
 
     mover = UserTurninFile.get_parent( @current_turnin.user_turnin_files, @utf )
     dir_name = ""
@@ -431,7 +448,8 @@ class TurninsController < ApplicationController
     return unless assignment_available( @assignment )
     #return unless comments_released( @assignment )
     
-    @turnins = UserTurnin.find( :all, :conditions => [ "assignment_id = ? and user_id = ?", @assignment.id, @user.id ], :order => "position desc" )
+    return unless load_team( @course, @assignment, @user )
+    load_turnins
     @current_turnin = nil
     @current_turnin = @turnins[0] if @turnins.size > 0
     
@@ -469,6 +487,15 @@ class TurninsController < ApplicationController
   
 private
 
+  def load_turnins
+    # load turnin sets
+    if @assignment.team_project
+      @turnins = UserTurnin.find( :all, :conditions => [ "assignment_id = ? and project_team_id = ?", @assignment.id, @team.id], :order => "position desc" )
+    else
+      @turnins = UserTurnin.find( :all, :conditions => [ "assignment_id = ? and user_id = ?", @assignment.id, @user.id ], :order => "position desc" )
+    end   
+  end
+
   def submissions_remaining
     unless @remaining_count
       flash[:badnotice] = "You have no remaining submissions for this assignment today."
@@ -478,7 +505,20 @@ private
     return true
   end
 
-
+  def load_team( course, assignment, user )
+    @team = nil
+    if assignment.team_project
+      @team = course.team_for_user( user.id )
+      unless @team.nil?
+        return true
+      end
+      
+      flash[:badnotice] = "This is a group project and requires assignment to a team in order to turn in files.  Please contact your instructor to be assigned to a team."
+      redirect_to :controller => '/assignments', :action => 'view', :course => course.id, :id => assignment.id
+      return false
+    end
+    return true #no team required
+  end
 
   def turnin_file_downloadable( tif )
     if tif.directory_entry
@@ -489,8 +529,8 @@ private
     true
   end
 
-  def user_owns_turnin( user, turnin )
-    unless user.id == turnin.user_id
+  def user_owns_turnin( user, turnin, team = nil )
+    unless user.id == turnin.user_id || (!team.nil? && turnin.project_team_id == team.id)
       flash[:badnotice] = "The requested turn-in set could not be found."
       redirect_to :action => 'index'
     end
@@ -548,7 +588,11 @@ private
     now = Time.now
     begin_time = Time.local( now.year, now.mon, now.day, 0, 0, 0 )
     end_time = begin_time + 60*60*24 # plus a day
-    @today_count = UserTurnin.count( :conditions => [ "assignment_id = ? and user_id = ? and finalized = ? and updated_at >= ? and updated_at < ?", @assignment.id, @user.id, true, begin_time, end_time ] )
+    if @team.nil?
+      @today_count = UserTurnin.count( :conditions => [ "assignment_id = ? and user_id = ? and finalized = ? and updated_at >= ? and updated_at < ?", @assignment.id, @user.id, true, begin_time, end_time ] )
+    else
+      @today_count = UserTurnin.count( :conditions => [ "assignment_id = ? and project_team_id = ? and finalized = ? and updated_at >= ? and updated_at < ?", @assignment.id, @team.id, true, begin_time, end_time ] )
+    end
     @remaining_count = max - @today_count 
     @remaining_count = 0 if @remaining_count < 0
   end

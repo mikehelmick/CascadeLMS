@@ -1,0 +1,14 @@
+<% if @assignment.team_project %>
+  <p><%= image_tag 'group' %><b>This is a group project, turn-ins are shared.</b><br/>
+  <% if @team.nil? %>
+    <i>You are not assigned to a project team, please contact your instructor.</i>
+  <% else %>
+    <b>You are a member of <%= @team.name %> (<%= @team.team_id %>)</b>, all members:<br/>
+		       <ul>
+		         <% for tm in @team.team_members %>
+		           <li><%= tm.user.display_name %> - <%= tm.user.email %></li>
+		         <% end %>
+		       </ul>
+  <% end %>
+  <p>
+<% end %>

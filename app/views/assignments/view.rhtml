@@ -59,11 +59,19 @@
 	  <% if @assignment.use_subversion %>  
 	  <tr><td class="label" width="15%" nowrap="nowrap" valign="top">Subversion Server:</td>
 		  <td valign="top"><%=  @assignment.subversion_server %></td></tr>
-	  <tr><td class="label" width="15%" nowrap="nowrap" valign="top">SVN Dev Path:</td>
-		  <td valign="top"><a href="<%=@assignment.subversion_server%><%=@assignment.development_path_replace( @user.uniqueid ) %>"><%=  @assignment.development_path_replace( @user.uniqueid ) %></a></td></tr>
-	  <% unless @assignment.subversion_release_path.nil? || @assignment.subversion_release_path.size == 0 %>
-	  <tr><td class="label" width="15%" nowrap="nowrap" valign="top">SVN Release Path:</td>
-		  <td valign="top"><a href="<%=@assignment.subversion_server%><%=@assignment.release_path_replace( @user.uniqueid ) %>"><%=  @assignment.release_path_replace( @user.uniqueid ) %></a></td></tr>
+	    
+	    <% if !@assignment.team_project || (@assignment.team_project && !@team.nil?)%>		
+  	      <tr><td class="label" width="15%" nowrap="nowrap" valign="top">SVN Dev Path:</td>
+		    <td valign="top"><a href="<%=@assignment.subversion_server%><%=@assignment.development_path_replace( @user.uniqueid, @team ) %>"><%=  @assignment.development_path_replace( @user.uniqueid, @team ) %></a></td></tr>
+	      <% unless @assignment.subversion_release_path.nil? || @assignment.subversion_release_path.size == 0 %>
+	      <tr><td class="label" width="15%" nowrap="nowrap" valign="top">SVN Release Path:</td>
+		    <td valign="top"><a href="<%=@assignment.subversion_server%><%=@assignment.release_path_replace( @user.uniqueid, @team ) %>"><%=  @assignment.release_path_replace( @user.uniqueid, @team ) %></a></td></tr>
+		<% else %>
+		  <tr><td class="label" width="15%" nowrap="nowrap" valign="top">SVN Dev Path:</td>
+		    <td valign="top"><i>You are not assigned to a project team.</i></td></tr>
+		  <tr><td class="label" width="15%" nowrap="nowrap" valign="top">SVN Release Path:</td>
+			<td valign="top"><i>You are not assigned to a project team.</i></td></tr>
+		<% end %>
 	  <% end %>
 	  <% end %>
 	  <% if @assignment.programming %>
@@ -86,6 +94,23 @@
 		  </ul>
 		
 		  </td></tr>    
+      <% end %>
+      <% if @assignment.team_project %>
+        <tr><td class="label" width="15%" nowrap="nowrap" valign="top">This is a Group Project:</td>
+	      <td valign="top"> 
+		    <% team =  @course.team_for_user( @user.id )
+		       if team.nil? %>
+		         <i>You are not assigned to a project team, please contact your instructor.</i>
+		    <% else %>
+		         <b>You are a member of <%= team.name %> (<%= team.team_id %>)</b>, all members:<br/>
+			       <ul>
+			         <% for tm in team.team_members %>
+			           <li><%= tm.user.display_name %> - <%= tm.user.email %></li>
+			         <% end %>
+			       </ul>
+		    <% end %>
+		  </td>
+		</tr>
       <% end %>
     </table>
   </div>

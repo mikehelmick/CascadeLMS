@@ -46,6 +46,20 @@ class Instructor::TurninsController < Instructor::InstructorBase
       end
     end
     
+    # load teams
+    if @assignment.team_project
+      # load teams
+      @teams = Hash.new
+      teams = ProjectTeam.find(:all, :conditions => ["course_id = ?", @course.id] )
+      teams.each { |t| @teams[t.id] = "#{t.name} (#{t.team_id})" }
+      
+      # load members
+      @team_members = Hash.new
+      members = TeamMember.find(:all, :conditions => ["course_id = ?", @course.id] )
+      members.each { |tm| @team_members[tm.user_id] = @teams[tm.project_team_id] }
+        
+    end
+    
     @title = "Turnins for #{@assignment.title}"
   end
   
@@ -146,6 +160,10 @@ class Instructor::TurninsController < Instructor::InstructorBase
     if ! @student.student_in_course?( @course.id )
       flash[:badnotice] = "Invalid student record requested."
       redirect_to :action => 'index'
+    end
+    
+    if @assignment.team_project
+      @team = @course.team_for_user( @student.id )
     end
     
     # get grade

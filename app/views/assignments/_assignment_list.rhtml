@@ -22,7 +22,9 @@
 	   %>
 	  <tr class="<%=odd%> hover" id="assignment_<%=assignment.id%>">
 	    <td align="right"><%= link_to "#{h assignment.position}", :action => 'view', :id => assignment %></td>
-	    <td><%= link_to "#{h assignment.title}", :action => 'view', :id => assignment %></td>
+	    <td nowrap="nowrap"><%= link_to "#{h assignment.title}", :action => 'view', :id => assignment %>
+		  <% if assignment.team_project %><%= image_tag 'group' %><% end %>
+		</td>
 	    <td><%=h assignment.grade_category.category %></td>
 	    <% if !public %>
 	    <td nowrap="nowrap" align="right">

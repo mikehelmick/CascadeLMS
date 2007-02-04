@@ -3,10 +3,30 @@
 
 <p><%= link_to 'Back to all students', :controller => '/instructor/turnins', :course => @course, :assignment => @assignment %></p>
 
-<!-- files -->
-
+<!-- team -->
+<% if @assignment.team_project %>
 <div class="SectionHeader"><div class="Full">
-  <h2>Turn-in Sets</h2>
+  <h2>Project Team Details</h2>
+</div></div>
+<div class="Section">
+	<p><%= image_tag 'group' %><b>This is a group project, turn-ins are shared.</b><br/>
+  <% if @team.nil? %>
+    <i>This student is NOT assigned to a project group.</i>
+  <% else %>
+    <b>This student is a member of <%= @team.name %> (<%= @team.team_id %>)</b>, all members:<br/>
+		       <ul>
+		         <% for tm in @team.team_members %>
+		           <li><%= tm.user.display_name %> - <%= tm.user.email %></li>
+		         <% end %>
+		       </ul>
+  <% end %>
+  <p>
+</div>
+<% end %>
+
+<!-- files -->
+<div class="SectionHeader"><div class="Full">
+  <h2>Turn-in Set</h2>
 </div></div>
 <div class="Section">
 	
@@ -48,6 +68,9 @@ Last Updated: <%= @display_turnin.updated_at.to_formatted_s(:friendly_date) %><b
 	<% end %>
 	<th valign="bottom">Download</th>
 	<th valign="bottom">Review / Comment</th>
+	<% if @team %>
+	  <th valign="bottom">Submitter</th>
+	<% end %>
   </tr>
 
 <% count = 0 %>
@@ -74,12 +97,12 @@ Last Updated: <%= @display_turnin.updated_at.to_formatted_s(:friendly_date) %><b
        end
        1.upto(upper*3) { |i| spaces = "&nbsp;#{spaces}" }
      %>
-    <td>
+    <td nowrap="nowrap">
       <%= spaces %>    
       <%= image_tag "#{@tif.icon}", :align => 'absmiddle' %>
       <%=h @tif.filename %> 
     </td>
-    <td> <i><%= @tif.created_at.to_formatted_s(:short) %></i> </td>
+    <td nowrap="nowrap"> <i><%= @tif.created_at.to_formatted_s(:short) %></i> </td>
     <% if @assignment.programming %>
       <td>
       	<% if @tif.main %>
@@ -135,6 +158,12 @@ Last Updated: <%= @display_turnin.updated_at.to_formatted_s(:friendly_date) %><b
       <% end %>
     </td>
 
+    <% if @team %>
+    <td>
+      <%= @tif.user.display_name %>
+    </td>
+    <% end %>
+
   </tr>
 
   <% if any_java && @tif.extension.eql?('java') && !@tif.gradable %>
@@ -165,7 +194,7 @@ Last Updated: <%= @display_turnin.updated_at.to_formatted_s(:friendly_date) %><b
     <p><%= link_to "View I/O Check results for #{@student.display_name}.", :course => @course, :assignment => @assignment, :student => @student, :action => 'view_io_tests' %> <b>From this screen you can also re-run the automatic tests.</b></p>
  </div>
 
-<% elsif !@assignment.auto_grade_setting.nil? && @assignment.auto_grade_setting.check_style? %>
+<% elsif @assignment.auto_grade && !@assignment.auto_grade_setting.nil? && @assignment.auto_grade_setting.check_style? %>
 <div class="SectionHeader"><div class="Full"> 
   <h2>PMD Control</h2>
 </div></div>
@@ -292,6 +321,7 @@ Last Updated: <%= @display_turnin.updated_at.to_formatted_s(:friendly_date) %><b
   <tr class="header">
     <th>#</th>
     <th>Previous Set</th>
+    <% if @team %><th>Creator</th><% end %>
     <th>View</th>
     <th>Archived</th>
     <th>Finalized</th>
@@ -309,6 +339,7 @@ Last Updated: <%= @display_turnin.updated_at.to_formatted_s(:friendly_date) %><b
     <td><%=h ut.updated_at.to_formatted_s(:long) %>
       <% if ut.id == @current_turnin.id %><b>current</b> <%end%>
     </td>
+    <% if @team %><td><%= ut.user.display_name %></td><% end %>
     <td><%= link_to 'View', :action => 'view_student', :course => @course, :assignment => @assignment, :id => @student, :ut => ut.id %></td>
     <td><% if ut.sealed %> <%= image_tag 'accept' %> <% else %> <%= image_tag 'cross' %> <% end %></td>
     <td><% if ut.finalized %> <%= image_tag 'accept' %> <% else %> <%= image_tag 'cross' %> <% end %></td>

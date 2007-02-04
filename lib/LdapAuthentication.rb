@@ -35,7 +35,8 @@ class LdapAuthentication
       if user.nil?
         user = create_user( page, password )
       else
-        user = update_user( user, page )
+        user = update_user( user, page, password )
+        user.save
       end
       
       ## see if auto enrollment is enabled
@@ -91,7 +92,7 @@ class LdapAuthentication
   end
   
   # refresh a user from their ldap page
-  def update_user( user, page )
+  def update_user( user, page, new_password = nil )
     # load fields from LDAP
     user.uniqueid = page[0][@settings['ldap_field_uid']][0]
     user.preferred_name = page[0][@settings['ldap_field_nickname']][0] unless page[0][@settings['ldap_field_nickname']].nil? 
@@ -109,6 +110,10 @@ class LdapAuthentication
     user.office_hours = page[0][@settings['ldap_field_officehours']][0] unless page[0][@settings['ldap_field_officehours']].nil?
     user.phone_number = page[0][@settings['ldap_field_phone']][0] unless page[0][@settings['ldap_field_phone']].nil?
     user.email = page[0][@settings['ldap_field_email']][0]
+    
+    unless new_password.nil?
+      user.update_password( new_password )
+    end
     
     if ! user.save
       raise SecurityError, "Unable to save user: #{user.errors.full_messages.join(', ')}", caller

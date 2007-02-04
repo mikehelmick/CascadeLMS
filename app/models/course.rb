@@ -148,6 +148,15 @@ class Course < ActiveRecord::Base
     end
   end
   
+  def team_for_user( user_id )
+    self.project_teams.each do |team|
+      team.team_members.each do |tm|
+        return team if tm.user_id == user_id
+      end
+    end
+    return nil
+  end
+  
   def open_class_period?
     period = ClassPeriod.find(:first, :conditions => ["course_id = ? and open = ?", self.id, true] )
     return ! period.nil?

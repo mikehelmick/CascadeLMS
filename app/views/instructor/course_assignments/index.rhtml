@@ -34,7 +34,9 @@
 	    </td>
 	    <td nowrap="nowrap">
 	      <% if @user.instructor_in_course?(@course.id) || (@user.assistant_in_course?(@course.id) && @course.course_setting.ta_course_assignments) %>
-	        <%= link_to "#{image_tag 'page_edit', :align => 'absmiddle'} #{h assignment.title}", :action => 'edit', :id => assignment %> <%if assignment.auto_grade %><br/> <%= link_to 'AutoGrade Settings', :action => 'autograde', :course => @course, :id => assignment.id %> <% end %>
+	        <%= link_to "#{image_tag 'page_edit', :align => 'absmiddle'} #{h assignment.title}", :action => 'edit', :id => assignment %>
+	        <% if assignment.team_project %><%= image_tag 'group' %><% end %>
+	        <%if assignment.auto_grade %><br/> <%= link_to 'AutoGrade Settings', :action => 'autograde', :course => @course, :id => assignment.id %> <% end %>
 	      <% else %>
 	        <%= h assignment.title %>
 	      <% end %>

@@ -34,6 +34,9 @@ Last Updated: <%= @display_turnin.updated_at.to_formatted_s(:friendly_date) %><b
 	  <% end %>
 	<% end %>
 	<th>Controls</th>
+	<% if @assignment.team_project %>
+	  <th>Submitter</th>
+	<% end %>
   </tr>
 
 <% count = 0 %>
@@ -96,6 +99,10 @@ Last Updated: <%= @display_turnin.updated_at.to_formatted_s(:friendly_date) %><b
        <%= link_to 'Download', :action => 'download_file', :id => @tif.id %>
      <% end %>
     </td>
+
+	<% if @assignment.team_project %>
+	  <td><%= @tif.user.display_name %></td>
+	<% end %>
   
   </tr>
 

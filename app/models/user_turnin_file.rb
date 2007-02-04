@@ -2,6 +2,7 @@ require 'FileManager'
 
 class UserTurninFile < ActiveRecord::Base
   belongs_to :user_turnin
+  belongs_to :user
   acts_as_list :scope => :user_turnin
   validates_uniqueness_of :filename, :scope => [:user_turnin_id, :directory_parent]
   

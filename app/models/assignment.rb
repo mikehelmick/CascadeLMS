@@ -91,12 +91,20 @@ class Assignment < ActiveRecord::Base
     open_date <= td && td <= due_date
   end
   
-  def development_path_replace( uniqueid )
-    subversion_development_path.gsub(/\$uniqueid\$/, uniqueid )
+  def development_path_replace( uniqueid, team = nil )
+    path = subversion_development_path.gsub(/\$uniqueid\$/, uniqueid )
+    unless team.nil?
+      path = path.gsub(/\$teamid\$/, team.team_id )
+    end
+    return path
   end
  
-  def release_path_replace( uniqueid )
-    subversion_release_path.gsub(/\$uniqueid\$/, uniqueid )
+  def release_path_replace( uniqueid, team = nil )
+    path = subversion_release_path.gsub(/\$uniqueid\$/, uniqueid )
+    unless team.nil?
+      path = path.gsub(/\$teamid\$/, team.team_id )
+    end
+    return path
   end
   
   def past?

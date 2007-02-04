@@ -10,7 +10,7 @@ class User < ActiveRecord::Base
   has_many :posts
   has_many :comments
   
-  has_many :user_turnins, :order => "assignment_id asc, position desc", :dependent => :destroy
+  has_many :user_turnins, :dependent => :destroy
   has_many :journals, :dependent => :destroy
   
   has_many :grade_entries, :dependent => :destroy
@@ -18,13 +18,6 @@ class User < ActiveRecord::Base
   has_many :project_teams
   
   attr_accessor :notice
-  
-  def team_for_course( course_id )
-    project_teams.each do |team|
-      return team if team.course_id == course_id
-    end
-    return nil
-  end
   
   def assignment_journals( assignment )
     Journal.find(:all, :conditions => ["assignment_id = ? and user_id = ?", assignment.id, self.id], :order => 'created_at asc' )
@@ -111,6 +104,10 @@ class User < ActiveRecord::Base
   def valid_password?( password_entered )
     valid = Digest::SHA1.hexdigest( self.email + "mmmm...salty" + password_entered + "ROCK, ROCK ON" )
     return self.password.eql?(valid)
+  end
+  
+  def update_password( new_password ) 
+    self.password = Digest::SHA1.hexdigest( self.email + "mmmm...salty" + new_password + "ROCK, ROCK ON" )
   end
   
   def before_create

@@ -95,6 +95,7 @@ class SubversionManager
 #puts "#{tmp_path}"
         paths << tmp_path 
       end
+#puts "#{paths.inspect}"
     
       # find the directory that doesn't exist
       index = 0
@@ -110,14 +111,17 @@ class SubversionManager
           rnt = "#{rtn} \n Missing Directory: #{paths[index]}."
           index = index + 1
           if ( index >= paths.size ) 
-            raise "Subversion root does not seem to exists"
+            index = index - 1
+            @logger << "It seems that none of the directories in #{paths.inspect} exist, so I'm going to try and create them all."
+            break
+            #raise "Subversion root does not seem to exists"
           end
         else
           good = true
           index = index - 1
         end
       end
-      
+  
       while index >= 0
         command = "#{@subversion_command} mkdir --username #{username} --password #{password} --non-interactive -m \"AUTOMATIC DIRECTORY CREATION OF '#{paths[index]}'\" #{server}#{slash}#{paths[index]}"
 #puts "C: #{command}"
@@ -134,11 +138,10 @@ class SubversionManager
       rtn = 'Directory already exists' if rtn.nil? || rtn.eql?('')
       return rtn
     rescue  Exception => ex
-      #puts ex.message
       if result.class.to_s.eql?('String') && !result.index('authorization failed').nil?
         raise "Authorization failed for user #{username} using the supplied password."
       else
-        raise "Subversion Error."
+        raise "Subversion Error: #{ex.message}"
       end
     end 
   end

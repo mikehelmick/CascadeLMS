@@ -68,7 +68,9 @@ class Instructor::CourseAssignmentsController < Instructor::InstructorBase
        
        ## style defaults
        if @assignment.auto_grade
-         @assignment.ensure_style_defaults
+         Assignment.transaction do 
+           @assignment.ensure_style_defaults 
+         end
        end
        
        # create grade item
@@ -201,6 +203,7 @@ class Instructor::CourseAssignmentsController < Instructor::InstructorBase
     return unless assignment_in_course( @course, @assignment )
     
     begin
+      @assignment.grade_category_id = params[:grade_category_id].to_i
       raise 'Assignment update failed.' unless @assignment.update_attributes(params[:assignment]) 
       if @assignment.enable_journal
         if @assignment.journal_field.nil?

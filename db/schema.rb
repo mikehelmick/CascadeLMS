@@ -2,7 +2,7 @@
 # migrations feature of ActiveRecord to incrementally modify your database, and
 # then regenerate this schema definition.
 
-ActiveRecord::Schema.define(:version => 65) do
+ActiveRecord::Schema.define(:version => 67) do
 
   create_table "announcements", :force => true do |t|
     t.column "headline", :string
@@ -49,6 +49,7 @@ ActiveRecord::Schema.define(:version => 65) do
     t.column "auto_grade", :boolean, :default => false, :null => false
     t.column "grade_category_id", :integer
     t.column "released", :boolean, :default => false, :null => false
+    t.column "team_project", :boolean, :default => false, :null => false
   end
 
   create_table "auto_grade_settings", :id => false, :force => true do |t|
@@ -471,6 +472,7 @@ ActiveRecord::Schema.define(:version => 65) do
     t.column "gradable", :boolean, :default => false, :null => false
     t.column "gradable_message", :text
     t.column "gradable_override", :boolean, :default => false, :null => false
+    t.column "user_id", :integer
   end
 
   add_index "user_turnin_files", ["user_turnin_id", "filename", "directory_parent"], :name => "unique_filename_idx", :unique => true
@@ -483,6 +485,7 @@ ActiveRecord::Schema.define(:version => 65) do
     t.column "created_at", :datetime, :null => false
     t.column "updated_at", :datetime, :null => false
     t.column "finalized", :boolean, :default => false, :null => false
+    t.column "project_team_id", :integer
   end
 
   create_table "users", :force => true do |t|

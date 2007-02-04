@@ -2,6 +2,8 @@
 
 <p><%= link_to 'Back', :controller => '/assignments', :course => @course, :action => 'view', :id => @assignment, :assignment => nil %></p>
 
+<%= render :partial => 'group' %>
+
 <% if !@assignment.closed? && @assignment.enable_upload %>
 
 <%= render :partial => 'agwarning' %>
@@ -108,7 +110,8 @@
 <table class="fancy">
   <tr class="header">
     <th>#</th>
-    <th>Previous Set (Last Updated Time)</th>    
+    <th>Previous Set (Last Updated Time)</th>   
+    <% if @team %><th>Creator</th><% end %> 
     <th>Archived</th>
     <th>Finalized</th>
     <th>View</th>
@@ -125,6 +128,7 @@
     <td><%=h ut.updated_at.to_formatted_s(:long) %>
       <% if ut.id == @current_turnin.id %><b>current</b> <%end%>
     </td>
+    <% if @team %><td><%= ut.user.display_name %></td><% end %>
     <td><% if ut.sealed %> <%= image_tag 'accept' %> <% else %> <%= image_tag 'cross' %> <% end %></td>
     <td><% if ut.finalized %> <%= image_tag 'accept' %> <% else %> <%= image_tag 'cross' %> <% end %></td>
     <td><%= link_to 'View', :action => 'view', :id => ut.id %></td>

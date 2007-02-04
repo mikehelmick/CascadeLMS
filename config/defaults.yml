@@ -1,4 +1,4 @@
-version: 0.3.2 (Discount Fireworks) 20070202
+version: 0.3.3 (Discount Fireworks) 20070204
 title: Miami University
 
 organization: Miami University
@@ -28,7 +28,7 @@ subversion_command: /usr/local/bin/svn
 
 # either ldap or basic
 #authtype: basic
-authtype: ldap
+authtype: basic
 # the setting below need to be filled in if LDAP is being used
 #ldapserver: 127.0.0.1
 ldapserver: ldapsun1.muohio.edu

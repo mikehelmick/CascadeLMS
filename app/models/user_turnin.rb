@@ -1,11 +1,16 @@
 class UserTurnin < ActiveRecord::Base
   belongs_to :assignment
   belongs_to :user
-  acts_as_list :scope => :user
   
   has_many :user_turnin_files, :order => "position asc", :dependent => :destroy
   
   has_many :io_check_results, :dependent => :destroy
+  
+  belongs_to :project_team
+  
+  def team_turnin?
+    return !project_team_id.nil?
+  end
   
   def get_dir( dir )
     "#{dir}/term/#{assignment.course.term.id}/course/#{assignment.course.id}/turnins/#{user.uniqueid}/assignment_#{assignment.id}/turnin_#{self.id}"  
