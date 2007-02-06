@@ -400,7 +400,7 @@ class TurninsController < ApplicationController
     @utf.directory_entry = false
     @utf.directory_parent = nested.id
     @utf.filename = FileManager.base_part_of( file_field.original_filename )
-    @utf.extension = @utf.filename.split('.').last.downcase
+    @utf.extension = @utf.filename.split('.').last.downcase rescue @utf.extension = ''
     @utf.user = @user
 
     mover = UserTurninFile.get_parent( @current_turnin.user_turnin_files, @utf )

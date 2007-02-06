@@ -45,7 +45,12 @@
 %>
   <tr class="<%=odd%> hover" id="document_<%=document.id%>">
     <td><%= document.position %></td>
-    <td><%= image_tag "#{document.icon_file}", :align => 'absmiddle' %> <%=h document.title %></td>
+    <td><%= image_tag "#{document.icon_file}", :align => 'absmiddle' %>
+      <% if document.folder %>
+        <%= link_to "#{h document.title}", :action => 'index', :id => document %>
+	  <% else %>
+	    <%=h document.title %>
+	  <% end %></td>
     <td><% unless document.folder %><%=h document.size_text %><% end %>&nbsp;</td>
     <td><%=h document.published %></td>
     <td><%=h document.created_at.to_formatted_s(:long) %></td>
