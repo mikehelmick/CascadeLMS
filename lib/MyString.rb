@@ -15,6 +15,11 @@ class String
     return html
   end
   
+  def non_span_space_convert
+    html = self.to_html
+    html.gsub(/<span&nbsp;class=/,"<span class=")
+  end
+  
   def newline_to_break
      html = ""
      0.upto(self.size-1) do |i|

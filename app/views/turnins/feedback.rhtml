@@ -93,7 +93,7 @@
 				 <% if @student_io_check[check.id].nil? %>
 				   <b><%= image_tag 'flag_red' %>No output found for this test.</b>
 				 <% else %>
-		  		    <%= @student_io_check[check.id].diff_report.newline_to_break %>
+		  		    <%= @student_io_check[check.id].diff_report.non_span_space_convert %>
 				 <% end %>
 				
 				<div class="standout">Viewing Diff Output.</div>
