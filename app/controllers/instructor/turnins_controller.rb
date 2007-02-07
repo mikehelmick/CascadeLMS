@@ -31,7 +31,12 @@ class Instructor::TurninsController < Instructor::InstructorBase
       # see if turnins
       @turnin_sets = Hash.new
       @students.each do |s|
-        @turnin_sets[s.id] = UserTurnin.count( :conditions => ["user_id=? and assignment_id=?", s.id, @assignment.id ] ) > 0
+        if @assignment.team_project
+          team = @course.team_for_user( s.id )
+          @turnin_sets[s.id] = UserTurnin.count( :conditions => ["project_team_id=? and assignment_id=?", team.id, @assignment.id ] ) > 0
+        else 
+          @turnin_sets[s.id] = UserTurnin.count( :conditions => ["user_id=? and assignment_id=?", s.id, @assignment.id ] ) > 0
+        end
         @any_turnins = @any_turnins || @turnin_sets[s.id]
       end
     end
@@ -100,8 +105,14 @@ class Instructor::TurninsController < Instructor::InstructorBase
       redirect_to :action => 'index'
     end
     
-    # get turn-in sets
-    @turnins = UserTurnin.find(:all, :conditions => ["user_id=? and assignment_id=?", @student.id, @assignment.id ], :order => "position DESC" )
+    @turnins = Array.new
+    if @assignment.team_project
+      team = @course.team_for_user( @student.id )
+      @turnins = UserTurnin.find(:all, :conditions => ["project_team_id=? and assignment_id=?", team.id, @assignment.id ], :order => "position DESC" )
+    else
+      # get turn-in sets
+      @turnins = UserTurnin.find(:all, :conditions => ["user_id=? and assignment_id=?", @student.id, @assignment.id ], :order => "position DESC" )
+    end
     @current_turnin = @turnins[0] rescue @current_turnin = nil
    
     if @current_turnin.user_turnin_files.size == 1
@@ -127,8 +138,14 @@ class Instructor::TurninsController < Instructor::InstructorBase
       redirect_to :action => 'index'
     end
     
-    # get turn-in sets
-    @turnins = UserTurnin.find(:all, :conditions => ["user_id=? and assignment_id=?", @student.id, @assignment.id ], :order => "position DESC" )
+    @turnins = Array.new
+    if @assignment.team_project
+      team = @course.team_for_user( @student.id )
+      @turnins = UserTurnin.find(:all, :conditions => ["project_team_id=? and assignment_id=?", team.id, @assignment.id ], :order => "position DESC" )
+    else
+      # get turn-in sets
+      @turnins = UserTurnin.find(:all, :conditions => ["user_id=? and assignment_id=?", @student.id, @assignment.id ], :order => "position DESC" )
+    end
     @current_turnin = @turnins[0] rescue @current_turnin = nil
     
     unless @current_turnin.nil?
@@ -180,7 +197,13 @@ class Instructor::TurninsController < Instructor::InstructorBase
     @journals = Journal.find(:all, :conditions => ["user_id=? and assignment_id=?", @student.id, @assignment.id ], :order => "start_time ASC" )
    
     # get turn-in sets
-    @turnins = UserTurnin.find(:all, :conditions => ["user_id=? and assignment_id=?", @student.id, @assignment.id ], :order => "position DESC" )
+    @turnins = Array.new
+    if @assignment.team_project
+      @turnins = UserTurnin.find(:all, :conditions => ["project_team_id=? and assignment_id=?", @team.id, @assignment.id ], :order => "position DESC" )
+    else
+      # get turn-in sets
+      @turnins = UserTurnin.find(:all, :conditions => ["user_id=? and assignment_id=?", @student.id, @assignment.id ], :order => "position DESC" )
+    end
     @current_turnin = @turnins[0] rescue @current_turnin = nil
     @display_turnin = @current_turnin
     
@@ -278,15 +301,30 @@ class Instructor::TurninsController < Instructor::InstructorBase
     
     FileUtils.mkdir_p( "#{temp_dir}#{file_tmp_dir}" )
     
-    students = @course.students
-    # copy turnins
-    students.each do |s|
-      uts = UserTurnin.find(:first, :conditions => ["user_id=? and assignment_id=?", s.id, @assignment.id ], :order => "created_at desc" )
-      FileUtils.mkdir_p( "#{temp_dir}#{file_tmp_dir}/#{s.uniqueid}" )
-      unless uts.nil?
-        dir = uts.get_dir("#{@app['external_dir']}")
-        command = "cd #{dir}; cp -R * #{temp_dir}#{file_tmp_dir}/#{s.uniqueid}"
-        result = `#{command} 2>&1`
+    if @assignment.team_project
+      teams = @course.project_teams
+      # copy turnins for each team
+      teams.each do |t|
+        uts = UserTurnin.find(:first, :conditions => ["project_team_id=? and assignment_id=?", t.id, @assignment.id ], :order => "created_at desc" )
+        FileUtils.mkdir_p( "#{temp_dir}#{file_tmp_dir}/#{t.team_id}" )
+        unless uts.nil?
+          dir = uts.get_team_dir("#{@app['external_dir']}", t )
+          command = "cd #{dir}; cp -R * #{temp_dir}#{file_tmp_dir}/#{t.team_id}"
+          result = `#{command} 2>&1`
+        end
+      end
+    
+    else
+      students = @course.students
+      # copy turnins
+      students.each do |s|
+        uts = UserTurnin.find(:first, :conditions => ["user_id=? and assignment_id=?", s.id, @assignment.id ], :order => "created_at desc" )
+        FileUtils.mkdir_p( "#{temp_dir}#{file_tmp_dir}/#{s.uniqueid}" )
+        unless uts.nil?
+          dir = uts.get_dir("#{@app['external_dir']}")
+          command = "cd #{dir}; cp -R * #{temp_dir}#{file_tmp_dir}/#{s.uniqueid}"
+          result = `#{command} 2>&1`
+        end
       end
     end
     
@@ -332,7 +370,12 @@ class Instructor::TurninsController < Instructor::InstructorBase
     tf.save_until = Time.now + 60*24*24
     tf.save
     
-    directory = @turnin.get_dir( @app['external_dir'] )
+    if @assignment.team_project
+      team = @turnin.project_team
+      directory = @turnin.get_team_dir( @app['external_dir'], team )
+    else
+      directory = @turnin.get_dir( @app['external_dir'] )
+    end
     last_part = directory[directory.rindex('/')+1...directory.size]
     first_part = directory[0...directory.rindex('/')]
     
@@ -367,7 +410,12 @@ class Instructor::TurninsController < Instructor::InstructorBase
     return unless turnin_for_assignment( @turnin, @assignment )
     
     # get the file and download it :)
-    directory = @turnin.get_dir( @app['external_dir'] )
+    if @assignment.team_project
+      team = @turnin.project_team
+      directory = @turnin.get_team_dir( @app['external_dir'], team )
+    else
+      directory = @turnin.get_dir( @app['external_dir'] )
+    end
     
     # resolve file name
     relative_name = @utf.filename
@@ -477,7 +525,13 @@ class Instructor::TurninsController < Instructor::InstructorBase
     return unless student_in_course( @course, @student )
     
     # get turn-in sets
-    @turnins = UserTurnin.find(:all, :conditions => ["user_id=? and assignment_id=?", @student.id, @assignment.id ], :order => "position DESC" )
+    if @assignment.team_project
+      @team = @course.team_for_user( @student.id )
+      @turnins = UserTurnin.find(:all, :conditions => ["project_team_id=? and assignment_id=?", @team.id, @assignment.id ], :order => "position DESC" )
+    else
+      @turnins = UserTurnin.find(:all, :conditions => ["user_id=? and assignment_id=?", @student.id, @assignment.id ], :order => "position DESC" )
+    end
+    
     @current_turnin = @turnins[0] rescue @current_turnin = nil
     @display_turnin = @current_turnin
     return unless turnin_for_assignment( @current_turnin, @assignment )   
@@ -506,18 +560,35 @@ class Instructor::TurninsController < Instructor::InstructorBase
     t = Time.now
     batch = "#{t.strftime( "%Y%m%d%H%M%S" )}u#{@user.id}"
     
+    if @assignment.team_project
+      teams = @course.project_teams
+      teams.each do |team|
+        @turnins = UserTurnin.find(:all, :conditions => ["project_team_id=? and assignment_id=?", team.id, @assignment.id ], :order => "position DESC" )
+        @current_turnin = @turnins[0] rescue @current_turnin = nil
+
+        if ! @current_turnin.nil?
+          queue = GradeQueue.new
+          queue.user = @user
+          queue.assignment = @assignment
+          queue.user_turnin = @current_turnin
+          queue.batch = batch
+          queue.save
+        end
+      end
     
-    @students.each do |student|
-      @turnins = UserTurnin.find(:all, :conditions => ["user_id=? and assignment_id=?", student.id, @assignment.id ], :order => "position DESC" )
-      @current_turnin = @turnins[0] rescue @current_turnin = nil
-      
-      if ! @current_turnin.nil?
-        queue = GradeQueue.new
-        queue.user = @user
-        queue.assignment = @assignment
-        queue.user_turnin = @current_turnin
-        queue.batch = batch
-        queue.save
+    else
+      @students.each do |student|
+        @turnins = UserTurnin.find(:all, :conditions => ["user_id=? and assignment_id=?", student.id, @assignment.id ], :order => "position DESC" )
+        @current_turnin = @turnins[0] rescue @current_turnin = nil
+
+        if ! @current_turnin.nil?
+          queue = GradeQueue.new
+          queue.user = @user
+          queue.assignment = @assignment
+          queue.user_turnin = @current_turnin
+          queue.batch = batch
+          queue.save
+        end
       end
     end
       
@@ -537,7 +608,12 @@ class Instructor::TurninsController < Instructor::InstructorBase
     return unless student_in_course( @course, @student )
     
     # get turn-in sets
-    @turnins = UserTurnin.find(:all, :conditions => ["user_id=? and assignment_id=?", @student.id, @assignment.id ], :order => "position DESC" )
+    if @assignment.team_project
+      @team = @course.team_for_user( @student.id )
+      @turnins = UserTurnin.find(:all, :conditions => ["project_team_id=? and assignment_id=?", @team.id, @assignment.id ], :order => "position DESC" )
+    else
+      @turnins = UserTurnin.find(:all, :conditions => ["user_id=? and assignment_id=?", @student.id, @assignment.id ], :order => "position DESC" )
+    end
     @current_turnin = @turnins[0] rescue @current_turnin = nil
     return unless turnin_for_assignment( @current_turnin, @assignment )   
     
@@ -594,7 +670,12 @@ class Instructor::TurninsController < Instructor::InstructorBase
       @expand = true
     end
     
-    directory = @turnin.get_dir( @app['external_dir'] )
+    if @assignment.team_project
+      team = @turnin.project_team
+      directory = @turnin.get_team_dir( @app['external_dir'], team )
+    else
+      directory = @turnin.get_dir( @app['external_dir'] )
+    end
     
     # resolve file name
     relative_name = @utf.filename

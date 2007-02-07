@@ -247,7 +247,12 @@ class AutoGradeWorker < BackgrounDRb::Worker::RailsBase
 
         # user turnin - has the directory
         user_turnin = queue.user_turnin
-        dir = user_turnin.get_dir( ApplicationController.external_dir )
+        assignment = user_turnin.assignment 
+        if assignment.team_project
+          dir = user_turnin.get_team_dir( ApplicationController.external_dir, user_turnin.project_team )
+        else
+          dir = user_turnin.get_dir( ApplicationController.external_dir )
+        end
 
         logger.info("Beginning grading on files in the directory = #{dir}")
 

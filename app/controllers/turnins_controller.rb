@@ -79,6 +79,7 @@ class TurninsController < ApplicationController
     tf.save
     
     directory = @turnin.get_dir( @app['external_dir'] )
+    directory = @turnin.get_team_dir( @app['external_dir'], @team ) unless @team.nil?
     last_part = directory[directory.rindex('/')+1...directory.size]
     first_part = directory[0...directory.rindex('/')]
     
@@ -121,6 +122,7 @@ class TurninsController < ApplicationController
     
     # get the file and download it :)
     directory = @turnin.get_dir( @app['external_dir'] )
+    directory = @turnin.get_team_dir( @app['external_dir'], @team ) unless @team.nil?
     
     # resolve file name
     relative_name = @utf.filename
@@ -241,7 +243,8 @@ class TurninsController < ApplicationController
     
       # save and create directories
       # @user.save ## should be no reason to save the user
-      ut.make_dir( @app['external_dir'] )
+      ut.save
+      ut.make_dir( @app['external_dir'], @team )
       ut.user_turnin_files << utf
       ut.save
       @current_turnin.save unless @current_turnin.nil?
@@ -299,7 +302,7 @@ class TurninsController < ApplicationController
     end
     
     UserTurnin.transaction do
-      @current_turnin.make_sub_dir( @app['external_dir'], fname )
+      @current_turnin.make_sub_dir( @app['external_dir'], fname, @team )
       @current_turnin.user_turnin_files << utf
       @current_turnin.save
     
@@ -412,7 +415,11 @@ class TurninsController < ApplicationController
     end
     # dir - is the name of the directory on the file system
     
-    dir_name = "#{@current_turnin.get_dir(@app['external_dir'])}/#{dir_name}"
+    if @team.nil?
+      dir_name = "#{@current_turnin.get_dir(@app['external_dir'])}/#{dir_name}"
+    else
+      dir_name = "#{@current_turnin.get_team_dir( @app['external_dir'], @team )}/#{dir_name}"
+    end
     
     #puts "DIR NAME: #{dir_name}"
     

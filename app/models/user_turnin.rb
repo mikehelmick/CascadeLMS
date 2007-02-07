@@ -16,6 +16,10 @@ class UserTurnin < ActiveRecord::Base
     "#{dir}/term/#{assignment.course.term.id}/course/#{assignment.course.id}/turnins/#{user.uniqueid}/assignment_#{assignment.id}/turnin_#{self.id}"  
   end
   
+  def get_team_dir( dir, team )
+    "#{dir}/term/#{assignment.course.term.id}/course/#{assignment.course.id}/turnins/team_#{team.id}/assignment_#{assignment.id}/turnin_#{self.id}"  
+  end
+  
   def any_java_files?
     self.user_turnin_files.each do |utf|
       return true if utf.extension.eql?('java')
@@ -100,13 +104,15 @@ class UserTurnin < ActiveRecord::Base
     
   end
   
-  def make_sub_dir( dir, chain ) 
+  def make_sub_dir( dir, chain, team = nil ) 
     fs_path = "#{get_dir( dir )}/#{chain}"
+    fs_path = "#{get_team_dir( dir, team )}/#{chain}" unless team.nil?
     FileUtils.mkdir_p( fs_path )
   end
     
-  def make_dir( dir )
+  def make_dir( dir, team = nil )
     fs_path = get_dir(dir)
+    fs_path = get_team_dir( dir, team ) unless team.nil?
     FileUtils.mkdir_p( fs_path )
   end
   

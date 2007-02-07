@@ -154,7 +154,7 @@ class AssignmentsController < ApplicationController
         @user.user_turnins << ut
         @user.save
         
-        ut.make_dir( @app['external_dir'] )
+        ut.make_dir( @app['external_dir'], @team )
         
         @list_entries = svn.get_release_files( @user.uniqueid, params[:password], @assignment.subversion_server, path, ut.get_dir( @app['external_dir'] ) )
        

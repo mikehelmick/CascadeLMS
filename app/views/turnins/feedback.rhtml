@@ -149,6 +149,7 @@
 	  <p><i>Directory entry</i></p>
 	<% else %>
 	  <% directory = @current_turnin.get_dir( @app['external_dir'] )
+	     directory = @current_turnin.get_team_dir( @app['external_dir'], @team ) unless @team.nil?
 	     lines = FileManager.format_file( @app['enscript_command'], "#{directory}#{utf.full_filename( @directories )}", utf.extension )
 	     comment_hash = Hash.new
 	     comment_hash = utf.file_comments_hash if @assignment.released
