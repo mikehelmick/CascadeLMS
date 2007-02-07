@@ -34,6 +34,9 @@
 		<li><%= image_tag 'layout_content', :align => 'middle' %><%= link_to 'Team Wiki', :action => 'wiki', :id => team.id, :page => 'Home' %> |
 		    <%= image_tag 'folder', :align => 'middle' %><%= link_to 'Team Files', :action => 'files', :id => team.id %> |
 		    <%= image_tag 'email', :align => 'middle' %><%= link_to 'Team Email', :action => 'email', :id => team.id %></li>
+		<% for tm in team.team_members %>
+		  <li><%= tm.user.display_name %></li>
+		<% end %>
 	  </ul>
 	<% end %>
   </ul>
