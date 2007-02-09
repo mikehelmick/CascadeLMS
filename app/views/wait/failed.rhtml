@@ -2,7 +2,7 @@
   
   <p><b>Automatic Grading Failed.</b></p>
 
-  <p><b>Error Message: </b> <%= @queue.message %></p>
+  <p><b>Error Message: </b> <%= @queue.message.to_html %></p>
 
 <% if @user.id == @queue.user_turnin.user_id %>
 
