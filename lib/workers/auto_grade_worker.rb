@@ -172,7 +172,7 @@ class AutoGradeWorker < BackgrounDRb::Worker::RailsBase
         input_file.close
         
         ## run the program
-        ant_output = `#{app['ant']} -f #{dest_dir}/build.xml`
+        ant_output = `#{app['ant']} -f #{dest_dir}/build.xml 2>&1`
         logger.info("IO_C::#{queue.id} - ANT Output:: \n #{ant_output}")
         
         if ant_output.index('BUILD SUCCESSFUL').nil?
