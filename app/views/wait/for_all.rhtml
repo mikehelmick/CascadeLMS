@@ -34,6 +34,12 @@
 	    <td><% if queue.serviced %><%= image_tag 'accept' %><% end %>&nbsp;</td>
         <td><% if queue.failed %><%= image_tag 'exclamation' %><% end %>&nbsp;</td>
       </tr>
+
+      <% if queue.failed %>
+        <tr class="<%=odd%> hover" id="queue_<%=queue.id%>">
+	      <td colspan="7"><%= queue.message.to_html %></td>
+	    </tr>
+      <% end %>
     <% end %>
    	
   </table>  
