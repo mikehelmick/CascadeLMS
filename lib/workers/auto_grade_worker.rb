@@ -179,6 +179,10 @@ class AutoGradeWorker < BackgrounDRb::Worker::RailsBase
           throw "Error during ANT script execution of your code: \n #{ant_output}"
         end
 
+        if !ant_output.index('Timeout: killed the sub-process').nil?
+          throw "Process killed - infinite loop is likely cause: \n #{ant_output}"
+        end
+
         ## Read output from from disk
         user_output = ''
         File.open( "#{dest_dir}#{vars.output}" ).each do |line|
