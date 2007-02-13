@@ -31,9 +31,9 @@ class GradesController < ApplicationController
       cat_max_points = Hash.new
       @grade_items.each do |gi|
         if cat_max_points[gi.grade_category_id].nil?
-          cat_max_points[gi.grade_category_id] = gi.points
+          cat_max_points[gi.grade_category_id] = gi.points if gi.visible
         else
-          cat_max_points[gi.grade_category_id] += gi.points
+          cat_max_points[gi.grade_category_id] += gi.points if gi.visible
         end
       end
       
