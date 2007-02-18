@@ -778,6 +778,13 @@ a img {
 	padding: 10px 10px 10px 10px;
 }
 
+.menuout {
+	background: #EDEBD6;
+	border: 1px solid #000;
+	margin: 5px 1px 5px 1px;
+	padding: 5px 1px 5px 10px;
+}
+
 .standout a {
 	color: #0000FF;
 }

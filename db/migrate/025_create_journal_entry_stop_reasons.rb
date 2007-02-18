@@ -5,7 +5,7 @@ class CreateJournalEntryStopReasons < ActiveRecord::Migration
       t.column :journal_stop_reason_id, :integer
       # t.column :name, :string
     end
-    add_index(:journal_entry_stop_reasons, [:journal_id, :journal_stop_reason_id], :unique => true)
+    add_index(:journal_entry_stop_reasons, [:journal_id, :journal_stop_reason_id], :unique => true, :name => 'journal_stop_reasons_idx')
   end
 
   def self.down

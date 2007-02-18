@@ -1,5 +1,27 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
-first:
+student:
   id: 1
-another:
+  uniqueid: testuser
+  password: testuser
+  preferred_name: T.U.
+  first_name: Test
+  middle_name: A.
+  last_name: User
+  instructor: false
+  admin: false
+  affiliation: Student
+  personal_title: Mr.
+  email: testuser@system.com
+instructor:
   id: 2
+  uniqueid: instructor
+  password: instructor
+  preferred_name: Teach
+  first_name: Im
+  middle_name: A.
+  last_name: Teacher
+  instructor: true
+  admin: false
+  affiliation: Faculty
+  personal_title: Mr.
+  email: instructor@system.com

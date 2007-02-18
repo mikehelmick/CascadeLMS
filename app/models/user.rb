@@ -1,7 +1,8 @@
+require 'digest/sha1'
+
 class User < ActiveRecord::Base
   validates_uniqueness_of :uniqueid
-  validates_presence_of :uniqueid, :on => :create
-  validates_presence_of :password
+  validates_presence_of :uniqueid, :password, :first_name, :last_name, :email
   validates_format_of :email, :with => /^([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})$/i, :on => :create
   
   has_many :courses_users

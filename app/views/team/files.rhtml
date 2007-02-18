@@ -1,9 +1,11 @@
 <%= render :partial => 'emailhead' %>
+<div class="menuout">
+  <%= image_tag 'page_add' %> <%= link_to 'Upload a new file.', :action => 'file_new', :id => @team.id %>
+</div>
+
 <hr/>
 
 <h2>Shared files for team <%= @team.name %></h2>
-
-<p><%= image_tag 'page_add' %> <%= link_to 'Upload a new file.', :action => 'file_new', :id => @team.id %></p>
 
 <% if @documents.size == 0 %>
   <p><i>There are no shared files for this team.</i></p>

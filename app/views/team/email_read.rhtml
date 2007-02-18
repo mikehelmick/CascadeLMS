@@ -13,6 +13,6 @@
 	<b><%= @email.subject %></b>
 </div></div>
 
-<div class="Section">
-<%= @email.message.to_html %>
-</div>
+<div class="Section" width="90%"><p>
+<%= @email.message.newline_to_break %>
+</p></div>

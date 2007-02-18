@@ -53,7 +53,7 @@ end
 # Include your application configuration below
 
 # Include your application configuration below
-ActionMailer::Base.server_settings = {
+ActionMailer::Base.smtp_settings = {
   :address  => 'mailfwd.muohio.edu',
   :port  => 25, 
   :domain  => 'muohio.edu'

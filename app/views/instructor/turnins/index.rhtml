@@ -62,14 +62,16 @@
 	  <% if @assignment.team_project %>
 	    <td>
 	      <% unless @team_members[student.id].nil? %>
-	        <%= @team_members[student.id] %>
+	        <%= "#{@team_members[student.id].name} (#{@team_members[student.id].team_id})" %>
 	      <% else %>
 	        <%= image_tag 'error' %>
 	      <% end %>
 	    </td>
 	  <% end %>
 
-	  <% if @assignment.use_subversion %>
+	  <% if @assignment.use_subversion && @assignment.team_project %>
+	    <td><a href="<%=@assignment.subversion_server%><%=@assignment.development_path_replace( student.uniqueid, @team_members[student.id] )%>" target="_blank">dev</a> | <a href="<%=@assignment.subversion_server%><%=@assignment.release_path_replace( student.uniqueid, @team_members[student.id] )%>"  target="_blank">rel</a></td>
+	  <% elsif @assignment.use_subversion %>
 	    <td><a href="<%=@assignment.subversion_server%><%=@assignment.development_path_replace( student.uniqueid )%>" target="_blank">dev</a> | <a href="<%=@assignment.subversion_server%><%=@assignment.release_path_replace( student.uniqueid )%>"  target="_blank">rel</a></td>
 	  <% end %>
 

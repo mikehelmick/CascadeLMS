@@ -8,7 +8,7 @@ class GradeReQueueWorker < BackgrounDRb::Worker::RailsBase
     # This method is called in it's own new thread when you
     # call new worker. args is set to :args
     
-    time = Time.now - 3.minutes
+    time = Time.now - 5.minutes
     
     items = GradeQueue.find(:all, :conditions => ["acknowledged = ? and serviced = ? and updated_at < ?", true, false, time], :order => "updated_at asc" ) rescue item = nil
 

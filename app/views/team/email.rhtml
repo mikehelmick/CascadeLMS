@@ -1,10 +1,11 @@
 <%= render :partial => 'emailhead' %>
-
+<div class="menuout">
+  <%= image_tag 'email_edit', :align => 'middle' %> <%= link_to 'Send new email', :action => 'email_compose', :id => @team, :course => @course %>
+</div>
 <hr/>
 
 <h2>Email for team '<%= @team.name %>'</h2>
 
-<p><%= image_tag 'email_edit', :align => 'middle' %> <%= link_to 'Send new email', :action => 'email_compose', :id => @team, :course => @course %></p>
 
 <% if @emails.size == 0 %>
  <p><i>There are no past emails for this team.</i></p>

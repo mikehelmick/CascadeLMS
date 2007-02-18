@@ -132,9 +132,9 @@
 		  
 		  <% if @user && @user.admin %>
 		    <% if @tab.nil? || !@tab.eql?('administration') %>
-		      <li style="padding-left: 25px"><%= link_to 'Administration', :controller => '/admin' %>
+		      <li style="padding-left: 25px"><%= link_to 'Administration', :controller => '/admin', :course => nil %>
 		    <% else %>
-		      <li style="padding-left: 25px"><%= link_to 'Administration', { :controller => '/admin' }, { :id => 'current' } %></li>
+		      <li style="padding-left: 25px"><%= link_to 'Administration', { :controller => '/admin', :course => nil }, { :id => 'current' } %></li>
 		    <% end %>
 
 		    
@@ -171,9 +171,13 @@
 		
 		 <div class="bottom">&nbsp;</div>
 		 <div id="Footer">
-		   Copyright &copy; 2006 <a href="http://www.users.muohio.edu/helmicmt/">Mike Helmick</a> | <%= link_to "Credits", :controller => "/index", :action => 'credits' %> |
+		   Copyright &copy; 2006 - 2007 <a href="http://www.users.muohio.edu/helmicmt/">Mike Helmick</a> | <%= link_to "Credits", :controller => "/index", :action => 'credits' %> |
 		   <a href="http://www.users.muohio.edu/helmicmt/cscw/">Computer Science Courseware v<%=@app['version']%></a><br/>
-		   Installed for <%=@app['title']%>, Site contact: <a href="mailto:<%=@app['email']%>"><%=@app['email']%></a>
+		   Installed for <%=@app['title']%>, Site contact: <a href="mailto:<%=@app['email']%>"><%=@app['email']%></a> <br/>
+		
+		   <% unless session[:user].nil? %>
+		   Powered by Ruby v<%= RUBY_VERSION %> and Ruby on Rails v<%= Rails::VERSION::STRING %> 
+		   <% end %>
 		 </div>
 	  </div>
 	</td>

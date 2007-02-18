@@ -120,9 +120,9 @@
 		  
 		  <% if @user && @user.admin %>
 		    <% if @tab.nil? || !@tab.eql?('administration') %>
-		      <li style="padding-left: 25px"><%= link_to 'Administration', :controller => '/admin' %>
+		      <li style="padding-left: 25px"><%= link_to 'Administration', :controller => '/admin', :course => nil %>
 		    <% else %>
-		      <li style="padding-left: 25px"><%= link_to 'Administration', { :controller => '/admin' }, { :id => 'current' } %></li>
+		      <li style="padding-left: 25px"><%= link_to 'Administration', { :controller => '/admin', :course => nil }, { :id => 'current' } %></li>
 		    <% end %>
 
 		    

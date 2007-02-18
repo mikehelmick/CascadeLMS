@@ -24,10 +24,8 @@ development:
 test:
   adapter: mysql
   database: cscourseware_test
-  username: cscourseware
-  password: dev3005
-  host: 127.0.0.1
-  port: 4000
+  username: mhelmick
+  host: localhost
 
 production:
   adapter: mysql

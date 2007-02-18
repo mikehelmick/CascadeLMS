@@ -56,7 +56,7 @@ class Instructor::TurninsController < Instructor::InstructorBase
       # load teams
       @teams = Hash.new
       teams = ProjectTeam.find(:all, :conditions => ["course_id = ?", @course.id] )
-      teams.each { |t| @teams[t.id] = "#{t.name} (#{t.team_id})" }
+      teams.each { |t| @teams[t.id] = t }
       
       # load members
       @team_members = Hash.new
