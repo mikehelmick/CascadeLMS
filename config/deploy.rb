@@ -15,7 +15,7 @@ set :application, "cscourseware"
 set :svn_user, "mhelmick"
 set :svn_password, ""
 set :repository,
-  Proc.new { "--username #{svn_user} " +    
+  Proc.new { "--username #{svn_user} --password #{svn_password} " +    
              "https://mikehelmick.com/svn/cscourseware/trunk" }
 
 

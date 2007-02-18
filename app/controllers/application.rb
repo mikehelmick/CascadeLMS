@@ -1,3 +1,4 @@
+require 'action_controller'
 require 'BasicAuthentication'
 require 'LdapAuthentication'
 require 'yaml'
@@ -7,7 +8,7 @@ require 'MyString'
 # Likewise, all the methods added will be available for all controllers.
 class ApplicationController < ActionController::Base
   
-  layout 'application'
+  layout 'application' rescue puts "couldn't load default layout"
   
   before_filter :app_config, :browser_check
   after_filter :pull_msg
