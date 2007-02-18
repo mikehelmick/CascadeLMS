@@ -10,7 +10,7 @@ class GradeReQueueWorker < BackgrounDRb::Worker::RailsBase
     
     time = Time.now - 5.minutes
     
-    items = GradeQueue.find(:all, :conditions => ["acknowledged = ? and serviced = ? and updated_at < ?", true, false, time], :order => "updated_at asc" ) rescue item = nil
+    items = GradeQueue.find(:all, :conditions => ["acknowledged = ? and serviced = ? and updated_at < ?", true, false, time], :order => "updated_at asc" ) rescue items = Array.new
 
     items.each do |item|
         item.queued = false

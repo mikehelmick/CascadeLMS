@@ -28,9 +28,9 @@ set :repository,
 # be used to single out a specific subset of boxes in a particular role, like
 # :primary => true.
 
-role :web, "my.csamu.org", "my.csamu.org"
-role :app, "my.csamu.org", "my.csamu.org", "my.csamu.org"
-role :db,  "my.csamu.org", :primary => true
+role :web, "my.csi.muohio.edu"
+role :app, "my.csi.muohio.edu"
+role :db,  "my.csi.muohio.edu", :primary => true
 
 # =============================================================================
 # OPTIONAL VARIABLES
