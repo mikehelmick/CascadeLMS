@@ -75,13 +75,16 @@
 	      <%= link_to_function "new", visual_effect(:toggle_slide, "comments_line_#{line_num}" ) %>	      
 	    <% end %>
 	  </td>
-	    <% style_color = "has_style" 
-	       for fs in @styles[line_num]
-		     style_color = "hidden_style" if fs.suppressed
-		   end
+	    <% style_color = ""
+		   if @styles[line_num]
+	         style_color = "has_style" 
+	         for fs in @styles[line_num]
+		       style_color = "hidden_style" if fs.suppressed
+		     end
+	       end
 	     %>
 	
-	  <td align="center" id="style_<%=line_num%>" <%= "class=\"#{style_style}\"" if @styles[line_num] %>>
+	  <td align="center" id="style_<%=line_num%>" <%= "class=\"#{style_color}\"" if @styles[line_num] %>>
 		<% if @styles[line_num] %>
 		  <%= link_to_function "view - #{@styles[line_num].size}", visual_effect(:toggle_appear, "style_line_#{line_num}") %>
 		<% end %>
