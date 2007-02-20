@@ -730,6 +730,10 @@ a img {
 	background: #FF0084;
 }
 
+.hidden_style {
+	background: #F3B802;
+}
+
 .code {
 	background: #EEEEEE;
 	border: 1px solid #84CA82;

@@ -75,7 +75,13 @@
 	      <%= link_to_function "new", visual_effect(:toggle_slide, "comments_line_#{line_num}" ) %>	      
 	    <% end %>
 	  </td>
-	  <td align="center" id="style_<%=line_num%>" <%= 'class="has_style"' if @styles[line_num] %>>
+	    <% style_color = "has_style" 
+	       for fs in @styles[line_num]
+		     style_color = "hidden_style" if fs.suppressed
+		   end
+	     %>
+	
+	  <td align="center" id="style_<%=line_num%>" <%= "class=\"#{style_style}\"" if @styles[line_num] %>>
 		<% if @styles[line_num] %>
 		  <%= link_to_function "view - #{@styles[line_num].size}", visual_effect(:toggle_appear, "style_line_#{line_num}") %>
 		<% end %>
@@ -109,7 +115,7 @@
           style_style = ''
         end %>
       <tr id="style_line_<%=line_num%>" style="<%= style_style %>">
-	    <td colspan="4" class="has_style">
+	    <td colspan="4" class="<%= style_color %>">
 		   	<% for fs in @styles[line_num] %>
 	            <div class="codestyle">
 		           <i>PMD Code Style:</i> From line <%= fs.begin_line %>:<%= fs.begin_column %> to line <%= fs.end_line %>:<%= fs.end_column %><br/>
