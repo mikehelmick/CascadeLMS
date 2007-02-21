@@ -66,8 +66,10 @@ class WaitController < ApplicationController
       end
       
       redirect_to :controller => '/turnins', :course => @queue.assignment.course, :assignment => @queue.assignment
-      
+    else
+      redirect_to :action => 'grade', :course => @queue.assignment.course, :assignment => @queue.assignment, :id => @queue.id
     end
+    
   end
 
 end

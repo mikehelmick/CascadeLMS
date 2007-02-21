@@ -43,6 +43,12 @@ class AttendanceController < ApplicationController
       return
     end
     
+    if params[:key].nil?
+      flash[:badnotice] = "You must enter an attendance key.  The attendance key is provided by your instructor."
+      redirect_to :action => 'index', :course => @course
+      return
+    end
+    
     attendance = ClassAttendance.find(:first, :conditions => ["class_period_id = ? and user_id = ?", @current_period.id, @user.id] )
     
     if attendance.nil? || !attendance.correct_key
