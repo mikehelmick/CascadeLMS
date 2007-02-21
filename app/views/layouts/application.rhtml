@@ -61,7 +61,7 @@
 		
 		  <% else %>
 		
-		    <li><%= link_to 'Home', :controller => '/home' %></li>     
+		    <li><%= link_to 'Home', :controller => '/home', :course => nil, :assignment => nil %></li>     
 		    <% if @tab.nil? || !@tab.eql?('course_overview') %>
 		          <li><%= link_to 'Overview', :controller => '/overview', :course => @course %></a></li> 
 		    <% else %>
