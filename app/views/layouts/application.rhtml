@@ -54,9 +54,9 @@
 		
 		  <% if @show_course_tabs.nil? || !@show_course_tabs %>
 		    <% if @tab.nil? || !@tab.eql?('home') %>
-		      <li><%= link_to 'Home', :controller => '/home' %></li>
+		      <li><%= link_to 'Home', :controller => '/home', :course => nil, :assignment => nil %></li>
 		    <% else %>
-		      <li><%= link_to 'Home', { :controller => '/home' }, { :id => 'current' } %></li>
+		      <li><%= link_to 'Home', { :controller => '/home', :course => nil, :assignment => nil }, { :id => 'current' } %></li>
 		    <% end %>
 		
 		  <% else %>
