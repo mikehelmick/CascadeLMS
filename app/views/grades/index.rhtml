@@ -35,9 +35,9 @@
 		<td align="center" class="cell" colspan="3">
 			Assignment
 			<% if  @grade_map[grade_item.id].nil? %>
-			  <%= image_tag 'cross' %> Incomplete
+			  <%= image_tag 'cross.png' %> Incomplete
 			<% else %>
-			  <%= image_tag 'accept' %> Complete
+			  <%= image_tag 'accept.png' %> Complete
 			<% end %>
 		</td>
       <% elsif grade_item.display_type.eql?( GradeItem::shown_type( GradeItem::PERCENTAGE ) ) %>
@@ -51,7 +51,7 @@
 
       <td align="right" class="cell">
         <% if @grade_map[grade_item.id].nil? %>
-          <i>No Grade Reported</i> <%= image_tag 'bullet_error' %>
+          <i>No Grade Reported</i> <%= image_tag 'bullet_error.png' %>
         <% else %>
           <%= sprintf("%.1f", @grade_map[grade_item.id].to_f ) %>
         <% end %>

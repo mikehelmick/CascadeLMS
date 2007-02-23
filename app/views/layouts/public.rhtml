@@ -31,42 +31,42 @@
 
 	<ul id="navlist">
 		<% if session[:user].nil? %>
-			<li><%= link_to "Login", { :controller => '/' } %></li>
+			<li><%= link_to "Login", { :controller => '/', :course => nil, :assignment => nil } %></li>
 	    <% else %>
-			<li><%= link_to 'Home', :controller => '/home' %></li>
+			<li><%= link_to 'Home', :controller => '/home', :course => nil, :assignment => nil %></li>
 		<% end %>
 		
 		<% if @tab.nil? || !@tab.eql?('public') %>
-		    <li><%= link_to 'Public Courses', :controller => '/public', :course => nil %></a></li> 
+		    <li><%= link_to 'Public Courses', :controller => '/public', :course => nil, :assignment => nil %></a></li> 
 		<% else %>
-            <li><%= link_to 'Public Courses', { :controller => '/public', :course => nil }, { :id => 'current' } %></li>		
+            <li><%= link_to 'Public Courses', { :controller => '/public', :course => nil, :assignment => nil }, { :id => 'current' } %></li>		
 		<% end %>
 		
 		<% unless @show_course_tabs.nil? || !@show_course_tabs %>
 		  	<% if @tab.nil? || !@tab.eql?('course_overview') %>
-		        <li><%= link_to 'Overview', :controller => '/public/overview', :course => @course %></a></li> 
+		        <li><%= link_to 'Overview', :controller => '/public/overview', :course => @course, :assignment => nil %></a></li> 
 		    <% else %>
-                <li><%= link_to 'Overview', { :controller => '/public/overview', :course => @course }, { :id => 'current' } %></li>		
+                <li><%= link_to 'Overview', { :controller => '/public/overview', :course => @course, :assignment => nil }, { :id => 'current' } %></li>		
 		    <% end %>
 		
 		    <% if @course.course_setting.enable_blog %>
 	    	<% if @tab.nil? || !@tab.eql?('course_blog') %>
-		      <li><%= link_to 'Course Blog', :controller => '/public/blog', :course => @course %></li> 
+		      <li><%= link_to 'Course Blog', :controller => '/public/blog', :course => @course, :assignment => nil %></li> 
 		    <% else %>
-              <li><%= link_to 'Course Blog', { :controller => '/public/blog', :course => @course }, { :id => 'current' } %></li>
+              <li><%= link_to 'Course Blog', { :controller => '/public/blog', :course => @course, :assignment => nil }, { :id => 'current' } %></li>
             <% end %>
             <% end %>
 
             <% if @tab.nil? || !@tab.eql?('course_documents') %>
-              <li><%= link_to 'Documents', :controller => '/public/documents', :course =>@course %></li>
+              <li><%= link_to 'Documents', :controller => '/public/documents', :course =>@course, :assignment => nil %></li>
             <% else %>
-              <li><%= link_to 'Documents', { :controller => '/public/documents', :course =>@course }, { :id => 'current' } %></li>
+              <li><%= link_to 'Documents', { :controller => '/public/documents', :course =>@course, :assignment => nil }, { :id => 'current' } %></li>
             <% end %>
 
 			<% if @tab.nil? || !@tab.eql?('course_assignments') %>
-		 	  <li><%= link_to 'Assignments', :controller => '/public/assignments', :course => @course %></li>
+		 	  <li><%= link_to 'Assignments', :controller => '/public/assignments', :course => @course, :assignment => nil %></li>
 			<% else %>
-			  <li><%= link_to 'Assignments', { :controller => '/public/assignments', :course => @course }, { :id => 'current' } %></li>
+			  <li><%= link_to 'Assignments', { :controller => '/public/assignments', :course => @course, :assignment => nil }, { :id => 'current' } %></li>
 			<% end %>
 
 		<% end %>
@@ -96,9 +96,13 @@
 		
 		 <div class="bottom">&nbsp;</div>
 		 <div id="Footer">
-		   Copyright &copy; 2006 <a href="http://www.users.muohio.edu/helmicmt/">Mike Helmick</a> | <%= link_to "Credits", :controller => "/index", :action => 'credits' %> |
+		   Copyright &copy; 2006 - 2007 <a href="http://www.users.muohio.edu/helmicmt/">Mike Helmick</a> | <%= link_to "Credits", :controller => "/index", :action => 'credits' %> |
 		   <a href="http://www.users.muohio.edu/helmicmt/cscw/">Computer Science Courseware v<%=@app['version']%></a><br/>
-		   Installed for <%=@app['title']%>, Site contact: <a href="mailto:<%=@app['email']%>"><%=@app['email']%></a>
+		   Installed for <%=@app['title']%>, Site contact: <a href="mailto:<%=@app['email']%>"><%=@app['email']%></a> <br/>
+
+		   <% unless session[:user].nil? %>
+		   Powered by Ruby v<%= RUBY_VERSION %> and Ruby on Rails v<%= Rails::VERSION::STRING %> 
+		   <% end %>
 		 </div>
 	  </div>
 	</td>

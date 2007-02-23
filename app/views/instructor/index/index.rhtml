@@ -9,37 +9,37 @@
 
   <% if @user.instructor_in_course?( @course.id ) %>
   <tr>
-	<td><%= link_to "#{image_tag 'cog', :align => 'absmiddle'} Course Information", :controller => '/instructor/course_info', :course => @course %></td>
-	<td><%= link_to "#{image_tag 'cog', :align => 'absmiddle'} Course Users", :controller => '/instructor/course_users', :course => @course %></td>
+	<td><%= link_to "#{image_tag 'cog.png', :align => 'absmiddle'} Course Information", :controller => '/instructor/course_info', :course => @course %></td>
+	<td><%= link_to "#{image_tag 'cog.png', :align => 'absmiddle'} Course Users", :controller => '/instructor/course_users', :course => @course %></td>
   </tr>
   <tr>
-	<td><%= link_to "#{image_tag 'cog', :align => 'absmiddle'} Course Documents", :controller => '/instructor/course_docs', :course => @course %></td>
-	<td><%= link_to "#{image_tag 'cog', :align => 'absmiddle'} Send Email", :controller => '/instructor/email', :course => @course %></td>
+	<td><%= link_to "#{image_tag 'cog.png', :align => 'absmiddle'} Course Documents", :controller => '/instructor/course_docs', :course => @course %></td>
+	<td><%= link_to "#{image_tag 'cog.png', :align => 'absmiddle'} Send Email", :controller => '/instructor/email', :course => @course %></td>
   </tr>
   <tr>
-	<td><%= link_to "#{image_tag 'cog', :align => 'absmiddle'} Assignments", :controller => '/instructor/course_assignments', :course => @course %></td>
-	<td><%= link_to "#{image_tag 'cog', :align => 'absmiddle'} Course Blog", :controller => '/instructor/blog', :course => @course %></td>
+	<td><%= link_to "#{image_tag 'cog.png', :align => 'absmiddle'} Assignments", :controller => '/instructor/course_assignments', :course => @course %></td>
+	<td><%= link_to "#{image_tag 'cog.png', :align => 'absmiddle'} Course Blog", :controller => '/instructor/blog', :course => @course %></td>
   </tr>
   <tr> 
     <td>
 	<% if @course.course_setting.enable_gradebook %>
-	  <%= link_to "#{image_tag 'cog', :align => 'absmiddle'} Gradebook", :controller => '/instructor/course_gradebook', :course => @course %>
+	  <%= link_to "#{image_tag 'cog.png', :align => 'absmiddle'} Gradebook", :controller => '/instructor/course_gradebook', :course => @course %>
 	<% end %>
 	</td>
-	<td><%= link_to "#{image_tag 'cog', :align => 'absmiddle'} Settings", :controller => '/instructor/course_setting', :course => @course %></td>
+	<td><%= link_to "#{image_tag 'cog.png', :align => 'absmiddle'} Settings", :controller => '/instructor/course_setting', :course => @course %></td>
   </tr>
   <% else %>
   <tr>
 	<td>
 		<% if @course.course_setting.ta_course_information %>
-		  <%= link_to "#{image_tag 'cog', :align => 'absmiddle'} Course Information", :controller => '/instructor/course_info', :course => @course %>
+		  <%= link_to "#{image_tag 'cog.png', :align => 'absmiddle'} Course Information", :controller => '/instructor/course_info', :course => @course %>
 		<% else %>
 		  <%= image_tag 'cancel', :align => 'absmiddle' %><s>Course Information</s>
 		<% end %>
 	</td>
 	<td>
 		<% if @course.course_setting.ta_course_users %>
-	  	  <%= link_to "#{image_tag 'cog', :align => 'absmiddle'} Course Users", :controller => '/instructor/course_users', :course => @course %>
+	  	  <%= link_to "#{image_tag 'cog.png', :align => 'absmiddle'} Course Users", :controller => '/instructor/course_users', :course => @course %>
 	    <% else %>
 	      <%= image_tag 'cancel', :align => 'absmiddle' %><s>Course Users</s>
 	    <% end %>
@@ -48,14 +48,14 @@
   <tr>
 	<td>
 		<% if @course.course_setting.ta_course_documents %>
-		  <%= link_to "#{image_tag 'cog', :align => 'absmiddle'} Course Documents", :controller => '/instructor/course_docs', :course => @course %>
+		  <%= link_to "#{image_tag 'cog.png', :align => 'absmiddle'} Course Documents", :controller => '/instructor/course_docs', :course => @course %>
 		<% else %>
 		  <%= image_tag 'cancel', :align => 'absmiddle' %><s>Course Documents</s>
 		<% end %>
 	</td>
 	<td>
 		<% if @course.course_setting.ta_send_email %>
-		  <%= link_to "#{image_tag 'cog', :align => 'absmiddle'} Send Email", :controller => '/instructor/email', :course => @course %>
+		  <%= link_to "#{image_tag 'cog.png', :align => 'absmiddle'} Send Email", :controller => '/instructor/email', :course => @course %>
 		<% else %>
 		  <%= image_tag 'cancel', :align => 'absmiddle' %><s>Send Email</s>
 		<% end %>
@@ -64,14 +64,14 @@
   <tr>
 	<td>
 		<% if @course.course_setting.ta_course_assignments || @course.course_setting.ta_view_student_files || @course.course_setting.ta_course_assignments %>
-		  <%= link_to "#{image_tag 'cog', :align => 'absmiddle'} Assignments", :controller => '/instructor/course_assignments', :course => @course %> 
+		  <%= link_to "#{image_tag 'cog.png', :align => 'absmiddle'} Assignments", :controller => '/instructor/course_assignments', :course => @course %> 
 		<% else %>
 		  <%= image_tag 'cancel', :align => 'absmiddle' %><s>Assignments</s>
 		<% end %>
 	</td>
 	<td>
 		<% if @course.course_setting.ta_course_blog_post %>
-		  <%= link_to "#{image_tag 'cog', :align => 'absmiddle'} Course Blog", :controller => '/instructor/blog', :course => @course %>
+		  <%= link_to "#{image_tag 'cog.png', :align => 'absmiddle'} Course Blog", :controller => '/instructor/blog', :course => @course %>
 		<% else %>
 		  <%= image_tag 'cancel', :align => 'absmiddle' %><s>Course Blog</s>
 		<% end %>
@@ -80,14 +80,14 @@
   <tr> 
     <td>
 	    <% if @course.course_setting.ta_course_gradebook %>
-	      <%= link_to "#{image_tag 'cog', :align => 'absmiddle'} Gradebook", :controller => '/instructor/course_gradebook', :course => @course %>
+	      <%= link_to "#{image_tag 'cog.png', :align => 'absmiddle'} Gradebook", :controller => '/instructor/course_gradebook', :course => @course %>
 	    <% else %>
 	      <%= image_tag 'cancel', :align => 'absmiddle' %><s>Gradebook</s>
 	    <% end %>
 	</td>
     <td>
 	  	<% if @course.course_setting.ta_course_settings %>
-		  <%= link_to "#{image_tag 'cog', :align => 'absmiddle'} Settings", :controller => '/instructor/course_setting', :course => @course %>
+		  <%= link_to "#{image_tag 'cog.png', :align => 'absmiddle'} Settings", :controller => '/instructor/course_setting', :course => @course %>
 		<% else %>
 		  <%= image_tag 'cancel', :align => 'absmiddle' %><s>Settings</s>
 		<% end %>
@@ -97,14 +97,14 @@
 
   <% if @course.course_setting.enable_project_teams && @user.instructor_in_course?(@course.id)%>
   <tr>
-	<td><%= link_to "#{image_tag 'cog', :align => 'absmiddle'} Project Teams", :controller => '/instructor/teams', :course => @course %></td>
+	<td><%= link_to "#{image_tag 'cog.png', :align => 'absmiddle'} Project Teams", :controller => '/instructor/teams', :course => @course %></td>
     <td>&nbsp;</td>
   </tr>
   <% end %>
 
   <% if @course.course_setting.enable_attendance %>
   <tr>
-    <td><%= link_to "#{image_tag 'cog', :align => 'absmiddle'} Attendance", :controller => '/instructor/attendance', :course => @course %></td>
+    <td><%= link_to "#{image_tag 'cog.png', :align => 'absmiddle'} Attendance", :controller => '/instructor/attendance', :course => @course %></td>
     <td>&nbsp;</td>
   </tr>
   <% end %>
@@ -120,9 +120,9 @@
   <tr>
     <td><p>
       <% if @course.open %>
-        <b>This course is open.</b><%= image_tag 'accept' %>
+        <b>This course is open.</b><%= image_tag 'accept.png' %>
       <% else %>
-        <b>This course is in archive status.</b><%= image_tag 'cross' %>
+        <b>This course is in archive status.</b><%= image_tag 'cross.png' %>
       <% end %> (<%= link_to 'Change', :action => 'toggle_open' %>)</p>
       <p>An <b>open</b> course is one which can still be updated (add new blog posts, comments, documents, and assignments).   A course in archive status allows for information to be read, but no information can be updated.   It is recommended that courses no longer taking place are put into archive status.</p>
     </td>
@@ -130,9 +130,9 @@
   <tr>
     <td>
       <% if @course.public %>
-        <b>This course is visible to the public.</b><%= image_tag 'accept' %>
+        <b>This course is visible to the public.</b><%= image_tag 'accept.png' %>
       <% else %>
-        <b>This course is hidden from the public.</b><%= image_tag 'cross' %>
+        <b>This course is hidden from the public.</b><%= image_tag 'cross.png' %>
       <% end %> (<%= link_to 'Change', :action => 'toggle_public' %>)</p>
       <p>If a course is visible to the public, any internet user can view the course content, including: <b>blog posts, documents, and assignments</b>.  All student information (including blog comments) are kept hidden from the public in order to protect the identity of students.   <i>Making this information available will allow you to distribute information to the greater public in an easy manner.</i></p>
     </td>

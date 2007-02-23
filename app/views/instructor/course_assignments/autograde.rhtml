@@ -19,7 +19,7 @@
   <%= radio_button 'auto_grade_setting', 'style', false %> No</p>
 
 <% if @auto_grade_setting.student_style || @auto_grade_setting.style %>
- <p><%= image_tag 'cog' %> <%= link_to 'Enable/Disable specific PMD tests.', :action => 'pmd_settings', :id => @assignment %></p>
+ <p><%= image_tag 'cog.png' %> <%= link_to 'Enable/Disable specific PMD tests.', :action => 'pmd_settings', :id => @assignment %></p>
 <% end %>
 </div>
 
@@ -33,7 +33,7 @@
    <%= radio_button 'auto_grade_setting', 'io_check', false %> No</p>
 
 <% if @auto_grade_setting.student_io_check || @auto_grade_setting.io_check %>
- <p><%= image_tag 'cog' %> <%= link_to 'Configure I/O Tests.', :controller => '/instructor/assignment_io_checks', :action => 'index', :course => @course, :assignment => @assignment %></p>
+ <p><%= image_tag 'cog.png' %> <%= link_to 'Configure I/O Tests.', :controller => '/instructor/assignment_io_checks', :action => 'index', :course => @course, :assignment => @assignment %></p>
 <% end %>
 </div>
 

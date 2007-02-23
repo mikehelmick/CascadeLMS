@@ -6,7 +6,7 @@
       </p>
       <p>You may choose to override this assessment if you deem the operations in this file 'safe' and would allow them to be run on the server.</p>
 	  
-	  <h3><%= image_tag 'error_go' %>
+	  <h3><%= image_tag 'error_go.png' %>
 	    <%= link_to_remote 'I have reviewed this file and the operations mentioned above are safe for execution on the server.', :url => { :action => "toggle_gradable_override", :id => @utf.id, :course => @course, :assignment => @assignment, :student => @student }, :update => :gradable_override, :failure => "alert('HTTP Error on remote call, try again.');" %>	
 	  </h3>
 	  </div>	
@@ -16,7 +16,7 @@
 		    <b><%= @utf.gradable_message.to_html %>
 	      </p>
 	
-	  	<h3><%= image_tag 'error_delete' %>
+	  	<h3><%= image_tag 'error_delete.png' %>
 		   	<%= link_to_remote 'This file is not safe, remove the manual override from this file and prohibit execution on the server.', :url => { :action => "toggle_gradable_override", :id => @utf.id, :course => @course, :assignment => @assignment, :student => @student }, :update => :gradable_override, :failure => "alert('HTTP Error on remote call, try again.');"  %>
 		
 		</h3>

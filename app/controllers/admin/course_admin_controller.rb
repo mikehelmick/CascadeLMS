@@ -52,10 +52,19 @@ class Admin::CourseAdminController < ApplicationController
       crn.name = @course.title
       crn.save
       @course.crns << crn
-    
+      
     else
       puts "C"
-      @course.crns << Crn.find(:first, :conditions => ["crn = ?", 'NONE'] )
+      begin
+        @course.crns << Crn.find(:first, :conditions => ["crn = ?", 'NONE'] ) 
+      rescue
+        crn = Crn.new
+        crn.crn='NONE'
+        crn.name='NONE'
+        crn.title='NONE'
+        crn.save
+        @course.crns << crn
+      end
       
     end
   

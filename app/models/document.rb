@@ -51,7 +51,11 @@ class Document < ActiveRecord::Base
       return "/ #{self.title} / #{append}"
     else
       parent = Document.find( self.document_parent )
-      return relative_path( "#{self.title} / #{append}" )
+      if parent.nil?
+        return append
+      else
+        return parent.relative_path( "#{self.title} / #{append}" )
+      end
     end
   end
   

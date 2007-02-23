@@ -12,7 +12,7 @@
 <p>This file is marked as the Java main class for this turn-in.   This gives you the option to simply compile and run this single file.  If you need to pull in more source files, consider configuring AutoGrade for this assignment.</p>
 <p>Before compiling and running this file - please check the file for malicious code (deletion/creation of files, network usage, System.exec, infinite loops).  <b>Code that expects more input than is provided will not terminate.</b></p>
 
-<%= start_form_tag( {:course => @course, :assignment => @assignment, :student => @student, :action => 'view_file', :id => @utf }, :onsubmit => "new Element.toggle('button', 'spinner');" ) %>
+<%= start_form_tag( {:course => @course, :assignment => @assignment, :student => @student, :action => 'view_file', :id => @utf }, :onsubmit => "new Element.toggle('button');new Element.toggle( 'spinner');" ) %>
   <%= hidden_field_tag 'execute_java', true %>
 <p>
 

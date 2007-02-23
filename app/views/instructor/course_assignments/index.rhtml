@@ -34,8 +34,8 @@
 	    </td>
 	    <td nowrap="nowrap">
 	      <% if @user.instructor_in_course?(@course.id) || (@user.assistant_in_course?(@course.id) && @course.course_setting.ta_course_assignments) %>
-	        <%= link_to "#{image_tag 'page_edit', :align => 'absmiddle'} #{h assignment.title}", :action => 'edit', :id => assignment %>
-	        <% if assignment.team_project %><%= image_tag 'group' %><% end %>
+	        <%= link_to "#{image_tag 'page_edit.png', :align => 'absmiddle'} #{h assignment.title}", :action => 'edit', :id => assignment %>
+	        <% if assignment.team_project %><%= image_tag 'group.png' %><% end %>
 	        <%if assignment.auto_grade %><br/> <%= link_to 'AutoGrade Settings', :action => 'autograde', :course => @course, :id => assignment.id %> <% end %>
 	      <% else %>
 	        <%= h assignment.title %>
@@ -45,19 +45,19 @@
 	
 		<td align="right" nowrap="nowrap">
 		  <% if assignment.grade_item.nil? %>
-		    No Link <%= image_tag 'link_break' %>
+		    No Link <%= image_tag 'link_break.png' %>
 		  <% elsif assignment.released %>
-	        Yes <%= image_tag 'lightbulb' %>
+	        Yes <%= image_tag 'lightbulb.png' %>
 	      <% else %>
-	        No <%= image_tag 'lightbulb_off' %>
+	        No <%= image_tag 'lightbulb_off.png' %>
 	      <% end %>
 		</td>
 	
 	    <td nowrap="nowrap"><%=h assignment.grade_category.category %></td>
 	    <td nowrap="nowrap">
-	    <% if assignment.upcoming? %><%= image_tag 'clock_error' %>
-	    <% elsif assignment.current? %><%= image_tag 'clock' %>
-	    <% else %><%= image_tag 'clock_red' %>
+	    <% if assignment.upcoming? %><%= image_tag 'clock_error.png' %>
+	    <% elsif assignment.current? %><%= image_tag 'clock.png' %>
+	    <% else %><%= image_tag 'clock_red.png' %>
 	    <% end %>
 	
 	    <%= assignment.open_date.to_formatted_s(:long) %></td>

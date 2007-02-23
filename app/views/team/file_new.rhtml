@@ -6,7 +6,7 @@
 <%= error_messages_for 'document' %>
 
 <div id="form_area">
-<%= start_form_tag( { :action => 'file_upload', :id => @team.id }, :multipart => true, :onsubmit => "new Element.toggle('button', 'spinner');" ) %>
+<%= start_form_tag( { :action => 'file_upload', :id => @team.id }, :multipart => true, :onsubmit => "new Element.toggle('button');new Element.toggle( 'spinner');" ) %>
 
 <p><label for="file">File:</label>
 <%= file_field_tag "file" %></p>

@@ -7,7 +7,7 @@
 <% end %>
 
 <div id="form_area">
-<%= start_form_tag( { :action => 'create', :id => @folder_id }, :multipart => true, :onsubmit => "new Element.toggle('button', 'spinner');" ) %>
+<%= start_form_tag( { :action => 'create', :id => @folder_id }, :multipart => true, :onsubmit => "new Element.toggle('button');new Element.toggle('spinner');" ) %>
   <%= render :partial => 'form' %>
 
 <div class="submit">

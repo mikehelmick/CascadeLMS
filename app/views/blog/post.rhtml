@@ -30,7 +30,7 @@
 <div class="Comment" id="comment_<%=comment.id%>">
   <p class="commentAuthor"><a name="comment_<%=comment.id%>">Left by</a> <%=h comment.user.display_name %> @ <%=h comment.created_at.to_formatted_s(:long) %>
  <% if @user.instructor_in_course?(@course.id) || (@user.assistant_in_course?(@course.id) && @course.course_setting.ta_course_blog_edit ) %>
-<%= link_to_remote( "#{image_tag('pencil_delete', :align => 'absmiddle')} Delete Comment", :url => { :controller => '/instructor/blog', :action => 'delete_comment', :course => @course.id, :post => @post.id, :id => comment.id }, :confirm => "Delete comment?", :success => "new Effect.Puff( 'comment_#{comment.id}' )", :failure => "alert('There was an error deleting the comment.');" ) %>
+<%= link_to_remote( "#{image_tag('pencil_delete.png', :align => 'absmiddle')} Delete Comment", :url => { :controller => '/instructor/blog', :action => 'delete_comment', :course => @course.id, :post => @post.id, :id => comment.id }, :confirm => "Delete comment?", :success => "new Effect.Puff( 'comment_#{comment.id}' )", :failure => "alert('There was an error deleting the comment.');" ) %>
  <% end %>
 </p>
   <p class="commentBody">

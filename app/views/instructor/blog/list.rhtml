@@ -40,10 +40,10 @@
     </td>
     <td>
       <% if @course.open %>
-<%= link_to "#{image_tag('pencil', :align => 'absmiddle')} Edit", :action => 'edit', :id => post %> |
-<%= link_to_remote( "#{image_tag('pencil_delete', :align => 'absmiddle')} Delete", :url => { :action => 'destroy', :course => @course.id, :id => post }, :confirm => "Delete blog post #{post.title} and #{pluralize(com_count, 'comment')} associated with it?", :success => "new Effect.Puff( 'post_#{post.id}' )", :failure => "alert('There was an error deleting the blog post.');" ) %>
+<%= link_to "#{image_tag('pencil.png', :align => 'absmiddle')} Edit", :action => 'edit', :id => post %> |
+<%= link_to_remote( "#{image_tag('pencil_delete.png', :align => 'absmiddle')} Delete", :url => { :action => 'destroy', :course => @course.id, :id => post }, :confirm => "Delete blog post #{post.title} and #{pluralize(com_count, 'comment')} associated with it?", :success => "new Effect.Puff( 'post_#{post.id}' )", :failure => "alert('There was an error deleting the blog post.');" ) %>
       <% else %>
-        <s><%= image_tag 'pencil' %> Edit | <%= image_tag 'pencil_delete' %> Delete</s>
+        <s><%= image_tag 'pencil.png' %> Edit | <%= image_tag 'pencil_delete.png' %> Delete</s>
       <% end %>
     </td>
   </tr>

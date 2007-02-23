@@ -23,36 +23,36 @@
 	  <tr class="<%=odd%> hover" id="assignment_<%=assignment.id%>">
 	    <td align="right"><%= link_to "#{h assignment.position}", :action => 'view', :id => assignment %></td>
 	    <td nowrap="nowrap"><%= link_to "#{h assignment.title}", :action => 'view', :id => assignment %>
-		  <% if assignment.team_project %><%= image_tag 'group' %><% end %>
+		  <% if assignment.team_project %><%= image_tag 'group.png' %><% end %>
 		</td>
 	    <td><%=h assignment.grade_category.category %></td>
 	    <% if !public %>
 	    <td nowrap="nowrap" align="right">
 	      <% if assignment.released && !assignment.grade_item.nil? %>
-	        <%= link_to 'Yes', :controller => '/turnins', :course => @course, :assignment => assignment, :action => 'feedback' %><%= image_tag 'lightbulb' %>
+	        <%= link_to 'Yes', :controller => '/turnins', :course => @course, :assignment => assignment, :action => 'feedback' %><%= image_tag 'lightbulb.png' %>
 	      <% else %>
-	        <%= link_to 'No', :controller => '/turnins', :course => @course, :assignment => assignment, :action => 'feedback' %> <%= image_tag 'lightbulb_off' %>
+	        <%= link_to 'No', :controller => '/turnins', :course => @course, :assignment => assignment, :action => 'feedback' %> <%= image_tag 'lightbulb_off.png' %>
 	      <% end %>
 	    </td>
 	    <td nowrap="nowrap" align="right">
 	      <% if assignment.released && !assignment.grade_item.nil? %>
 	        <% gi =  @user.grade_for_grade_item(assignment.grade_item) %>
 	        <%if gi.nil? %>
-	          <acronym title="no grade yet"><%= image_tag 'bullet_error' %></acronym>/<%= assignment.grade_item.points %>
+	          <acronym title="no grade yet"><%= image_tag 'bullet_error.png' %></acronym>/<%= assignment.grade_item.points %>
 	        <% else %>
 	          <%= gi.points %>/<%= assignment.grade_item.points %>
 	        <% end %>
 	      <% elsif !assignment.grade_item.nil? %>
-	        <acronym title="no grade yet"><%= image_tag 'bullet_error' %></acronym>/<%= assignment.grade_item.points %>
+	        <acronym title="no grade yet"><%= image_tag 'bullet_error.png' %></acronym>/<%= assignment.grade_item.points %>
 	      <% else %>
 	        &nbsp;
 	      <% end %>
 	    </td>
 	    <% end %>
 	    <td nowrap="nowrap">
-	    <% if assignment.upcoming? %><%= image_tag 'clock_error', :align => 'absmiddle' %>
-	    <% elsif assignment.current? %><%= image_tag 'clock', :align => 'absmiddle' %>
-	    <% else %><%= image_tag 'clock_red', :align => 'absmiddle' %>
+	    <% if assignment.upcoming? %><%= image_tag 'clock_error.png', :align => 'absmiddle' %>
+	    <% elsif assignment.current? %><%= image_tag 'clock.png', :align => 'absmiddle' %>
+	    <% else %><%= image_tag 'clock_red.png', :align => 'absmiddle' %>
 	    <% end %>
 	      <%= assignment.open_date.to_formatted_s(:long) %>
 	    </td>

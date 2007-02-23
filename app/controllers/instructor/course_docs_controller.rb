@@ -111,7 +111,7 @@ class Instructor::CourseDocsController < Instructor::InstructorBase
       end
       
       flash[:notice] = 'Document was successfully updated.'
-      redirect_to :action => 'index', :id => @document
+      redirect_to :action => 'index', :id => @document.document_parent
     else
       render :action => 'edit'
     end

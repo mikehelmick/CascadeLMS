@@ -6,7 +6,7 @@
 
 <div id="form_area">
 
-<%= start_form_tag( { :action => 'update', :id => @assignment }, :multipart => true, :onsubmit => "new Element.toggle('button', 'spinner');" ) %>
+<%= start_form_tag( { :action => 'update', :id => @assignment }, :multipart => true, :onsubmit => "new Element.toggle('button'); new Element.toggle( 'spinner');" ) %>
 
   <%= render :partial => 'form', :locals => { :edit_mode => true } %>
 

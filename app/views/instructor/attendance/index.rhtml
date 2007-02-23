@@ -5,9 +5,9 @@
 <p><%= link_to "Back to Course", :controller => '/instructor/index', :course => @course %> |
 
 <% if @current_period %>
-   <%= image_tag 'door', :align => 'absmiddle' %> <%= link_to "Close the current class period", :action => 'close' %>, Key: <b><%=@current_period.key%></b></p>
+   <%= image_tag 'door.png', :align => 'absmiddle' %> <%= link_to "Close the current class period", :action => 'close' %>, Key: <b><%=@current_period.key%></b></p>
 <% else %>
-   <%= image_tag 'door_open', :align => 'absmiddle' %> <%= link_to "Open a new class period.", :action => 'open' %></p>
+   <%= image_tag 'door_open.png', :align => 'absmiddle' %> <%= link_to "Open a new class period.", :action => 'open' %></p>
 <% end %>
 
 

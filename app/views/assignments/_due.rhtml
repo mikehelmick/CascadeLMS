@@ -1,7 +1,7 @@
 <% if @assignment.close_date <= @now %>
-  <div class="errorExplanation"><%= image_tag 'clock_red' %> <b>This assignment is past due and late submissions are not being accepted.</b></div>
+  <div class="errorExplanation"><%= image_tag 'clock_red.png' %> <b>This assignment is past due and late submissions are not being accepted.</b></div>
 <% elsif @assignment.due_date <= @now and @assignment.close_date >= @now %>
-  <div class="errorExplanation"><%= image_tag 'clock_red' %> <b>This assignment is past due and late submissions are still being accepted.</b></div>
+  <div class="errorExplanation"><%= image_tag 'clock_red.png' %> <b>This assignment is past due and late submissions are still being accepted.</b></div>
 <% else %>
-  <div class="GoodMessage"><%= image_tag 'clock' %> <b>This assignment is due in <%= distance_of_time_in_words_to_now( @assignment.due_date, true ) %></b></div>
+  <div class="GoodMessage"><%= image_tag 'clock.png' %> <b>This assignment is due in <%= distance_of_time_in_words_to_now( @assignment.due_date, true ) %></b></div>
 <% end %>

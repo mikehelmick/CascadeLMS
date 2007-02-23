@@ -17,7 +17,7 @@ class GradeReQueueWorker < BackgrounDRb::Worker::RailsBase
         item.acknowledged = false
         item.serviced = false
         item.save
-        logger.info("Requeue of item, id=#{item.id}, idle longer then 3 minutes")
+        logger.info("Requeue of item, id=#{item.id}, idle longer then 5 minutes")
     end
     
     if items.size

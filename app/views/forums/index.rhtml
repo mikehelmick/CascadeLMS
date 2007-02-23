@@ -1,6 +1,6 @@
 
 <% if @user.instructor_in_course?(@course.id) %>
-<p><%= link_to "#{image_tag 'layout_add'} Create new forum", :course => @course, :action => 'new_forum' %></p>
+<p><%= link_to "#{image_tag 'layout_add.png'} Create new forum", :course => @course, :action => 'new_forum' %></p>
 <% end %>
 
 <% if @topics.size == 0 %>
@@ -26,19 +26,19 @@
 	     odd = "even" if count.even? %> 
     <tr class="<%=odd%> hover" id="topic_<%=topic.id%>">
 	  <td nowrap="nowrap" align="left"><%= link_to "#{h topic.topic}", :action => 'view_topic', :course => @course, :id => topic.id %>
-	    <% unless topic.allow_posts %> <i> <%= image_tag 'door' %> forum closed</i><% end %>	
+	    <% unless topic.allow_posts %> <i> <%= image_tag 'door.png' %> forum closed</i><% end %>	
 	  </td>
 	  <td nowrap="nowrap" align="left"><%=h topic.user.display_name %></td>
 	  <td nowrap="nowrap" align="left"><%= distance_of_time_in_words_to_now( topic.last_post, true ) %> ago</td>
 	  <td nowrap="nowrap" align="left"><%= topic.post_count %></td>
 	  <% if @user.instructor_in_course?(@course.id) %>
 	    <td nowrap="nowrap" align="left">
-		  <%= link_to "#{image_tag 'arrow_up'} Move Up", :action => 'move_up', :id => topic %> |
-		  <%= link_to "#{image_tag 'arrow_down'} Move Down", :action => 'move_down', :id => topic %> |
+		  <%= link_to "#{image_tag 'arrow_up.png'} Move Up", :action => 'move_up', :id => topic %> |
+		  <%= link_to "#{image_tag 'arrow_down.png'} Move Down", :action => 'move_down', :id => topic %> |
 		  <% if topic.allow_posts %>
-		    <%= link_to "#{image_tag 'door_open'} Close Topic", :action => 'toggle_open', :id => topic %>
+		    <%= link_to "#{image_tag 'door_open.png'} Close Topic", :action => 'toggle_open', :id => topic %>
 		  <% else %>
-		    <%= link_to "#{image_tag 'door'} Open Topic", :action => 'toggle_open', :id => topic %>
+		    <%= link_to "#{image_tag 'door.png'} Open Topic", :action => 'toggle_open', :id => topic %>
 		  <% end %>
 	    </td>
 	  <% end %>

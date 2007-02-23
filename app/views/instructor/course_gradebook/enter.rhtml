@@ -30,7 +30,7 @@
 	<td><%= student.display_name %></td>
 	<td class="cell">
 	  	<% if @grade_matrix[student.id].nil? %>
-	      <acronym title="no grade entered"><%= image_tag 'bullet_error' %></acronym>
+	      <acronym title="no grade entered"><%= image_tag 'bullet_error.png' %></acronym>
 	    <% else %>
 	      <%= @grade_matrix[student.id] %>
 	    <% end %>

@@ -52,7 +52,7 @@
 
 <% if !@assignment.closed? && @assignment.enable_upload && !@current_turnin.sealed%>
 <div id="form_area">
-  <%= start_form_tag( { :action => "finalize" }, :onsubmit => "new Element.toggle('finalize_button', 'finalize_spinner');" ) %>
+  <%= start_form_tag( { :action => "finalize" }, :onsubmit => "new Element.toggle('finalize_button');new Element.toggle( 'finalize_spinner');" ) %>
   <p class="blockintro">Finalize</p>
   <div class="block">
 	  <div id="finalize_button"><%= submit_tag "Finalize This Turn-In Set" %>
@@ -72,7 +72,7 @@
 <div id="form_area">
 
   <%= error_messages_for 'utf' %>
-  <%= start_form_tag( { :action => "upload_file" }, :multipart => true, :onsubmit => "new Element.toggle('f_button', 'f_spinner');" ) %>
+  <%= start_form_tag( { :action => "upload_file" }, :multipart => true, :onsubmit => "new Element.toggle('f_button'); new Element.toggle( 'f_spinner');" ) %>
 
    <p class="blockintro">Upload a new file.  <i>Files can not be deleted or updated, if the need arises please create a new turn-in set.</i></p>
    <div class="block">

@@ -6,10 +6,10 @@
 <tr>
   <td class="poster" nowrap="nowrap" valign="top" align="left">
     <p><b><%= post.user.display_name %></b>
-	  <% if post.user.instructor_in_course?( @course.id ) %> <%= image_tag 'user_suit' %> <br/> instructor
-	  <% elsif post.user.assistant_in_course?( @course.id ) %> <%= image_tag 'user_gray' %> <br/> assistant
-	  <% elsif post.user.student_in_course?( @course.id ) %> <%= image_tag 'user' %> <br/> student
-	  <% else %> <%= image_tag 'user_red' %> <br/> guest
+	  <% if post.user.instructor_in_course?( @course.id ) %> <%= image_tag 'user_suit.png' %> <br/> instructor
+	  <% elsif post.user.assistant_in_course?( @course.id ) %> <%= image_tag 'user_gray.png' %> <br/> assistant
+	  <% elsif post.user.student_in_course?( @course.id ) %> <%= image_tag 'user.png' %> <br/> student
+	  <% else %> <%= image_tag 'user_red.png' %> <br/> guest
 	  <% end %>
 	  <br/>
 	  
@@ -42,14 +42,14 @@
 		   %>
 		  
 		  <% if since_post < 900 %>
-		    <%= link_to "Edit Post #{image_tag 'comment_edit'}", :action => 'edit', :parent => parent.id, :id => post.id %> (<i>for the next <%= distance_of_time_in_words( nowT, post.created_at + 900 ) %></i>)|
+		    <%= link_to "Edit Post #{image_tag 'comment_edit.png'}", :action => 'edit', :parent => parent.id, :id => post.id %> (<i>for the next <%= distance_of_time_in_words( nowT, post.created_at + 900 ) %></i>)|
 		  <% end %>
 		<% end %>
 		<% if @topic.allow_posts %>
-		  <%= link_to "Reply #{image_tag 'comment_add'}", :action => 'reply', :parent => parent.id, :id => post.id %>
+		  <%= link_to "Reply #{image_tag 'comment_add.png'}", :action => 'reply', :parent => parent.id, :id => post.id %>
 		<% end %>
 		<% if @user.instructor_in_course?( @course.id ) %>
-		  <%= link_to "Delete #{image_tag 'comment_delete'}", {:action => 'delete', :parent => parent.id, :id => post.id }, :confirm => "Delete post?" %>
+		  <%= link_to "Delete #{image_tag 'comment_delete.png'}", {:action => 'delete', :parent => parent.id, :id => post.id }, :confirm => "Delete post?" %>
 		<% end %>
 	</div>
 	<% end %>

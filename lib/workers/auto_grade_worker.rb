@@ -249,8 +249,6 @@ class AutoGradeWorker < BackgrounDRb::Worker::RailsBase
         queue.acknowledged = true
         queue.save
 
-        GradeQueue.transaction do
-
         # user turnin - has the directory
         user_turnin = queue.user_turnin
         assignment = user_turnin.assignment 
@@ -270,14 +268,14 @@ class AutoGradeWorker < BackgrounDRb::Worker::RailsBase
 
         app = ApplicationController.app
 
-        run_pmd( queue, user_turnin, dir, directories, app )
-        run_io_check( queue, user_turnin, dir, directories, app )
+        GradeQueue.transaction do
+          run_pmd( queue, user_turnin, dir, directories, app )
+          run_io_check( queue, user_turnin, dir, directories, app )
 
-        queue.serviced = true
-        queue.save
+          queue.serviced = true
+          queue.save
 
-        logger.info("Done with request #{args.to_i}")
-
+          logger.info("Done with request #{args.to_i}")
         end
       else
         logger.info("Request #{args.to_i} already acknowledged")

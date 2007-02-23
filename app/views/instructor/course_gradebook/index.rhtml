@@ -22,16 +22,16 @@
 	  <br/>
 	  <i><%= gi.grade_category.category %></i><br/>
 	  Points: <%= gi.points %><br/>
-	   <acronym title="Delete Item"><%= link_to "#{image_tag 'cross'}", { :action => 'delete_item', :course => @course, :id => gi.id}, :confirm => "Are you sure you want to delete the item '#{gi.name}'?  All entered student grade will be deleted.  This action can not be undone." %></acronym>
+	   <acronym title="Delete Item"><%= link_to "#{image_tag 'cross.png'}", { :action => 'delete_item', :course => @course, :id => gi.id}, :confirm => "Are you sure you want to delete the item '#{gi.name}'?  All entered student grade will be deleted.  This action can not be undone." %></acronym>
 	   <% if gi.visible %>
-	     <acronym title="Visible to Students"><%= image_tag 'picture_add' %></acronym>
+	     <acronym title="Visible to Students"><%= image_tag 'picture_add.png' %></acronym>
 	   <% else %>
-	     <acronym title="Hidden from Students"><%= image_tag 'picture_delete' %></acronym>
+	     <acronym title="Hidden from Students"><%= image_tag 'picture_delete.png' %></acronym>
 	   <% end %>
 	   <acronym title="Edit Item Information">
-	     <%= link_to "#{image_tag 'book_edit'}", :action => 'item', :course => @course, :id => gi.id %>
+	     <%= link_to "#{image_tag 'book_edit.png'}", :action => 'item', :course => @course, :id => gi.id %>
 	   </a>
-	   <acronym title="Enter Grades"><%= link_to "#{image_tag 'calculator'}", :action => 'enter', :course => @course, :id => gi.id %></a>
+	   <acronym title="Enter Grades"><%= link_to "#{image_tag 'calculator.png'}", :action => 'enter', :course => @course, :id => gi.id %></a>
 	    <% if @course.gradebook.weight_grades %><br/>
 	      Cat: <%= sprintf("%.2f", @weight_map[gi.grade_category.id] ) %>%
 	    <% end %>
@@ -59,7 +59,7 @@
 	<% for gi in @grade_items %>
 	  <td class="cell">
 	    <% if @grade_matrix[student.id][gi.id].nil? %>
-	      <acronym title="no grade entered"><%= link_to "#{image_tag 'bullet_error'}", :action => 'enter', :course => @course, :id => gi.id %></acronym>
+	      <acronym title="no grade entered"><%= link_to "#{image_tag 'bullet_error.png'}", :action => 'enter', :course => @course, :id => gi.id %></acronym>
 	    <% else %>
 	      <%= sprintf( "%.1f", @grade_matrix[student.id][gi.id] ) %>
 	    <% end %>

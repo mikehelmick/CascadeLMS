@@ -26,9 +26,9 @@
 	     odd = "even" if count.even? %> 
     <tr class="<%=odd%> hover" id="post_<%=post.id%>">
 	  <td align="left">
-	    <% if post.hot? %><%= image_tag 'medal_gold_1' %>
-	    <% elsif post.medium? %><%= image_tag 'medal_silver_1' %>
-	    <% else %><%= image_tag 'medal_bronze_1' %><% end %>
+	    <% if post.hot? %><%= image_tag 'medal_gold_1.png' %>
+	    <% elsif post.medium? %><%= image_tag 'medal_silver_1.png' %>
+	    <% else %><%= image_tag 'medal_bronze_1.png' %><% end %>
 	     <%= link_to "#{h post.headline}", :course => @course, :action => 'read', :id => post %></td>
 	  <td align="left" nowrap="nowrap"><%= post.user.display_name %></td>
 	  <td align="left" nowrap="nowrap"><%= distance_of_time_in_words_to_now( post.updated_at, true ) %> ago</td>
