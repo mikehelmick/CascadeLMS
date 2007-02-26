@@ -298,11 +298,15 @@ class AssignmentsController < ApplicationController
            end
 
            ut.save
+           @redir_url = nil
            if ut.finalized
-             queue = AutoGradeHelper.schedule( @assignment, @user, ut, @app, flash )
-             unless queue.nil?
-               ## need to do a different rediect
-               @redir_url = url_for :only_path => false, :controller => 'wait', :action => 'grade', :id => queue.id 
+             begin
+               queue = AutoGradeHelper.schedule( @assignment, @user, ut, @app, flash )
+               unless queue.nil?
+                 ## need to do a different rediect
+                 @redir_url = url_for :only_path => false, :controller => 'wait', :action => 'grade', :id => queue.id 
+               end
+             rescue
              end
            end
         

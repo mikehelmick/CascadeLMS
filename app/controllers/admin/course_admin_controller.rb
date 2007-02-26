@@ -42,11 +42,9 @@ class Admin::CourseAdminController < ApplicationController
     crn = Crn.find(:first, :conditions => ["crn = ?", params[:crn] ] ) rescue crn = nil
     
     if crn
-      puts "A"
       @course.crns << crn
       
     elsif !params[:crn].nil? && !params[:crn].eql?('')
-      puts "B"
       crn = Crn.new()
       crn.crn = params[:crn]
       crn.name = @course.title
@@ -54,7 +52,6 @@ class Admin::CourseAdminController < ApplicationController
       @course.crns << crn
       
     else
-      puts "C"
       begin
         @course.crns << Crn.find(:first, :conditions => ["crn = ?", 'NONE'] ) 
       rescue
