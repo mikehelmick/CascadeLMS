@@ -15,9 +15,9 @@
   <p><b>Team Actions</b></p>
 
   <ul>
-	<li><%= image_tag 'layout_content', :align => 'middle' %><%= link_to 'Team Wiki', :action => 'wiki', :id => @team.id, :page => 'Home' %></li>
-	<li><%= image_tag 'folder', :align => 'middle' %><%= link_to 'Team Files', :action => 'files', :id => @team.id %></li>
-	<li><%= image_tag 'email', :align => 'middle' %><%= link_to 'Team Email', :action => 'email', :id => @team.id %></li>
+	<li><%= image_tag 'layout_content.png', :align => 'middle' %><%= link_to 'Team Wiki', :action => 'wiki', :id => @team.id, :page => 'Home' %></li>
+	<li><%= image_tag 'folder.png', :align => 'middle' %><%= link_to 'Team Files', :action => 'files', :id => @team.id %></li>
+	<li><%= image_tag 'email.png', :align => 'middle' %><%= link_to 'Team Email', :action => 'email', :id => @team.id %></li>
   </ul>
 
 <% end%>
@@ -31,9 +31,9 @@
 	<% for team in @all_teams %>
 	  <li><%= team.name %> (<%= team.team_id %>)</li>
 	  <ul>
-		<li><%= image_tag 'layout_content', :align => 'middle' %><%= link_to 'Team Wiki', :action => 'wiki', :id => team.id, :page => 'Home' %> |
-		    <%= image_tag 'folder', :align => 'middle' %><%= link_to 'Team Files', :action => 'files', :id => team.id %> |
-		    <%= image_tag 'email', :align => 'middle' %><%= link_to 'Team Email', :action => 'email', :id => team.id %></li>
+		<li><%= image_tag 'layout_content.png', :align => 'middle' %><%= link_to 'Team Wiki', :action => 'wiki', :id => team.id, :page => 'Home' %> |
+		    <%= image_tag 'folder.png', :align => 'middle' %><%= link_to 'Team Files', :action => 'files', :id => team.id %> |
+		    <%= image_tag 'email.png', :align => 'middle' %><%= link_to 'Team Email', :action => 'email', :id => team.id %></li>
 		<% for tm in team.team_members %>
 		  <li><%= tm.user.display_name %></li>
 		<% end %>

@@ -61,7 +61,7 @@ Last Updated: <%= @display_turnin.updated_at.to_formatted_s(:friendly_date) %><b
        else
 	     upper = parent_spaces[@tif.directory_parent.to_s]
        end
-       1.upto(upper*3) { |i| spaces = "&nbsp;#{spaces}" }
+       1.upto(upper*4) { |i| spaces = "&nbsp;#{spaces}" }
      %>
     <td>
       <%= spaces %>    
@@ -72,10 +72,10 @@ Last Updated: <%= @display_turnin.updated_at.to_formatted_s(:friendly_date) %><b
     <% if @assignment.programming %>
       <td>
 	    <% if @tif.main %>
-	      <acronym title="This is the class that will be run when graded."><%= image_tag 'accept' %> <b>Current</b></acronym>
+	      <acronym title="This is the class that will be run when graded."><%= image_tag 'accept.png' %> <b>Current</b></acronym>
 	    <% elsif @tif.main_candidate && ! (@display_turnin.sealed || @display_turnin.finalized) %>
 	      <acronym title="Make this the main class when grading.">
-	        <%= link_to "#{image_tag 'add'} Select", :action => 'change_main', :course => @course, :assignment => @assignment, :id => @tif %>
+	        <%= link_to "#{image_tag 'add.png'} Select", :action => 'change_main', :course => @course, :assignment => @assignment, :id => @tif %>
 	         </acronym>
 	    <% end %>
 	  </td>
@@ -84,9 +84,9 @@ Last Updated: <%= @display_turnin.updated_at.to_formatted_s(:friendly_date) %><b
 	    <td>
 		  <% if @tif.extension.eql?('java') ## will need to expand later w/ other languages %>
 		    <% if @tif.gradable %>
-		      <%= image_tag 'accept' %> 
+		      <%= image_tag 'accept.png' %> 
 		    <% else %>
-		      <%= image_tag 'cross' %> <b><%= link_to_function "Details", visual_effect(:toggle_appear, "dirty_details_#{@tif.id}" ) %></b>
+		      <%= image_tag 'cross.png' %> <b><%= link_to_function "Details", visual_effect(:toggle_appear, "dirty_details_#{@tif.id}" ) %></b>
 		    <% end %>
 		  <% end %>
 		</td>

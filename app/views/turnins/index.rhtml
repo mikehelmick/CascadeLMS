@@ -10,9 +10,9 @@
 
 
   <% if @turnins.size == 0 %> 
-    <p><%= link_to "#{image_tag 'add'} Create First Turn-in Set.", :action => 'create_set', :course => @course, :assignment => @assignment %></p>
+    <p><%= link_to "#{image_tag 'add.png'} Create First Turn-in Set.", :action => 'create_set', :course => @course, :assignment => @assignment %></p>
   <% else %>
-    <p><%= link_to "#{image_tag 'add'} Archive your current turn-in set and create a new one.", :action => 'create_set', :course => @course, :assignment => @assignment %>
+    <p><%= link_to "#{image_tag 'add.png'} Archive your current turn-in set and create a new one.", :action => 'create_set', :course => @course, :assignment => @assignment %>
 	    <b>This does NOT count against submission limits.</b>
 	  </p>
   <% end %>
@@ -21,7 +21,7 @@
 
   <% unless @current_turnin.nil? %>
     <% unless @current_turnin.sealed %>
-      <div class="errorExplanation"><p><%= image_tag 'flag_red' %> Your most recent turn-in set has not been finalized.<br/>
+      <div class="errorExplanation"><p><%= image_tag 'flag_red.png' %> Your most recent turn-in set has not been finalized.<br/>
 	  <b>You must finalize the turn-in set once you are done uploading all of your files for the assignment.</b></p>
 	  </div>
 	<% else %>
@@ -30,7 +30,7 @@
 		<% if @assignment.released %>
 		  <p><b><%= link_to 'View Instructor Feedback', :action => 'feedback', :course => @course, :assignment => @assignment %></b></p>
 		<% elsif @current_turnin.finalized && @assignment.auto_grade && !@assignment.auto_grade_setting.nil? && @assignment.auto_grade_setting.any_student_grade? %>
-		  <p><b><%= link_to "#{image_tag 'flag_green'} View AutoGrade Results for Current Turnin", :action => 'feedback', :course => @course, :assignment => @assignment %></b></p>
+		  <p><b><%= link_to "#{image_tag 'flag_green.png'} View AutoGrade Results for Current Turnin", :action => 'feedback', :course => @course, :assignment => @assignment %></b></p>
 		<% end %>
 		
 		</div>
@@ -129,8 +129,8 @@
       <% if ut.id == @current_turnin.id %><b>current</b> <%end%>
     </td>
     <% if @team %><td><%= ut.user.display_name %></td><% end %>
-    <td><% if ut.sealed %> <%= image_tag 'accept' %> <% else %> <%= image_tag 'cross' %> <% end %></td>
-    <td><% if ut.finalized %> <%= image_tag 'accept' %> <% else %> <%= image_tag 'cross' %> <% end %></td>
+    <td><% if ut.sealed %> <%= image_tag 'accept.png' %> <% else %> <%= image_tag 'cross.png' %> <% end %></td>
+    <td><% if ut.finalized %> <%= image_tag 'accept.png' %> <% else %> <%= image_tag 'cross.png' %> <% end %></td>
     <td><%= link_to 'View', :action => 'view', :id => ut.id %></td>
   </tr>
 <% end %>

@@ -25,7 +25,16 @@ class FileManager
               'png' => 'page_white_camera.png',
               'gif' => 'page_white_camera.png', 
               'jpeg' => 'page_white_camera.png',
-              'vb' => 'page_white_visualstudio.png' }
+              'vb' => 'page_white_visualstudio.png',
+              'xml' => 'page_white_code.png',
+              'vm' => 'page_white_code.png',
+              'html' => 'page_white_code.png',
+              'rhtml' => 'page_white_ruby.png',
+              'properties' => 'page_white_gear.png',
+              'rb' => 'page_white_ruby.png',
+              'txt' => 'page_white_text.png',
+              'mf' => 'page_white_text.png',
+              'jsp' => 'script_code.png' }
      
   @@text_exts = { 'java' => true, 
                   'cc' => true, 
@@ -37,7 +46,15 @@ class FileManager
                   'tex' => true, 
                   'txt' => true, 
                   'readme' => true,
-                  'vb' => true }
+                  'vb' => true,
+                  'jsp' => true,
+                  'vm' => true,
+                  'mf' => true,
+                  'properties' => true,
+                  'xml' => true,
+                  'html' => true,
+                  'rhtml' => true,
+                  'sh' => true }
      
   @@enscripts = {    
      'asm' => 'asm',
@@ -61,6 +78,10 @@ class FileManager
      'py' => 'python',
      'sc' => 'scheme',
      'sh' => 'sh',
+     'sql' => 'sql',
+     'jsp' => 'html',
+     'vb' => 'vba',
+     'vm' => 'html',
      'sql' => 'sql'
   }
               

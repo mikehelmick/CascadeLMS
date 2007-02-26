@@ -20,10 +20,10 @@
  <tr>
   <td align="left"><div id="headerleft"><%=@app['title']%></div></td>
   <td align="right"><div id="headerright">
-<%if session[:user]%>Logged in as <%=session[:user].display_name%> (<%= link_to "log out #{image_tag 'lock_go'}", :controller => '/index', :action => 'logout' %>) 
+<%if session[:user]%>Logged in as <%=session[:user].display_name%> (<%= link_to "log out #{image_tag 'lock_go.png'}", :controller => '/index', :action => 'logout' %>) 
   <% if @user.courses_in_term(session[:current_term]).size > 1 %><br/>
     <% for cu in @user.courses_in_term(session[:current_term] ) %>
-      <%= image_tag 'bullet_go', :align => 'absmiddle' %><%= link_to "#{cu.course.title}", :controller => '/overview', :course => cu.course.id %>  
+      <%= image_tag 'bullet_go.png', :align => 'absmiddle' %><%= link_to "#{cu.course.title}", :controller => '/overview', :course => cu.course.id %>  
     <% end %>
   <% end %>
 <%else%>You are not logged in.

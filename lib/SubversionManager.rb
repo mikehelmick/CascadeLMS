@@ -34,6 +34,7 @@ class SubversionManager
     # do the checkout
     slash = (server[-1..-1].to_s.eql?('/')) ? '' : '/' 
     command = "#{@subversion_command} checkout --username #{username} --password #{password} --non-interactive --ignore-externals #{server}#{slash}#{path} #{fs_path}"
+    @logger << "SVN: #{command}\n" if @logger
     result = `#{command}`    
     raise "Error checking out files: #{result}" if result.index('Checked out revision').nil?
     

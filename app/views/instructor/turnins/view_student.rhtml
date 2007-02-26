@@ -9,7 +9,7 @@
   <h2>Project Team Details</h2>
 </div></div>
 <div class="Section">
-	<p><%= image_tag 'group' %><b>This is a group project, turn-ins are shared.</b><br/>
+	<p><%= image_tag 'group.png' %><b>This is a group project, turn-ins are shared.</b><br/>
   <% if @team.nil? %>
     <i>This student is NOT assigned to a project group.</i>
   <% else %>
@@ -106,9 +106,9 @@ Last Updated: <%= @display_turnin.updated_at.to_formatted_s(:friendly_date) %><b
     <% if @assignment.programming %>
       <td>
       	<% if @tif.main %>
-	      <%= image_tag 'accept' %> <b>Current</b>
+	      <%= image_tag 'accept.png' %> <b>Current</b>
 	    <% elsif @tif.main_candidate && ! (@display_turnin.sealed || @display_turnin.finalized) %>
-	      <%= image_tag 'add' %> <b>Candidate</b>
+	      <%= image_tag 'add.png' %> <b>Candidate</b>
 	         </acronym>
 	    <% end %>
 	  </td>
@@ -117,9 +117,9 @@ Last Updated: <%= @display_turnin.updated_at.to_formatted_s(:friendly_date) %><b
 	    <td>
 		  <% if @tif.extension.eql?('java') ## will need to expand later w/ other languages %>
 		    <% if @tif.gradable %>
-		      <%= image_tag 'accept' %> 
+		      <%= image_tag 'accept.png' %> 
 		    <% else %>
-		      <%= image_tag 'cross' %> <b><%= link_to_function "Details", visual_effect(:toggle_appear, "dirty_details_#{@tif.id}" ) %></b>
+		      <%= image_tag 'cross.png' %> <b><%= link_to_function "Details", visual_effect(:toggle_appear, "dirty_details_#{@tif.id}" ) %></b>
 		    <% end %>
 		  <% end %>
 		</td>
@@ -127,9 +127,9 @@ Last Updated: <%= @display_turnin.updated_at.to_formatted_s(:friendly_date) %><b
 		  <% if @tif.extension.eql?('java') ## will need to expand later w/ other languages %>
 		    <% if ! @tif.gradable %>
 		      <% if @tif.gradable_override %>
-		        <%= image_tag 'accept' %> Yes
+		        <%= image_tag 'accept.png' %> Yes
 		      <% else %>
-		        <%= image_tag 'cross' %> No
+		        <%= image_tag 'cross.png' %> No
 		      <% end %>
 		    <% end %>
 		  <% end %>
@@ -200,7 +200,7 @@ Last Updated: <%= @display_turnin.updated_at.to_formatted_s(:friendly_date) %><b
 </div></div>
 
 <div class="Section">
-	<p><%= image_tag 'flag_green' %><%= link_to 'Re-run PMD checks for the current turn-in set.', :course => @course, :assignment => @assignment, :student => @student, :action => 'io_retest' %></p>
+	<p><%= image_tag 'flag_green.png' %><%= link_to 'Re-run PMD checks for the current turn-in set.', :course => @course, :assignment => @assignment, :student => @student, :action => 'io_retest' %></p>
 </div>
 
 <% end %>
@@ -310,7 +310,7 @@ Last Updated: <%= @display_turnin.updated_at.to_formatted_s(:friendly_date) %><b
  <% unless @assignment.auto_grade_setting.nil? %>
   <% if @assignment.auto_grade_setting.student_style || @assignment.auto_grade_setting.student_io_check || @assignment.auto_grade_setting.student_autograde %> 
   <div class="standout">
-	  <p><%= image_tag 'information' %> This assignment has automatic grading enabled and is <b>limited to <%= @app['turnin_limit'] %> submissions per day.</b></p>
+	  <p><%= image_tag 'information.png' %> This assignment has automatic grading enabled and is <b>limited to <%= @app['turnin_limit'] %> submissions per day.</b></p>
 	  <p><%= @student.display_name %> has finalized <%= @today_count %> turn-in sets today, and may finalize <b><%= @remaining_count %>  more turn-in sets today.</b>   If the student requires additional turn-in sets, you may reopen the most recent turn-in set, allowing them to submit additional turn-in sets in a single day.</p>
 	</div>
 	<% end %>
@@ -341,8 +341,8 @@ Last Updated: <%= @display_turnin.updated_at.to_formatted_s(:friendly_date) %><b
     </td>
     <% if @team %><td><%= ut.user.display_name %></td><% end %>
     <td><%= link_to 'View', :action => 'view_student', :course => @course, :assignment => @assignment, :id => @student, :ut => ut.id %></td>
-    <td><% if ut.sealed %> <%= image_tag 'accept' %> <% else %> <%= image_tag 'cross' %> <% end %></td>
-    <td><% if ut.finalized %> <%= image_tag 'accept' %> <% else %> <%= image_tag 'cross' %> <% end %></td>
+    <td><% if ut.sealed %> <%= image_tag 'accept.png' %> <% else %> <%= image_tag 'cross.png' %> <% end %></td>
+    <td><% if ut.finalized %> <%= image_tag 'accept.png' %> <% else %> <%= image_tag 'cross.png' %> <% end %></td>
     <td id="reopen_<%= ut.id %>">
 	  <% if @current_turnin.id == ut.id && ut.finalized %>
 	    <%= link_to  'Reopen (unfinalized)', :controller => '/instructor/turnins', :action => 'unfinalize', :course => @course.id, :assignment => @assignment, :id => @student %>

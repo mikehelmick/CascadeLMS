@@ -21,7 +21,7 @@
 
 <% elsif !@assignment.released%>
   <div class="standout">
-  <p><%= image_tag 'flag_red' %><i>Grades and instructor feedback are not yet available.</i>
+  <p><%= image_tag 'flag_red.png' %><i>Grades and instructor feedback are not yet available.</i>
     <% if @assignment.auto_grade && !@assignment.auto_grade_setting.nil? && @assignment.auto_grade_setting.any_student_grade? %>	
       <br/>Scroll down for results from the AutoGrader.
     <% end%>
@@ -36,7 +36,7 @@
    <div class="Section">
 	
    <% if ! @current_turnin.safe_for_autograde? %>
-   <div class="standout"><%= image_tag 'flag_red' %> This turn-in set is not considered safe for automatic execution, an instructor needs to review the files first.</div>
+   <div class="standout"><%= image_tag 'flag_red.png' %> This turn-in set is not considered safe for automatic execution, an instructor needs to review the files first.</div>
    <% end %>
 	
    <p><ul><b>Output diff key:</b>
@@ -57,7 +57,7 @@
           %>
 
 		 
-		   <tr><th colspan="<%=span%>"><%= image_tag 'map' %> I/O Check: '<%= check.name %>'</th></tr>
+		   <tr><th colspan="<%=span%>"><%= image_tag 'map.png' %> I/O Check: '<%= check.name %>'</th></tr>
            <tr>
 	         <% if show_input %>
 	           <th><b>Test Input</b></th>
@@ -69,9 +69,9 @@
 		       :: Match Percentage <b><%= sprintf( "%.2f", @student_io_check[check.id].match_percent ) %>%</b>
 		 
 		         <% if 100 - @student_io_check[check.id].match_percent < check.tolerance %>
-		           <%= image_tag 'accept' %>Pass
+		           <%= image_tag 'accept.png' %>Pass
 		         <% else %> 
-		           <%= image_tag 'cancel' %>Failure
+		           <%= image_tag 'cancel.png' %>Failure
 		         <% end %>
 		 
 		         (<%= link_to_function( "toggle raw/diff", "Element.toggle('student_check_#{check.id}_diff');Element.toggle('student_check_#{check.id}_raw');" ) %>)
@@ -91,7 +91,7 @@
 	         <td class="diffReport" colspan="1" nowrap="nowrap" valign="top">
 			  <div id="student_check_<%=check.id%>_diff">
 				 <% if @student_io_check[check.id].nil? %>
-				   <b><%= image_tag 'flag_red' %>No output found for this test.</b>
+				   <b><%= image_tag 'flag_red.png' %>No output found for this test.</b>
 				 <% else %>
 		  		    <%= @student_io_check[check.id].diff_report.non_span_space_convert %>
 				 <% end %>
@@ -100,7 +100,7 @@
 			  </div>
 			  <div id="student_check_<%=check.id%>_raw" style="display:none;">
 				 <% if @student_io_check[check.id].nil? %>
-				   <b><%= image_tag 'flag_red' %>No output found for this test.</b>
+				   <b><%= image_tag 'flag_red.png' %>No output found for this test.</b>
 				 <% else %>
 		  		    <%= @student_io_check[check.id].output.to_html %>
 				 <% end %>				
@@ -114,7 +114,7 @@
      <% end %>
      </table>
    <% else %>
-     <p><%= image_tag 'flag_yellow' %><i>Automatic grading by way of output verification is enabled for this assignment, but the results are hidden until the grades and instructor comments are released.</i></p>
+     <p><%= image_tag 'flag_yellow.png' %><i>Automatic grading by way of output verification is enabled for this assignment, but the results are hidden until the grades and instructor comments are released.</i></p>
    <% end %>  
    </div>
  <% end %>
@@ -142,7 +142,7 @@
     <% if utf.directory_entry? %>Directory:
     <% else %>File:
     <% end %><a name="file_<%=utf.id%>"><b><%= utf.full_filename( @directories ) %></b></a>
-        <a href="#contents"><%= image_tag 'arrow_up' %></a>
+        <a href="#contents"><%= image_tag 'arrow_up.png' %></a>
     </div></div>
 
 	<% if utf.directory_entry? %>
@@ -178,7 +178,7 @@
 		           <ul>
 			         <li><b><%= fs.message %></b></li>
 			         <li><b>Explanation:</b> <%= fs.style_check.description %> </li>
-			         <li><b><%= link_to_function "View Example: #{image_tag 'folder_bug'}", visual_effect(:toggle_appear, "example_#{fs.id}" )  %></b></li>
+			         <li><b><%= link_to_function "View Example: #{image_tag 'folder_bug.png'}", visual_effect(:toggle_appear, "example_#{fs.id}" )  %></b></li>
 			       <ul>
 				   
 				       <div class="code_example" id="example_<%=fs.id%>" style="display: none;">

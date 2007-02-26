@@ -126,6 +126,7 @@ class AssignmentsController < ApplicationController
       
       svn = SubversionManager.new( @app['subversion_command'] )
       svn.logger = logger
+      ut = nil
       begin
         output = ""
         if params[:command].eql?('release')
@@ -134,106 +135,178 @@ class AssignmentsController < ApplicationController
         
         path = @assignment.release_path_replace(@user.uniqueid,@team)
         
-        @turnins = UserTurnin.find( :all, :conditions => [ "assignment_id = ? and user_id = ?", @assignment.id, @user.id ], :order => "position desc" )
-        @current_turnin = nil
-        @current_turnin = @turnins[0] if @turnins.size > 0
-        if @current_turnin
-          if ! @current_turnin.sealed
-            @current_turnin.sealed = true
-            @current_turnin.save
-          end
-        end
-        
-        ut = UserTurnin.new
-        ut.assignment = @assignment
-        ut.user = @user
-        ut.sealed = false
-        ut.position = 1
-        ut.position = @current_turnin.position + 1 unless @current_turnin.nil?
-        ut.project_team = @team unless @team.nil?
-        @user.user_turnins << ut
-        @user.save
-        
-        ut.make_dir( @app['external_dir'], @team )
-        
-        @list_entries = svn.get_release_files( @user.uniqueid, params[:password], @assignment.subversion_server, path, ut.get_dir( @app['external_dir'] ) )
-       
-        # create root entry
-        utf = UserTurninFile.new
-        utf.user_turnin = ut
-        utf.directory_entry = true
-        utf.directory_parent = 0
-        utf.filename = '/'
-        utf.user = @user
-        ut.user_turnin_files << utf
-        ut.save
-        
-        first_parent = utf.id
-        
-        parent = utf.id
-        take_off = ''
-        ## create entries in database
-        @list_entries.each do |le|
-          utf = UserTurninFile.new
-          utf.user = @user
-          utf.user_turnin = ut
-          utf.directory_entry = le.dir?
+        UserTurnin.transaction do
           
-          if ( le.dir? )
-            # see if this has the same prefix ("subdir")
-            unless ( le.name.to_s.index( take_off ).nil? )
-              utf.filename = le.name.to_s[take_off.size...le.name.to_s.size]
-              
-              utf.directory_parent = parent
-              take_off = "#{take_off}#{utf.filename}/"
-            else
-              # back up to parent level
-              utf.filename = le.name.to_s
-              utf.directory_parent = first_parent
-              take_off = "#{utf.filename}/"
-            end
-          else
-            utf.directory_parent = parent
-            utf.filename = le.name.to_s[take_off.size...le.name.to_s.size]
-          end
+          @turnins = UserTurnin.find( :all, :conditions => [ "assignment_id = ? and user_id = ?", @assignment.id, @user.id ], :order => "position desc" )
+           @current_turnin = nil
+           @current_turnin = @turnins[0] if @turnins.size > 0
+           if @current_turnin
+             if ! @current_turnin.sealed
+               @current_turnin.sealed = true
+               @current_turnin.save
+             end
+           end
+
+           ut = UserTurnin.new
+           ut.assignment = @assignment
+           ut.user = @user
+           ut.sealed = false
+           ut.position = 1
+           ut.position = @current_turnin.position + 1 unless @current_turnin.nil?
+           ut.project_team = @team unless @team.nil?
+           @user.user_turnins << ut
+           @user.save
+
+           ut.make_dir( @app['external_dir'], @team )
+
+           fs_dir = ut.get_dir( @app['external_dir'] )
+           fs_dir = ut.get_team_dir( @app['external_dir'], @team ) unless @team.nil?
+
+           @list_entries = svn.get_release_files( @user.uniqueid, params[:password], @assignment.subversion_server, path, fs_dir )
+           @list_entries.sort! { |a,b| a.name.to_s.downcase <=> b.name.to_s.downcase }
           
-          ridx = utf.filename.to_s.rindex('.')
-          unless ridx.nil?
-            utf.extension = utf.filename[(ridx+1)...utf.filename.size]
-          end
-          ut.user_turnin_files << utf
+           ## Map to reverse lookup directory utf entries
+           svn_dir_map = Hash.new
           
-          if utf.directory_entry
-            parent = utf.id
-          end
-          
-          mover = UserTurninFile.get_parent( ut.user_turnin_files, utf )
-          dir_name = ''
-          while( mover.directory_parent > 0 )
-            dir_name = UserTurninFile.prepend_dir( mover.filename, dir_name )
-            mover = UserTurninFile.get_parent( ut.user_turnin_files, mover )
-          end
-          dir_name = "#{ut.get_dir(@app['external_dir'])}/#{dir_name}"
-          #puts "#{dir_name}"
-          utf.check_file( dir_name, @app['banned_java'] )
-          utf.save
-          
-          output = "#{output} Submitted file: '#{utf.filename}'. "
-        end
-        ut.calculate_main
-        unless @assignment.enable_upload
-          ut.sealed = true
-          ut.finalized = true 
-        end
+           # create root entry
+           utf = UserTurninFile.new
+           utf.user_turnin = ut
+           utf.directory_entry = true
+           utf.directory_parent = 0
+           utf.filename = '/'
+           utf.user = @user
+           ut.user_turnin_files << utf
+           ut.save
+           svn_dir_map['/'] = utf
+
+           root_dir_entry = utf.id
+
+           ### create the directory entries
+           @list_entries.each do |le|
+             if ( le.dir? )
+               #puts "PROCESSING #{le.name} - #{ut.user_turnin_files.class}"
+               
+               utf = UserTurninFile.new
+               utf.user = @user
+               utf.user_turnin = ut
+               utf.directory_entry = true # it is a dir at this point
+               
+               if le.name.to_s.index('/').nil?
+                 # has no slash  - so it is a child of root
+                 utf.filename = le.name.to_s
+                 utf.directory_parent = root_dir_entry
+                 ut.user_turnin_files.insert( utf )
+                 svn_dir_map[le.name.to_s] = utf
+               else 
+                 last_slash_idx = le.name.to_s.rindex('/')
+                 prefix = le.name.to_s[0...last_slash_idx]
+                 
+                 after = svn_dir_map[prefix]
+                 #puts "#{le.name.to_s} has prefix '#{prefix}' and goes after '#{after.filename}'"
+                 
+                 filename = le.name.to_s[last_slash_idx+1..le.name.to_s.length]
+                 
+                 utf.filename = filename
+                 utf.directory_parent = after.id
+                 
+                 ut.user_turnin_files.insert( utf )
+                 
+                 svn_dir_map[le.name.to_s] = utf
+               end
+               utf.save
+             end
+           end
+           ut.save
+           
+           @list_entries.each do |le|
+             unless ( le.dir? )
+               puts "PROCESSING #{le.name} - #{ut.user_turnin_files.class}"
+               
+               utf = UserTurninFile.new
+               utf.user = @user
+               utf.user_turnin = ut
+               utf.directory_entry = false 
+               
+               if le.name.to_s.index('/').nil?
+                  # has no slash  - so it is a child of root
+                  utf.filename = le.name.to_s
+                  utf.directory_parent = root_dir_entry
+               else
+                  last_slash_idx = le.name.to_s.rindex('/')
+                  prefix = le.name.to_s[0...last_slash_idx]
+
+                  after = svn_dir_map[prefix]
+                  puts "#{le.name.to_s} has prefix '#{prefix}' and goes after '#{after.filename}'"
+
+                  filename = le.name.to_s[last_slash_idx+1..le.name.to_s.length]
+
+                  utf.filename = filename
+                  utf.directory_parent = after.id.to_i
+                  puts "BEFORE SAVE: goes after #{utf.directory_parent} #{after.filename} #{after.id}"
+
+               end
+               
+               # set extension   
+               ridx = utf.filename.to_s.rindex('.') 
+               unless ridx.nil?
+                 utf.extension = utf.filename[(ridx+1)...utf.filename.size]
+               end
+               
+               ut.user_turnin_files.insert( utf )
+               utf.save
+               ut.save
+               
+               
+               puts "TRYING TO PLACE '#{utf.filename}' position=#{utf.position}"
+               
+               
+               ### while the one above is not the parent, or does not have the same parent
+               one_above = utf.higher_item
+               puts "ONE ABOVE IF '#{one_above.filename}' position=#{one_above.position}"
+               while( (utf.directory_parent.to_i != one_above.directory_parent.to_i && utf.directory_parent.to_i != one_above.id ) ||
+                      (utf.directory_parent.to_i == one_above.directory_parent.to_i && one_above.directory_entry ) )
+                  utf.move_higher
+                  one_above = utf.higher_item
+               end
+               
+               
+               ### Check external file
+               mover = UserTurninFile.get_parent( ut.user_turnin_files, utf )
+               dir_name = ''
+               while( mover.directory_parent > 0 )
+                 dir_name = UserTurninFile.prepend_dir( mover.filename, dir_name )
+                 mover = UserTurninFile.get_parent( ut.user_turnin_files, mover )
+               end
+               ## put the appropriate team/individual path in front of the relative file system
+               if @team.nil?
+                 dir_name = "#{ut.get_dir(@app['external_dir'])}/#{dir_name}"
+               else
+                 dir_name = "#{ut.get_team_dir(@app['external_dir'], @team)}/#{dir_name}"
+               end
+               utf.check_file( dir_name, @app['banned_java'] )
+               utf.save
+               ut.save
+               
+             end
+           end
+           
+           
+           ut.calculate_main
+           unless @assignment.enable_upload
+             ut.sealed = true
+             ut.finalized = true 
+           end
+
+           ut.save
+           if ut.finalized
+             queue = AutoGradeHelper.schedule( @assignment, @user, ut, @app, flash )
+             unless queue.nil?
+               ## need to do a different rediect
+               @redir_url = url_for :only_path => false, :controller => 'wait', :action => 'grade', :id => queue.id 
+             end
+           end
         
-        ut.save
-        if ut.finalized
-          queue = AutoGradeHelper.schedule( @assignment, @user, ut, @app, flash )
-          unless queue.nil?
-            ## need to do a different rediect
-            @redir_url = url_for :only_path => false, :controller => 'wait', :action => 'grade', :id => queue.id 
-          end
-        end       
+        end ## Transaction end
        
         @path = "#{path}"
         flash[:notice] = "#{output} <br/> <b>Please select 'Manage Submitted Files' to verify your files have been collected</b>"

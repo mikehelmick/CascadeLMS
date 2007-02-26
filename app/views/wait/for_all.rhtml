@@ -30,9 +30,9 @@
 	    <td><%= queue.user_turnin.user.display_name %></td>
 	    <td><%= queue.created_at.to_formatted_s(:rfc822) %></td>
 	    <td><%= queue.updated_at.to_formatted_s(:rfc822) %></td>
-	    <td><% if queue.acknowledged %><%= image_tag 'accept' %><% end %>&nbsp;</td>
-	    <td><% if queue.serviced %><%= image_tag 'accept' %><% end %>&nbsp;</td>
-        <td><% if queue.failed %><%= image_tag 'exclamation' %><% end %>&nbsp;</td>
+	    <td><% if queue.acknowledged %><%= image_tag 'accept.png' %><% end %>&nbsp;</td>
+	    <td><% if queue.serviced %><%= image_tag 'accept.png' %><% end %>&nbsp;</td>
+        <td><% if queue.failed %><%= image_tag 'exclamation.png' %><% end %>&nbsp;</td>
       </tr>
 
       <% if queue.failed %>

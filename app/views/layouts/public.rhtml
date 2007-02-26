@@ -21,9 +21,9 @@
   <td align="left"><div id="headerleft"><%=@app['title']%></div></td>
   <td align="right"><div id="headerright"> 
     <% if session[:user].nil? %>
-		Public Access (<%= link_to "Log in #{image_tag 'lock_open'}", :controller => '/' %>)
+		Public Access (<%= link_to "Log in #{image_tag 'lock_open.png'}", :controller => '/' %>)
 	<% else %>
-     	Logged in as <%=session[:user].display_name%> (<%= link_to "log out #{image_tag 'lock_go'}", :controller => '/index', :action => 'logout' %>)
+     	Logged in as <%=session[:user].display_name%> (<%= link_to "log out #{image_tag 'lock_go.png'}", :controller => '/index', :action => 'logout' %>)
 	<% end %>	
 	</div>
  </tr>

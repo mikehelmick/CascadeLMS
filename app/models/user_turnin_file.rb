@@ -9,6 +9,10 @@ class UserTurninFile < ActiveRecord::Base
   has_many :file_comments, :dependent => :destroy
   has_many :file_styles, :dependent => :destroy
   
+  def dir?
+    directory_entry
+  end
+  
   def full_filename( directory_map )
     x = filename
     if ( directory_parent > 0 )
@@ -88,7 +92,7 @@ class UserTurninFile < ActiveRecord::Base
   
   def UserTurninFile.get_parent( list, current ) 
     return nil if current.directory_parent == 0
-    list.each { |x| return x if x.id == current.directory_parent }
+    return UserTurninFile.find( current.directory_parent )
   end
 
   def UserTurninFile.prepend_dir( newpart, existing )

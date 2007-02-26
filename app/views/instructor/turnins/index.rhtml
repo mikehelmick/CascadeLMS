@@ -12,7 +12,7 @@
 <% else %>
   <div class="errorExplanation">Comments entered on files and assignments are NOT available to students.  (<%= link_to 'change', :action => 'toggle_released', :course => @course, :assignment => @assignment %>)</div>
  <% if @assignment.auto_grade %>
-  <div class="standout"><%= link_to "#{image_tag 'bug'} Rerun AutoGrade for ALL students in this class.", :course => @course, :assignment => @assignment, :action => 'autograde_all' %></div>
+  <div class="standout"><%= link_to "#{image_tag 'bug.png'} Rerun AutoGrade for ALL students in this class.", :course => @course, :assignment => @assignment, :action => 'autograde_all' %></div>
  <% end %>
 
 <% end %>
@@ -64,7 +64,7 @@
 	      <% unless @team_members[student.id].nil? %>
 	        <%= "#{@team_members[student.id].name} (#{@team_members[student.id].team_id})" %>
 	      <% else %>
-	        <%= image_tag 'error' %>
+	        <%= image_tag 'error.png' %>
 	      <% end %>
 	    </td>
 	  <% end %>
@@ -89,7 +89,7 @@
 	      <% if @grades[student.id] %>
 	        <%= sprintf("%0.1f", @grades[student.id] ) %>
 	      <% else %>
-	        <acronym title="no grade entered"><%= image_tag 'bullet_error' %></acronym>
+	        <acronym title="no grade entered"><%= image_tag 'bullet_error.png' %></acronym>
 	      <% end %>
 	    </td>
 	  <% end %>

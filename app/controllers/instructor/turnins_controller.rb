@@ -6,7 +6,7 @@ class Instructor::TurninsController < Instructor::InstructorBase
   before_filter :ensure_logged_in
   before_filter :set_tab
   
-  layout 'application'
+  layout 'noright'
   
   
   def index

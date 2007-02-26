@@ -25,7 +25,7 @@
   	  %>
 	  <tr class="<%=odd%> hover" id="check_<%=check.id%>">
 		 <td><%= check.name %></td>
-		 <td><% if check.student_level %><%= image_tag 'thumb_up.png' %> Yes <% else %><%= image_tag 'thumb_down' %> No <%end %></td>
+		 <td><% if check.student_level %><%= image_tag 'thumb_up.png' %> Yes <% else %><%= image_tag 'thumb_down.png' %> No <%end %></td>
 		 <td><% if check.show_input %><%= image_tag 'thumb_up.png' %> Yes <% else %><%= image_tag 'thumb_down.png' %> No <%end %></td>
 		 <td>
 		   <%= link_to 'Edit', :action => 'edit', :id => check, :course => @course, :assignment => @assignment %> |

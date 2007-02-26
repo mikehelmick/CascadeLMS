@@ -123,9 +123,9 @@
 	            <div class="codestyle">
 		           <i>PMD Code Style:</i> From line <%= fs.begin_line %>:<%= fs.begin_column %> to line <%= fs.end_line %>:<%= fs.end_column %><br/>
 		           <% if fs.suppressed %>
-		              <%= image_tag 'exclamation' %> - Currently suppressed in student view.
+		              <%= image_tag 'exclamation.png' %> - Currently suppressed in student view.
 		           <% else %>
-		              <%= image_tag 'accept' %> - Visible to student.
+		              <%= image_tag 'accept.png' %> - Visible to student.
 		           <% end %>
 		
 		<%= link_to_remote( "Toggle", :url => { :controller => '/instructor/turnins', :action => 'toggle_style_item', :course => @course.id, :assignment => @assignment, :id => @utf.id, :line => line_num, :file_style => fs.id }, :update => "style_line_#{line_num}" ) %>
