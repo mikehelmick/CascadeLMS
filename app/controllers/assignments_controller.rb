@@ -220,7 +220,7 @@ class AssignmentsController < ApplicationController
            
            @list_entries.each do |le|
              unless ( le.dir? )
-               puts "PROCESSING #{le.name} - #{ut.user_turnin_files.class}"
+               #puts "PROCESSING #{le.name} - #{ut.user_turnin_files.class}"
                
                utf = UserTurninFile.new
                utf.user = @user
@@ -236,13 +236,13 @@ class AssignmentsController < ApplicationController
                   prefix = le.name.to_s[0...last_slash_idx]
 
                   after = svn_dir_map[prefix]
-                  puts "#{le.name.to_s} has prefix '#{prefix}' and goes after '#{after.filename}'"
+                  #puts "#{le.name.to_s} has prefix '#{prefix}' and goes after '#{after.filename}'"
 
                   filename = le.name.to_s[last_slash_idx+1..le.name.to_s.length]
 
                   utf.filename = filename
                   utf.directory_parent = after.id.to_i
-                  puts "BEFORE SAVE: goes after #{utf.directory_parent} #{after.filename} #{after.id}"
+                  #puts "BEFORE SAVE: goes after #{utf.directory_parent} #{after.filename} #{after.id}"
 
                end
                
@@ -257,12 +257,12 @@ class AssignmentsController < ApplicationController
                ut.save
                
                
-               puts "TRYING TO PLACE '#{utf.filename}' position=#{utf.position}"
+               #puts "TRYING TO PLACE '#{utf.filename}' position=#{utf.position}"
                
                
                ### while the one above is not the parent, or does not have the same parent
                one_above = utf.higher_item
-               puts "ONE ABOVE IF '#{one_above.filename}' position=#{one_above.position}"
+               #puts "ONE ABOVE IF '#{one_above.filename}' position=#{one_above.position}"
                while( (utf.directory_parent.to_i != one_above.directory_parent.to_i && utf.directory_parent.to_i != one_above.id ) ||
                       (utf.directory_parent.to_i == one_above.directory_parent.to_i && one_above.directory_entry ) )
                   utf.move_higher
