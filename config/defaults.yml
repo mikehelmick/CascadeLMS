@@ -1,4 +1,4 @@
-version: 0.4.6b (Circle of Quiet) 20070225
+version: 0.4.7 (Circle of Quiet) 20070228
 title: Miami University
 
 organization: Miami University
@@ -93,10 +93,12 @@ pmd_main: edu.muohio.csa.cscourseware.CheckStyle
 pmd_libs:
     - jakarta-oro-2.0.8.jar
     - jaxen-1.1-beta-10.jar
-    - pmd-3.8.jar
+    - pmd-3.9.jar
     - xercesImpl-2.6.2.jar
     - xmlParserAPIs-2.6.2.jar
     - checkStyle.jar
+    - asm-3.0.jar
+    - backport-util-concurrent.jar
     
 banned_java:
     - java.io.File
