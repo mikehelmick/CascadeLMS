@@ -177,12 +177,12 @@
 		           <i>PMD Code Style:</i> From line <%= fs.begin_line %>:<%= fs.begin_column %> to line <%= fs.end_line %>:<%= fs.end_column %><br/>
 		           <ul>
 			         <li><b><%= fs.message %></b></li>
-			         <li><b>Explanation:</b> <%= fs.style_check.description %> </li>
+			         <li><b>Explanation:</b> <%= fs.style_check.description rescue "unknown" %> </li>
 			         <li><b><%= link_to_function "View Example: #{image_tag 'folder_bug.png'}", visual_effect(:toggle_appear, "example_#{fs.id}" )  %></b></li>
 			       <ul>
 				   
 				       <div class="code_example" id="example_<%=fs.id%>" style="display: none;">
-					     <%= fs.style_check.example %>
+					     <%= fs.style_check.example rescue "no example available" %>
 					   </div>
 		        </div>
 	          <% end %>
