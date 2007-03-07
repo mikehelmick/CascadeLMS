@@ -2,7 +2,7 @@
 # migrations feature of ActiveRecord to incrementally modify your database, and
 # then regenerate this schema definition.
 
-ActiveRecord::Schema.define(:version => 68) do
+ActiveRecord::Schema.define(:version => 69) do
 
   create_table "announcements", :force => true do |t|
     t.column "headline",  :string
@@ -62,7 +62,7 @@ ActiveRecord::Schema.define(:version => 68) do
     t.column "autograde",         :boolean, :default => false, :null => false
   end
 
-  add_index "auto_grade_settings", ["assignment_id"], :name => "index_auto_grade_settings_on_assignment_id", :unique => true
+  add_index "auto_grade_settings", ["assignment_id"], :name => "auto_grade_settings_assignment_id_index", :unique => true
 
   create_table "basic_graders", :force => true do |t|
   end
@@ -101,7 +101,7 @@ ActiveRecord::Schema.define(:version => 68) do
     t.column "room",         :string
   end
 
-  add_index "course_informations", ["course_id"], :name => "index_course_informations_on_course_id", :unique => true
+  add_index "course_informations", ["course_id"], :name => "course_informations_course_id_index", :unique => true
 
   create_table "course_settings", :id => false, :force => true do |t|
     t.column "course_id",                 :integer
@@ -130,7 +130,7 @@ ActiveRecord::Schema.define(:version => 68) do
     t.column "enable_project_teams",      :boolean, :default => false, :null => false
   end
 
-  add_index "course_settings", ["course_id"], :name => "index_course_settings_on_course_id", :unique => true
+  add_index "course_settings", ["course_id"], :name => "course_settings_course_id_index", :unique => true
 
   create_table "courses", :force => true do |t|
     t.column "term_id",           :integer, :default => 0,     :null => false
@@ -145,7 +145,7 @@ ActiveRecord::Schema.define(:version => 68) do
     t.column "crn_id",    :integer, :default => 0, :null => false
   end
 
-  add_index "courses_crns", ["course_id", "crn_id"], :name => "index_courses_crns_on_course_id_and_crn_id", :unique => true
+  add_index "courses_crns", ["course_id", "crn_id"], :name => "courses_crns_course_id_index", :unique => true
 
   create_table "courses_users", :force => true do |t|
     t.column "user_id",           :integer, :default => 0,     :null => false
@@ -156,7 +156,7 @@ ActiveRecord::Schema.define(:version => 68) do
     t.column "course_assistant",  :boolean, :default => false, :null => false
   end
 
-  add_index "courses_users", ["user_id", "course_id"], :name => "index_courses_users_on_user_id_and_course_id", :unique => true
+  add_index "courses_users", ["user_id", "course_id"], :name => "courses_users_user_id_index", :unique => true
 
   create_table "crns", :force => true do |t|
     t.column "crn",   :string, :limit => 20, :default => "", :null => false
@@ -245,8 +245,8 @@ ActiveRecord::Schema.define(:version => 68) do
     t.column "comment",       :text
   end
 
-  add_index "grade_entries", ["grade_item_id"], :name => "index_grade_entries_on_grade_item_id"
-  add_index "grade_entries", ["user_id"], :name => "index_grade_entries_on_user_id"
+  add_index "grade_entries", ["grade_item_id"], :name => "grade_entries_grade_item_id_index"
+  add_index "grade_entries", ["user_id"], :name => "grade_entries_user_id_index"
 
   create_table "grade_items", :force => true do |t|
     t.column "name",              :string
@@ -273,7 +273,7 @@ ActiveRecord::Schema.define(:version => 68) do
     t.column "batch",          :string
   end
 
-  add_index "grade_queues", ["batch"], :name => "index_grade_queues_on_batch"
+  add_index "grade_queues", ["batch"], :name => "grade_queues_batch_index"
 
   create_table "grade_weights", :force => true do |t|
     t.column "grade_category_id", :integer, :default => 0,   :null => false
@@ -287,7 +287,7 @@ ActiveRecord::Schema.define(:version => 68) do
     t.column "show_total",    :boolean, :default => true,  :null => false
   end
 
-  add_index "gradebooks", ["course_id"], :name => "index_gradebooks_on_course_id", :unique => true
+  add_index "gradebooks", ["course_id"], :name => "gradebooks_course_id_index", :unique => true
 
   create_table "io_check_results", :force => true do |t|
     t.column "io_check_id",    :integer,  :default => 0,   :null => false
@@ -312,21 +312,21 @@ ActiveRecord::Schema.define(:version => 68) do
   end
 
   add_index "io_checks", ["name", "assignment_id"], :name => "io_checks_name_by_assignment", :unique => true
-  add_index "io_checks", ["assignment_id"], :name => "index_io_checks_on_assignment_id"
+  add_index "io_checks", ["assignment_id"], :name => "io_checks_assignment_id_index"
 
   create_table "journal_entry_stop_reasons", :id => false, :force => true do |t|
     t.column "journal_id",             :integer
     t.column "journal_stop_reason_id", :integer
   end
 
-  add_index "journal_entry_stop_reasons", ["journal_id", "journal_stop_reason_id"], :name => "journal_stop_reasons_idx", :unique => true
+  add_index "journal_entry_stop_reasons", ["journal_id", "journal_stop_reason_id"], :name => "journal_entry_stop_reasons_journal_id_index", :unique => true
 
   create_table "journal_entry_tasks", :id => false, :force => true do |t|
     t.column "journal_id",      :integer
     t.column "journal_task_id", :integer
   end
 
-  add_index "journal_entry_tasks", ["journal_id", "journal_task_id"], :name => "index_journal_entry_tasks_on_journal_id_and_journal_task_id", :unique => true
+  add_index "journal_entry_tasks", ["journal_id", "journal_task_id"], :name => "journal_entry_tasks_journal_id_index", :unique => true
 
   create_table "journal_fields", :id => false, :force => true do |t|
     t.column "assignment_id",       :integer
@@ -339,7 +339,7 @@ ActiveRecord::Schema.define(:version => 68) do
     t.column "comments",            :boolean, :default => true, :null => false
   end
 
-  add_index "journal_fields", ["assignment_id"], :name => "index_journal_fields_on_assignment_id", :unique => true
+  add_index "journal_fields", ["assignment_id"], :name => "journal_fields_assignment_id_index", :unique => true
 
   create_table "journal_stop_reasons", :force => true do |t|
     t.column "reason",    :string
@@ -396,7 +396,7 @@ ActiveRecord::Schema.define(:version => 68) do
     t.column "updated_at", :datetime
   end
 
-  add_index "sessions", ["session_id"], :name => "index_sessions_on_session_id"
+  add_index "sessions", ["session_id"], :name => "sessions_session_id_index"
 
   create_table "style_checks", :force => true do |t|
     t.column "name",        :string
@@ -405,7 +405,7 @@ ActiveRecord::Schema.define(:version => 68) do
     t.column "bias",        :boolean, :default => true, :null => false
   end
 
-  add_index "style_checks", ["name"], :name => "index_style_checks_on_name", :unique => true
+  add_index "style_checks", ["name"], :name => "style_checks_name_index", :unique => true
 
   create_table "team_documents", :force => true do |t|
     t.column "project_team_id", :integer,  :default => 0,  :null => false
@@ -431,7 +431,7 @@ ActiveRecord::Schema.define(:version => 68) do
     t.column "course_id",       :integer, :default => 0, :null => false
   end
 
-  add_index "team_members", ["user_id", "course_id"], :name => "index_team_members_on_user_id_and_course_id"
+  add_index "team_members", ["user_id", "course_id"], :name => "team_members_user_id_index"
 
   create_table "team_wiki_pages", :force => true do |t|
     t.column "project_team_id", :integer,  :default => 0,  :null => false
@@ -444,7 +444,7 @@ ActiveRecord::Schema.define(:version => 68) do
     t.column "revision",        :integer,  :default => 1,  :null => false
   end
 
-  add_index "team_wiki_pages", ["project_team_id", "page", "revision"], :name => "index_team_wiki_pages_on_project_team_id_and_page_and_revision", :unique => true
+  add_index "team_wiki_pages", ["project_team_id", "page", "revision"], :name => "team_wiki_pages_project_team_id_index", :unique => true
 
   create_table "temp_files", :force => true do |t|
     t.column "filename",   :text
