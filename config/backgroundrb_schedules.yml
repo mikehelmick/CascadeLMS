@@ -1,7 +1,7 @@
 monitor:
     :class: :auto_grade_monitor_worker
-    :trigger_args: 0,15,30,45 * * * * * *
+    :trigger_args: 0,30 * * * * * *
     
 requeue:
     :class: :grade_re_queue_worker
-    :trigger_args: 0,30 * * * * * *
+    :trigger_args: 0 * * * * * *

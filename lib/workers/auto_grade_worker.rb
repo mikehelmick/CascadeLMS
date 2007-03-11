@@ -270,13 +270,15 @@ class AutoGradeWorker < BackgrounDRb::Worker::RailsBase
 
         GradeQueue.transaction do
           run_pmd( queue, user_turnin, dir, directories, app )
-          run_io_check( queue, user_turnin, dir, directories, app )
-
-          queue.serviced = true
-          queue.save
-
-          logger.info("Done with request #{args.to_i}")
         end
+        GradeQueue.transaction do
+          run_io_check( queue, user_turnin, dir, directories, app )
+        end
+
+        queue.serviced = true
+        queue.save
+
+        logger.info("Done with request #{args.to_i}")
       else
         logger.info("Request #{args.to_i} already acknowledged")
       end
