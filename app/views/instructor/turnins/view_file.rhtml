@@ -132,11 +132,11 @@
 		
 		           <ul>
 			         <li><b><%= fs.message %></b></li>
-			         <li><b>Explanation:</b> <%= fs.style_check.description %> </li>
+			         <li><b>Explanation:</b> <%= fs.style_check.description rescue '<b>unavailable</b>' %> </li>
 			         <li><b>Example:</b></li>
 			       <ul>
 				   <div class="code_example" id="example_<%=fs.id%>" >
-					     <%= fs.style_check.example %>
+					     <%= fs.style_check.example rescue '<b>unavailable</b>' %>
 				   </div>
 		        </div>
 	        <% end %>
