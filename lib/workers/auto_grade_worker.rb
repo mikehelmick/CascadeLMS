@@ -47,7 +47,7 @@ class AutoGradeWorker < BackgrounDRb::Worker::RailsBase
        end
        
        # get the PMD settings
-       user_turnin.assignment.ensure_style_defaults # make sure that default settings exist
+       
        checks = Hash.new
        filter = Hash.new
        user_turnin.assignment.assignment_pmd_settings.each do |pmd|
@@ -247,6 +247,7 @@ class AutoGradeWorker < BackgrounDRb::Worker::RailsBase
 
       unless queue.acknowledged 
         queue.acknowledged = true
+        queue.message = "Autograding has started."
         queue.save
 
         # user turnin - has the directory
@@ -266,16 +267,35 @@ class AutoGradeWorker < BackgrounDRb::Worker::RailsBase
           directories[utf.id] = utf if utf.directory_entry?
         end
 
+
+        ## make sure that PMD is set up - but outside of a potentially long running transaction
+        if user_turnin.assignment.auto_grade_setting.check_style?
+          user_turnin.assignment.ensure_style_defaults # make sure that default settings exist
+        end
+ 
         app = ApplicationController.app
 
+
+        ## Just to have the status update outside of the transaction
+        if user_turnin.assignment.auto_grade_setting.check_style?
+          queue.message = "Performing static analysis on your code."
+          queue.save
+        end
         GradeQueue.transaction do
           run_pmd( queue, user_turnin, dir, directories, app )
+        end
+        
+        ## Again - to have status outside of transaction
+        if user_turnin.assignment.auto_grade_setting.io_check?
+          queue.message = "Compiling and running I/O based tests on your code."
+          queue.save
         end
         GradeQueue.transaction do
           run_io_check( queue, user_turnin, dir, directories, app )
         end
 
         queue.serviced = true
+        queue.message = "AutoGrade complete."
         queue.save
 
         logger.info("Done with request #{args.to_i}")
