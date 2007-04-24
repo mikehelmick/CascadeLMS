@@ -254,7 +254,7 @@ class ForumsController < ApplicationController
       @posts = ForumPost.find(:all, :conditions => ["forum_topic_id = ?", topic.id] )
       
       @posts.each do |post|
-        @count_map[post.user_id] = @count_map[post.user_id].next
+        @count_map[post.user_id] = @count_map[post.user_id].next rescue @count_map[post.user_id] = 0
       end
     end
         
@@ -275,7 +275,7 @@ class ForumsController < ApplicationController
       @posts = ForumPost.find(:all, :conditions => ["forum_topic_id = ?", topic.id] )
       
       @posts.each do |post|
-        @count_map[post.user_id] = @count_map[post.user_id].next
+        @count_map[post.user_id] = @count_map[post.user_id].next rescue @count_map[post.user_id] = 0
       end
     end
     
