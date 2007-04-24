@@ -1,4 +1,7 @@
+require 'ziya'
+
 class ForumsController < ApplicationController
+  include Ziya
   
   before_filter :ensure_logged_in
   before_filter :set_tab
@@ -235,6 +238,65 @@ class ForumsController < ApplicationController
     return unless course_open( @course, :action => 'index' )
     
     @topic = ForumTopic.new
+  end
+  
+  def post_report
+    return unless load_course( params[:course] )
+    return unless ensure_course_instructor( @course, @user )
+    
+    @count_map = Hash.new
+    @course.courses_users.each do |u|
+      @count_map[u.user.id] = 0
+    end
+    
+    @topics = ForumTopic.find(:all, :conditions => ["course_id = ?", @course.id] )
+    @topics.each do |topic|
+      @posts = ForumPost.find(:all, :conditions => ["forum_topic_id = ?", topic.id] )
+      
+      @posts.each do |post|
+        @count_map[post.user_id] = @count_map[post.user_id].next
+      end
+    end
+        
+    @title = "Forum Post Report for #{@course.title}"
+  end
+  
+  def post_report_graph
+    return unless load_course( params[:course] )
+    return unless ensure_course_instructor( @course, @user )
+    
+    @count_map = Hash.new
+    @course.courses_users.each do |u|
+      @count_map[u.user.id] = 0
+    end
+    
+    @topics = ForumTopic.find(:all, :conditions => ["course_id = ?", @course.id] )
+    @topics.each do |topic|
+      @posts = ForumPost.find(:all, :conditions => ["forum_topic_id = ?", topic.id] )
+      
+      @posts.each do |post|
+        @count_map[post.user_id] = @count_map[post.user_id].next
+      end
+    end
+    
+    setup_ziya
+    
+    graph = Ziya::Charts::Pie.new( @license, "Forum Post Pie Chart (Students Only)", "pie_2" )      
+    
+    @categories = Array.new
+    @series = Array.new
+    
+    @course.students.each do |student|
+       @categories << student.display_name
+       @series << @count_map[student.id] 
+    end
+        
+    graph.add :axis_category_text, @categories
+    graph.add :series, 'Students', @series
+    
+    graph.add :theme, 'swf' 
+    
+    render :xml => graph.to_xml
   end
   
   def create_forum

@@ -1,6 +1,8 @@
 
 <% if @user.instructor_in_course?(@course.id) %>
-<p><%= link_to "#{image_tag 'layout_add.png'} Create new forum", :course => @course, :action => 'new_forum' %></p>
+<p><%= link_to "#{image_tag 'layout_add.png'} Create new forum", :course => @course, :action => 'new_forum' %> |
+<%= link_to "#{image_tag 'chart_pie.png'} View post report", :course => @course, :action => 'post_report' %>
+</p>
 <% end %>
 
 <% if @topics.size == 0 %>

@@ -1,0 +1,97 @@
+
+<h2>Course: <%= @course.title %></h2>
+<h3>Forum Post Report</h3>
+
+<% count = 0 %>
+
+<table class="fancy">
+  <tr class="header">
+	  <th colspan="3">Instructors</th>
+  </tr>
+  <tr>
+	  <th>User</th>
+	  <th>UniqueID</th>
+	  <th>Post Count</th>
+  </tr>
+  <% for user in @course.instructors %>
+  	<% count = count.next 
+	     odd = "odd"
+	     odd = "even" if count.even? %> 
+    <tr class="<%=odd%> hover">
+ 	  <td><%= image_tag 'user_suit.png' %> <%= user.display_name %></td>
+      <td><%= user.uniqueid %></td>
+      <td><%= @count_map[user.id] %> </td>
+	</tr>
+  <% end %>
+
+
+  <% if @course.assistants.size > 0 %>
+  <tr class="header">
+	  <th colspan="3">TAs</th>
+  </tr>
+  <tr>
+	  <th>User</th>
+	  <th>UniqueID</th>
+	  <th>Post Count</th>
+  </tr>
+  <% for user in @course.assistants %>
+  	<% count = count.next 
+	     odd = "odd"
+	     odd = "even" if count.even? %> 
+    <tr class="<%=odd%> hover">
+ 	  <td><%= image_tag 'user_gray.png' %> <%= user.display_name %></td>
+      <td><%= user.uniqueid %></td>
+      <td><%= @count_map[user.id] %> </td>
+	</tr>
+  <% end %>
+  <% end %>
+
+  <tr class="header">
+	  <th colspan="3">Students</th>
+  </tr>
+  <tr>
+	  <th>User</th>
+	  <th>UniqueID</th>
+	  <th>Post Count</th>
+  </tr>
+  <% for user in @course.students %>
+  	<% count = count.next 
+	     odd = "odd"
+	     odd = "even" if count.even? %> 
+    <tr class="<%=odd%> hover">
+ 	  <td><%= image_tag 'user.png' %> <%= user.display_name %></td>
+      <td><%= user.uniqueid %></td>
+      <td><%= @count_map[user.id] %> </td>
+	</tr>
+  <% end %>
+
+  <% if @course.guests.size > 0 %>
+  <tr class="header">
+	  <th colspan="3">Guests</th>
+  </tr>
+  <tr>
+	  <th>User</th>
+	  <th>UniqueID</th>
+	  <th>Post Count</th>
+  </tr>
+  <% for user in @course.guests %>
+  	<% count = count.next 
+	     odd = "odd"
+	     odd = "even" if count.even? %> 
+    <tr class="<%=odd%> hover">
+ 	  <td><%= image_tag 'user_red.png' %> <%= user.display_name %></td>
+      <td><%= user.uniqueid %></td>
+      <td><%= @count_map[user.id] %> </td>
+	</tr>
+  <% end %>
+  <% end %>
+  
+</table>
+
+
+<div class="charts">
+	<div class="chart">
+	  <%= ziya_chart( url_for( :controller => 'forums', :action => 'post_report_graph' ), 
+	                 :id => 'pie', :bgcolor => "#fff", :width => 1000, :height => 600 ) %>	
+  </div>
+</div>

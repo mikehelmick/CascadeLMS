@@ -19,7 +19,12 @@ class ApplicationController < ActionController::Base
                       'Authorization','AUTHORIZATION']                      
      
   @@app = nil            
-  @@external_dir = nil            
+  @@external_dir = nil    
+  
+  def setup_ziya    
+     @ziya_license = nil
+  end
+          
                     
   def browser_check
     if request.env['HTTP_USER_AGENT'] && request.env['HTTP_USER_AGENT'].include?('MSIE')
