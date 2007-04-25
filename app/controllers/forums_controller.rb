@@ -281,20 +281,25 @@ class ForumsController < ApplicationController
     
     setup_ziya
     
-    graph = Ziya::Charts::Pie.new( @license, "Forum Post Pie Chart (Students Only)", "pie_2" )      
+    graph = Ziya::Charts::PieThreed.new( @license, "Forum Post Pie Chart (Students Only)", "pie_forums" )      
     
     @categories = Array.new
     @series = Array.new
+    @explode = Array.new
     
     @course.students.each do |student|
-       @categories << student.display_name
+       @categories << "#{student.display_name} (#{@count_map[student.id]})"
        @series << @count_map[student.id] 
+       
+       @explode << @count_map[student.id] 
     end
         
     graph.add :axis_category_text, @categories
     graph.add :series, 'Students', @series
+    graph.add( :user_data, :explode, @explode )
+    graph.add( :user_data, :colors, colors( @categories.size ) )
     
-    graph.add :theme, 'swf' 
+    graph.add :theme, 'default' 
     
     render :xml => graph.to_xml
   end

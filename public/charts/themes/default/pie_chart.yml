@@ -1,5 +1,6 @@
 <%= chart :pie %>
 
+
   <%=component :legend_rect %>
     x:          40
     y:          0

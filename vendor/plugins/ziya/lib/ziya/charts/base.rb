@@ -213,7 +213,7 @@ module Ziya::Charts
     # -------------------------------------------------------------------------
     # Inflate object state based on object hierarchy
     def setup_state( state )
-      override = self.class.name == state.class.name
+      override = self.class.name == state.class.name rescue override = false
       @@attributes.each do |a| 
         instance_eval "#{a}.merge( state.#{a}, override ) unless state.#{a}.nil?" 
       end

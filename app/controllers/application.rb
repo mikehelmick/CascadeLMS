@@ -19,10 +19,25 @@ class ApplicationController < ActionController::Base
                       'Authorization','AUTHORIZATION']                      
      
   @@app = nil            
-  @@external_dir = nil    
+  @@external_dir = nil   
+  
+  ziya_theme 'default' 
   
   def setup_ziya    
      @ziya_license = nil
+     
+  end
+     
+  @@colors = ['0000ff','00ff7f','ff007f','ffff00',
+              'ff00ff','007fff','ff7f00','00ff00',
+              'CB439a','439acb','9acb44']
+     
+  def colors( amount = @@colors.length )
+    colors = Array.new
+    amount = @@colors.length if amount > @@colors.length 
+  
+    0.upto( amount - 1 ) { |i| colors << @@colors[i] }
+    return colors
   end
           
                     

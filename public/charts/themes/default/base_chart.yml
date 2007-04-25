@@ -8,8 +8,8 @@
   <%=component :axis_value %>
     color:       000000
     skip:        0
-    alpha:       50
-    size:        10
+    alpha:       100
+    size:        12
         
   <%=component :chart_rect %>
     positive_color: ffffff      
@@ -51,8 +51,8 @@
   
   <%=component :chart_value %>
     position: right
-    color:    F5F0BE
-    size:     9
+    color:    ffffff
+    size:     14
     alpha:    100
   
   <%=component :legend_label %>

@@ -1,0 +1,47 @@
+<%= chart :pie %>
+  
+  <%=component :legend_label %>
+    color:    000000
+    size:     10
+    layout:   horizontal
+    bullet:   circle
+    
+  <%=component :legend_rect %>  
+    x:          40
+    y:          0
+    width:      0
+    line_thickness: 5
+    line_color: FF4400
+    
+  <%=component :chart_transition %>
+    type:   slide_left
+    order:  series 
+
+  <%=component :chart_rect %>
+    x:              400
+    y:              0
+    height:         400
+    width:          400      
+    positive_alpha: 1
+    negative_alpha: 0
+
+  <%=component :chart_value %>
+    position: inside
+
+  <%=component :chart_border %>
+    left_thickness:   0
+    bottom_thickness: 0
+    top_thickness:    0
+    right_thickness:  0    
+
+  <%=component :chart_grid_h %>
+    alpha:     0
+
+  <%=component :chart_grid_v %>
+    alpha:     0
+    
+  <%=component :series_explode %>
+    numbers:    <%= @options[:explode].join(',') %>
+    
+  <%=component :series_color %>
+    colors:     <%= @options[:colors].join(',') %>
