@@ -1,0 +1,52 @@
+<div class="SectionHeader"><div class="Full">
+<h2>Attendance report class: <%= @course.title %></h2>	
+</div></div>
+
+<p><%= image_tag 'page_excel.png' %><%= link_to 'Export to CSV', :action => 'export_csv' %> |
+<%= link_to "Back to Attendance", :action => 'index', :course => @course %></p>
+
+
+
+<table class="fancy">
+  <tr class="header">
+<td><b>Student</b></td>
+<% for period in @periods %>
+  <td><b><%= period.created_at.to_formatted_s(:short) %></b></td>
+<% end %>
+  <td><b>Total</b></td>
+  <td><b>Percentage</b></td>
+  </tr>
+
+  <% count = 0 %>
+	
+  <% for student in  @students %>
+  <% count = count.next 
+       odd = "odd"
+       odd = "even" if count.even? %> 
+    <tr class="<%=odd%> hover">
+      <td><%= student.display_name %></td>
+
+    <% total = 0 %>
+	<% for period in @periods %>
+	  <td>
+	    <% if @att_map[student.id][period.id] %>
+	      <b>Yes</b>
+	    <%   total = total.next
+	       else %>
+	      No
+	    <% end %>
+	  </td>
+	<% end %>
+	  <td><%= total %></td>
+	  <td><%= sprintf("%.2f", total.to_f / @periods.size * 100 )%>
+	</tr>
+  <% end %>
+	
+</table>
+
+<div class="charts">
+	<div class="chart">
+	  <%= ziya_chart( url_for( :controller => '/instructor/attendance', :action => 'attendance_report_graph' ), 
+	                 :id => 'stacked_column', :bgcolor => "#fff", :width => 1000, :height => 800 ) %>	
+  </div>
+</div>

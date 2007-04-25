@@ -1,0 +1,6 @@
+Attendance export for <%= @course.title %>
+Exported at <%= Time.now.to_formatted_s(:long) %>
+Created for <%= @user.display_name %> (<%= @user.email %>)
+Name,<% for period in @periods %><%= period.created_at.to_formatted_s(:short) %>,<% end %>
+<% for student in @students %><% total = 0 %><%= student.display_name %>,<% for period in @periods %><% if @att_map[student.id][period.id].nil? || @att_map[student.id][period.id] == false %>No<% else %>Yes<% total = total.next %><% end %>,<% end %><%= total %>,<%= total.to_f / @periods.size * 100 %>
+<% end %>

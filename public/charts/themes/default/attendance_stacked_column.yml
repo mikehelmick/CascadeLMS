@@ -1,0 +1,4 @@
+<%= chart :stacked_column %> 
+
+  <%=component :series_color %> 
+    colors:     <%= @options[:colors].join(',') %>

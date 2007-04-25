@@ -117,8 +117,101 @@ class Instructor::AttendanceController < Instructor::InstructorBase
     redirect_to :action => 'view', :id => @period, :user => nil, :course => @course
   end
   
+  def attendance_report
+    return unless load_course( params[:course] )
+    return unless attendance_enabled( @course )
+    return unless ensure_course_instructor_on_assistant( @course, @user )
+    
+    common_report
+    
+    render :layout => 'noright'
+  end
+  
+  def export_csv
+    return unless load_course( params[:course] )
+    return unless attendance_enabled( @course )
+    return unless ensure_course_instructor_on_assistant( @course, @user )
+    
+    common_report
+    
+    
+    response.headers['Content-Type'] = 'text/csv; charset=iso-8859-1; header=present'
+    response.headers['Content-Disposition'] = 'inline; filename=gradebook.csv'
+    
+    render :layout => false
+  end
+  
+  def attendance_report_graph
+    return unless load_course( params[:course] )
+    return unless attendance_enabled( @course )
+    return unless ensure_course_instructor_on_assistant( @course, @user )
+    
+    common_report
+    
+    graph = Ziya::Charts::StackedColumn.new( @license, "Attendance", "attendance_stacked_column" ) 
+    
+    @categories = Array.new
+    @periods.each { |period| @categories << period.created_at.to_formatted_s(:short) }
+    graph.add :axis_category_text, @categories
+    
+    ## calculate the series for each student
+    @students.each do |student|
+      
+      @forStudent = Array.new
+      @periods.each do |period|
+        if @att_map[student.id][period.id].nil? || @att_map[student.id][period.id] == false
+          @forStudent << 0
+        else
+          @forStudent << 1
+        end
+      end
+      
+      graph.add( :series, "#{student.display_name}", @forStudent )
+    end
+    
+    graph.add( :user_data, :colors, colors( @categories.size ) )
+    
+    graph.add :theme, 'default' 
+    render :xml => graph.to_xml
+  end
+  
   
   private
+  
+  def common_report
+    load_periods
+    
+    ## exclude instructors who are also students
+    @exclude = Hash.new
+    @course.instructors.each do |inst|
+      @exclude[inst.id] = true
+    end
+    
+    ## initialize attendance map
+    @att_map = Hash.new
+    @students = Array.new
+    @course.students.each do |student|
+      if @exclude[student.id].nil?
+         @att_map[student.id] = Hash.new
+         @students << student
+      end
+    end
+    
+    ## for each class period
+    @periods.each do |period|
+      @students.each do |student|
+        @att_map[student.id][period.id] = false
+      end
+      
+      period.class_attendances.each do |att|
+        if att.correct_key
+          if @exclude[att.user_id].nil?
+            @att_map[att.user_id][period.id] = true rescue x = 1
+          end
+        end
+      end
+    end
+  end
   
   def load_period( period )
     @period = ClassPeriod.find( period ) rescue @period = nil
