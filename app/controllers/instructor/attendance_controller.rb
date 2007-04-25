@@ -206,7 +206,10 @@ class Instructor::AttendanceController < Instructor::InstructorBase
       period.class_attendances.each do |att|
         if att.correct_key
           if @exclude[att.user_id].nil?
-            @att_map[att.user_id][period.id] = true rescue x = 1
+            begin
+              @att_map[att.user_id][period.id] = true 
+            rescue
+            end
           end
         end
       end
