@@ -30,7 +30,12 @@ class ApplicationController < ActionController::Base
      
   @@colors = ['0000ff','00ff7f','ff007f','ffff00',
               'ff00ff','007fff','ff7f00','00ff00',
-              'CB439a','439acb','9acb44']
+              'CB439a','439acb','9acb44',
+              '63c537','3763c5','c53763',
+              '3b1472','723b14','14723b',
+              'c44bc0','c0c44a','4ac0c4',
+              '50af8c','8c50af','af8c50',
+              '6d7d91','916d7d','7d916d']
      
   def colors( amount = @@colors.length )
     colors = Array.new

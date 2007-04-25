@@ -279,6 +279,12 @@ class ForumsController < ApplicationController
       end
     end
     
+    ## do exclude items
+    @exclude = Hash.new
+    @course.instructors.each do |inst|
+      @exclude[inst.id] = true
+    end
+    
     setup_ziya
     
     graph = Ziya::Charts::PieThreed.new( @license, "Forum Post Pie Chart (Students Only)", "pie_forums" )      
@@ -288,10 +294,12 @@ class ForumsController < ApplicationController
     @explode = Array.new
     
     @course.students.each do |student|
-       @categories << "#{student.display_name} (#{@count_map[student.id]})"
-       @series << @count_map[student.id] 
+      if @exclude[student.id].nil?
+        @categories << "#{student.display_name} (#{@count_map[student.id]})"
+        @series << @count_map[student.id] 
        
-       @explode << @count_map[student.id] 
+        @explode << @count_map[student.id] 
+      end
     end
         
     graph.add :axis_category_text, @categories
