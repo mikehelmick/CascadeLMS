@@ -298,7 +298,7 @@ class ForumsController < ApplicationController
         @categories << "#{student.display_name} (#{@count_map[student.id]})"
         @series << @count_map[student.id] 
        
-        @explode << @count_map[student.id] 
+        @explode << @count_map[student.id] * 3
       end
     end
         
