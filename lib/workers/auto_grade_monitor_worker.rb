@@ -8,6 +8,13 @@ class AutoGradeMonitorWorker < BackgrounDRb::Worker::RailsBase
     # This method is called in it's own new thread when you
     # call new worker. args is set to :args
     
+    ## Free the in_service count
+    to_free = GradeQueue.find(:all, :conditions => ["serviced = ? and (acknowledged = ? or queued = ? )", false, true, true] )
+    to_free.each do |item|
+      item.acknowledged = false;
+      item.queued = false;
+    end
+    
     while( true )
     
       item = GradeQueue.find(:all, :conditions => ["acknowledged = ? and serviced = ? and queued = ?", false, false, false], :order => "created_at asc" ) rescue item = Array.new
