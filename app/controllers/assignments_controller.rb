@@ -154,8 +154,7 @@ class AssignmentsController < ApplicationController
            ut.position = 1
            ut.position = @current_turnin.position + 1 unless @current_turnin.nil?
            ut.project_team = @team unless @team.nil?
-           @user.user_turnins << ut
-           @user.save
+           ut.save
 
            ut.make_dir( @app['external_dir'], @team )
 
