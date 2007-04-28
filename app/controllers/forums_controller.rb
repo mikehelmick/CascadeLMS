@@ -8,6 +8,8 @@ class ForumsController < ApplicationController
   
   layout 'noright'
   
+  ziya_theme 'default'
+  
   def index
     return unless load_course( params[:course] )
     return unless allowed_to_see_course( @course, @user )

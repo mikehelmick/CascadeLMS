@@ -1,7 +1,12 @@
+require 'ziya'
+
 class Instructor::AttendanceController < Instructor::InstructorBase
+  include Ziya
   
   before_filter :ensure_logged_in
   before_filter :set_tab
+  
+  ziya_theme 'default'
  
   def index
     return unless load_course( params[:course] )

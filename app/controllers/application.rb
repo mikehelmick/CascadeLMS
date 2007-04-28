@@ -21,7 +21,6 @@ class ApplicationController < ActionController::Base
   @@app = nil            
   @@external_dir = nil   
   
-  ziya_theme 'default' rescue puts "can't load ziya in this thread"
   
   def setup_ziya    
      @ziya_license = nil   
