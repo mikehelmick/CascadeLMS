@@ -13,6 +13,7 @@ class AutoGradeMonitorWorker < BackgrounDRb::Worker::RailsBase
     to_free.each do |item|
       item.acknowledged = false;
       item.queued = false;
+      item.save
     end
     
     while( true )
