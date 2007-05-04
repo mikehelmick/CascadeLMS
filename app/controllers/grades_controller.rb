@@ -49,10 +49,14 @@ class GradesController < ApplicationController
       @weighted_average = 0
       # acutually weight the grades
       weights.each do |weights|
-        new_weight = @student_cat_total[weights.grade_category_id] rescue new_weight = 0
-        new_weight = new_weight / cat_max_points[weights.grade_category_id] rescue new_weight = 0
-        new_weight = new_weight * (@weight_map[weights.grade_category_id]/ 100.0)
-        @weighted_average  += sprintf("%.2f",new_weight*100).to_f
+        begin
+          @weighted_average = @weighted_average +
+             @student_cat_total[weights.grade_category_id] / 
+             cat_max_points[weights.grade_category_id] *
+             @weight_map[weights.grade_category_id]
+        rescue
+          
+        end
       end
       
     

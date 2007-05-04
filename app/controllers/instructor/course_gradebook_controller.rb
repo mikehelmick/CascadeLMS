@@ -328,31 +328,47 @@ class Instructor::CourseGradebookController < Instructor::InstructorBase
         
       end
     
-      @categories = Array.new
-      course.gradebook.grade_weights.each do |gw|
-        if gw.percentage > 0
-          @categories << gw
-        end
-      end
-      
       # acutually weight the grades
       if course.gradebook.weight_grades
+        @categories = Array.new
+        course.gradebook.grade_weights.each do |gw|
+          if gw.percentage > 0
+            @categories << gw
+          end
+        end
+    
         @students.each do |student|
           #puts "#{student.inspect}"
           #puts "#{@student_cat_total[student.id].inspect}"
           
-          weights.each do |weight|
+          weighted_average = 0
+        
+          ## for each category that has a positive weight...
+          @categories.each do |category|
+            begin
+              weighted_average = weighted_average +
+                 @student_cat_total[student.id][category.grade_category_id]/
+                 @cat_max_points[category.grade_category_id] * 
+                 @weight_map[category.grade_category_id] 
+            rescue
+              # no change to weighted average for this category
+            end
+          end
+          
+          @student_weighted[student.id] = weighted_average
+          
+          #weights.each do |weight|
             #puts "----------------"
             #puts "  gcid=#{weights.grade_category_id}"
             #puts "  tpts=#{cat_max_points[weights.grade_category_id]}"
             
-            new_weight = @student_cat_total[student.id][weight.grade_category_id] rescue new_weight = 0
+          #  new_weight = @student_cat_total[student.id][weight.grade_category_id] rescue new_weight = 0
             #puts "  studentTotal=#{new_weight}"
-            new_weight = new_weight / @cat_max_points[weight.grade_category_id] rescue new_weight = 0
-            new_weight = new_weight * (@weight_map[weight.grade_category_id]/ 100.0)
-            @student_weighted[student.id] += new_weight*100 ## sprintf("%.2f",new_weight*100).to_f
+          #  new_weight = new_weight / @cat_max_points[weight.grade_category_id] rescue new_weight = 0
+          #  new_weight = new_weight * (@weight_map[weight.grade_category_id]/ 100.0)
+          #  @student_weighted[student.id] += new_weight*100 ## sprintf("%.2f",new_weight*100).to_f
             
-          end
+          #end
           
           #puts "#{@student_weighted[student.id]}"
         end
