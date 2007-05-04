@@ -266,12 +266,12 @@ class Instructor::CourseGradebookController < Instructor::InstructorBase
         @weight_map[x.grade_category_id] = x.percentage 
       end
       
-      cat_max_points = Hash.new
+      @cat_max_points = Hash.new
       @grade_items.each do |gi|
-        if cat_max_points[gi.grade_category_id].nil?
-          cat_max_points[gi.grade_category_id] = gi.points
+        if @cat_max_points[gi.grade_category_id].nil?
+          @cat_max_points[gi.grade_category_id] = gi.points
         else
-          cat_max_points[gi.grade_category_id] += gi.points
+          @cat_max_points[gi.grade_category_id] += gi.points
         end
       end
     end
@@ -327,8 +327,13 @@ class Instructor::CourseGradebookController < Instructor::InstructorBase
         end
         
       end
-      
-       
+    
+      @categories = Array.new
+      course.gradebook.grade_weights.each do |gw|
+        if gw.percentage > 0
+          @categories << gw
+        end
+      end
       
       # acutually weight the grades
       if course.gradebook.weight_grades
@@ -343,9 +348,10 @@ class Instructor::CourseGradebookController < Instructor::InstructorBase
             
             new_weight = @student_cat_total[student.id][weight.grade_category_id] rescue new_weight = 0
             #puts "  studentTotal=#{new_weight}"
-            new_weight = new_weight / cat_max_points[weight.grade_category_id] rescue new_weight = 0
+            new_weight = new_weight / @cat_max_points[weight.grade_category_id] rescue new_weight = 0
             new_weight = new_weight * (@weight_map[weight.grade_category_id]/ 100.0)
-            @student_weighted[student.id] += sprintf("%.2f",new_weight*100).to_f
+            @student_weighted[student.id] += new_weight*100 ## sprintf("%.2f",new_weight*100).to_f
+            
           end
           
           #puts "#{@student_weighted[student.id]}"

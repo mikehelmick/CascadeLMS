@@ -37,6 +37,19 @@
 	    <% end %>
 	</th>
    <% end %>
+
+   <% if @course.gradebook.weight_grades %>
+     <th class="cell">&nbsp;</th>
+     <% for category in @categories %>
+       <th class="cell" nowrap="nowrap" valign="bottom" colspan="2">Category:<br/>
+	     <%= category.grade_category.category %><br/>
+	     Points: <%= @cat_max_points[category.grade_category_id] %><br/>
+	     Cat: <%= @weight_map[category.grade_category_id] %>%
+	   </th>
+     <% end %>
+     <th class="cell">&nbsp;</th>
+   <% end %>
+
    <th class="cell"  nowrap="nowrap">Total Points<br/><%=@total_points%></th>
    <th class="cell"  nowrap="nowrap">
    <% if @course.gradebook.weight_grades %>Weighted Average
@@ -66,6 +79,15 @@
 	  </td>
 	<% end %>
 	
+	<% if @course.gradebook.weight_grades %>
+	  <td class="cell">&nbsp;</td>
+      <% for category in @categories %>
+        <td class="cell"><%= @student_cat_total[student.id][category.grade_category_id] %></td>
+        <td class="cell"><%= sprintf("%.4f", @student_cat_total[student.id][category.grade_category_id]/@cat_max_points[category.grade_category_id] * @weight_map[category.grade_category_id]) rescue "0.0000" %></td>
+      <% end %>
+      <td class="cell">&nbsp;</td>
+    <% end %>
+	
 	<td class="cell"><%= @student_totals[student.id] %></td>
 	<td class="cell">
 	  <% if @course.gradebook.weight_grades %>
@@ -91,6 +113,13 @@
 		  <%= sprintf( "%.2f", @averages[gi.id]/@students.size ) %> 
 		</td>
 	<% end %>  
+	
+	<% if @course.gradebook.weight_grades %>
+	  <td class="summaryCell">&nbsp;</td>
+      <% for category in @categories %><td class="summaryCell" colspan="2">----</td><% end %>
+      <td class="summaryCell">&nbsp;</td>
+	<% end %>
+	
     <td class="summaryCell">*****</td>
     <td class="summaryCell">*****</td>
     <td class="summaryCell">*****</td>
@@ -104,6 +133,13 @@
 		  <%= sprintf( "%.2f", @averages[gi.id]/(@students.size - @average_no_blank[gi.id]) ) rescue 'xx' %> 
 		</td>
 	<% end %>  
+	
+	<% if @course.gradebook.weight_grades %>
+	  <td class="summaryCell">&nbsp;</td>
+      <% for category in @categories %><td class="summaryCell" colspan="2">----</td><% end %>
+      <td class="summaryCell">&nbsp;</td>
+	<% end %>
+	
     <td class="summaryCell">*****</td>
     <td class="summaryCell">*****</td>
     <td class="summaryCell">*****</td>
