@@ -19,7 +19,8 @@
      <%= fold %> /
    <% end %>
 
-     
+<br/>
+This folder is a podcast: <%= link_to "#{image_tag 'ipod_cast.png'} Subscribe", :action => 'subscribe', :course => @course.id, :id => @folder_id %>  
 
 </p>
 
@@ -47,6 +48,9 @@
 		  <td>
 		    <% if document.folder %>   
 		      <%= link_to "#{image_tag document.icon_file, :align=> 'absmiddle'} #{document.title}", :action => 'index', :course => @course.id, :id => document %> 
+		      <% if document.podcast_folder %>
+		        <%= link_to "#{image_tag 'ipod_cast.png'} Subscribe", :action => 'subscribe', :course => @course.id, :id => document %>
+		      <% end %>
 		    <% else %>
 		      <%= link_to "#{image_tag document.icon_file, :align=> 'absmiddle'} #{document.title}", :action => 'download', :course => @course.id, :id => document %>
 		    <% end %>

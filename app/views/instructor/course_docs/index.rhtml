@@ -1,6 +1,10 @@
 <h2>Documents for <%= @course.title %></h2>
 
-<p><%= link_to "Back", :controller => "/instructor/index", :course => @course %> | <%= link_to 'New document', :action => 'new', :id => @folder_id %> | <%= link_to 'New Folder', :action => 'new_folder', :id => @folder_id %></p>
+<p><%= link_to "Back", :controller => "/instructor/index", :course => @course %> | <%= link_to 'New document', :action => 'new', :id => @folder_id %> 
+<% if !@folder.nil? && !@folder.podcast_folder %>
+	| <%= link_to 'New Folder', :action => 'new_folder', :id => @folder_id %>
+<% end %>
+</p>
 
 <p><b>Folder Navigation: </b>
   <%= link_to 'root://', :action => 'index', :id => 0 %>	
@@ -10,6 +14,9 @@
      cur_f = @folder
      while !cur_f.nil?     
        dir_arr << link_to( "#{cur_f.title}", :action => 'index', :id => cur_f )
+	   if cur_f.podcast_folder
+	     dir_arr[-1] = "#{dir_arr[-1]} #{image_tag 'ipod_cast.png'} (#{link_to 'edit', :action => 'edit_folder', :id => @folder_id})"
+	   end
 	   cur_f = cur_f.parent_document()
 	 end
    end
@@ -48,6 +55,9 @@
     <td><%= image_tag "#{document.icon_file}", :align => 'absmiddle' %>
       <% if document.folder %>
         <%= link_to "#{h document.title}", :action => 'index', :id => document %>
+		<% if document.podcast_folder %>
+		  <%= image_tag 'ipod_cast.png' %>
+		<% end %>
 	  <% else %>
 	    <%=h document.title %>
 	  <% end %></td>
@@ -87,4 +97,8 @@
 
 <br />
 
-<p><%= link_to "Back", :controller => "/instructor/index", :course => @course%> | <%= link_to 'New document', :action => 'new', :id => @folder_id  %> | <%= link_to 'New Folder', :action => 'new_folder', :id => @folder_id %></p>
+<p><%= link_to "Back", :controller => "/instructor/index", :course => @course%> | <%= link_to 'New document', :action => 'new', :id => @folder_id  %>
+	<% if !@folder.nil? && !@folder.podcast_folder %>
+		| <%= link_to 'New Folder', :action => 'new_folder', :id => @folder_id %>
+	<% end %>	
+</p>

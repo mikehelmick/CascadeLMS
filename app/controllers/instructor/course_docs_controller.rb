@@ -41,6 +41,8 @@ class Instructor::CourseDocsController < Instructor::InstructorBase
     @document.course = @course
     @document.set_file_props( params[:file] ) unless params[:file].class.to_s.eql?('String')
     @document.document_parent = @folder_id
+    @document.folder = false
+    @document.podcast_folder = false
     
     if @document.save
       @document.create_file( params[:file], @app['external_dir'] )
@@ -58,6 +60,13 @@ class Instructor::CourseDocsController < Instructor::InstructorBase
     return unless course_open( @course, :action => 'index' )
     
     return unless load_folder( params[:id].to_i )
+    
+    if !@folder.nil? && 
+      if @folder.podcast_folder
+        flash[:badnotice] = "You can not create a subfolder in a podcast folder."
+        redirect_to :action => 'index', :id => @folder_id
+      end
+    end
     
     @document = Document.new
   end

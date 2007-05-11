@@ -2,7 +2,7 @@
 # migrations feature of ActiveRecord to incrementally modify your database, and
 # then regenerate this schema definition.
 
-ActiveRecord::Schema.define(:version => 69) do
+ActiveRecord::Schema.define(:version => 70) do
 
   create_table "announcements", :force => true do |t|
     t.column "headline",  :string
@@ -178,6 +178,7 @@ ActiveRecord::Schema.define(:version => 69) do
     t.column "published",       :boolean,  :default => true,  :null => false
     t.column "document_parent", :integer,  :default => 0,     :null => false
     t.column "folder",          :boolean,  :default => false, :null => false
+    t.column "podcast_folder",  :boolean,  :default => false, :null => false
   end
 
   create_table "file_comments", :force => true do |t|

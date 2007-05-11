@@ -11,6 +11,17 @@ class Document < ActiveRecord::Base
   
   def validate
     errors.add_to_base("No file was given") if self.filename.nil? || self.filename.size == 0
+    
+    ## don't let a folder become a podcast if it has subfolders
+    if self.podcast_folder
+      subs = Document.find(:all, :conditions => ["document_parent = ?", self.id] ) rescue subs = Array.new
+      subs.each do |doc|
+        if doc.folder
+          errors.add_to_base("You can not podcast this directory because it has a subdirectory.")
+          return ### THIS MUST BE THE LAST VALIDATION
+        end
+      end
+    end
   end
   
   def feed_action
@@ -116,6 +127,8 @@ class Document < ActiveRecord::Base
   
   def transform_markup
 	  self.comments_html = HtmlEngine.apply_textile( self.comments )
+	  
+	  #self.podcast_folder = false if self.folder == false
   end
   
 end
