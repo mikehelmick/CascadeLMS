@@ -1,7 +1,7 @@
 <h2>Documents for <%= @course.title %></h2>
 
 <p><%= link_to "Back", :controller => "/instructor/index", :course => @course %> | <%= link_to 'New document', :action => 'new', :id => @folder_id %> 
-<% if !@folder.nil? && !@folder.podcast_folder %>
+<% if @folder.nil? || (!@folder.nil? && !@folder.podcast_folder) %>
 	| <%= link_to 'New Folder', :action => 'new_folder', :id => @folder_id %>
 <% end %>
 </p>
@@ -98,7 +98,7 @@
 <br />
 
 <p><%= link_to "Back", :controller => "/instructor/index", :course => @course%> | <%= link_to 'New document', :action => 'new', :id => @folder_id  %>
-	<% if !@folder.nil? && !@folder.podcast_folder %>
+	<% if @folder.nil? || (!@folder.nil? && !@folder.podcast_folder) %>
 		| <%= link_to 'New Folder', :action => 'new_folder', :id => @folder_id %>
 	<% end %>	
 </p>
