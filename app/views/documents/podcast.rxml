@@ -17,6 +17,9 @@ xml.rss "version" => "2.0", "xmlns:itunes" => "http://www.itunes.com/dtds/podcas
 	  xml << "    <itunes:block>no</itunes:block>\n"
 	  xml << "    <itunes:explicit>no</itunes:explicit>\n"
 	  
+	  xml << "    <language>en-us</language>\n"
+	  xml << "    <itunes:language>en-us</itunes:language>\n"
+	  
 	  xml << "    <itunes:author>#{@course.instructors.join(', ')}</itunes:author>\n"
 	  xml.itunes:owner do
       xml << "      <itunes:name>#{@course.instructors.join(', ')}</itunes:name>\n"
