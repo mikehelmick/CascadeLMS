@@ -11,11 +11,12 @@ xml.rss "version" => "2.0", "xmlns:itunes" => "http://www.itunes.com/dtds/podcas
 	  xml.description("#{@folder.comments}")
 	  #xml.ttl "120"
 	  
-	  xml.language "en-us"
 	
 	  xml << "    <itunes:category text=\"Education\" />\n"
 	
-	  xml.itunes:block
+	  xml << "    <itunes:block>no</itunes:block>\n"
+	  xml << "    <itunes:explicit>no</itunes:explicit>\n"
+	  
 	  xml << "    <itunes:author>#{@course.instructors.join(', ')}</itunes:author>\n"
 	  xml.itunes:owner do
       xml << "      <itunes:name>#{@course.instructors.join(', ')}</itunes:name>\n"
