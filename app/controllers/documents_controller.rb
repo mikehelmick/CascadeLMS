@@ -20,11 +20,11 @@ class DocumentsController < ApplicationController
   end
   
   def podcast_download
-    #user = rss_authorize()
+    user = rss_authorize()
     
-    #unless user.nil?
+    unless user.nil?
       if load_course( params[:course] )
-        #if allowed_to_see_course( @course, @user )
+        if allowed_to_see_course( @course, @user )
     
           begin 
             @document = Document.find(params[:id])
@@ -35,17 +35,17 @@ class DocumentsController < ApplicationController
           if doc_in_course( @course, @document )
             send_file @document.resolve_file_name(@app['external_dir']), :filename => @document.filename, :type => "#{@document.content_type}", :disposition => 'inline'  
           end
-        #end
+        end
       end
-    #end
+    end
   end
   
   def podcast
-    #user = rss_authorize()
+    user = rss_authorize()
     
-    #unless user.nil?
+    unless user.nil?
       if load_course( params[:course] ) 
-          #if allowed_to_see_course( @course, @user )
+          if allowed_to_see_course( @course, @user )
           
             if load_folder( params[:id].to_i )
               
@@ -58,11 +58,11 @@ class DocumentsController < ApplicationController
           
             end
             ## not loaded folder
-          #end
+          end
           #render_text( 'You are not authorized to view this RSS feed.', 401 ) 
         end
         #render_text( 'You are not authorized to view this RSS feed.', 401 ) 
-    #end
+    end
   end
   
   def download

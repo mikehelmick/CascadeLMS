@@ -64,6 +64,9 @@ This folder is a podcast: <%= link_to "#{image_tag 'ipod_cast.png'} Subscribe", 
 		  <td>
 		    <% if document.folder %>   
 		      <%= link_to "#{image_tag document.icon_file, :align=> 'absmiddle'} #{document.title}", :controller => '/public/documents', :action => 'index', :course => @course.id, :id => document %> 
+		      <% if document.podcast_folder %>
+		        <%= link_to "#{image_tag 'ipod_cast.png'} Subscribe", :controller => '/public/documents', :action => 'subscribe', :course => @course.id, :id => document %>
+		      <% end %>
 		    <% else %>
 		      <%= link_to "#{image_tag document.icon_file, :align=> 'absmiddle'} #{document.title}", :controller => '/public/documents', :action => 'download', :course => @course.id, :id => document %>
 		    <% end %>

@@ -30,6 +30,9 @@ ActionController::Routing::Routes.draw do |map|
 
   map.connect '/course/:course/:controller/:action/:id',
     :controller => 'overview', :action => 'index', :course => nil, :id => nil
+    
+    map.connect '/course/:course/:controller/:action/:id/:file.:extension',
+      :controller => 'controller', :action => 'podcast_download', :course => nil, :id => nil
 
   map.connect '/redirect/type/:type/:id',
     :controller => 'redirect', :action => 'index', :type => nil, :id => nil

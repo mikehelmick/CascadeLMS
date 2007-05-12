@@ -9,7 +9,7 @@ xml.rss "version" => "2.0", "xmlns:itunes" => "http://www.itunes.com/dtds/podcas
 	                        :only_path => false )
 	  xml.pubDate CGI.rfc1123_date( @fresh_date )                     
 	  xml.description("#{@folder.comments}")
-	  #xml.ttl "120"
+	  xml.ttl "30"
 	  
 	
 	  xml << "    <itunes:category text=\"Education\" />\n"
@@ -40,25 +40,25 @@ xml.rss "version" => "2.0", "xmlns:itunes" => "http://www.itunes.com/dtds/podcas
   		                    :action => 'podcast_download',
   		                    :course => @course.id, 
   		                    :id => doc.id ,
-  		                    :file => "file#{doc.id}.#{doc.extension}" )
+  		                    :file => "file#{doc.id}",
+                    		  :extension => "#{doc.extension}" )
   		  xml.guid url_for( :only_path => false,
                     		  :controller => '/documents',
                     		  :action => 'podcast_download',
                     		  :course => @course.id, 
                     		  :id => doc.id,
-                    		  :file => "file#{doc.id}.#{doc.extension}" )
+                    		  :file => "file#{doc.id}",
+                    		  :extension => "#{doc.extension}" )
         xml.pubDate CGI.rfc1123_date( doc.created_at )
         xml.description "#{doc.comments} File Size: #{doc.size_text} File Type: #{doc.extension}"
         
-       
-       
         xml.enclosure( :url => url_for( :controller => '/documents', 
     	                        :action => 'podcast_download', 
     	                        :id => doc.id, 
-    	                        :file => "file#{doc.id}.#{doc.extension}",
+    	                        :file => "file#{doc.id}",
+                        		  :extension => "#{doc.extension}",
     	                        :course => @course, 
-    	                        :only_path => false, 
-    	                        :protocol => 'http://' ), :length => "#{doc.size}", :type => "#{doc.content_type}" ) 
+    	                        :only_path => false ), :length => "#{doc.size}", :type => "#{doc.content_type}" ) 
     	                        
     	  xml << "      <itunes:subtitle>#{doc.comments} File Size: #{doc.size_text} File Type: #{doc.extension}</itunes:subtitle>\n"
     	  xml << "      <itunes:summary>#{doc.comments} File Size: #{doc.size_text} File Type: #{doc.extension}</itunes:summary>\n"

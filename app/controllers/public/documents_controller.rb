@@ -1,7 +1,7 @@
 class Public::DocumentsController < ApplicationController
   
-  layout 'public'
-  before_filter :set_tab
+  layout 'public', :except => [:podcast, :podcast_download]
+  before_filter :set_tab, :except => [:podcast, :podcast_download]
   
   def index
     return unless load_course( params[:course] )
@@ -14,6 +14,47 @@ class Public::DocumentsController < ApplicationController
     @documents = Document.find(:all, :conditions => ['course_id = ? and published = ? and document_parent = ?', @course.id, true, @folder_id], :order => 'position', :limit => 25, :offset => @document_pages.current.offset)  
    
     set_title
+  end
+  
+  def podcast_download
+    if load_course( params[:course] )
+      return unless course_is_public( @course )
+      
+      begin 
+        @document = Document.find(params[:id])
+        raise 'unpublished' unless @document.published
+      rescue
+        return
+      end
+      
+      if doc_in_course( @course, @document )
+        send_file @document.resolve_file_name(@app['external_dir']), :filename => @document.filename, :type => "#{@document.content_type}", :disposition => 'inline'  
+      end
+    end
+  end
+  
+  def podcast
+    if load_course( params[:course] ) 
+      return unless course_is_public( @course )
+      if load_folder( params[:id].to_i )
+        @documents = Document.find(:all, :conditions => ['course_id = ? and published = ? and document_parent = ?', @course.id, true, @folder_id], :order => 'created_at desc' )  
+              
+        @fresh_date = @documents[0].created_at rescue @fresh_date = Time.now
+              
+        headers["Content-Type"] = "application/rss+xml"
+      end
+    end
+  end
+  
+  def subscribe
+    return unless load_course( params[:course] )
+    return unless course_is_public( @course )
+    return unless load_folder( params[:id].to_i )
+    
+    if @folder.nil? || !@folder.podcast_folder
+      flash[:badnotice] = "The selected folder is not a podcast."
+      redirect_to :action => 'index'
+    end
   end
   
   def download
