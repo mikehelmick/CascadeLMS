@@ -18,7 +18,6 @@ xml.rss "version" => "2.0", "xmlns:itunes" => "http://www.itunes.com/dtds/podcas
 	  xml << "    <itunes:explicit>no</itunes:explicit>\n"
 	  
 	  xml << "    <language>en-us</language>\n"
-	  xml << "    <itunes:language>en-us</itunes:language>\n"
 	  
 	  xml << "    <itunes:author>#{@course.instructors.join(', ')}</itunes:author>\n"
 	  xml.itunes:owner do
@@ -63,8 +62,6 @@ xml.rss "version" => "2.0", "xmlns:itunes" => "http://www.itunes.com/dtds/podcas
     	                        
     	  xml << "      <itunes:subtitle>#{doc.comments} File Size: #{doc.size_text} File Type: #{doc.extension}</itunes:subtitle>\n"
     	  xml << "      <itunes:summary>#{doc.comments} File Size: #{doc.size_text} File Type: #{doc.extension}</itunes:summary>\n"
-      
-        xml.language "en-us"
         
         xml << "      <itunes:explicit>no</itunes:explicit>\n"
         
