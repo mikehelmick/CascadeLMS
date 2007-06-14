@@ -1,0 +1,17 @@
+<h2>Create a new User</h2>
+
+<p><%= link_to 'Cancel', :action => 'index' %></p>
+
+<div id="form_area">
+<% form_tag( {:controller => "/admin/user_admin", :action => "create"}, :onsubmit => "new Element.toggle('button');new Element.toggle('spinner');"  ) do %>
+  <%= render :partial => 'form' %>
+
+<div class="submit">
+  <div id="button"><%= submit_tag "Create User" %></div>
+  <div id="spinner" style="display: none;"><%= image_tag 'spinner.gif' %></div>
+</div>
+
+<% end %>
+</div>
+
+<p><%= link_to 'Cancel', :action => 'index' %></p>

@@ -2,7 +2,7 @@
 # migrations feature of ActiveRecord to incrementally modify your database, and
 # then regenerate this schema definition.
 
-ActiveRecord::Schema.define(:version => 70) do
+ActiveRecord::Schema.define(:version => 75) do
 
   create_table "announcements", :force => true do |t|
     t.column "headline",  :string
@@ -50,6 +50,7 @@ ActiveRecord::Schema.define(:version => 70) do
     t.column "grade_category_id",           :integer
     t.column "released",                    :boolean,  :default => false, :null => false
     t.column "team_project",                :boolean,  :default => false, :null => false
+    t.column "quiz",                        :boolean,  :default => false, :null => false
   end
 
   create_table "auto_grade_settings", :id => false, :force => true do |t|
@@ -128,6 +129,8 @@ ActiveRecord::Schema.define(:version => 70) do
     t.column "enable_forum_topic_create", :boolean, :default => false, :null => false
     t.column "enable_attendance",         :boolean, :default => false, :null => false
     t.column "enable_project_teams",      :boolean, :default => false, :null => false
+    t.column "enable_quizzes",            :boolean, :default => true,  :null => false
+    t.column "ta_create_quizzes",         :boolean, :default => false, :null => false
   end
 
   add_index "course_settings", ["course_id"], :name => "course_settings_course_id_index", :unique => true
@@ -391,6 +394,16 @@ ActiveRecord::Schema.define(:version => 70) do
     t.column "name",      :string,  :default => "", :null => false
   end
 
+  create_table "quizzes", :force => true do |t|
+    t.column "assignment_id",       :integer, :default => 0,     :null => false
+    t.column "attempt_maximum",     :integer, :default => -1,    :null => false
+    t.column "retake_after_close",  :boolean, :default => true,  :null => false
+    t.column "random_questions",    :boolean, :default => false, :null => false
+    t.column "number_of_questions", :integer, :default => -1,    :null => false
+  end
+
+  add_index "quizzes", ["assignment_id"], :name => "index_quizzes_on_assignment_id", :unique => true
+
   create_table "sessions", :force => true do |t|
     t.column "session_id", :string
     t.column "data",       :text
@@ -398,6 +411,14 @@ ActiveRecord::Schema.define(:version => 70) do
   end
 
   add_index "sessions", ["session_id"], :name => "sessions_session_id_index"
+
+  create_table "settings", :force => true do |t|
+    t.column "name",        :string, :default => "", :null => false
+    t.column "value",       :text,   :default => "", :null => false
+    t.column "description", :text,   :default => "", :null => false
+  end
+
+  add_index "settings", ["name"], :name => "index_settings_on_name", :unique => true
 
   create_table "style_checks", :force => true do |t|
     t.column "name",        :string
@@ -490,19 +511,23 @@ ActiveRecord::Schema.define(:version => 70) do
   end
 
   create_table "users", :force => true do |t|
-    t.column "uniqueid",       :string,  :limit => 15, :default => "",    :null => false
-    t.column "password",       :string
-    t.column "preferred_name", :string
-    t.column "first_name",     :string,                :default => "",    :null => false
-    t.column "middle_name",    :string
-    t.column "last_name",      :string,                :default => "",    :null => false
-    t.column "instructor",     :boolean,               :default => false, :null => false
-    t.column "admin",          :boolean,               :default => false, :null => false
-    t.column "affiliation",    :string
-    t.column "personal_title", :string
-    t.column "office_hours",   :string
-    t.column "phone_number",   :string
-    t.column "email",          :string,                :default => "",    :null => false
+    t.column "uniqueid",         :string,  :limit => 15, :default => "",    :null => false
+    t.column "password",         :string
+    t.column "preferred_name",   :string
+    t.column "first_name",       :string,                :default => "",    :null => false
+    t.column "middle_name",      :string
+    t.column "last_name",        :string,                :default => "",    :null => false
+    t.column "instructor",       :boolean,               :default => false, :null => false
+    t.column "admin",            :boolean,               :default => false, :null => false
+    t.column "affiliation",      :string
+    t.column "personal_title",   :string
+    t.column "office_hours",     :string
+    t.column "phone_number",     :string
+    t.column "email",            :string,                :default => "",    :null => false
+    t.column "activated",        :boolean,               :default => false, :null => false
+    t.column "activation_token", :string,                :default => "",    :null => false
+    t.column "forgot_token",     :string,                :default => "",    :null => false
+    t.column "enabled",          :boolean,               :default => true,  :null => false
   end
 
 end

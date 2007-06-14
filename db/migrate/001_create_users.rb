@@ -15,6 +15,18 @@ class CreateUsers < ActiveRecord::Migration
       t.column :phone_number, :string
       t.column :email, :string, :null => false
     end
+    
+    ### create the admin user
+    user = User.new
+    user.uniqueid = 'admin'
+    user.password = 'password'
+    user.first_name = 'Admin'
+    user.last_name = 'Admin'
+    user.instructor = true
+    user.admin = true
+    user.affiliation = 'Faculty'
+    user.email = 'changeme@soon.edu'
+    user.save
   end
 
   def self.down

@@ -1,3 +1,10 @@
+#--
+# Controller for the post-login/home page for users#
+#
+# Also maintains the account information page for systems that use 'basic' auth 
+#
+# Copyright 2006-2007 (c) Mike Helmick
+#++
 class HomeController < ApplicationController
   
   before_filter :ensure_logged_in
@@ -18,6 +25,63 @@ class HomeController < ApplicationController
     @other_courses.delete_if { |x| x.term.id == @term.id }
   end
   
+  def account
+    return unless ensure_basic_auth
+    
+    @confirm = ''
+    
+    ## for the right display
+    set_tab
+    @courses = @user.courses_in_term( @term )
+    @title = "Your Account Information"
+  end
+  
+  def account_update
+    return unless ensure_basic_auth
+    
+    ## for the right display
+    set_tab
+    @courses = @user.courses_in_term( @term )
+    @title = "Your Account Information"
+    
+    # We're not using the active record update functionality - that way we can't hack extra changes
+    @user.preferred_name = params[:preferred_name]
+    @user.phone_number = params[:phone_number]
+    @user.office_hours = params[:office_hours]
+    @user.save
+    
+    unless @user.email.eql?( params[:email] )
+      unless @user.change_email( params[:email], params[:password] )
+        return bail( 'Incorrect password entered, email address has not been changed.' )
+      end
+      @user.save
+      flash[:notice] = "Your email address has been updated."
+    end
+    
+    unless params[:new_password].nil? || params[:new_password].eql?('') 
+      unless @user.valid_password?(params[:password])
+        return bail('Current password incorrect, password has not been changed')
+      end
+      unless params[:new_password].eql?( params[:new_password_confirm] )
+        return bail('New password and its confirmation do not match.  Password has not been changed.')
+      end
+      
+      @user.update_password( params[:new_password] )
+      @user.save
+      flash[:notice] = "#{flash[:notice]} Your password has been updated."
+
+    end
+    
+    redirect_to :action => 'account'
+  end
+  
+  private
+  
+  def bail( message )
+    flash[:badnotice] = message
+    redirect_to :action => 'account'
+    true
+  end
   
   def set_tab
     @tab = 'home'

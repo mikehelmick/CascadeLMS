@@ -30,6 +30,13 @@
 	<%= radio_button 'course_settings', 'enable_gradebook', false %> No</p>
 </div>
 
+<p class="blockintro">Enable quizzes.   Quizzes allow for multiple choice, true/false, and short answer questions (checking for an exact response).   This module allows you to define a bank of quiz questions, giving each student a random quiz.   Quizzes can also be used as a survey tool, aggregating responses.</p>
+<div class="block">
+<p><label for="course_settings_enable_quizzes" class="required">Enable quizzes:</label>
+	<%= radio_button 'course_settings', 'enable_quizzes', true %> Yes
+	<%= radio_button 'course_settings', 'enable_quizzes', false %> No</p>
+</div>
+
 <p class="blockintro">Project teams allow you to group students together for the duration of a class (you can still have individual assignments).  The grouping provides students with a 'team center' and allows them to have a common turn-in, even with Subversion.</p>
 <div class="block">
 	<p><label for="course_settings_enable_project_teams" class="required">Enable Project Teams:</label>
@@ -51,7 +58,7 @@
 		<%= radio_button 'course_settings', 'enable_rss', false %> No</p>
 </div>
 
-<p class="blockintro">The 'documents' section allows you to post other documents (syllabus, lecture notes, etc.) for students to download and read.   It also allows you to create slide shows that are visible and presented through this site.</p>
+<p class="blockintro">The 'documents' section allows you to post other documents (syllabus, lecture notes, etc.) for students to download and read.   It also allows you to create slide shows that are visible and presented through this site.   You must enable the documents module to use podcasts in this course.</p>
 <div class="block">
 <p><label for="course_settings_enable_documents" class="required">Enable documents:</label>
 	<%= radio_button 'course_settings', 'enable_documents', true %> Yes
@@ -84,6 +91,10 @@
 <p><label for="course_settings_ta_course_assignments" class="required">TA can edit course assignments:</label>
 	<%= radio_button 'course_settings', 'ta_course_assignments', true %> Yes
 	<%= radio_button 'course_settings', 'ta_course_assignments', false %> No</p>
+
+	<p><label for="course_settings_ta_create_quizzes" class="required">TA can create quizzes:</label>
+		<%= radio_button 'course_settings', 'ta_create_quizzes', true %> Yes
+		<%= radio_button 'course_settings', 'ta_create_quizzes', false %> No</p>
 
 <p><label for="course_settings_ta_course_gradebook" class="required">TA can edit full gradebook:</label>
 	<%= radio_button 'course_settings', 'ta_course_gradebook', true %> Yes

@@ -13,7 +13,11 @@
     <th>Affiliation</th>
     <th>Instructor</th>
     <th>Admin</th>
+    <th>Login Enabled</th>
+<% if @app['authtype'].eql?('basic') %>
+    <th>Activated?</th>
     <th>Edit</td>
+<% end %>
   </tr>
 
 <% count = 0 %>
@@ -32,11 +36,16 @@
     <td><%= user.affiliation %></td>
     <td id="instructor_<%=user.id%>"><%= link_to_remote( "#{user.instructor}", :update => "instructor_#{user.id}", :url => { :action => 'toggle_instructor', :id => user }, :complete => "new Effect.Highlight( 'item_#{user.id}' )" ) %></td>
     <td id="admin_<%=user.id%>"><%= link_to_remote( "#{user.admin}", :update => "admin_#{user.id}", :url => { :action => 'toggle_admin', :id => user }, :complete => "new Effect.Highlight( 'item_#{user.id}' )" ) %></td>
-    <td>
-<% if @app['authtype'].eql?('ldap') %>Use LDAP<%end%>
 
-    </td>
-  </tr>
+	<td id="enable_<%=user.id%>"><%= link_to_remote( "#{user.enabled}", :update => "enable_#{user.id}", :url => { :action => 'toggle_enabled', :id => user }, :complete => "new Effect.Highlight( 'enable_#{user.id}' )" ) %></td>
+
+<% if @app['authtype'].eql?('basic') %>  
+    <td><%= user.activated %></td>
+    <td>
+		<%= link_to 'Edit ', :controller => '/admin/user_admin', :action => 'edit', :id => user.id %>
+    </td> 
+<% end %> 
+ </tr>
 
 <% end %>
 </table>

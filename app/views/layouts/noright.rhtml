@@ -14,125 +14,7 @@
 
 <body>
 
-<div id="navcontainer">
-
-<table width="100%" border="0" >
- <tr>
-  <td align="left"><div id="headerleft"><%=@app['title']%></div></td>
-  <td align="right"><div id="headerright">
-<%if session[:user]%>Logged in as <%=session[:user].display_name%> (<%= link_to "log out #{image_tag 'lock_go.png'}", :controller => '/index', :action => 'logout' %>) 
-  <% if @user.courses_in_term(session[:current_term]).size > 1 %><br/>
-    <% for cu in @user.courses_in_term(session[:current_term] ) %>
-      <%= image_tag 'bullet_go.png', :align => 'absmiddle' %><%= link_to "#{cu.course.title}", :controller => '/overview', :course => cu.course.id %>  
-    <% end %>
-  <% end %>
-<%else%>You are not logged in.
-<%end%>
-</div>
- </tr>
-</table>
-
-	<ul id="navlist">
-		
-		<% if session[:user].nil? %>
-		  <li><%= link_to "Login", { :controller => '/' }, { :id => 'current' } %></li>
-		
-		<% else%>
-		
-		  <% if @show_course_tabs.nil? || !@show_course_tabs %>
-		    <% if @tab.nil? || !@tab.eql?('home') %>
-		      <li><%= link_to 'Home', :controller => '/home', :course => nil, :assignment => nil %></li>
-		    <% else %>
-		      <li><%= link_to 'Home', { :controller => '/home', :course => nil, :assignment => nil }, { :id => 'current' } %></li>
-		    <% end %>
-		
-		  <% else %>
-		
-		    <li><%= link_to 'Home', :controller => '/home', :couse => nil, :assignment => nil %></li>     
-		    <% if @tab.nil? || !@tab.eql?('course_overview') %>
-		          <li><%= link_to 'Overview', :controller => '/overview', :course => @course, :assignment => nil %></a></li> 
-		    <% else %>
-                  <li><%= link_to 'Overview', { :controller => '/overview', :course => @course, :assignment => nil }, { :id => 'current' } %></li>		
-		    <% end %> 
-		    
-		     <% if @course.course_setting.enable_blog %>
-			  <% if @tab.nil? || !@tab.eql?('course_blog') %>
-			    <li><%= link_to 'Course Blog', :controller => '/blog', :course => @course, :assignment => nil %></li> 
-			  <% else %>
-	            <li><%= link_to 'Course Blog', { :controller => '/blog', :course => @course, :assignment => nil }, { :id => 'current' } %></li>
-	          <% end %>
-			 <% end %>
-			
-			  <% if @tab.nil? || !@tab.eql?('course_documents') %>
-			    <li><%= link_to 'Documents', :controller => '/documents', :course =>@course, :assignment => nil %></li>
-			  <% else %>
-			    <li><%= link_to 'Documents', { :controller => '/documents', :course =>@course, :assignment => nil }, { :id => 'current' } %></li>
-			  <% end %>
-			
-			  <% if @tab.nil? || !@tab.eql?('course_assignments') %>
-				<li><%= link_to 'Assignments', :controller => '/assignments', :course => @course, :assignment => nil %></li>
-			  <% else %>
-			    <li><%= link_to 'Assignments', { :controller => '/assignments', :course => @course, :assignment => nil }, { :id => 'current' } %></li>
-			  <% end %>
-			
-			<% if @course.course_setting.enable_project_teams %>
-			  <% if @tab.nil? || !@tab.eql?('course_teams') %>
-			    <li><%= link_to 'Team Center', :controller => '/team', :course => @course, :assignment => nil %></li> 
-			  <% else %>
-	            <li><%= link_to 'Team Center', { :controller => '/team', :course => @course, :assignment => nil }, { :id => 'current' } %></li>
-	          <% end %>
-			<% end %>
-			
-			<% if @course.course_setting.enable_forum %>
-			  <% if @tab.nil? || !@tab.eql?('course_forum') %>
-			    <li><%= link_to 'Forums', :controller => '/forums', :course => @course, :assignment => nil %></li> 
-			  <% else %>
-	            <li><%= link_to 'Forums', { :controller => '/forums', :course => @course, :assignment => nil }, { :id => 'current' } %></li>
-	          <% end %>
-	         <% end %>
-		    
-		    <% if @user.student_in_course?(@course.id) && @course.course_setting.enable_gradebook %>
-		  	  <% if @tab.nil? || !@tab.eql?('course_grades') %>
-			    <li><%= link_to 'Grades', :controller => '/grades', :course => @course, :assignment => nil %></li>
-		      <% else %>
-		        <li><%= link_to 'Grades', { :controller => '/grades', :course => @course, :assignment => nil }, { :id => 'current' } %></li>
-		      <% end %>
-		    <% end %>
-		
-			<% if @user.student_in_course?(@course.id) && @course.course_setting.enable_attendance %>
-		  	  <% if @tab.nil? || !@tab.eql?('course_attendance') %>
-			    <li><%= link_to 'Attendance', :controller => '/attendance', :course => @course, :assignment => nil %></li>
-		      <% else %>
-		        <li><%= link_to 'Attendance', { :controller => '/attendance', :course => @course, :assignment => nil }, { :id => 'current' } %></li>
-		      <% end %>		
-		    <% end %>
-		
-		
-		    <% if @user.instructor_in_course?(@course.id) || @user.assistant_in_course?(@course.id) %>
-		      <% if @tab.nil? || !@tab.eql?('course_instructor') %>
-		        <li style="padding-left: 25px"><%= link_to 'Instructor', { :controller => '/instructor/index', :course => @course, :assignment => nil } %></li>
-		      <% else %>
-		        <li style="padding-left: 25px"><%= link_to 'Instructor', { :controller => '/instructor/index', :course => @course, :assignment => nil }, { :id => 'current' } %></li>
-		      <% end %>
-		    <% end %>
-		
-		  <% end %>
-		  
-		  <% if @user && @user.admin %>
-		    <% if @tab.nil? || !@tab.eql?('administration') %>
-		      <li style="padding-left: 25px"><%= link_to 'Administration', :controller => '/admin', :course => nil, :assignment => nil %>
-		    <% else %>
-		      <li style="padding-left: 25px"><%= link_to 'Administration', { :controller => '/admin', :course => nil, :assignment => nil }, { :id => 'current' } %></li>
-		    <% end %>
-
-		    
-		  <% end %>
-		<% end %>
-
-	</ul>
-	
-
-</div>
+<%= render :partial => '/layouts/menu' %>
 
 <div id="Wrapper">
 <div class="Container">
@@ -153,17 +35,7 @@
 
 		</div>
 		
-		 <div class="bottom">&nbsp;</div>
-		 <div id="Footer">
-		   Copyright &copy; 2006 - 2007 <a href="http://www.users.muohio.edu/helmicmt/">Mike Helmick</a> | <%= link_to "Credits", :controller => "/index", :action => 'credits' %> |
-		   <a href="http://www.users.muohio.edu/helmicmt/cscw/">Computer Science Courseware v<%=@app['version']%></a><br/>
-		   Installed for <%=@app['title']%>, Site contact: <a href="mailto:<%=@app['email']%>"><%=@app['email']%></a> <br/>
-
-		   <% unless session[:user].nil? %>
-		   Powered by Ruby v<%= RUBY_VERSION %> and Ruby on Rails v<%= Rails::VERSION::STRING %> 
-		   <% end %>
-		 </div>
-	  </div>
+<%= render :partial => '/layouts/footer' %>	
 	</td>
 
  </tr>

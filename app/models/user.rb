@@ -1,4 +1,5 @@
 require 'digest/sha1'
+require 'MyArray'
 
 class User < ActiveRecord::Base
   validates_uniqueness_of :uniqueid
@@ -102,6 +103,10 @@ class User < ActiveRecord::Base
     self.admin = !self.admin   
   end
   
+  def toggle_enabled
+    self.enabled = !self.enabled
+  end
+  
   def valid_password?( password_entered )
     valid = Digest::SHA1.hexdigest( self.email + "mmmm...salty" + password_entered + "ROCK, ROCK ON" )
     return self.password.eql?(valid)
@@ -115,8 +120,27 @@ class User < ActiveRecord::Base
     self.password = Digest::SHA1.hexdigest( self.email + "mmmm...salty" + self.password + "ROCK, ROCK ON" )
   end
   
+  def User.gen_token( size = 48 )
+    letters = ('a'..'z').to_a
+    (0..9).to_a.each { |i| letters << i }
+    
+    tok = ''
+    1.upto(size) { |x| tok = "#{tok}#{letters.random}"}
+    return tok
+  end
+  
   def to_s
     display_name
+  end
+  
+  def change_email( email, new_password ) 
+    if valid_password?( new_password )
+      self.email = email
+      self.password = Digest::SHA1.hexdigest( self.email + "mmmm...salty" + new_password + "ROCK, ROCK ON" )
+      return true
+    else 
+      return false
+    end
   end
   
   private :blank_in_course

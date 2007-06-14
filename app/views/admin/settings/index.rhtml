@@ -1,0 +1,48 @@
+<h2>Global Application Settings</h2>
+
+
+<p>Be cautions - make sure you know what you are doing before changing items on this screen.</p>
+
+<% if @settings.size == 0 %>
+  <p><i>There are no settings to configure in this version.</i></p>
+<% else %>
+
+<table class="fancy">
+  <tr class="header">
+    <th>Name</th>
+    <th>Value</th>
+    <th>Description</th>
+  </tr>
+  
+<% count = 0 %>
+<% for setting in @settings %>
+<% count = count.next 
+   odd = "odd"
+   odd = "even" if count.even?
+%>
+
+  <tr class="<%=odd%> hover">
+    <td><%=h setting.name %></td>
+    <td id="main_<%=setting.id%>"><%=h setting.value %> <b><%= link_to_function "edit #{image_tag 'brick_edit.png'}", visual_effect(:toggle_slide, "setting_#{setting.id}" ) %></b></td>
+    <td><%=h setting.description %></td>
+  </tr>
+
+  <tr class="<%=odd%> hover" id="setting_<%=setting.id%>" style="display: none;">
+	<td align="right"><b>Edit '<%=h setting.name %>'</b><br/><%= image_tag 'cog' %></td>
+    <td colspan="2">
+    	<%= form_remote_tag :url => { :controller => "/admin/settings", :action => "update", :id => setting.id }, :success => "new Effect.Highlight( 'setting_#{setting.id}' );", :failure => "alert('There was an error saving the setting \"#{setting.name}\".');", :update => "main_#{setting.id}"  %>
+           
+		   <%= text_area_tag 'value', setting.value, "cols" => 90, "rows" => 4 %> 
+           <%= submit_tag "Update" %>
+        <%= end_form_tag %>
+    </td>
+  </tr>
+
+<% end %>
+</table>
+
+<% end %>
+
+<br />
+
+<%= link_to 'Back', :controller => '/admin' %>

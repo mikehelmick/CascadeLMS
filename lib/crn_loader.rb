@@ -1,6 +1,9 @@
 ## This is for Miami - this will pre-load CRNs for course information
 ## You may want to do something like this for your school
 
+## Modified June 1, 2007 - Miami Output format changed
+## 
+
 require 'net/http'
 require 'uri'
 
@@ -59,35 +62,35 @@ class CrnLoader
             case step
               when 0
                 unless line.index('<A HREF="http://www.ucm.muohio.edu/').nil?
-                  crn = line[line.index('>')+1...line.rindex('<')].strip
+                  from = line.index('<A HREF="http://www.ucm.muohio.edu/') + 1
+                  crn = line[line.index('>', from )+1...line.index('<', from )].strip
+                  
                   step = 1
                 end
               when 1
-                unless line.index('</TD>').nil?
-                  step = 2
-                end
-              when 2
-                unless line.index('</TD>').nil?
-                  subj = line[0...line.index('&nbsp;')].strip
-                  step = 3
-                end
-              when 3
-                unless line.index('</TD>').nil?
-                  number = line[0...line.index('&nbsp;')].strip
+                unless line.index('class="colCrse"').nil?
+                  from = line.index('class="colCrse"')
+                  
+                  subjNum = line[line.index('>', from )+1...line.index('</td', from )].strip
+                  subjNumArr = subjNum.split('&nbsp;') 
+                  
+                  subj = subjNumArr[0]
+                  number = subjNumArr[1].to_i
+                  
                   step = 4
                 end
               when 4
-                unless line.index('</TD>').nil?
-                  section = line[0...line.index('&nbsp;')].strip
-                  step = 5
-                end
-              when 5
-                unless line.index('</TD>').nil?
+                unless line.index('class="colSeq"').nil?
+                  from = line.index('class="colSeq"')
+                  
+                  section = line[line.index('>', from )+1...line.index('</td', from )].strip
+                 
                   step = 6
-                end  
+                end
               when 6
-                unless line.index('</TD>').nil?
-                  title = line[0...line.index('&nbsp;')].strip
+                unless line.index('class="colTitle"').nil?
+                  from = line.index('class="colTitle"') rescue from = 0
+                  title = line[line.index('>', from )+1...line.index('</td', from )].strip
                   step = 0
 
                   result = "#{result}#{base_crn}#{crn} #{subj}#{number}-#{section} #{title}   ...   "
@@ -119,3 +122,4 @@ class CrnLoader
     end
 
 end
+

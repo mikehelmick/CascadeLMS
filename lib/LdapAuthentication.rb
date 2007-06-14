@@ -100,6 +100,7 @@ class LdapAuthentication
     user.middle_name = page[0][@settings['ldap_field_middlename']][0] unless page[0][@settings['ldap_field_middlename']].nil?
     user.last_name = page[0][@settings['ldap_field_lastname']][0]
     user.instructor = false
+    user.activated = true
     user.affiliation = page[0][@settings['ldap_field_affiliation']].join(', ')
     page[0][@settings['ldap_field_affiliation']].each do |x|
       if x.downcase.eql?( @settings['instructor_affiliation'].downcase ) 

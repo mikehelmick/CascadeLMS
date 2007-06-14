@@ -1,0 +1,10 @@
+<h2>Your Account Information</h2>
+
+<div id="form_area">
+<% form_tag( :controller => "/home", :action => "account_update" ) do %>
+  <%= render :partial => 'account_form' %>
+  <div class="submit">
+    <%= submit_tag "Submit Changes" %>
+  </div>
+<% end %>
+</div>

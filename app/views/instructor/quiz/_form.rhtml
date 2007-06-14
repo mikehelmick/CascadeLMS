@@ -1,0 +1,41 @@
+<%= error_messages_for 'assignment' %>
+
+
+
+<div class="blockintro">Create a new quiz for this course.</div>
+
+<div class="block">
+<p><label for="assignment[title]" class="required">Quiz name:</label>
+<%= text_field 'assignment', 'title'  %></p>
+<p><label for="term" class="required">Category:</label> <%= select_tag 'grade_category_id', options_from_collection_for_select(@categories, "id", "category", @assignment.grade_category_id ) %></p>
+</div>
+
+<div class="blockintro">For the dates of a quiz: the available date allows to set up an quiz in this system without allowing students to see it until a certain point in time.  The due date and the close date allow you to set a time that the quiz is due, but still allow it to be taken for a slightly longer period of time.</div>
+<div class="block">
+
+<table border="0" cellspacing="2" cellpadding="2">
+ <tr>
+  <td align="right" class="required"><b>Date available to students:</b></td>
+  <td align="left" nowrap="nowrap"><%= datetime_select 'assignment', 'open_date'  %></td>
+ </tr>
+ <tr>
+  <td align="right" class="required"><b>Quiz due date:</b></td>
+  <td align="left" nowrap="nowrap"><%= datetime_select 'assignment', 'due_date'  %></td>
+ </tr>
+ <tr>
+  <td align="right" class="required"><b>Last time the quiz can be taken (close date):</b></td>
+  <td align="left" nowrap="nowrap"><%= datetime_select 'assignment', 'close_date'  %></td>
+ </tr>
+</table>
+
+    <p><label for="assignment[description]" class="required">Quiz Description (optional):</label>
+      <%= text_area 'assignment', 'description'  %></p>
+
+  </div>
+ 
+<div class="blockintro">Enter the number of attempts that a student may have for this quiz - enter a negative number to allow for unlimited attempts (default).</div>
+<div class="block">
+	<p><label for="attempts" class="required">Quiz Attempts:</label>
+      <%= text_field_tag 'assignment', @attempts  %></p>
+	
+</div>

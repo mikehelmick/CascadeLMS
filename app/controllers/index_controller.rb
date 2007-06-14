@@ -28,6 +28,9 @@ class IndexController < ApplicationController
     end
     
     authenticate( @user )
+    
+    
+    
   end
   
   def expired
@@ -41,6 +44,133 @@ class IndexController < ApplicationController
     reset_session
     redirect_to :action => 'index', :out => 'out'
   end
+
+  def forgot
+    sreturn unless ensure_basic_auth
+  end
+  
+  def send_forgot
+    return unless ensure_basic_auth
+    
+    @act_user = nil
+    if !nil_or_empty( params[:uniqueid] ) 
+      @act_user = User.find(:first, :conditions => ['uniqueid = ?', params[:uniqueid] ] )
+      
+      unless @act_user.nil?
+        @act_user.forgot_token = User.gen_token
+        @act_user.save
+        
+        link = url_for :controller => '/index', :action => 'reset_password', :id => @act_user.id, :seq => @act_user.forgot_token, :only_path => false
+        Notifier::deliver_send_recover( @act_user, @app['email'], link, @app['organization'] )
+        
+      end
+      
+      flash[:notice] = 'Check your email for password reset instructions.'
+      redirect_to :controller => '/', :action => nil
+      
+    else
+      flash[:badnotice] = 'You must enter either your username or email address.'
+      redirect_to :action => 'forgot'
+    end
+    
+  end
+  
+  def reset_password
+    return unless ensure_basic_auth
+    
+    @act_user = User.find(:first, :conditions => ['id = ? and forgot_token = ?', params[:id], params[:seq] ] ) rescue @act_user = nil
+    if @act_user.nil?
+      flash[:badnotice] = 'The information you requested is invalid or does not exist, please verify the password reset link in your email.'
+      redirect_to :controller => '/', :action => nil, :id => nil
+      return false
+    end
+    
+    true
+  end
+  
+  def confirm_reset
+    return unless reset_password
+    
+    unless @act_user.email.eql?(params[:email])
+      flash[:badnotice] = "Email address is invalid, your password has not been changed."
+      redirect_to :controller => '/index', :action => 'reset_password', :id => @act_user.id, :seq => @act_user.forgot_token
+      return
+    end
+    
+    if params[:new_password].eql?( params[:new_password_confirm] ) 
+      @act_user.update_password( params[:new_password] ) 
+      
+      if @act_user.save
+        flash[:notice] = "Your password has been set, you may now log in."
+        redirect_to :controller => '/', :action => nil, :id => nil
+        
+        begin
+          @act_user.forgot_token = User.gen_token
+          @act_user.save 
+        rescue
+          # if this fails - no big deal
+        end
+      
+      else
+        flash[:badnotice] = "There was an error setting your password, please try again."
+        redirect_to :controller => '/index', :action => 'activate', :id => @act_user.id, :seq => @act_user.forgot_token
+      end
+      
+    else    
+      flash[:badnotice] = 'New password and its confirmation do not match.'
+      render :action => 'reset_password'
+
+    end
+  end
+
+  def activate
+    return unless ensure_basic_auth
+    
+    @act_user = User.find(:first, :conditions => ['id = ? and activation_token = ?', params[:id], params[:seq] ] ) rescue @act_user = nil
+    
+    if @act_user.nil?
+      flash[:badnotice] = 'The information you requested is invalid or does not exist, please verify the account activation link in your email.'
+      redirect_to :controller => '/', :action => nil, :id => nil
+      return false
+    
+    elsif @act_user.activated
+      flash[:notice] = 'Your account has already been activated.'
+      redirect_to :controller => '/', :action => nil, :id => nil
+      return false
+    end
+    
+    true
+  end
+  
+  def confirm
+    ## just call the activate function, same results
+    return unless activate
+    
+    unless @act_user.email.eql?(params[:email])
+      flash[:badnotice] = "Email address is invalid, your account has not been activated."
+      redirect_to :controller => '/index', :action => 'activate', :id => @act_user.id, :seq => @act_user.activation_token
+      return
+    end
+    
+    if params[:new_password].eql?( params[:new_password_confirm] ) 
+      @act_user.update_password( params[:new_password] ) 
+      @act_user.activated = true
+      if @act_user.save
+        flash[:notice] = "Your password has been set, you may now log in."
+        redirect_to :controller => '/', :action => nil, :id => nil
+      
+      else
+        flash[:badnotice] = "There was an error setting your password, please try again."
+        redirect_to :controller => '/index', :action => 'activate', :id => @act_user.id, :seq => @act_user.activation_token
+      end
+  
+    else    
+      flash[:badnotice] = 'New password and its confirmation do not match.'
+      render :action => 'activate'
+    end
+  end
+
+  private
   
   def check_login
     return true if session[:user].nil?
@@ -51,7 +181,5 @@ class IndexController < ApplicationController
   def set_title
     @title = @app['title']
   end
-  
-  private :check_login, :set_title
   
 end

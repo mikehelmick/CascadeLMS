@@ -1,3 +1,7 @@
+<% if @app['authtype'].eql?('basic') %>
+<p><%= link_to 'Create a new User', :action => 'new' %></p>
+<% end %>
+
 <p>Search by: 
 <%= "<b>" if session[:searchby].eql?('uniqueid') %>
 <%= link_to_remote( 'Unique ID', :update => "directory_control", :url => { :action => 'searchby', :id => 'uniqueid' }, :loading => "new Effect.BlindUp('listing')" )%>

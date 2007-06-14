@@ -23,6 +23,11 @@
   <label for="user_password" class="required">Password:</label>
    <%= password_field 'user', 'password', 'tabindex' => '2' %>
   </div>
+
+<% if @app['authtype'].eql?('basic') %>
+  <p><%= link_to 'I forgot my password...', :controller => '/index', :action => 'forgot' %></p>
+<% end %> 
+
   <div class="submit">
     <%= submit_tag 'Login', 'tabindex' => '3' %>
   </div>

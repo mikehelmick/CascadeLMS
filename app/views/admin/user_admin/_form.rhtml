@@ -1,0 +1,45 @@
+<%
+edit = false if edit.nil?
+%>
+
+<%= error_messages_for 'new_user' %>
+
+<p class="blockintro">Enter all information for a new user.   We will send an email to the email address that you enter and ask the user to select a password of their own choosing.</p>
+<div class="block">
+
+	<p><b>Uniqueid (Username):</b>
+	<% if edit %>
+	  <b><%= @new_user.uniqueid %></b> <br/><i>*UniqueID can not be changed</i></p>
+	<% else %>
+	  <%= text_field 'new_user', 'uniqueid'  %></p>      
+	<% end %>
+
+	<p><label for="user_personal_title">Personal Title (Ms. Mr. Mrs. Dr.):</label>
+	<%= text_field 'new_user', 'personal_title'  %></p>
+
+	<p><label for="user_first_name" class="required">First Name:</label>
+	<%= text_field 'new_user', 'first_name'  %></p>
+	<p><label for="user_middle_name">Middle Name:</label>
+	<%= text_field 'new_user', 'middle_name'  %></p>
+	<p><label for="user_last_name" class="required">Last Name:</label>
+	<%= text_field 'new_user', 'last_name'  %></p>
+
+	<p><label for="user_email" class="required">Email:</label>
+	<%= text_field 'new_user', 'email'  %></p>
+	
+</div>
+
+	
+<p class="blockintro">The following information determines the privilege level for the user.  Instructors can not create new courses, but have total control over a course that has been created for them.</p>
+<div class="block">
+	<p><b>Instructor:</b>
+		<%= radio_button 'new_user', 'instructor', true %> Yes
+		<%= radio_button 'new_user', 'instructor', false %> No
+	</p>
+
+	<p><b>Administrator:</b> <i>*be careful who you give this to.</i>
+		<%= radio_button 'new_user', 'admin', true %> Yes
+		<%= radio_button 'new_user', 'admin', false %> No
+	</p>
+
+</div>

@@ -1,0 +1,15 @@
+Hello <%= @to_user.display_name %>,
+
+A request has been made to recover your password on the CS Courseware system at <%= @organization %>.
+If you did not make this request, then you may ignore this email.
+
+You can select a new password by clicking, or copying this URL into your Web browser:
+
+   <%= @link %>
+
+Your username is: <%= @to_user.uniqueid %>
+
+Please reset your password as soon as possible.
+
+<%= @from_address %>,
+CSCW Administrator, <%= @organization %>

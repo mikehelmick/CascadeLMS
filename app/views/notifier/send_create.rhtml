@@ -1,0 +1,17 @@
+Hello <%= @to_user.display_name %>,
+
+An account has been created for you on the CS Courseware system at <%= @organization %>.
+
+Please activate your account and select a password by clicking, or copying this URL into your Web browser:
+
+   <%= @link %>
+
+Your username is: <%= @to_user.uniqueid %>
+You will set your own password when you activate your account.
+
+We advise that you activate your account as soon as possible.
+
+Thanks!
+
+<%= @from_user.display_name %>,
+CSCW Administrator, <%= @organization %>

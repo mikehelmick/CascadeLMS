@@ -7,6 +7,8 @@ require 'MyString'
 # Filters added to this controller will be run for all controllers in the application.
 # Likewise, all the methods added will be available for all controllers.
 class ApplicationController < ActionController::Base
+  ## CSCW Application version
+  @@VERSION = '0.7.0 (Bluer) 20070612'
   
   layout 'application' rescue puts "couldn't load default layout"
   
@@ -20,12 +22,14 @@ class ApplicationController < ActionController::Base
      
   @@app = nil            
   @@external_dir = nil   
+  @@last_update = nil
   
   
   def setup_ziya    
      @ziya_license = nil   
   end
      
+  ## Collor array for charting/graphig
   @@colors = ['0000ff','00ff7f','ff007f','ffff00',
               'ff00ff','007fff','ff7f00','00ff00',
               'CB439a','439acb','9acb44',
@@ -46,7 +50,11 @@ class ApplicationController < ActionController::Base
                     
   def browser_check
     if request.env['HTTP_USER_AGENT'] && request.env['HTTP_USER_AGENT'].include?('MSIE')
-      if !cookies[:ie_override].nil? && cookies[:ie_override].eql?( true.to_s )
+      from_idx = request.env['HTTP_USER_AGENT'].index('MSIE')
+      to_idx = request.env['HTTP_USER_AGENT'].index(';', from_idx)
+      ver = request.env['HTTP_USER_AGENT'][from_idx+5...to_idx].strip.to_f
+      
+      if ver >= 7.0 || (!cookies[:ie_override].nil? && cookies[:ie_override].eql?( true.to_s ))
         return true
       else
         if controller_name.eql?("browser")
@@ -90,16 +98,30 @@ class ApplicationController < ActionController::Base
     return RAILS_ROOT
   end
   
-  def ApplicationController.app
-    if @@app.nil?
-      @@app = YAML.load( File.open("#{RAILS_ROOT}/config/defaults.yml") )
- 		  @@external_dir ||= @@app['external_dir']
- 		end
+  def ApplicationController.app( force = false )
+    ## situations where we want to forace a settings reload
+    ## 
+    if @@app.nil? || force == true || @@last_update.nil?  || @@last_update || @@last_update < Time.now - @@app['settings_reload'].to_i
+       @@app = Hash.new
+
+       cfigs = Setting.find(:all)
+       cfigs.each do |cfig|
+         @@app[cfig.name] = cfig.value
+         
+         ## do some type conversions based on the setting name 
+         @@app[cfig.name] = cfig.value.eql?('true') if cfig.name.eql?('ldap_ssl')
+         @@app[cfig.name] = cfig.value.to_i if cfig.name.eql?('ldap_port')  
+           
+       end
+
+       @@app['version'] = @@VERSION
+    end
  		return @@app
   end
-
-  def app_config
- 		@app ||= YAML.load( File.open("#{RAILS_ROOT}/config/defaults.yml") )
+  
+  def app_config( force = false )
+    ApplicationController.app( force )
+    @app = @@app
  	end
  	
  	def ensure_instructor
@@ -115,6 +137,18 @@ class ApplicationController < ActionController::Base
     unless session[:user].admin? || (!@user.nil? && @user.admin?)
       flash[:badnotice] = "You do not have the rights to view the requested page."
       redirect_to :controller => '/home'
+      return false
+    end
+    return true
+  end
+  
+  def nil_or_empty( str )
+    return str.nil? || str.eql?('')
+  end
+  
+  def ensure_basic_auth
+    unless @app['authtype'].eql?('basic')
+      redirect_to :action => 'index'
       return false
     end
     return true
@@ -248,6 +282,13 @@ class ApplicationController < ActionController::Base
     
     begin
       @user = auth.authenticate( user.uniqueid, user.password )
+      
+      unless @user.enabled
+        flash[:badnotice] = 'Your account has been suspended, please contact your instructor or system administrator.'
+        redirect_to :controller => '/'
+        return false
+      end
+      
       flash[:notice] = @user.notice if @user.notice
       session[:user] = User.find( @user.id )
       session[:current_term] = Term.find_current
