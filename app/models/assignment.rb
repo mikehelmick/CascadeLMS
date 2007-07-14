@@ -81,7 +81,7 @@ class Assignment < ActiveRecord::Base
   end
   
   def icon
-    'calendar'
+    'calendar.png'
   end
   
   def upcoming?

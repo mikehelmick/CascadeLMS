@@ -11,14 +11,14 @@ class AutoGradeWorker < BackgrounDRb::Worker::RailsBase
   
   def run_pmd( queue, user_turnin, dir, directories, app )
     if user_turnin.assignment.auto_grade_setting.check_style?
-       jars = "#{ApplicationController.root_dir}/java/#{app['pmd_libs'].join(":#{ApplicationController.root_dir}/java/")}"
+       jars = "#{ApplicationController.root_dir}/java/#{app['pmd_libs'].split(' ').join(":#{ApplicationController.root_dir}/java/")}"
        command = "#{app['java']} -cp #{jars} #{app['pmd_main']} "
        
        # get files and delete old results
        files = Array.new
        user_turnin.user_turnin_files.each do |utf|
          if utf.filename.reverse[0..4].eql?('avaj.')
-           files << "#{dir}#{utf.full_filename(directories)}"
+           files << "#{app['external_dir']}#{dir}#{utf.full_filename(directories)}"
            FileStyle.delete_all( "user_turnin_file_id = #{utf.id}")
          end
        end
@@ -47,6 +47,7 @@ class AutoGradeWorker < BackgrounDRb::Worker::RailsBase
        end
        
        # get the PMD settings
+       logger.info("ROGER ONE")
        
        checks = Hash.new
        filter = Hash.new
@@ -56,6 +57,8 @@ class AutoGradeWorker < BackgrounDRb::Worker::RailsBase
          end
          checks[pmd.style_check.name] = pmd.style_check
        end
+       
+       logger.info("ROGER TWO")
         
        count = 0
        ## ERROR ON THIS LINE
@@ -64,7 +67,7 @@ class AutoGradeWorker < BackgrounDRb::Worker::RailsBase
          
          filename = summary['filename']
          user_turnin.user_turnin_files.each do |utf|
-           if filename.eql?( "#{dir}#{utf.full_filename(directories)}" )
+           if filename.eql?( "#{app['external_dir']}#{dir}#{utf.full_filename(directories)}" )
              logger.info( "(#{count}) #{summary['rule_name']} in file #{filename}")
              
              violation = FileStyle.new
@@ -81,7 +84,7 @@ class AutoGradeWorker < BackgrounDRb::Worker::RailsBase
              violation.suppressed = ! filter[ summary['rule_name'] ].nil?
              
              violation.save
-             
+             logger.info("SAVED VIOLATION")
            end
          end
          
@@ -151,7 +154,7 @@ class AutoGradeWorker < BackgrounDRb::Worker::RailsBase
       vars.base = dest_dir
       vars.src = "#{dest_dir}src/"
       vars.build = "#{dest_dir}build/"
-      vars.origional = dir
+      vars.origional = "#{app['external_dir']}#{dir}"
       vars.input = "input_#{timestamp}.txt"
       vars.output = "output_#{timestamp}.txt"
       vars.classname = user_turnin.main_class

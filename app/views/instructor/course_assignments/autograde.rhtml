@@ -37,6 +37,21 @@
 <% end %>
 </div>
 
+<div class="blockintro">AutoGrader Framework Execution.</div>
+<div class="block">
+<p><label for="auto_grade_setting[student_autograde]" class="required">Allow students to run AutoGrader tests:</label>
+   <%= radio_button 'auto_grade_setting', 'student_autograde', true %> Yes
+   <%= radio_button 'auto_grade_setting', 'student_autograde', false %> No</p>
+<p><label for="auto_grade_setting[autograde]" class="required">Enable automatic AutoGrader tests on turnin:</label>
+   <%= radio_button 'auto_grade_setting', 'autograde', true %> Yes
+   <%= radio_button 'auto_grade_setting', 'autograde', false %> No</p>
+
+<% if @auto_grade_setting.student_autograde || @auto_grade_setting.autograde %>
+ <p><%= image_tag 'cog.png' %> <%= link_to 'Configure AutoGrader Tests.', :controller => '/instructor/autograder_checks', :action => 'index', :course => @course, :assignment => @assignment %></p>
+<% end %>
+</div>
+
+
 
 <div class="submit">
   <div id="button"><%= submit_tag "Save AutoGrade Settings" %></div>

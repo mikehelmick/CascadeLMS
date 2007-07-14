@@ -119,7 +119,7 @@ class Document < ActiveRecord::Base
   
   def icon_file
     if self.folder
-      'folder'
+      'folder.png'
     else
       FileManager.icon(self.extension)
     end

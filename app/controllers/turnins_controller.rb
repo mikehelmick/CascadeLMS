@@ -391,7 +391,7 @@ class TurninsController < ApplicationController
     
     # grab the file
     file_field = params[:file]
-    if file_field.nil? || file_field.eql?('')
+    if file_field.nil? || file_field.eql?('') || file_field.class.to_s.eql?('String')
       flash[:badnotice] = "You must select a file for upload."
       redirect_to :action => 'index'
       return

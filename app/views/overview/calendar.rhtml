@@ -1,0 +1,59 @@
+<h2><%= @course.title %> 
+<% if @course.short_description %>, <%= @course.short_description %><%end%></h2>
+
+<p><%= image_tag 'application_view_list.png' %><%= link_to 'List View', :course => @course, :action => nil, :controller => '/overview' %> | <%= image_tag 'calendar_view_day.png' %><b>Calendar View</b> <br />
+	
+<%= link_to 'Previous Month', :course => @course, :action => 'calendar', :controller => '/overview', :month => "#{@display_month.prevMonth.yearAndMonth}" %> |
+<%= link_to 'Current Month', :course => @course, :action => 'calendar', :controller => '/overview', :month => nil %> |
+<%= link_to 'Next Month', :course => @course, :action => 'calendar', :controller => '/overview', :month => "#{@display_month.nextMonth.yearAndMonth}" %>
+</p>
+
+<p>Course events for <%= @display_month.strftime("%B %Y") %></p>
+
+
+<% 
+today = Date.today 
+code_block = Proc.new do |d|
+	  clazz = 'day_large'
+	  if d.eql?(today) 
+	    clazz = 'today_large'
+	  end   
+	
+	  asgn_ids = Hash.new
+	
+	  text = "<p>#{d.mday}<br/>"
+	  @items[d.day].each do |item|
+		ul_class = 'cal_other'
+		extra_text = ''
+ 	    if item.class.to_s.eql?("Assignment")
+		  if asgn_ids[item.id].nil? && d.strftime("%Y%m%d").eql?( item.open_date.strftime("%Y%m%d") )
+		    ul_class='cal_assignment_open'
+		    asgn_ids[ item.id ] = true	
+		  else
+			ul_class='cal_assignment_due'
+			extra_text = ' DUE '
+		  end
+	    end
+		
+		sub_text = "<span class=\"#{ul_class}\">#{image_tag item.icon}"
+
+		sub_text = "#{sub_text}#{link_to item.summary_title, :controller => '/redirect', :type => item.class.to_s, :id => item.id} #{extra_text}"
+		
+
+		text = "#{text}#{sub_text}</span> <br/>"
+	  end
+	
+	  text = "#{text}</p>"
+		
+	  [ text, {:class => clazz} ]
+    end
+%>
+
+	
+<%= calendar( :year => @display_month.year, :month => @display_month.month, :table_class => 'calendar_large',
+:table_class       => "calendar_large",
+  :month_name_class  => "monthName_large",
+  :other_month_class => "otherMonth_large",
+  :day_name_class    => "dayName_large",
+  :day_class         => "day_large" ) { |d| code_block.call(d) }
+%>

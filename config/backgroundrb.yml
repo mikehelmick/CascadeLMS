@@ -1,8 +1,8 @@
 --- 
 :port: 2000
 :protocol: druby
-#:rails_env: development
-:rails_env: production
+:rails_env: development
+#:rails_env: production
 :host: localhost
 :acl:
     :deny: all
