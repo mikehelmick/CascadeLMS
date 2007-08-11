@@ -50,7 +50,6 @@ class OverviewController < ApplicationController
       end
     end
     
-    puts item_list.inspect
     
   end
   
