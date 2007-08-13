@@ -36,7 +36,7 @@ class Journal < ActiveRecord::Base
   end
   
   def before_destroy
-    JournalEntryTask.delete_all ( ["journal_id = ?", self.id ] )
+    JournalEntryTask.delete_all( ["journal_id = ?", self.id ] )
     JournalEntryStopReason.delete_all( ["journal_id = ?", self.id ] )
   end
   

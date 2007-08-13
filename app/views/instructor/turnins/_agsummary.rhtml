@@ -1,0 +1,21 @@
+<td><%= @student.uniqueid %><br/> 
+	<%= link_to_function 'Hide Summary', visual_effect(:toggle_slide, "agsummary_#{@student.id}" ) %>
+	</td>
+<td align="left" valign="top" colspan="7">
+	
+<% if @current_turnin.nil? %>
+  <p>There is no current turnin set for this student.</p>
+<% else %>
+  <ul>
+  <% for check in @assignment.io_checks %>   
+    <li><b><%= check.name %></b>:
+    <% if @student_io_check[check.id].nil? %>
+      <i>no results present</i>
+    <% else %>
+      match percentage <%= sprintf("%.2f", @student_io_check[check.id].match_percent ) %>%
+    <% end %>
+    </li>
+  <% end %>
+  </ul>
+<% end %>
+</td>

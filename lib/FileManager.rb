@@ -38,7 +38,9 @@ class FileManager
               'rb' => 'page_white_ruby.png',
               'txt' => 'page_white_text.png',
               'mf' => 'page_white_text.png',
-              'jsp' => 'script_code.png' }
+              'jsp' => 'script_code.png',
+              'ss' => 'page_white_code_red.png',
+              'scm' => 'page_white_code_red.png' }
      
   @@text_exts = { 'java' => true, 
                   'cc' => true, 
@@ -58,7 +60,11 @@ class FileManager
                   'xml' => true,
                   'html' => true,
                   'rhtml' => true,
-                  'sh' => true }
+                  'sh' => true,
+                  'ss' => true,
+                  'scm' => true,
+                  'h' => true,
+                  'm' => true }
      
   @@enscripts = {    
      'asm' => 'asm',
@@ -81,6 +87,8 @@ class FileManager
      'pl' => 'perl',
      'py' => 'python',
      'sc' => 'scheme',
+     'ss' => 'scheme',
+     'scm' => 'scheme',
      'sh' => 'sh',
      'sql' => 'sql',
      'jsp' => 'html',

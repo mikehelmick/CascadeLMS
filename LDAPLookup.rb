@@ -1,11 +1,11 @@
 require 'ldap'
 require 'ldap/control'
 
-conn = LDAP::Conn.new( 'ldapsun1.muohio.edu', 389 )
-#conn = LDAP::SSLConn.new( 'ldapsun1.muohio.edu', 636 )
+#conn = LDAP::Conn.new( 'ldapsun1.muohio.edu', 389 )
+conn = LDAP::SSLConn.new( 'ldapsun1.muohio.edu', 636 )
 
 
-userid=''
+userid='helmicmt'
 password=''
 
 bind_string = "uid=#{userid},ou=people,dc=muohio,dc=edu" 

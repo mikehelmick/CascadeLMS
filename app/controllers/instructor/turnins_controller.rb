@@ -12,7 +12,7 @@ class Instructor::TurninsController < Instructor::InstructorBase
   def index
     return unless load_course( params[:course] )
     return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_grade_individual', 'ta_view_student_files', 'ta_grade_individual' )
-    @assignment = Assignment.find( @params[:assignment] )
+    @assignment = Assignment.find( params[:assignment] )
     return unless assignment_in_course( @course, @assignment )
     
     # load the students
@@ -68,11 +68,110 @@ class Instructor::TurninsController < Instructor::InstructorBase
     @title = "Turnins for #{@assignment.title}"
   end
   
+  ## From the index / turnins page, we allow forall grades to be changed at once
+  def save_all_grades
+    return unless load_course( params[:course] )
+    return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_grade_individual', 'ta_view_student_files', 'ta_grade_individual' )
+    @assignment = Assignment.find( params[:assignment] )
+    return unless assignment_in_course( @course, @assignment )
+    
+    # load the students
+    @students = @course.students
+    
+    ### FOR EACH STUDENT - PROCESS THE GRADE COMING IN FROM THE FORM
+    @grade_item = GradeItem.find(:first, :conditions => ["assignment_id = ?", @assignment.id] )
+    if @grade_item
+      ## Load the current grade entries for each student
+      ## Map these to the student's user ID
+      @grades = Hash.new
+      entries = GradeEntry.find(:all, :conditions => ["grade_item_id=?", @grade_item.id ] )
+      entries.each do |e|
+        @grades[e.user_id] = e
+      end
+      
+      Assignment.transaction do
+        ## go through and update the grades
+        @students.each do |student|
+          new_grade = params["grade_#{student.id}"]
+
+          if @grades[student.id].nil?
+            # no current entry
+            unless new_grade.nil?
+              entry = GradeEntry.new
+              entry.user = student
+              entry.grade_item = @grade_item
+              entry.course = @course
+              entry.points = new_grade.to_f
+              entry.save
+            end
+            
+          else
+            ## existing entry
+            if new_grade.nil? || new_grade.to_f < 0
+              @grades[student.id].destroy
+            else
+              @grades[student.id].points = new_grade.to_f 
+              @grades[student.id].save
+            end
+          end
+
+        end
+      end
+      
+      flash[:notice] = "Grades have been updated for all students."
+      redirect_to :action => 'index'
+      
+    else
+      flash[:badnotice] = "There is no gradebook entry associated with this assignment."
+      redirect_to :action => 'index'
+    end
+  end
+  
+  def agsummary
+    return unless load_course( params[:course] )
+    return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_grade_individual', 'ta_view_student_files', 'ta_grade_individual' )
+    @assignment = Assignment.find( params[:assignment] )
+    return unless assignment_in_course( @course, @assignment )
+    
+    @student = User.find(params[:id])
+    if ! @student.student_in_course?( @course.id )
+      flash[:badnotice] = "Invalid student record requested."
+      redirect_to :action => 'index'
+    end
+    
+    # get turn-in sets
+    if @assignment.team_project
+      @team = @course.team_for_user( @student.id )
+      @turnins = UserTurnin.find(:all, :conditions => ["project_team_id=? and assignment_id=?", @team.id, @assignment.id ], :order => "position DESC" )
+    else
+      @turnins = UserTurnin.find(:all, :conditions => ["user_id=? and assignment_id=?", @student.id, @assignment.id ], :order => "position DESC" )
+    end
+    
+    @current_turnin = @turnins[0] rescue @current_turnin = nil
+    unless @current_turnin.nil?
+      @display_turnin = @current_turnin
+      return unless turnin_for_assignment( @current_turnin, @assignment )   
+
+      # turnins
+      @student_io_check = Hash.new
+      @assignment.io_checks.each do |check|
+         student_check = IoCheckResult.find(:first, :conditions => ["io_check_id = ? && user_turnin_id = ?", check.id, @current_turnin.id ] )
+         unless student_check.nil?
+           @student_io_check[check.id] = student_check
+         end
+      end
+    
+    end
+    
+    ### NEED TO FINISH THIS
+    render :partial => 'agsummary', :layout => false
+  end
+  
   def toggle_released
     return unless load_course( params[:course] )
     return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_grade_individual' )
     
-    @assignment = Assignment.find( @params[:assignment] )
+    @assignment = Assignment.find( params[:assignment] )
     return unless assignment_in_course( @course, @assignment )
     return unless course_open( @course, :action => 'index' )
     
@@ -239,7 +338,7 @@ class Instructor::TurninsController < Instructor::InstructorBase
     return unless load_course( params[:course] )
     return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_grade_individual' )
     
-    @assignment = Assignment.find( @params[:assignment] )
+    @assignment = Assignment.find( params[:assignment] )
     return unless assignment_in_course( @course, @assignment )
     
     @student = User.find( params[:id] )
@@ -286,7 +385,7 @@ class Instructor::TurninsController < Instructor::InstructorBase
     return unless load_course( params[:course] )
     return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_view_student_files', 'ta_grade_individual' )
     
-    @assignment = Assignment.find( @params[:assignment] )
+    @assignment = Assignment.find( params[:assignment] )
     return unless assignment_in_course( @course, @assignment )
     
     ## create temp file for the archive
@@ -359,7 +458,7 @@ class Instructor::TurninsController < Instructor::InstructorBase
     return unless load_course( params[:course] )
     return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_view_student_files', 'ta_grade_individual' )
     
-    @assignment = Assignment.find( @params[:assignment] )
+    @assignment = Assignment.find( params[:assignment] )
     return unless assignment_in_course( @course, @assignment )
     
     @turnin = UserTurnin.find( params[:id] ) rescue @turnin = UserTurnin.new
@@ -401,7 +500,7 @@ class Instructor::TurninsController < Instructor::InstructorBase
     return unless load_course( params[:course] )
     return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_view_student_files', 'ta_grade_individual' )
     
-    @assignment = Assignment.find( @params[:assignment] )
+    @assignment = Assignment.find( params[:assignment] )
     return unless assignment_in_course( @course, @assignment )
     
     @utf = UserTurninFile.find( params[:id] )  
@@ -439,7 +538,7 @@ class Instructor::TurninsController < Instructor::InstructorBase
     return unless load_course( params[:course] )
     return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_view_student_files', 'ta_grade_individual' )
     
-    @assignment = Assignment.find( @params[:assignment] )
+    @assignment = Assignment.find( params[:assignment] )
     return unless assignment_in_course( @course, @assignment )
     
     @utf = UserTurninFile.find( params[:id] )  
@@ -468,7 +567,7 @@ class Instructor::TurninsController < Instructor::InstructorBase
     return unless load_course( params[:course] )
     return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_view_student_files', 'ta_grade_individual' )
     
-    @assignment = Assignment.find( @params[:assignment] )
+    @assignment = Assignment.find( params[:assignment] )
     return unless assignment_in_course( @course, @assignment )
     
     @utf = UserTurninFile.find( params[:id] )  
@@ -496,7 +595,7 @@ class Instructor::TurninsController < Instructor::InstructorBase
     throw "error" unless load_course( params[:course] )
     throw "error" unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_view_student_files', 'ta_grade_individual' )
     
-    @assignment = Assignment.find( @params[:assignment] )
+    @assignment = Assignment.find( params[:assignment] )
     throw "error" unless assignment_in_course( @course, @assignment )
     
     @student = User.find( params[:student] )
@@ -518,7 +617,7 @@ class Instructor::TurninsController < Instructor::InstructorBase
     return unless load_course( params[:course] )
     return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_view_student_files', 'ta_grade_individual' )
     
-    @assignment = Assignment.find( @params[:assignment] )
+    @assignment = Assignment.find( params[:assignment] )
     return unless assignment_in_course( @course, @assignment )
     
     @student = User.find( params[:student] )
@@ -552,7 +651,7 @@ class Instructor::TurninsController < Instructor::InstructorBase
     return unless load_course( params[:course] )
     return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_view_student_files', 'ta_grade_individual' )
     
-    @assignment = Assignment.find( @params[:assignment] )
+    @assignment = Assignment.find( params[:assignment] )
     return unless assignment_in_course( @course, @assignment )
     
     @students = @course.students
@@ -601,7 +700,7 @@ class Instructor::TurninsController < Instructor::InstructorBase
     return unless load_course( params[:course] )
     return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_view_student_files', 'ta_grade_individual' )
     
-    @assignment = Assignment.find( @params[:assignment] )
+    @assignment = Assignment.find( params[:assignment] )
     return unless assignment_in_course( @course, @assignment )
     
     @student = User.find( params[:student] )
@@ -654,7 +753,7 @@ class Instructor::TurninsController < Instructor::InstructorBase
     return unless load_course( params[:course] )
     return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_view_student_files', 'ta_grade_individual' )
     
-    @assignment = Assignment.find( @params[:assignment] )
+    @assignment = Assignment.find( params[:assignment] )
     return unless assignment_in_course( @course, @assignment )
     
     @student = User.find( params[:student] )
@@ -756,6 +855,9 @@ class Instructor::TurninsController < Instructor::InstructorBase
     
     render :layout => 'noright'
   end
+  
+    
+  
   
   ## BEGIN PRIVATE UTILITY METHODS
 private  

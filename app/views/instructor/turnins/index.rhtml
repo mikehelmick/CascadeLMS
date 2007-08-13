@@ -21,6 +21,12 @@
 <p><%= link_to "Download all student files.", {:action => 'download_all_files', :course => @course, :assignment => @assignment}, :confirm => "Press OK to gather and download students files.  This make take several minutes depending on class size." %></p>
 <% end %>
 
+<% form_tag( :controller => '/instructor/turnins', :action => 'save_all_grades', :course => @course, :assignment => @assignment, :id => nil ) do %>
+
+<% if @grade_item %>
+<p><i>When entering grades, you can enter a grade less than zero to remove the entry all together.  If you leave the field blank, a grade of zero (0) will be assigned.</i></p>
+<% end %>
+
 <table class="fancy">
   <tr class="header">
     <th valign="bottom">UniqueID</th>
@@ -41,9 +47,12 @@
     <% end %>
 
 	<% if @grade_item %>
-	  <th valign="bottom">Grades<br/>
+	  <th valign="bottom" colspan="2">Grades<br/>
 	  <%= @grade_item.points %> points
 	  </th>
+	<% end %>
+	<% if @assignment.auto_grade %>
+	  <th>AutoGrade Results</th>
 	<% end %>
 
     <th valign="bottom">View</th>
@@ -55,7 +64,7 @@
 	   odd = "odd"
 	   odd = "even" if count.even?
   	%>
-	<tr class="<%=odd%> hover" id="student_<%=@students%>">
+	<tr class="<%=odd%> hover" id="student_<%=student.id%>">
       <td><%=h student.uniqueid %></td>
       <td><%=h student.display_name %></td>
 
@@ -92,12 +101,50 @@
 	        <acronym title="no grade entered"><%= image_tag 'bullet_error.png' %></acronym>
 	      <% end %>
 	    </td>
+		
+		<td align="right">
+		  <% value = '' 
+		     value = sprintf("%0.1f", @grades[student.id]) unless @grades[student.id].nil?
+		   %>
+	 	  <%= text_field_tag "grade_#{student.id}", value, :size => 5 %>
+	 	</td>
+	  <% end %>
+	  <% if @assignment.auto_grade %>
+	    <td>AutoGrade 
+		<% if @assignment.auto_grade_setting.io_check? %>
+		  <%= link_to_remote( "Summary", :update => "agsummary_#{student.id}",
+		    :url => { :action => "agsummary", :id => student.id, :course => @course, :assignment => @assignment }, :success => visual_effect(:toggle_slide, "agsummary_#{student.id}" ) ) %>
+		<% end %>
+		<% if @assignment.auto_grade_setting.io_check? || @assignment.auto_grade_setting.check_style?  %>
+		  <%= link_to 'Full Report', { :controller => '/instructor/turnins', :action => 'view_io_tests', :course => @course, :assignment => @assignment, :student => student.id }, :popup => true %>
+		<% end %>
+		</td>
 	  <% end %>
 
       <td>
         <%= link_to "View files/journals", :action => 'view_student', :id => student %>
       </td> 
     </tr>
+	
+	<tr id="<%="agsummary_#{student.id}"%>"> 
+	  
+    </tr>
+  <% end %>
+
+  <% if @grade_item %>
+  <tr class="none">
+	<td colspan="2" class="none">&nbsp;</td>
+	<% if @assignment.use_subversion || @assignment.enable_upload %><td class="none">&nbsp;</td><% end %>
+	<% if @assignment.enable_journal %><td class="none">&nbsp;</td><% end %>
+    <% if @grade_item %>
+      <td colspan="2" class="none">
+	    <%= submit_tag "Save All Grades" %>
+	  </td>
+    <% end %>
+    <td class="none">&nbsp;</td>
+  </tr>
   <% end %>
 
 </table>
+
+<% end %>
