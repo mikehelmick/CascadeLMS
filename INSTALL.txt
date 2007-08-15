@@ -1,0 +1,18 @@
+**** Computer Science CourseWare Installation Instructions *****
+
+by Mike Helmick - mike.helmick@gmail.com
+
+These instructions are meant to be followed in order, there is no quick install option.
+
+Part 0 - Version History
+
+Version 0.8.1 (Paperweight) - 20080815
+ * First public release 
+
+Part 1 - Prerequisites
+
+Part 2 - Configuration
+
+Part 4 - AutoGrader Server
+
+Part 3 - Upgrading to new Releases

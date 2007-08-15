@@ -3,7 +3,9 @@
 <p><%= link_to 'Back to Assignment', :action => 'edit', :id => @assignment %> | 
    <%= link_to 'Back to All Assignments', :action => 'index', :id => nil %></p>
 
+<!--
 <p><i>AutoGrading</i> is divided up into 3 distinct areas: style checking, automated execution via the <i>AutoGrader</i> framework, and executing programs with strict output checking (programming competition style).</p>
+-->
 
 <div id="form_area">
 
@@ -37,6 +39,7 @@
 <% end %>
 </div>
 
+<!--
 <div class="blockintro">AutoGrader Framework Execution.</div>
 <div class="block">
 <p><label for="auto_grade_setting[student_autograde]" class="required">Allow students to run AutoGrader tests:</label>
@@ -50,6 +53,7 @@
  <p><%= image_tag 'cog.png' %> <%= link_to 'Configure AutoGrader Tests.', :controller => '/instructor/autograder_checks', :action => 'index', :course => @course, :assignment => @assignment %></p>
 <% end %>
 </div>
+-->
 
 
 
