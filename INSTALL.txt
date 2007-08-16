@@ -160,6 +160,13 @@ export RAILS_ENV=production
 cd ../
 rake db:migrate
 
+Create user - accoding to http://mongrel.rubyforge.org/docs/mongrel_cluster.html
+We are going to add a mongrel user to run the application under, since we don't need to run as root
+
+sudo /usr/sbin/adduser --disabled-login mongrel
+cd /srv/www/rails/
+sudo chown -R mongrel:mongrel cscourseware/
+
 
 Part 4 - AutoGrader Server
 
