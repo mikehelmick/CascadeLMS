@@ -12,7 +12,7 @@ class CreateFileStyles < ActiveRecord::Migration
       
       t.column :style_check_id, :integer
       
-      t.column :suppressed, :boolean, :null => false, :default => :false
+      t.column :suppressed, :boolean, :null => false, :default => false
       # t.column :name, :string
     end
     
