@@ -14,9 +14,8 @@ development:
   adapter: mysql
   database: cscourseware_dev
   username: cscourseware
-  password: dev3005
-  host: 127.0.0.1
-  port: 4000
+  password: 
+  host: localhost
 
 # Warning: The database defined as 'test' will be erased and
 # re-generated from your development database when you run 'rake'.
@@ -29,7 +28,7 @@ test:
 
 production:
   adapter: mysql
-  database: csacourseware_prod
-  username: csacourseware
-  password: c1548cdis
+  database: cscourseware_production
+  username: 
+  password: 
   host: localhost

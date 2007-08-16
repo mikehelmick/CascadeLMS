@@ -1,6 +1,27 @@
 **** Computer Science CourseWare Installation Instructions *****
-
 by Mike Helmick - mike.helmick@gmail.com
+
+           **** SOFTWARE LICENSE - MIT LICENSE ****
+# Copyright (c) 2006-2007 Mike Helmick - mike.helmick@muohio.edu
+# 
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+# 
+# The above copyright notice and this permission notice shall be included in
+# all copies or substantial portions of the Software.
+# 
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+# THE SOFTWARE.
+#
 
 These instructions are meant to be followed in order, there is no quick install option.
 
@@ -11,8 +32,126 @@ Version 0.8.1 (Paperweight) - 20080815
 
 Part 1 - Prerequisites
 
-Part 2 - Configuration
+Computer Science CourseWare (hereafter CSCW) is know to run on both Mac OS X and Linux.   
+At least one of the third party libraries used is not currently compatible with any
+Windows based operating system.
+
+This document assumes that you are stating with a basic working server configuration 
+including:
+ * Apache 2 with mod_proxy_balancer
+ * Mysql 4 or 5
+ * Subversion with SSL support
+ * A c/c++ compiler (gcc)
+ * curl (to download some of the setup files)
+
+And that you have SUDO access
+
+You will be installing Ruby 1.8.6 and Rails 1.2.3 (latest releases as of this writing).  
+A few third party add-ons to Ruby will also be installed, again please try to follow this document
+in order.
+
+Part 2 - Installation
+
+Step 01 - Setup Path
+
+ Check your path - make sure that /usr/local/bin is in your path
+
+# echo $PATH
+/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games
+
+ If it is NOT in your path
+
+Add this line to your ~/.bash_login file
+
+export PATH="/usr/local/bin:/usr/local/sbin:$PATH"
+
+Step 02 - Install Ruby
+
+Set up your src directory
+
+# cd ~
+# mkdir src
+# chmod -R 775 src/
+# cd src
+
+** You can change "src" in the above script, whatever directory you like, just remember it later.
+
+Install Readline (Required for Ruby)
+
+curl -O ftp://ftp.gnu.org/gnu/readline/readline-5.1.tar.gz
+tar xzvf readline-5.1.tar.gz
+cd readline-5.1
+./configure --prefix=/usr/local
+make
+sudo make install
+cd ..
+
+Install Ruby 1.8.6 
+
+curl -O ftp://ftp.ruby-lang.org/pub/ruby/1.8/ruby-1.8.6.tar.gz
+tar xzvf ruby-1.8.6.tar.gz
+cd ruby-1.8.6
+./configure --prefix=/usr/local --enable-pthread --with-readline-dir=/usr/local --enable-shared
+make
+sudo make install
+sudo make install-doc
+cd ..
+
+Verify Ruby install
+
+# ruby -v
+ruby 1.8.6 (2007-03-13 patchlevel 0) [i686-linux]
+
+Install Ruby Gems
+
+curl -O http://files.rubyforge.mmmultiworks.com/rubygems/rubygems-0.9.4.tgz
+tar xzvf rubygems-0.9.4.tgz
+cd rubygems-0.9.4
+sudo /usr/local/bin/ruby setup.rb
+cd ..
+
+Install Ruby on Rails (current release - currently 1.2.3)
+
+sudo gem install rails --include-dependencies
+
+Install Mongrel (Ruby Web server)
+
+sudo gem install daemons gem_plugin mongrel mongrel_cluster --include-dependencies
+
+When prompted, select mongrel 1.0.1 (ruby) and fastthread 1.0 (ruby)
+
+Install the MySQL native extensions
+* not required - but will considerably boost performance
+
+sudo gem install mysql
+
+
+** At this point we are ready to actually install and configure the application.
+You need to decide where to install it, we recommend the path /srv/www/rails/cscourseware/
+
+sudo mkdir -p /srv/www/rails/cscourseware
+cd /srv/www/rails/cscourseware
+sudo mkdir storage
+sudo svn co https://mikehelmick.com/svn/cscourseware/trunk current
+
+
+Part 3 - Configuration
+
+Create the database
+
+mysqladmin -u root -p create cscourseware_production
+
+Create the user for the database - you will need to do this in MySQL
+-- You can create your own username and password by filling in the details below
+
+mysql -u root -p
+grant all on cscourseware_production.* to DATABASEUSER@localhost identified by 'PASSWORD';
+
+Change CSCW datase configuration
+
+cd /srv/www/rails/cscourseware/current/config/
+
 
 Part 4 - AutoGrader Server
 
-Part 3 - Upgrading to new Releases
+Part 5 - Upgrading to new Releases
