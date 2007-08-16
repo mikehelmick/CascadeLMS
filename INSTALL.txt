@@ -41,6 +41,8 @@ including:
  * Apache 2 with mod_proxy_balancer
  * Mysql 4 or 5
  * Subversion with SSL support
+ * Open LDAP (with headers)
+ * Open SSL (with headers)
  * A c/c++ compiler (gcc)
  * curl (to download some of the setup files)
 
@@ -125,6 +127,17 @@ Install the MySQL native extensions
 
 sudo gem install mysql
 
+Install the Ruby LDAP library 
+** OpenSSL and LDAP development libraries must be installed already
+
+cd ~/src
+curl -O http://easynews.dl.sourceforge.net/sourceforge/ruby-ldap/ruby-ldap-0.9.7.tar.gz
+tar -xzvf ruby-ldap-0.9.7.tar.gz
+cd ruby-ldap-0.9.7
+ruby extconf.rb
+make
+sudo make install
+
 
 ** At this point we are ready to actually install and configure the application.
 You need to decide where to install it, we recommend the path /srv/www/rails/cscourseware/
@@ -133,6 +146,8 @@ sudo mkdir -p /srv/www/rails/cscourseware
 cd /srv/www/rails/cscourseware
 sudo mkdir storage
 sudo svn co https://mikehelmick.com/svn/cscourseware/trunk current
+
+
 
 
 Part 3 - Configuration
