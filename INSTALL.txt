@@ -150,6 +150,15 @@ grant all on cscourseware_production.* to DATABASEUSER@localhost identified by '
 Change CSCW datase configuration
 
 cd /srv/www/rails/cscourseware/current/config/
+sudo cp database.yml.todo database.yml
+
+Edit the database.yml file and configure the production database settings with the user you just created
+
+Load the Database
+
+export RAILS_ENV=production
+cd ../
+rake db:migrate
 
 
 Part 4 - AutoGrader Server
