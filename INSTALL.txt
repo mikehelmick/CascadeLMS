@@ -38,7 +38,7 @@ Windows based operating system.
 
 This document assumes that you are stating with a basic working server configuration 
 including:
- * Apache 2 with mod_proxy_balancer
+ * Apache 2 with mod_proxy_balancer and mod_rewrite
  * Mysql 4 or 5
  * Subversion with SSL support
  * Open LDAP (with headers)
@@ -71,10 +71,10 @@ Step 02 - Install Ruby
 
 Set up your src directory
 
-# cd ~
-# mkdir src
-# chmod -R 775 src/
-# cd src
+cd ~
+mkdir src
+chmod -R 775 src/
+cd src
 
 ** You can change "src" in the above script, whatever directory you like, just remember it later.
 
@@ -148,8 +148,6 @@ sudo mkdir storage
 sudo svn co https://mikehelmick.com/svn/cscourseware/trunk current
 
 
-
-
 Part 3 - Configuration
 
 Create the database
@@ -182,7 +180,146 @@ sudo /usr/sbin/adduser --disabled-login mongrel
 cd /srv/www/rails/
 sudo chown -R mongrel:mongrel cscourseware/
 
+Configure mongrel to autoboot (linux specific instructions)
+* You will need to adjust the path of the last command depending on versions
+* This will configure mongrel to launch any rails applications that are configured in /etc/mongrel_cluster 
 
-Part 4 - AutoGrader Server
+sudo mkdir /etc/mongrel_cluster
+sudo ln -s /srv/www/rails/cscourseware/current/config/mongrel_cluster.yml /etc/mongrel_cluster/cscourseware.yml
+sudo cp /usr/local/lib/ruby/gems/1.8/gems/mongrel_cluster-1.0.2/resources/mongrel_cluster /etc/init.d/
 
-Part 5 - Upgrading to new Releases
+Confiugre mongrel to start automatically
+If we are using a RedHat like system we can configure mongrel_cluster for startup:
+  sudo /sbin/chkconfig --level 345 mongrel_cluster on
+
+For users of Debian (or Ubuntu), you can use this command to install the script:
+  sudo /usr/sbin/update-rc.d -f mongrel_cluster defaults
+
+Now - CS Courseware will boot automatically for you,
+but we need to set paths correctly so that the mongrel user can find the correct version of Ruby
+
+Edit the .bash_login file for the mongrel user
+
+sudo -u mongrel vi /home/mongrel/.bash_login
+
+and add this line
+
+export PATH="/usr/local/bin:/usr/local/sbin:$PATH"
+
+Configure Apache
+* The Apache/Mod_proxy/Mongrel can go two different ways - alias or virtual server
+* The virtual server configuration is recommended
+
+--Alias style configuration
+* Add this to your /etc/apache2/apache2.conf
+
+Alias /cscw/ "/srv/www/rails/cscourseware/current/public/"
+
+RewriteCond %{DOCUMENT_ROOT}/%{REQUEST_FILENAME} !-f
+RewriteRule ^/(.*)$ balancer://mongrel_cluster%{REQUEST_URI} [P,QSA,L]
+
+<Proxy balancer://mongrel_cluster>
+   BalancerMember http://127.0.0.1:8000
+   BalancerMember http://127.0.0.1:8001
+   BalancerMember http://127.0.0.1:8002
+   BalancerMember http://127.0.0.1:8003
+</Proxy>
+
+<Directory "/srv/www/rails/cscourseware/current/public/">
+     Options ExecCGI FollowSymLinks
+     AllowOverride all
+     Allow from all
+     Order allow,deny
+</Directory>
+
+
+* You will also need to add this line to the /srv/www/rails/cscourseware/current/public/.htaccess file
+
+RewriteBase /cscw 
+
+
+
+--Virtual Host Configuration
+The location of this conf depends on your Apache 2 build configuration.   
+In our configuration, we created the file cscourseware.conf in the 
+/etc/apache2/sites-enabled directory
+
+Add these lines - we've put it some extras if you need them.
+Also - SSL is recommended, configure according to the Apache documentation
+And - you will need to set the appropriate server name, and configure DNS correctly
+
+<VirtualHost *>
+  ServerName cscw.muohio.edu
+  DocumentRoot /srv/www/rails/cscourseware/current/public
+
+  <Directory "/srv/www/rails/cscourseware/current/public">
+    Options FollowSymLinks
+    AllowOverride None
+    Order allow,deny
+    Allow from all
+  </Directory>
+
+  RewriteEngine On
+
+  # Uncomment for rewrite debugging
+  #RewriteLog logs/myapp_rewrite_log
+  #RewriteLogLevel 9
+  
+  # Check for maintenance file and redirect all requests
+  #  ( this is for use with Capistrano's disable_web task )
+  RewriteCond %{DOCUMENT_ROOT}/system/maintenance.html -f
+  RewriteCond %{SCRIPT_FILENAME} !maintenance.html
+  RewriteRule ^.*$ /system/maintenance.html [L]
+
+  # Rewrite index to check for static
+  RewriteRule ^/$ /index.html [QSA] 
+
+  # Rewrite to check for Rails cached page
+  RewriteRule ^([^.]+)$ $1.html [QSA]
+
+  # Redirect all non-static requests to cluster
+  RewriteCond %{DOCUMENT_ROOT}/%{REQUEST_FILENAME} !-f
+  RewriteRule ^/(.*)$ balancer://mongrel_cluster%{REQUEST_URI} [P,QSA,L]
+
+  <Proxy balancer://mongrel_cluster>
+    BalancerMember http://127.0.0.1:8000
+    BalancerMember http://127.0.0.1:8001
+    BalancerMember http://127.0.0.1:8002
+    BalancerMember http://127.0.0.1:8003
+  </Proxy>
+
+  # Deflate
+  AddOutputFilterByType DEFLATE text/html text/plain text/css
+  # ... text/xml application/xml application/xhtml+xml text/javascript
+  BrowserMatch ^Mozilla/4 gzip-only-text/html
+  BrowserMatch ^Mozilla/4.0[678] no-gzip
+  BrowserMatch \bMSIE !no-gzip !gzip-only-text/html
+
+  #DeflateFilterNote Input input_info
+  #DeflateFilterNote Output output_info
+  #DeflateFilterNote Ratio ratio_info
+  #LogFormat '"%r" %{output_info}n/%{input_info}n (%{ratio_info}n%%)' deflate
+  #CustomLog logs/myapp_deflate_log deflate
+</VirtualHost>
+
+
+## start mongrel and restart apache
+
+sudo /etc/init.d/mongrel_cluster start
+sudo /etc/init.d/apache2 restart
+
+The app should not be working!!! 
+Hit your virtual server
+   http://cscw.muohio.edu
+
+in the example above
+
+Part 5 - Application Configuration
+
+Log in to CSCW using the 
+ username: admin
+ password: password
+
+Part 6 - AutoGrader Server
+
+Part 7 - Upgrading to new Releases

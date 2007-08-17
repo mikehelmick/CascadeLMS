@@ -33,7 +33,7 @@ class CreateSettings < ActiveRecord::Migration
 
     # either ldap or basic
     #authtype: basic
-    Setting.create :name => 'authtype', :value => 'ldap', :description => "Authentication type may be 'ldap' or 'basic'."
+    Setting.create :name => 'authtype', :value => 'basic', :description => "Authentication type may be 'ldap' or 'basic'."
   
     # the setting below need to be filled in if LDAP is being used
     #ldapserver: 127.0.0.1
