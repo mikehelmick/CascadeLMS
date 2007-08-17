@@ -167,6 +167,16 @@ Install Diff-LCS - for running diff reports
 
 sudo gem install diff-lcs
 
+Patch Rails - You must patch the Rails source by hand
+
+The comment on line 75 and the if statement on lines 76-78 to read
+
+# This is an uploaded file. 
+if value.respond_to?(:original_filename) && !value.original_filename.blank?
+
+This allows users with the Safari 3 browser to use the site
+
+
 
 ** At this point we are ready to actually install and configure the application.
 You need to decide where to install it, we recommend the path /srv/www/rails/cscourseware/
@@ -375,6 +385,7 @@ sudo crontab -u mongrel -e
 0 2,14 * * * /usr/local/bin/ruby /srv/www/rails/cscourseware/current/script/backgroundrb stop; /usr/local/bin/ruby /srv/www/rails/cscourseware/current/script/backgroundrb start
 
 And then start the server for the first time 
+** You will need to manually restart the server after a reboot - or configure a startup process
 
 sudo -u mongrel /usr/local/bin/ruby /srv/www/rails/cscourseware/current/script/backgroundrb start
 
