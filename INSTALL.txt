@@ -45,6 +45,8 @@ including:
  * Open SSL (with headers)
  * A c/c++ compiler (gcc)
  * curl (to download some of the setup files)
+ * GNU Enscript
+ * Java 5.0+ (1.5+)
 
 And that you have SUDO access
 
@@ -115,6 +117,10 @@ cd ..
 Install Ruby on Rails (current release - currently 1.2.3)
 
 sudo gem install rails --include-dependencies
+
+Install the Ruby daemons and slave gems
+
+sudo gem install daemons slave
 
 Install Mongrel (Ruby Web server)
 
@@ -320,6 +326,26 @@ Log in to CSCW using the
  username: admin
  password: password
 
+Immeadiatly click on "admin admin" in the upper right hand corner to change your password and assign 
+a valid email address to the admin user
+
+Click on "Adminstration -> Settings"
+* This will let you configure display options, title, organization, email addresses, etc...
+******** Please configure an appropriate error reporting email address
+
+You can now create users and courses from the administration tab
+
 Part 6 - AutoGrader Server
+
+You will want to add the grading server command to the crontab for the mongrel user
+
+sudo crontab -u mongrel -e
+
+0 2,14 * * * /usr/local/bin/ruby /srv/www/rails/cscourseware/current/script/backgroundrb stop; /usr/local/bin/ruby /srv/www/rails/cscourseware/current/script/backgroundrb start
+
+And then start the server for the first time 
+
+sudo -u mongrel /usr/local/bin/ruby /srv/www/rails/cscourseware/current/script/backgroundrb start
+
 
 Part 7 - Upgrading to new Releases
