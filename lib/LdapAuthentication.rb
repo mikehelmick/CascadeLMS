@@ -40,7 +40,7 @@ class LdapAuthentication
       end
       
       ## see if auto enrollment is enabled
-      if !@settings['enable_auto_enroll'].nil? && @settings['enable_auto_enroll'] == true
+      if !@settings['enable_auto_enroll'].nil? && (@settings['enable_auto_enroll'] == true || @settings['enable_auto_enroll'].to_s.eql?('true'))
 #        begin
           if user.instructor?
             # try to pull instructor field
