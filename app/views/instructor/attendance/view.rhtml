@@ -21,10 +21,10 @@
 	  <tr class="<%=odd%> hover" id="user_<%=user.id%>">
         <td><%= user.uniqueid %></td>
         <td><%= user.display_name %></td>
-        <td><% if @attendees[user.id] %>Yes<% else %><b>No</b><% end %></td>
+        <td id="attend_<%=user.id%>"><% if @attendees[user.id] %>Yes<% else %><b>No</b><% end %></td>
         <td><% if @correct_key[user.id] %>Yes<% else %><b>No</b><% end %></td>
-        <td><%= link_to 'Mark Attending', :action => 'mark_attending', :user => user.id, :course => @course, :id => @period %> |
-            <%= link_to 'Mark Missing', :action => 'mark_missing', :user => user.id, :course => @course, :id => @period %>
+        <td><%= link_to_remote( 'Mark Attending', :update => "attend_#{user.id}", :url => { :action => 'mark_attending', :user => user.id, :course => @course, :id => @period }, :success => visual_effect(:highlight, "attend_#{user.id}" ) ) %> |
+		    <%= link_to_remote( 'Mark Missing', :update => "attend_#{user.id}", :url => { :action => 'mark_missing', :user => user.id, :course => @course, :id => @period }, :success => visual_effect(:highlight, "attend_#{user.id}" ) ) %>
         </td>
       </tr>
     <% end %> 

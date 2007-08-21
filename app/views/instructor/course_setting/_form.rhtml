@@ -65,6 +65,15 @@
 	<%= radio_button 'course_settings', 'enable_documents', false %> No</p>
 </div>
 
+<p class="blockintro">Enabling this feature allows for all users in the course to participate in a collaborative Wiki environment.  <%= link_to 'More information on Wiki sites.', 'http://en.wikipedia.org/wiki/Wiki', :popup => true %></p>
+<div class="block">
+<p><label for="course_settings_enable_wiki" class="required">Enable course Wiki:</label>
+	<%= radio_button 'course_settings', 'enable_wiki', true %> Yes
+	<%= radio_button 'course_settings', 'enable_wiki', false %> No</p>
+</div>
+
+
+
 <p class="blockintro">Enable the programming assignments capability of this system for this course.  If your course does not involve programming assignments, it is recommended that you turn this off.  The programming assignments allow for full integration with Subversion using http(s). The SVN server location must follow the pattern <code>http://svnserver.com/uniqueid</code>, a more comprehensive path to an individual assignment's files can be entered for each assignment.</p>
 <div class="block">
 <p><label for="course_settings_enable_prog_assignments" class="required">Enable programming assignments:</label>

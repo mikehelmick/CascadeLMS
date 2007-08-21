@@ -8,6 +8,10 @@ class ClassPeriod < ActiveRecord::Base
   
   
   def before_create
+    gen_key
+  end
+  
+  def gen_key
     self.key = Digest::SHA1.hexdigest( "attendance key #{Time.new.to_formatted_s(:long)}" )[0...6].upcase
   end
   

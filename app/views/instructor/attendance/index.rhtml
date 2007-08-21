@@ -29,7 +29,11 @@
 %>
   <tr class="<%=odd%> hover" id="period_<%=period.id%>">
 	<td><%= period.position %></td>
-	<td><%= period.created_at.to_formatted_s(:long) %></td>
+	<td align="left"><%= period.created_at.to_formatted_s(:long) %>
+		<% if period.created_at.to_date.eql?( Time.now.to_date ) && !period.open %>
+		  <%= link_to 'Reopen Class Day', :course => @course, :controller => '/instructor/attendance', :action => 'reopen', :id => period.id %>
+		<% end %>
+		</td>
 	<td><% unless period.open %><%= period.updated_at.to_formatted_s(:long) %><% end %> &nbsp;</td>
 	<td><%= link_to 'View Attendees', :action => 'view', :id => period %></td>
   </tr>

@@ -1,0 +1,4 @@
+<p><i>Last modified by: <%= @page.user.display_name %> on <%= @page.updated_at.to_formatted_s(:long) %>
+  (<%= distance_of_time_in_words_to_now( @page.updated_at ) %> ago)</i><br/>
+  Page revision #<%= @page.revision %>
+</p>

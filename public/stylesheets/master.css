@@ -149,7 +149,7 @@ div#navcontainer ul li {
 }
 
 div#navcontainer ul li a {
-	margin: 0 3px 0 3px;
+	margin: 0 0px 0 1px;
 	padding: 5px 10px 5px 10px;
 	color: #000;
 	text-decoration: none;

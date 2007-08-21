@@ -37,6 +37,27 @@ class Instructor::AttendanceController < Instructor::InstructorBase
     redirect_to :action => 'index'
   end
   
+  def reopen
+    return unless load_course( params[:course] )
+    return unless attendance_enabled( @course )
+    return unless ensure_course_instructor_on_assistant( @course, @user )
+    
+    begin
+      period = ClassPeriod.find(params[:id]) 
+    rescue
+      flash[:badnotice] = "Invalid period requested"
+      redirect_to :action => 'index', :id => nil, :course => @course
+      return
+    end
+    return unless period_in_class?( period, @course )
+    
+    period.gen_key
+    period.open = true
+    period.save
+    
+    redirect_to :action => 'index', :id => nil, :course => @course  
+  end
+  
   def close
     return unless load_course( params[:course] )
     return unless attendance_enabled( @course )
@@ -93,13 +114,9 @@ class Instructor::AttendanceController < Instructor::InstructorBase
     end
     att.correct_key = true
     
-    if att.save
-      flash[:notice] = "Marked '#{student.display_name}' as attending."
-    else
-      flash[:badnotice] = "Attendance update for '#{student.display_name}' failed."
-    end
+    @success = att.save
     
-    redirect_to :action => 'view', :id => @period, :user => nil, :course => @course
+    render :layout => false
   end
   
   def mark_missing
@@ -113,13 +130,9 @@ class Instructor::AttendanceController < Instructor::InstructorBase
     
     att = ClassAttendance.find(:first, :conditions => ["class_period_id = ? and course_id = ? and user_id = ?", @period.id, @course.id, student.id ] ) rescue att = nil
     
-    if att.nil? || att.destroy()
-      flash[:notice] = "Marked '#{student.display_name}' as not attending."
-    else
-      flash[:badnotice] = "Attendance update for '#{student.display_name}' failed."
-    end
-    
-    redirect_to :action => 'view', :id => @period, :user => nil, :course => @course
+    @success = att.nil? || att.destroy()
+
+    render :layout => false
   end
   
   def attendance_report
@@ -225,6 +238,15 @@ class Instructor::AttendanceController < Instructor::InstructorBase
     @period = ClassPeriod.find( period ) rescue @period = nil
     if @period.nil?
       flash[:badnotice] = "The requested class period couldn't be found."
+      redirect_to :action => 'index', :course => @course, :id => nil
+      return false
+    end
+    return true
+  end
+  
+  def period_in_class?( period, course )
+    if period.course_id != course.id
+      flash[:badnotice] = "Invalid period requested"
       redirect_to :action => 'index', :course => @course, :id => nil
       return false
     end

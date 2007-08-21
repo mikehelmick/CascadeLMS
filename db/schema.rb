@@ -2,7 +2,7 @@
 # migrations feature of ActiveRecord to incrementally modify your database, and
 # then regenerate this schema definition.
 
-ActiveRecord::Schema.define(:version => 75) do
+ActiveRecord::Schema.define(:version => 77) do
 
   create_table "announcements", :force => true do |t|
     t.column "headline",  :string
@@ -131,6 +131,7 @@ ActiveRecord::Schema.define(:version => 75) do
     t.column "enable_project_teams",      :boolean, :default => false, :null => false
     t.column "enable_quizzes",            :boolean, :default => true,  :null => false
     t.column "ta_create_quizzes",         :boolean, :default => false, :null => false
+    t.column "enable_wiki",               :boolean, :default => false, :null => false
   end
 
   add_index "course_settings", ["course_id"], :name => "course_settings_course_id_index", :unique => true
@@ -529,5 +530,19 @@ ActiveRecord::Schema.define(:version => 75) do
     t.column "forgot_token",     :string,                :default => "",    :null => false
     t.column "enabled",          :boolean,               :default => true,  :null => false
   end
+
+  create_table "wikis", :force => true do |t|
+    t.column "course_id",     :integer,  :default => 0,    :null => false
+    t.column "page",          :string,   :default => "",   :null => false
+    t.column "content",       :text,     :default => "",   :null => false
+    t.column "content_html",  :text,     :default => "",   :null => false
+    t.column "created_at",    :datetime,                   :null => false
+    t.column "updated_at",    :datetime,                   :null => false
+    t.column "user_id",       :integer,  :default => 0,    :null => false
+    t.column "revision",      :integer,  :default => 1,    :null => false
+    t.column "user_editable", :boolean,  :default => true, :null => false
+  end
+
+  add_index "wikis", ["course_id", "page", "revision"], :name => "index_wikis_on_course_id_and_page_and_revision", :unique => true
 
 end

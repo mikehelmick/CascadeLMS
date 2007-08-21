@@ -1,0 +1,7 @@
+  <div class="menuout">
+  <% unless @page.nil? %>
+    <%= image_tag 'layout_edit.png', :align => 'middle' %> <%= link_to "Edit Page '#{@page.page}'", :controller => '/wiki', :id => @page.page, :course => @course, :action => 'edit'  %> |
+    <%= image_tag 'layers.png', :align => 'middle' %> <%= link_to "History for '#{@page.page}'", :controller => '/wiki', :id => @page.page, :course => @course, :action => 'history' %> |
+  <% end %>
+    <%= image_tag 'application_cascade.png', :align => 'middle' %> <%= link_to 'All Wiki Pages', :controller => '/wiki', :id => nil, :course => @course, :action => 'wikidex' %>
+  </div>
