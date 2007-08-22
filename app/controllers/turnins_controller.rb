@@ -268,9 +268,9 @@ class TurninsController < ApplicationController
     
     ## Validations
     md = params[:newdir].match(/\w+/)
-    if ( md.pre_match.size > 0 || md.post_match.size > 0 ) 
+    if ( params[:newdir].nil? || params[:newdir].eql?('') || md.pre_match.size > 0 || md.post_match.size > 0 ) 
       @newdir = params[:newdir]
-      flash[:badnotice] = "Thew new directory name may only contain letters and digits, no spaces or special characters."
+      flash[:badnotice] = "Thew new directory name can not be empty and may only contain letters and digits, no spaces or special characters."
       redirect_to :action => 'index'
       return
     end
