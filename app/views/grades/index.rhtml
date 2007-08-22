@@ -28,7 +28,7 @@
 	    <% end %>
 	  </td>
 	  <td><%= grade_item.grade_category.category %></td>
-	  <% if @course.gradebook.weight_grades %><td align="right"><%= sprintf("%.2f", @weight_map[grade_item.grade_category.id] ) %>%</td><% end %>
+	  <% if  @course.gradebook && @course.gradebook.weight_grades %><td align="right"><%= sprintf("%.2f", @weight_map[grade_item.grade_category.id] ) %>%</td><% end %>
       <td><%= grade_item.date.to_formatted_s(:long) %></td>
 
       <% if grade_item.display_type.eql?( GradeItem::shown_type( GradeItem::COMPLETE ) ) %>
