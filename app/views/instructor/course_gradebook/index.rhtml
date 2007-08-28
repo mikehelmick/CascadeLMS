@@ -38,7 +38,7 @@
 	</th>
    <% end %>
 
-   <% if @course.gradebook.weight_grades %>
+   <% if @course.gradebook.weight_grades && @course.student_count > 0 %>
      <th class="cell">&nbsp;</th>
      <% for category in @categories %>
        <th class="cell" nowrap="nowrap" valign="bottom" colspan="2">Category:<br/>
