@@ -55,7 +55,7 @@ class Instructor::MonitorController < Instructor::InstructorBase
     @item.serviced = true
     @item.acknowledged = true
     @item.queued = true
-    @item.failed = true
+    @item.failed = false
     @item.message = "This record has been manually marked a success."
     @item.save
     
