@@ -12,7 +12,7 @@
 
 set :application, "cscourseware"
 #set :repository, "https://mikehelmick.com/svn/#{application}/trunk"
-set :svn_user, "mhelmick"
+set :svn_user, ""
 set :svn_password, ""
 set :repository,
   Proc.new { "--username #{svn_user} --password #{svn_password} " +    
