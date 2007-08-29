@@ -7,10 +7,13 @@ class GradeReQueueWorker < BackgrounDRb::Worker::RailsBase
   def do_work(args)
     # This method is called in it's own new thread when you
     # call new worker. args is set to :args
+    sleep(60)
+    
+    threshold = 60 # number of minutes to wait for a requeue
     
     while( true )
     
-      time = Time.now - 3.minutes
+      time = Time.now - threshold.minutes
 
       items = GradeQueue.find(:all, :conditions => ["acknowledged = ? and serviced = ? and updated_at < ?", true, false, time], :order => "updated_at asc" ) rescue items = Array.new
 
@@ -20,7 +23,7 @@ class GradeReQueueWorker < BackgrounDRb::Worker::RailsBase
           item.serviced = false
           item.message = "There appears to have been an error while evaluating this assignment.  Grading will restart shortly."
           item.save
-          logger.info("Requeue of item, id=#{item.id}, idle longer then 5 minutes")
+          logger.info("Requeue of item, id=#{item.id}, idle longer then #{threshold} minutes")
       end
 
 
@@ -28,7 +31,7 @@ class GradeReQueueWorker < BackgrounDRb::Worker::RailsBase
       results[:done_with_do_work] = true
       delete
     
-      sleep(60)
+      sleep(60 * 60)
     end
     
   end

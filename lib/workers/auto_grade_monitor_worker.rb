@@ -46,7 +46,12 @@ class AutoGradeMonitorWorker < BackgrounDRb::Worker::RailsBase
         count = 0
         item.each do |this_req| 
           if count > 0
-            this_req.message = "<p>There are #{item.size - 1} assignemtns waiting to be graded.<br/>Your position in line is <b>#{count}</b></p>"
+            extra = ''
+            if Time.now - item.created_at > 120
+              extra = "<br/><b>You have been waiting for over two minutes - if your place in line has not improved, please close this window and come back later today to check your submission status.</b>"
+            end
+            
+            this_req.message = "<p>There are #{item.size - 1} assignemtns waiting to be graded.<br/>Your position in line is <b>#{count}</b>#{extra}</p>"
             this_req.save
           end
           count = count.next
@@ -56,7 +61,7 @@ class AutoGradeMonitorWorker < BackgrounDRb::Worker::RailsBase
         ## update the queue positions
         count = 1
         item.each do |i| 
-          i.message = "<p>There are #{item.size} assignemtns waiting to be graded.<br/>Your position in line is <b>#{count}</b></p>"
+          i.message = "<p>There are #{item.size} assignments waiting to be graded.<br/>Your position in line is <b>#{count}</b></p>"
           i.save
           count = count.next
         end
