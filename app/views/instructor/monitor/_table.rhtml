@@ -1,0 +1,32 @@
+<table class="fancy">
+  <tr class="header">
+    <th>ID</th>
+    <th>Student</th>
+	<th>Submitted</th>
+	<th>Last Update</th>
+	<th>Started</th>
+	<th>Message</th>
+  </tr>
+
+	<% count = 0 %>
+ 	<% for queue in @items %>
+    <% count = count.next 
+	     odd = "odd"
+	     odd = "even" if count.even?
+	   %>
+	  <tr class="<%=odd%> hover" id="queue_<%=queue.id%>">
+	    <td nowrap="nowrap"><%= queue.id %></td>
+		<td nowrap="nowrap"><%= queue.user_turnin.user.display_name rescue 'unknown' %></td>
+	    <td nowrap="nowrap"><%= queue.created_at.to_formatted_s(:short) %></td>
+		<td nowrap="nowrap"><%= queue.updated_at.to_formatted_s(:short) %></td>	
+		<td nowrap="nowrap"><% if queue.acknowledged %><%= image_tag 'accept.png' %><% end %>&nbsp;</td>
+		<td><%= queue.message %></td>
+	  </tr>
+	  <tr>
+		<td>&nbsp;</td>
+		<td align="right"><b>Class:</b></td><td><%= queue.assignment.course.title %></td>
+		<td align="right"><b>Assignment:</b></td><td><%= queue.assignment.title %></td>
+		<td><div id="area_<%=queue.id%>"><%= link_to_remote( 'Requeue', :update => "area_#{queue.id}", :url => { :action => 'reset_ag_item', :course => @course, :id => queue.id }, :success => visual_effect(:highlight, "area_#{queue.id}" ) ) %></div></td>
+	  </tr>
+    <% end %>
+</table>

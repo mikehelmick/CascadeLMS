@@ -1,0 +1,15 @@
+<div class="SectionHeader"><div class="Full">
+<h2>AutoGrade Queue - Failures</h2>
+</div></div>
+<br/>
+<p><%= link_to 'View Queue', :course => @course, :controller => '/instructor/monitor', :action => 'agqueue' %> | 
+   <%= link_to 'View Failures', :course => @course, :controller => '/instructor/monitor', :action => 'agfailed' %></p>
+
+<% if @items.size == 0 %>
+<p>There are no failed items in the AutoGrader queue.</p>
+
+<% else %>
+
+<%= render :partial => 'table'%>
+
+<% end %>
