@@ -5,7 +5,7 @@ class WikiController < ApplicationController
   
   @@range0 = ('A'..'Z').freeze
   @@range1 = ('a'..'z').freeze
-  @@range2 = (0..9).freeze
+  @@range2 = ('0'..'9').freeze
   
   def index
     redirect_to :action => 'page', :course => params[:course], :id => 'Home'

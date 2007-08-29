@@ -1,5 +1,6 @@
   <div class="menuout">
   <% unless @page.nil? %>
+    <%= image_tag 'house.png', :align => 'middle' %> <%= link_to 'Wiki Home', :controller => '/wiki', :id => 'Home', :course => @course, :action => 'page' %> |
     <%= image_tag 'layout_edit.png', :align => 'middle' %> <%= link_to "Edit Page '#{@page.page}'", :controller => '/wiki', :id => @page.page, :course => @course, :action => 'edit'  %> |
     <%= image_tag 'layers.png', :align => 'middle' %> <%= link_to "History for '#{@page.page}'", :controller => '/wiki', :id => @page.page, :course => @course, :action => 'history' %> |
   <% end %>
