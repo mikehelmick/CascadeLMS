@@ -284,7 +284,7 @@ class AutoGradeWorker < BackgrounDRb::Worker::RailsBase
           queue.message = "Performing static analysis on your code."
           queue.save
         end
-        GradeQueue.transaction do
+        GradeQueue.transaction( queue, user_turnin ) do
           run_pmd( queue, user_turnin, dir, directories, app )
         end
         
@@ -293,7 +293,7 @@ class AutoGradeWorker < BackgrounDRb::Worker::RailsBase
           queue.message = "Compiling and running I/O based tests on your code."
           queue.save
         end
-        GradeQueue.transaction do
+        GradeQueue.transaction( queue, user_turnin ) do
           run_io_check( queue, user_turnin, dir, directories, app )
         end
 
@@ -316,6 +316,7 @@ class AutoGradeWorker < BackgrounDRb::Worker::RailsBase
         queue.save
       end
     end
+    
       results[:do_work_time] = Time.now.to_s
       results[:done_with_do_work] = true
       delete
