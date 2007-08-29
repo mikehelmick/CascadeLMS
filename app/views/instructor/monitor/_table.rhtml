@@ -24,9 +24,13 @@
 	  </tr>
 	  <tr>
 		<td>&nbsp;</td>
-		<td align="right"><b>Class:</b></td><td><%= queue.assignment.course.title %></td>
-		<td align="right"><b>Assignment:</b></td><td><%= queue.assignment.title %></td>
-		<td><div id="area_<%=queue.id%>"><%= link_to_remote( 'Requeue', :update => "area_#{queue.id}", :url => { :action => 'reset_ag_item', :course => @course, :id => queue.id }, :success => visual_effect(:highlight, "area_#{queue.id}" ) ) %></div></td>
+		<td align="right"><b>Class:</b></td><td><%= queue.assignment.course.title rescue 'unknown' %></td>
+		<td align="right"><b>Assignment:</b></td><td><%= queue.assignment.title rescue 'unknown' %></td>
+		<td><div id="area_<%=queue.id%>"><%= link_to_remote( 'Requeue', :update => "area_#{queue.id}", :url => { :action => 'reset_ag_item', :course => @course, :id => queue.id }, :success => visual_effect(:highlight, "area_#{queue.id}" ) ) %> 
+ <% if queue.course_id == @course.id %>
+			| <%= link_to_remote( 'Remove', :update => "area_#{queue.id}", :url => { :action => 'reset_ag_item', :course => @course, :id => queue.id }, :confirm => 'Are you sure you want to permanently remove this item from the grading queue?', :success => visual_effect(:highlight, "area_#{queue.id}" ) ) %>
+ <% end %>
+			</div></td>
 	  </tr>
     <% end %>
 </table>

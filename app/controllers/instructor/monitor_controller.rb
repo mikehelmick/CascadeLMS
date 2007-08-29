@@ -46,6 +46,22 @@ class Instructor::MonitorController < Instructor::InstructorBase
     render :layout => false
   end
   
+  def mark_ag_finished
+    return unless load_course( params[:course] )
+    return unless ensure_course_instructor( @course, @user )
+    
+    @item = GradeQueue.find( params[:id] )
+    
+    @item.serviced = true
+    @item.acknowledged = true
+    @item.queued = true
+    @item.failed = true
+    @item.message = "This record has been manually marked a success."
+    @item.save
+    
+    render :layout => false    
+  end
+  
   private
   
   def set_tab

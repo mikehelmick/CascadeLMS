@@ -2,7 +2,7 @@
 # migrations feature of ActiveRecord to incrementally modify your database, and
 # then regenerate this schema definition.
 
-ActiveRecord::Schema.define(:version => 77) do
+ActiveRecord::Schema.define(:version => 78) do
 
   create_table "announcements", :force => true do |t|
     t.column "headline",  :string
@@ -276,6 +276,7 @@ ActiveRecord::Schema.define(:version => 77) do
     t.column "failed",         :boolean,  :default => false, :null => false
     t.column "message",        :text
     t.column "batch",          :string
+    t.column "course_id",      :integer
   end
 
   add_index "grade_queues", ["batch"], :name => "grade_queues_batch_index"
