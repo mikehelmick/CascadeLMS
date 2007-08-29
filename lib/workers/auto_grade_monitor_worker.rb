@@ -47,7 +47,7 @@ class AutoGradeMonitorWorker < BackgrounDRb::Worker::RailsBase
         item.each do |this_req| 
           if count > 0
             extra = ''
-            if Time.now - item.created_at > 120
+            if Time.now - this_req.created_at > 120
               extra = "<br/><b>You have been waiting for over two minutes - if your place in line has not improved, please close this window and come back later today to check your submission status.</b>"
             end
             
