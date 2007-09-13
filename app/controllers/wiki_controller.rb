@@ -59,7 +59,7 @@ class WikiController < ApplicationController
     @pg = Wiki.new
     @pg.course_id = @course.id
     @pg.page = @previous.page
-    @pg.content = params['pg']['content']
+    @pg.content = params['pg']['content'] rescue @pg.content = ''
     @pg.user = @user
     @pg.revision = @previous.revision + 1
     

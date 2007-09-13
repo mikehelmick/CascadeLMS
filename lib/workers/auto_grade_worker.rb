@@ -206,8 +206,12 @@ class AutoGradeWorker < BackgrounDRb::Worker::RailsBase
         io_result.output = user_output
         
         ## RUN THE DIFF - remove the trailling newline characters, avoid user confusion
+        user_output = user_output.chomp while user_output[-1..-1].eql?("\n")
+        compare_to = ioc.output
+        compare_to = compare_to.chomp while compare_to[-1..-1].eql?("\n")
+        
         logger.info("IOC_C::#{queue.id} - Starting DIFF")
-        diffs = TextDiff.run_diff( ioc.output.chomp, user_output.chomp )
+        diffs = TextDiff.run_diff( compare_to, user_output )
         logger.info("IOC_C::#{queue.id} - DIFF Completed")
         max_match = ioc.output.length
         differences = 0

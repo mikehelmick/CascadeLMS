@@ -722,21 +722,6 @@ class Instructor::TurninsController < Instructor::InstructorBase
     queue.assignment = @assignment
     queue.user_turnin = @current_turnin
     if queue.save
-      
-      begin
-        MiddleMan.schedule_worker(
-          :class => :auto_grade_worker,
-          :args => queue.id,
-          :trigger_args => {
-                :start => Time.now + 1.seconds
-              }
-        )
-      rescue
-        flash[:badnotice] = "The AutoGrade server wasn't running - but I've started it up and your grading will be begin shortl (may take up to 60 seconds)."
-        ## bounce the server - the stop and then the start (stop has no effect if not running)
-        `#{@app['ruby']} #{RAILS_ROOT}/script/backgroundrb stop`
-        `#{@app['ruby']} #{RAILS_ROOT}/script/backgroundrb start`
-      end
         
       ## need to do a different rediect
       redirect_to :controller => '/wait', :action => 'grade', :id => queue.id, :course => nil, :assignment => nil, :student => nil
