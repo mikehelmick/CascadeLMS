@@ -224,14 +224,14 @@ Last Updated: <%= @display_turnin.updated_at.to_formatted_s(:friendly_date) %><b
 	  <%= text_field 'grade_entry', 'points', :size => 10  %> / <%= sprintf("%0.1f", @grade_item.points ) %></p>
 
       <p><label for="document_comments">General comments:</label><br/>
+                <% if @assignment.team_project && !@team.nil? %>
+                        <%= check_box_tag( 'apply_to_team', true, @apply_to_team )%> Apply grade and comments to all team members.</br>
+                <% end %>
+
       <%= text_area 'grade_entry', 'comment', "cols" => 90, "rows" => 12, :class=>'short'  %><br/>
       <%= link_to_function "More room to type", "Form.Element.toggleHeight(this, 'grade_entry_comment'); return false;", :class => 'bottab more' %>
 </p>
 
-
-		<% if @assignment.team_project && !@team.nil? %>
-			<p><br/><%= check_box_tag( 'apply_to_team', true, @apply_to_team )%> Apply grade and comments to all team members.</p>
-		<% end %>
     </div>
 
   	<div class="submit">
