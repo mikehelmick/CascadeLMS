@@ -1,0 +1,8 @@
+   <tr class="header">
+     <% if @assignment.journal_field.start_time %><th>Start</th><% end %>
+     <% if @assignment.journal_field.end_time %><th>End</th><% end %>
+     <% if @assignment.journal_field.interruption_time %><th>Intr.</th><% end %>
+     <% if @assignment.journal_field.task %><th>Tasks</th><% end %>
+     <% if @assignment.journal_field.reason_for_stopping %><th>Stop Reason</th><% end %>
+     <% if @assignment.journal_field.completed %><th>Complete?</th><% end %>
+   </tr>
