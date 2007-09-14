@@ -33,7 +33,11 @@ class Instructor::TurninsController < Instructor::InstructorBase
       @students.each do |s|
         if @assignment.team_project
           team = @course.team_for_user( s.id )
-          @turnin_sets[s.id] = UserTurnin.count( :conditions => ["project_team_id=? and assignment_id=?", team.id, @assignment.id ] ) > 0
+          if team.nil?
+            @turnin_sets[s.id] = nil
+          else
+            @turnin_sets[s.id] = UserTurnin.count( :conditions => ["project_team_id=? and assignment_id=?", team.id, @assignment.id ] ) > 0
+          end
         else 
           @turnin_sets[s.id] = UserTurnin.count( :conditions => ["user_id=? and assignment_id=?", s.id, @assignment.id ] ) > 0
         end
@@ -278,8 +282,10 @@ class Instructor::TurninsController < Instructor::InstructorBase
       redirect_to :action => 'index'
     end
     
+    @apply_to_team = false
     if @assignment.team_project
       @team = @course.team_for_user( @student.id )
+      @apply_to_team = true unless @team.nil?
     end
     
     # get grade
@@ -289,11 +295,25 @@ class Instructor::TurninsController < Instructor::InstructorBase
       @grade_entry = GradeEntry.find(:first, :conditions => ["grade_item_id=? and user_id=?", @grade_item.id, @student.id ] )
       unless @grade_entry
         @grade_entry = GradeEntry.new
+      else
+        ## if there is an existing item for this student, bias the apply to all to false
+        @apply_to_team = false
       end
     end
     
     # get journals
-    @journals = Journal.find(:all, :conditions => ["user_id=? and assignment_id=?", @student.id, @assignment.id ], :order => "start_time ASC" )
+    @journals = Array.new
+    if !@assignment.team_project || @team.nil?
+      # if this is not a team project, or they are not on a team, pull journals
+      @journals = Journal.find(:all, :conditions => ["user_id=? and assignment_id=?", @student.id, @assignment.id ], :order => "start_time ASC" )
+    else
+      ## get journals for all team members
+      @team_journals = Hash.new
+      @team.team_members.each do |tm|
+        @team_journals[tm.user.id] = Journal.find(:all, :conditions => ["user_id=? and assignment_id=?", tm.user.id, @assignment.id ], :order => "start_time ASC" )
+      end
+      
+    end
    
     # get turn-in sets
     @turnins = Array.new
@@ -347,34 +367,66 @@ class Instructor::TurninsController < Instructor::InstructorBase
       redirect_to :action => 'index'
     end
     
+    ## see if this is a team assignment & applying to all
+    @team = nil
+    @apply_to_team = params[:apply_to_team].to_s.eql?('true')
+    if @assignment.team_project && @apply_to_team
+      @team = @course.team_for_user( @student.id )
+    end
+    
+    
     # get grade
     # load grades
     @grade_item = GradeItem.find(:first, :conditions => ["assignment_id = ?", @assignment.id] )
     if @grade_item
-      @grade_entry = GradeEntry.find(:first, :conditions => ["grade_item_id=? and user_id=?", @grade_item.id, @student.id ] )
-      if @grade_entry
-        @grade_entry.update_attributes( params[:grade_entry] )
+      
+      entries = Hash.new
+      
+      if @team.nil?
+        entries[@student.id] = GradeEntry.find(:first, :conditions => ["grade_item_id=? and user_id=?", @grade_item.id, @student.id ] )
       else
-        @grade_entry = GradeEntry.new( params[:grade_entry] )
-        @grade_entry.course = @course
-        @grade_entry.user = @student
-        @grade_entry.grade_item = @grade_item
+        # load for all team members
+        @team.team_members.each do |tm|
+          entries[tm.user.id] = GradeEntry.find(:first, :conditions => ["grade_item_id=? and user_id=?", @grade_item.id, tm.user.id ] )
+        end
+        
       end
       
-      @grade_entry.points = 0 if @grade_entry.points.to_s.eql?('')
-      
-      if @grade_entry.points < 0
-        @grade_entry.destroy
-        @grade_entry = nil
+      # for each entry save
+      @success = true
+      @deleted = false
+      GradeEntry.transaction do
+        entries.keys.each do |key|
+          grade_entry = entries[key]
+          
+          if grade_entry
+            grade_entry.update_attributes( params[:grade_entry] )
+          else
+            grade_entry = GradeEntry.new( params[:grade_entry] )
+            grade_entry.course = @course
+            grade_entry.user_id = key.to_i
+            grade_entry.grade_item = @grade_item
+          end
+
+          grade_entry.points = 0 if grade_entry.points.to_s.eql?('')
+
+          if grade_entry.points < 0
+            grade_entry.destroy
+            grade_entry = nil
+            @deleted= true
+          end
+          
+          @success = grade_entry.save && @success
+        end
       end
     else 
       flash[:badnotice] = "Application error - there is not grade item for this assignment.  Set on up in the GradeBook."
     end
     
-    if @grade_entry.nil?
+    if @deleted
       flash[:notice] = "Grade for '#{@student.display_name}' has been deleted for this assignment (Since no point value was entered)."
-    elsif @grade_entry.save
-      flash[:notice] = "Grade for '#{@student.display_name}' has been updated to '#{@grade_entry.points}' for this assignment."
+    elsif @success
+      flash[:notice] = "Grade for '#{@student.display_name}' has been updated to '#{@params[:grade_entry]['points']}' for this assignment."
     else
       flash[:badnotice] = "Error updating student grade - results not saved."
     end

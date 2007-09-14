@@ -228,6 +228,10 @@ Last Updated: <%= @display_turnin.updated_at.to_formatted_s(:friendly_date) %><b
       <%= link_to_function "More room to type", "Form.Element.toggleHeight(this, 'grade_entry_comment'); return false;", :class => 'bottab more' %>
 </p>
 
+
+		<% if @assignment.team_project && !@team.nil? %>
+			<p><br/><%= check_box_tag( 'apply_to_team', true, @apply_to_team )%> Apply grade and comments to all team members.</p>
+		<% end %>
     </div>
 
   	<div class="submit">
@@ -245,21 +249,16 @@ Last Updated: <%= @display_turnin.updated_at.to_formatted_s(:friendly_date) %><b
   <h2>Assignment Journals</h2>
 </div></div>
 
-<% if @journals.size == 0 %>
-<p><i>This student has not submitted any journal entries.</i></p>
-<% else %>
+<% if !@assignment.team_project || @team.nil? %>
 
-<p><b>Reported Time:</b> <%= pluralize(@days,'day') %>, <%= pluralize(@hours,'hour') %>, <%= pluralize(@minutes,'minute') %>.
+	<% if @journals.size == 0 %>
+	<p><i>This student has not submitted any journal entries.</i></p>
+	<% else %>
 
-<table cellpadding="0" cellspacing="0" class="fancy">
-   <tr class="header">
-     <% if @assignment.journal_field.start_time %><th>Start</th><% end %>
-     <% if @assignment.journal_field.end_time %><th>End</th><% end %>
-     <% if @assignment.journal_field.interruption_time %><th>Intr.</th><% end %>
-     <% if @assignment.journal_field.task %><th>Tasks</th><% end %>
-     <% if @assignment.journal_field.reason_for_stopping %><th>Stop Reason</th><% end %>
-     <% if @assignment.journal_field.completed %><th>Complete?</th><% end %>
-   </tr>
+	<p><b>Reported Time:</b> <%= pluralize(@days,'day') %>, <%= pluralize(@hours,'hour') %>, <%= pluralize(@minutes,'minute') %>.
+
+    <table cellpadding="0" cellspacing="0" class="fancy">
+    <%= render :partial => 'journalheader' %>
 
    <% count = 0 %>
    <% for journal in @journals %>
@@ -267,33 +266,37 @@ Last Updated: <%= @display_turnin.updated_at.to_formatted_s(:friendly_date) %><b
 	     odd = "odd"
 	     odd = "even" if count.even?
 	   %>
-     <tr class="<%=odd%> hover" id="journal_<%=journal.id%>">
-       <% if @assignment.journal_field.start_time %><td nowrap="nowrap"><%=h journal.start_time.to_formatted_s(:short) %></td><% end %>
-       <% if @assignment.journal_field.end_time %><td nowrap="nowrap"><%=h journal.end_time.to_formatted_s(:short) %></td><% end %>
-       <% if @assignment.journal_field.interruption_time %><td nowrap="nowrap"><%=h journal.interruption_time %></td><% end %>
-       <% if @assignment.journal_field.task %><td nowrap="nowrap">
-         <% for task in journal.journal_tasks %>
-           <%= task.task %><br/>
-         <% end %>
-         </td>
-       <% end %>
-       <% if @assignment.journal_field.reason_for_stopping %><td nowrap="nowrap">
-         <% for sr in journal.journal_stop_reasons %>
-           <%= sr.reason %><br/>
-         <% end %>
-         </td>
-       <% end %>
-       <% if @assignment.journal_field.completed %><td nowrap="nowrap">
-         <%= journal.completed_text %>
-       </td><% end %>
-     </tr>
-     <tr class="<%=odd%> hover" id="journal_comments_<%=journal.id%>">
-	   <td align="right" valign="top"><b>Comments:</b></td>
-       <td align="left" valign="top" colspan="5"><%=(h journal.comments).gsub(/\n/,"<br/>") %></td>
-     </tr>
+ 	 <%= render :partial => "journal", :locals => { :odd => odd, :journal => journal } %>
    <% end %>
+   </table>
 
-</table>
+  <% end %>
+
+<% else %>
+  <!-- team journals -->
+  <p><b>Displaying Journal entries for all team members</b></p>
+
+  <% for tm in @team.team_members %>
+    <p>Journals for <b><%= tm.user.display_name %></b></p>
+	
+	<% if @team_journals[tm.user.id].nil? || @team_journals[tm.user.id].size == 0 %>
+	  <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i>This student has not submitted any journal entries.</i></p>
+	<% else %>
+      <table cellpadding="0" cellspacing="0" class="fancy">
+      <%= render :partial => 'journalheader' %>
+
+      <% count = 0 %>
+      <% for journal in @team_journals[tm.user.id] %>
+        <% count = count.next 
+	     odd = "odd"
+	     odd = "even" if count.even?
+	     %>
+ 	     <%= render :partial => "journal", :locals => { :odd => odd, :journal => journal } %>
+      <% end %>
+      </table>	  
+	<% end %>
+	
+  <% end %>
 
 <% end %>
 

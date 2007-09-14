@@ -82,13 +82,13 @@
 		
 		   <tr>
 			 <% if show_input %>
-	           <td class="diffReport" nowrap="nowrap" valign="top"><%= check.input.to_html %></td>
+	           <td class="diffReport" valign="top"><%= check.input.to_html %></td>
 	         <% else %>
-			   <td class="diffReport" nowrap="nowrap" valign="top">
+			   <td class="diffReport" valign="top">
 			       <%= check.output.to_html %>
 			   </td>
 	         <% end %>
-	         <td class="diffReport" colspan="1" nowrap="nowrap" valign="top">
+	         <td class="diffReport<%= '2' if show_input %>" colspan="1" valign="top">
 			  <div id="student_check_<%=check.id%>_diff">
 				 <% if @student_io_check[check.id].nil? %>
 				   <b><%= image_tag 'flag_red.png' %>No output found for this test.</b>
