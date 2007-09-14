@@ -225,7 +225,7 @@ Last Updated: <%= @display_turnin.updated_at.to_formatted_s(:friendly_date) %><b
 
       <p><label for="document_comments">General comments:</label><br/>
                 <% if @assignment.team_project && !@team.nil? %>
-                        <%= check_box_tag( 'apply_to_team', true, @apply_to_team )%> Apply grade and comments to all team members.</br>
+                        <%= check_box_tag( 'apply_to_team', true, @apply_to_team )%> Apply grade and comments to all team members.<br/>
                 <% end %>
 
       <%= text_area 'grade_entry', 'comment', "cols" => 90, "rows" => 12, :class=>'short'  %><br/>
