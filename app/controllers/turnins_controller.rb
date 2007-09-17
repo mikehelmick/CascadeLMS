@@ -24,12 +24,20 @@ class TurninsController < ApplicationController
     
     @display_turnin = @current_turnin
     
-    if @current_turnin
+    unless @current_turnin.nil?
       @directories = Array.new
       @current_turnin.user_turnin_files.each do |utf|
         @directories << utf if utf.directory_entry?
       end
       @directory = ""
+      
+    else
+      ## first time in - create a new turnin set
+      ut, utf = create_new_turnin_set
+      ut.save
+      ut.make_dir( @app['external_dir'], @team )
+      ut.user_turnin_files << utf
+      ut.save
     end
   
     count_todays_turnins( @app["turnin_limit"].to_i )
@@ -204,24 +212,7 @@ class TurninsController < ApplicationController
     @current_turnin = @turnins[0] if @turnins.size > 0
     
     # create new turning set
-    ut = UserTurnin.new
-    ut.assignment = @assignment
-    ut.user = @user
-    ut.sealed = false
-    ut.finalized = false
-    ## if team - we need to add the team attribute
-    ut.project_team = @team unless @team.nil?   
-    
-    ##@user.user_turnins << ut 
-    ## The above line was removed in the transition to teams, but it is unnecessary anyway
-    
-    # create root directory entry
-    utf = UserTurninFile.new
-    utf.user_turnin = ut
-    utf.directory_entry = true
-    utf.directory_parent = 0
-    utf.filename = '/'
-    utf.user = @user
+    ut, utf = create_new_turnin_set
     
     UserTurnin.transaction do
       if @current_turnin.nil?
@@ -602,6 +593,26 @@ private
     end
     @remaining_count = max - @today_count 
     @remaining_count = 0 if @remaining_count < 0
+  end
+  
+  def create_new_turnin_set
+    ut = UserTurnin.new
+    ut.assignment = @assignment
+    ut.user = @user
+    ut.sealed = false
+    ut.finalized = false
+    ## if team - we need to add the team attribute
+    ut.project_team = @team unless @team.nil?   
+    
+    # create root directory entry
+    utf = UserTurninFile.new
+    utf.user_turnin = ut
+    utf.directory_entry = true
+    utf.directory_parent = 0
+    utf.filename = '/'
+    utf.user = @user
+    
+    return ut, utf
   end
   
   
