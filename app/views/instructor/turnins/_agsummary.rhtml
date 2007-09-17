@@ -6,6 +6,7 @@
 <% if @current_turnin.nil? %>
   <p>There is no current turnin set for this student.</p>
 <% else %>
+  <p><b>IO Tests</b></p>
   <ul>
   <% for check in @assignment.io_checks %>   
     <li><b><%= check.name %></b>:
@@ -17,5 +18,13 @@
     </li>
   <% end %>
   </ul>
+
+  <p><b>PMD Summary</b></p>
+  <ul> 
+  <% for item in @pmd_summary %>
+    <li><%= item %></li>
+  <% end %>
+  </ul>
+
 <% end %>
 </td>

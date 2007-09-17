@@ -236,7 +236,10 @@ Last Updated: <%= @display_turnin.updated_at.to_formatted_s(:friendly_date) %><b
     </div>
 
   	<div class="submit">
-	  <div id="button"><%= submit_tag "Submit Grade and Comments" %></div>
+	  <div id="button">
+	     <%= submit_tag "Save Grade" %>
+	     <%= submit_tag "Save Grade and Go to Next Student"%>
+	  </div>
 	</div>
   <%= end_form_tag %>
   </div>

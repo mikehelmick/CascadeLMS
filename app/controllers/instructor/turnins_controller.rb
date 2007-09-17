@@ -164,6 +164,15 @@ class Instructor::TurninsController < Instructor::InstructorBase
            @student_io_check[check.id] = student_check
          end
       end
+      
+      @pmd_summary = Array.new
+      @current_turnin.user_turnin_files.each do |tif|
+        tif.file_styles.each do |fs|
+          unless fs.suppressed
+            @pmd_summary << "#{tif.filename}:#{fs.begin_line} - #{fs.style_check.name}: <i>#{fs.style_check.description}</i>"
+          end
+        end
+      end
     
     end
     
@@ -430,7 +439,34 @@ class Instructor::TurninsController < Instructor::InstructorBase
     else
       flash[:badnotice] = "Error updating student grade - results not saved."
     end
-    redirect_to :action => 'view_student', :id => @student
+    
+    
+    student_id = @student.id
+    begin
+      unless params[:commit].index("Next Student").nil?
+        ## get all students from the class, advance to the one after @student
+        student_id = nil
+        next_student = false
+        @course.students.each do |student|
+          if next_student 
+            student_id = student.id
+            next_student = false
+          end
+          
+          if student.id == @student.id
+            next_student = true
+          end
+        end
+      end
+    rescue
+    end
+     
+    unless student_id.nil?
+      redirect_to :action => 'view_student', :id => student_id
+    else
+      flash[:notice] = "#{flash[:notice]}<br/>Grade for the last student on the roster was saved, nothing to advance to."
+      redirect_to :action => 'index', :id => nil
+    end
   end
   
   def download_all_files

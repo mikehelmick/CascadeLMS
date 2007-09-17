@@ -243,6 +243,16 @@ class Instructor::CourseAssignmentsController < Instructor::InstructorBase
       return unless assignment_uses_autograde( @course, @assignment )
       return unless assignment_uses_pmd( @course, @assignment )
       
+      
+      @assignments = Array.new
+      # load other assignments in the course
+      assignments = Assignment.find(:all, :conditions => ["course_id = ?", @course.id], :order => "open_date asc" )
+      assignments.each do |asgn|
+        if asgn.auto_grade && ! asgn.auto_grade_setting.nil? && (asgn.auto_grade_setting.student_style || asgn.auto_grade_setting.style)
+          @assignments << asgn unless asgn.id == @assignment.id
+        end
+      end
+      
       # this isn't fun - make sure that pmd setting are available
       if @assignment.assignment_pmd_settings.size == 0
         unless @assignment.ensure_style_defaults
@@ -252,6 +262,37 @@ class Instructor::CourseAssignmentsController < Instructor::InstructorBase
           flash[:notice] = "Initialized PMD settings to default values."
         end
       end
+  end
+  
+  def copy_pmd
+    return unless load_course( params[:course] )
+    return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_assignments' )
+    return unless course_open( @course, :action => 'index' )
+    @assignment = Assignment.find( @params['id'] )
+    return unless assignment_in_course( @course, @assignment )
+    return unless assignment_uses_autograde( @course, @assignment )
+    return unless assignment_uses_pmd( @course, @assignment )
+    
+    @copy_from = Assignment.find( @params['copy_from_id'])   
+    return unless assignment_in_course( @course, @copy_from )
+    return unless assignment_uses_autograde( @course, @copy_from )
+    return unless assignment_uses_pmd( @course, @copy_from )
+    
+    begin
+      pmds = @assignment.pmd_hash
+      
+      master = @copy_from.pmd_hash
+      master.each do |id,pmd|
+        pmds[id].enabled = pmd.enabled
+        raise "error saving" unless pmds[id].save
+      end
+      
+      flash[:notice] = "PMD settings have been copied."
+    rescue Exception => e
+      flash[:badnotice] = "There was an error updating the PMD setting for this assignment."
+    end
+    
+    redirect_to :action => 'pmd_settings', :course => @course, :id => @assignment
   end
   
   def save_pmd
