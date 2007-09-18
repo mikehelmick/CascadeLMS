@@ -34,6 +34,7 @@ class TurninsController < ApplicationController
     else
       ## first time in - create a new turnin set
       ut, utf = create_new_turnin_set
+      ut.position = 1
       ut.save
       ut.make_dir( @app['external_dir'], @team )
       ut.user_turnin_files << utf
@@ -212,14 +213,34 @@ class TurninsController < ApplicationController
     @current_turnin = @turnins[0] if @turnins.size > 0
     
     # create new turning set
-    ut, utf = create_new_turnin_set
+    ut = UserTurnin.new
+    ut.assignment = @assignment
+    ut.user = @user
+    ut.sealed = false
+    ut.finalized = false
+    ## if team - we need to add the team attribute
+    ut.project_team = @team unless @team.nil?   
+    
+    # create root directory entry
+    utf = UserTurninFile.new
+    utf.user_turnin = ut
+    utf.directory_entry = true
+    utf.directory_parent = 0
+    utf.filename = '/'
+    utf.user = @user
     
     UserTurnin.transaction do
       if @current_turnin.nil?
         # this is a new 
         ut.position=1
-      else
-        ut.position=@current_turnin.position+1
+      else 
+        begin
+          ut.position=@current_turnin.position+1
+        rescue
+          ## fix for some bad data that was injected into the database
+          @current_turnin.position = 1
+          ut.position = 2
+        end
         @current_turnin.sealed = true
         
         time = Time.now
