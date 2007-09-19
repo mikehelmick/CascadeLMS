@@ -32,13 +32,10 @@ class TurninsController < ApplicationController
       @directory = ""
       
     else
-      ## first time in - create a new turnin set
-      ut, utf = create_new_turnin_set
-      ut.position = 1
-      ut.save
-      ut.make_dir( @app['external_dir'], @team )
-      ut.user_turnin_files << utf
-      ut.save
+      
+      redirect_to :action => 'create_set'
+      return
+      
     end
   
     count_todays_turnins( @app["turnin_limit"].to_i )

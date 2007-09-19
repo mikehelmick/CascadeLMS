@@ -27,6 +27,9 @@ These instructions are meant to be followed in order, there is no quick install 
 
 Part 0 - Version History
 
+Version 0.8.17 (Paperweight) - 20080917
+ * Contains several bug fixes and minor enhancements since previous release
+
 Version 0.8.1 (Paperweight) - 20080815
  * First public release 
 
