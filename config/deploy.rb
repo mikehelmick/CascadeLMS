@@ -11,12 +11,10 @@
 # form the root of the application path.
 
 set :application, "cscourseware"
-#set :repository, "https://mikehelmick.com/svn/#{application}/trunk"
+set :repository, "https://svn.csi.muohio.edu/#{application}/trunk"
 set :svn_user, ""
 set :svn_password, ""
-set :repository,
-  Proc.new { "--username #{svn_user} --password #{svn_password} " +    
-             "https://mikehelmick.com/svn/cscourseware/trunk" }
+
 
 
 # =============================================================================

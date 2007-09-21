@@ -5,12 +5,12 @@
 <p><i>PMD</i> is a package for checking the style of Java code against community standards.   You can choose exactly which style checks are enabled and disabled for each assignment.</p>
 
 <% if @assignments.size > 0 %>
-  <%= start_form_tag( { :action => 'copy_pmd', :id => @assignment } ) %>
+  <%= form_tag( { :action => 'copy_pmd', :id => @assignment } ) do %>
     <p>Copy PMD settings from assignment: 
 	  <%= select_tag 'copy_from_id', options_from_collection_for_select(@assignments, "id", "title", @assignments.id ) %>
 	  <%= submit_tag 'Copy PMD Settings' %>
 	  </p>
-  <% end_form_tag %>
+  <%= end %>
 <% end %>
 
 
