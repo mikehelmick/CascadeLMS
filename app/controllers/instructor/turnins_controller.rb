@@ -724,11 +724,20 @@ class Instructor::TurninsController < Instructor::InstructorBase
     return unless turnin_for_assignment( @current_turnin, @assignment )   
     
     # turnins
+    @line_format = false 
+    @line_format = true if params[:format].to_i == 1 rescue @line_format = false
+    
     @student_io_check = Hash.new
+    @student_io_check_lines = Hash.new
     @assignment.io_checks.each do |check|
        student_check = IoCheckResult.find(:first, :conditions => ["io_check_id = ? && user_turnin_id = ?", check.id, @current_turnin.id ] )
        unless student_check.nil?
          @student_io_check[check.id] = student_check
+         
+         @student_io_check_lines[check.id] = Hash.new
+         @student_io_check_lines[check.id][:EXPECTED] = check.output.split("\n")
+         @student_io_check_lines[check.id][:STUDENT] = student_check.output.split("\n")
+         @student_io_check_lines[check.id][:DIFF] = student_check.diff_report.split("\n")
        end
     end
     

@@ -543,6 +543,20 @@ div.Right .col h2 {
 	border-left: 1px solid #D9D9D9;
 }
 
+.fancy .codeB {
+	font-family: "courier", verdana, sans-serif;
+	font-size: 9pt;
+	background: #A4B7C8;
+	border: 1px solid #FE6600;
+}
+
+.fancy .codeA {
+	font-family: "courier", verdana, sans-serif;
+	font-size: 9pt;
+	background: #EEEEEE;
+	border: 1px solid #84CA82;
+}
+
 /* message / announcements */
 
 .announcement {
@@ -844,13 +858,13 @@ a img {
 
 /** DIFF **/
 
+
 .diffReport {
-	max-width: 400px;
+	max-width: 500px;
 	background: #EEEEEE;
 	border: 1px solid #84CA82;
-	margin: 2px 2px 2px 2px;
 	font-family: "courier", verdana, sans-serif;
-	font-size: 10pt;
+	font-size: 9pt;
 }
 
 .diffReport2 {

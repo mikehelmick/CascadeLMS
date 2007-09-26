@@ -14,11 +14,30 @@
 <% end %>
 
 <div class="Section">
+	<table>
+	 <tr>
+	 <td width="50%">
 	<p><ul><b>Output diff key:</b>
 	 <li><span class="diffAdd">Extra text, not appearing in expected output.</span></li>
 	 <li><span class="diffSub">Text missing from the expected output.</span></li>
 	 <li><span class="diffChange">Text that is in the same position, but is different form expected output.</span></li>
     </ul></p>
+     </td>
+     <td width="50%">
+		<% if @line_format %>
+          <ul><b>Test Output Views:</b>
+		 <li><%= link_to 'Side-by-side Diff View', :action => 'view_io_tests', :course => @course, :assignment => @assignment, :student => @student %></li>
+		 <li><b>Line by line view</b></li>
+	      <ul>
+		<% else %>
+	      <ul><b>Test Output Views:</b>
+		 <li><b>Side-by-side Diff View</b></li>
+		 <li><%= link_to 'Line by line view', :action => 'view_io_tests', :course => @course, :assignment => @assignment, :format => 1, :student => @student %></li>
+	      <ul>
+		<% end %>
+	 </td>
+	 </tr>
+	</table>
 
 	<% if @display_turnin.safe_for_autograde? %>
 		<p><%= image_tag 'flag_green.png' %><%= link_to 'Re-run the I/O checks for this turn-in set.', :course => @course, :assignment => @assignment, :student => @student, :action => 'io_retest' %></p>
@@ -26,58 +45,10 @@
  	     <div class="errorExplanation">The AutoGrade I/O tests can not be run, one or more of the Java files contain unsafe statements.   You should manually review the code to determine if it is safe, and if not download the files, remove the unsafe statements and grade manually.</div>
     <% end %>
 
-    <table width="100%">
-    <% for check in @assignment.io_checks %>   
-
-		   <tr><th colspan="3"><%= image_tag 'map.png' %> I/O Check: '<%= check.name %>'</th></tr>
-          <tr>
-	         <th><b>Test Input</b></th>
-	         <th><b>Expected Output</b></th>
-	         <th><b>Diff Output</b> (<%= link_to_function( "toggle raw/diff", "Element.toggle('student_check_#{check.id}_diff');Element.toggle('student_check_#{check.id}_raw');" ) %>)
-		       
-		       <% unless @student_io_check[check.id].nil? %>
-		       :: Match Percentage <b><%= sprintf( "%.2f", @student_io_check[check.id].match_percent ) %>%</b>
-		 
-		         <% if 100 - @student_io_check[check.id].match_percent < check.tolerance %>
-		           <%= image_tag 'accept.png' %>Pass
-		         <% else %> 
-		           <%= image_tag 'cancel.png' %>Failure
-		         <% end %>
-		 
-		       <% end %>
-	
-		     </th>
-		   </tr>
-		
-		   <tr>
-			 <td class="diffReport" nowrap="nowrap" valign="top"><%= check.input.to_html %></td>
-	         <td class="diffReport" nowrap="nowrap" valign="top">
-			     <%= check.output.to_html %>
-			 </td>
-	         <td class="diffReport" colspan="1" nowrap="nowrap" valign="top">
-			  <div id="student_check_<%=check.id%>_diff">
-				 <% if @student_io_check[check.id].nil? %>
-				   <b><%= image_tag 'flag_red.png' %>No output found for this test.</b>
-				 <% else %>
-		  		    <%= @student_io_check[check.id].diff_report.non_span_space_convert %>
-				 <% end %>
-				
-				<div class="standout">Viewing Diff Output.</div>
-			  </div>
-			  <div id="student_check_<%=check.id%>_raw" style="display:none;">
-				 <% if @student_io_check[check.id].nil? %>
-				   <b><%= image_tag 'flag_red.png' %>No output found for this test.</b>
-				 <% else %>
-		  		    <%= @student_io_check[check.id].output.to_html %>
-				 <% end %>				
-				
-				<div class="standout">Viewing Raw Output.</div>
-			  </div>
-			 </td>
-		   </tr>
-		
-    <% end %>
-    </table>
-	
+    <% if @line_format %>
+	  <%= render :partial => 'line_io_view'%>
+	<% else %>
+	  <%= render :partial => 'default_io_view' %>
+	<% end %>
 	
 </div>

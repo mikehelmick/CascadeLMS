@@ -30,6 +30,27 @@ class Instructor::MonitorController < Instructor::InstructorBase
     render :layout => 'noright'
   end
   
+  def agclear
+    return unless load_course( params[:course] )
+    return unless ensure_course_instructor( @course, @user )
+    return unless ensure_admin
+      
+    @items = GradeQueue.find(:all, :conditions => ["failed = ?", true], :order => 'created_at asc' ) 
+    GradeQueue.transaction do
+      @items.each do |item| 
+        item.serviced = true
+        item.acknowledged = true
+        item.queued = true
+        item.failed = false
+        item.message = "This record has been manually marked a success."
+        item.save
+      end
+    end
+      
+    flash[:notice] = 'Cleared all failed AG entries.'
+    redirect_to :action => 'agfailed', :course => @course    
+  end
+  
   def reset_ag_item
     return unless load_course( params[:course] )
     return unless ensure_course_instructor( @course, @user )

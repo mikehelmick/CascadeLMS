@@ -497,8 +497,62 @@ class TurninsController < ApplicationController
     @now = Time.now
     set_title
     
-    
     render :layout => 'noright'
+  end
+  
+  ## Similar to feedback, but line by line difs
+  def feedback_line
+    return unless load_course( params[:course] )
+    return unless allowed_to_see_course( @course, @user )
+    
+    @assignment = Assignment.find(params[:assignment]) rescue @assignment = Assignment.new
+    return unless assignment_in_course( @assignment, @course )
+    return unless assignment_available( @assignment )
+    #return unless comments_released( @assignment )
+    
+    return unless load_team( @course, @assignment, @user )
+    load_turnins
+    @current_turnin = nil
+    @current_turnin = @turnins[0] if @turnins.size > 0
+    
+    if @current_turnin
+      @directories = Hash.new
+      @current_turnin.user_turnin_files.each do |utf|
+        @directories[utf.id] = utf if utf.directory_entry?
+      end
+    end
+    
+    if @assignment.released
+      @grade_item = GradeItem.find( :first, :conditions => ['assignment_id = ?', @assignment.id] )
+      if ( @grade_item )
+        @grade_entry = GradeEntry.find( :first, :conditions => ['grade_item_id = ? and user_id = ?', @grade_item.id, @user.id] )
+        @feedback_html = @grade_entry.comment.to_html rescue @feedback_html = ''
+      end
+    end
+    
+    if  @assignment.auto_grade_setting && (@assignment.auto_grade_setting.student_io_check || @assignment.released)
+      @student_io_check = Hash.new
+      
+      @student_io_check_lines = Hash.new
+      
+      @assignment.io_checks.each do |check|
+         student_check = IoCheckResult.find(:first, :conditions => ["io_check_id = ? && user_turnin_id = ?", check.id, @current_turnin.id ] )
+         unless student_check.nil?
+           @student_io_check[check.id] = student_check
+           
+           @student_io_check_lines[check.id] = Hash.new
+           @student_io_check_lines[check.id][:EXPECTED] = check.output.split("\n")
+           @student_io_check_lines[check.id][:STUDENT] = student_check.output.split("\n")
+           @student_io_check_lines[check.id][:DIFF] = student_check.diff_report.split("\n")
+           
+         end
+      end
+    end
+    
+    @now = Time.now
+    set_title
+    
+    render :layout => 'noright'   
   end
   
 private

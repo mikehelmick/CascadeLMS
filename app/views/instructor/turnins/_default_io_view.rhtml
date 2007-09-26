@@ -1,0 +1,52 @@
+<table width="100%">
+<% for check in @assignment.io_checks %>   
+
+	   <tr><th colspan="3"><%= image_tag 'map.png' %> I/O Check: '<%= check.name %>'</th></tr>
+      <tr>
+         <th><b>Test Input</b></th>
+         <th><b>Expected Output</b></th>
+         <th><b>Diff Output</b> (<%= link_to_function( "toggle raw/diff", "Element.toggle('student_check_#{check.id}_diff');Element.toggle('student_check_#{check.id}_raw');" ) %>)
+	       
+	       <% unless @student_io_check[check.id].nil? %>
+	       :: Match Percentage <b><%= sprintf( "%.2f", @student_io_check[check.id].match_percent ) %>%</b>
+	 
+	         <% if 100 - @student_io_check[check.id].match_percent < check.tolerance %>
+	           <%= image_tag 'accept.png' %>Pass
+	         <% else %> 
+	           <%= image_tag 'cancel.png' %>Failure
+	         <% end %>
+	 
+	       <% end %>
+
+	     </th>
+	   </tr>
+	
+	   <tr>
+		 <td class="diffReport" valign="top"><%= check.input.to_html %></td>
+         <td class="diffReport" valign="top">
+		     <%= check.output.to_html %>
+		 </td>
+         <td class="diffReport" valign="top">
+		  <div id="student_check_<%=check.id%>_diff">
+			 <% if @student_io_check[check.id].nil? %>
+			   <b><%= image_tag 'flag_red.png' %>No output found for this test.</b>
+			 <% else %>
+	  		    <%= @student_io_check[check.id].diff_report.non_span_space_convert %>
+			 <% end %>
+			
+			<div class="standout">Viewing Diff Output.</div>
+		  </div>
+		  <div id="student_check_<%=check.id%>_raw" style="display:none;">
+			 <% if @student_io_check[check.id].nil? %>
+			   <b><%= image_tag 'flag_red.png' %>No output found for this test.</b>
+			 <% else %>
+	  		    <%= @student_io_check[check.id].output.to_html %>
+			 <% end %>				
+			
+			<div class="standout">Viewing Raw Output.</div>
+		  </div>
+		 </td>
+	   </tr>
+	
+<% end %>
+</table>

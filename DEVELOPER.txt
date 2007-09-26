@@ -1,0 +1,122 @@
+**** Computer Science CourseWare Developer Instructions *****
+by Mike Helmick - mike.helmick@gmail.com
+
+           **** SOFTWARE LICENSE - MIT LICENSE ****
+# Copyright (c) 2006-2007 Mike Helmick - mike.helmick@muohio.edu
+# 
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+# 
+# The above copyright notice and this permission notice shall be included in
+# all copies or substantial portions of the Software.
+# 
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+# THE SOFTWARE.
+#
+
+These instructions are for setting up a developer workstation for CSCW.
+It is best to develop on Mac OS X or Linux (even if it is in a virtual machine, or if Cygwin is used).
+
+0) Install the Subversion client
+  http://subversion.tigris.org/
+
+1) Install Ruby, Gems, and Rails
+It is best to follow the instructions for your platform as described here -> http://rubyonrails.org/down
+
+2) Install OpenLDAP -> http://www.openldap.org/
+(For windows, it is easier to get a binary distro http://download.bergmans.us/openldap/openldap-2.2.29/)
+  
+3) Install MySql -> http://www.mysql.com
+
+4) Install the necessary Ruby Gems (add sudo before each command if on a unix(-like) platform )
+  sudo gem install daemons slave  
+  sudo gem install gem_plugin mongrel mongrel_cluster --include-dependencies
+  sudo gem install mysql
+  sudo gem install RedCloth
+  sudo gem install diff-lcs
+
+5) Patch rails - You must patch the Rails source by hand
+The comment on line 75 and the if statement on lines 76-78 to read
+
+# This is an uploaded file. 
+if value.respond_to?(:original_filename) && !value.original_filename.blank?
+
+This allows users with the Safari 3 browser to use the site
+
+6) Install the Ruby LDAP library 
+** OpenSSL and LDAP development libraries must be installed already
+
+cd ~/src
+curl -O http://easynews.dl.sourceforge.net/sourceforge/ruby-ldap/ruby-ldap-0.9.7.tar.gz
+tar -xzvf ruby-ldap-0.9.7.tar.gz
+cd ruby-ldap-0.9.7
+ruby extconf.rb
+make
+sudo make install
+
+7) Grab the source and begin to configure the application (This assumes a dev path of ~/src/cscw/ )
+
+mkdir -p ~/src/cscw
+cd ~/src/cscw
+mkdir storage
+svn co https://svn.csi.muohio.edu/cscourseware/trunk cscourseware
+
+8) Create mysql database and grant access to your user (fill in database username as appropriate)
+* also, you may want to omit the identified by... part so that your DB doesn't need a password
+
+mysqladmin -u root -p create cscourseware_dev
+mysql -u root -p
+grant all on cscourseware_production.* to DATABASEUSER@localhost identified by 'PASSWORD';
+
+9) Change the cscw database configuration
+
+cd ~/src/cscw/cscourseware/config
+cp database.yml.todo database.yml
+
+Edit the database.yml file and configure the development database appropriatley
+
+10) Load the database 
+
+cd ~/src/cscw/cscourseware/
+rake db:migrate
+
+11) Start the server
+
+cd ~/src/cscw/cscourseware/
+ruby script/server
+
+12) Configure the app
+
+Log in to CSCW using the 
+ username: admin
+ password: password
+
+Immeadiatly click on "admin admin" in the upper right hand corner to change your password and assign 
+a valid email address to the admin user
+
+Click on "Adminstration -> Settings"
+* This will let you configure display options, title, organization, email addresses, etc...
+******** Please configure an appropriate error reporting email address
+
+Also be sure to configure the appropriate location of your Java compiler and JVM, as
+well as the Ruby interpreter that can be called externally.
+
+There is also a configuration option for external storage - be sure to 
+configure this and make it a secure location, we suggest
+  /srv/www/rails/cscourseware/storage
+
+
+You can now create users and courses from the administration tab
+
+
+13) Please see the application's Web site - www.cscourseware.org
+   for information on submitting patches

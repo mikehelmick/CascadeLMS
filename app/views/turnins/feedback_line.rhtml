@@ -50,8 +50,8 @@
     </td>
     <td width="50%" valign="top">
 	   <ul><b>Test Output Views:</b>
-		 <li><b>Side-by-side Diff View</b></li>
-		 <li><%= link_to 'Line by line view', :action => 'feedback_line', :course => @course, :assignment => @assignment %></li>
+		 <li><%= link_to 'Side-by-side Diff View', :action => 'feedback', :course => @course, :assignment => @assignment %></li>
+		 <li><b>Line by line view</b></li>
 	   <ul>
 	 </td>
 	 </tr>
@@ -59,72 +59,45 @@
 	
    <% if @assignment.auto_grade && !@assignment.auto_grade_setting.nil? && (@assignment.auto_grade_setting.student_io_check || @assignment.released) %>
      
-     <% io_count = 0  %>
-     <table width="100%">
-     <% for check in @assignment.io_checks %>     
-       <% if check.student_level || @assignment.released %>
-         <% show_input = check.show_input && @assignment.released 
-            span = 2
-            span += 1 if show_input
-          %>
-
-		 
-		   <tr><th colspan="<%=span%>"><%= image_tag 'map.png' %> I/O Check: '<%= check.name %>'</th></tr>
-           <tr>
-	         <% if show_input %>
-	           <th><b>Test Input</b></th>
-	         <% else %>	        
-	           <th><b>Expected Output</b></th>
-	         <% end %>
-	         <th><B>Your Output</b>
-		       <% unless @student_io_check[check.id].nil? %>
-		       :: Match Percentage <b><%= sprintf( "%.2f", @student_io_check[check.id].match_percent ) %>%</b>
-		 
-		         <% if 100 - @student_io_check[check.id].match_percent < check.tolerance %>
-		           <%= image_tag 'accept.png' %>Pass
-		         <% else %> 
-		           <%= image_tag 'cancel.png' %>Failure
-		         <% end %>
-		 
-		         (<%= link_to_function( "toggle raw/diff", "Element.toggle('student_check_#{check.id}_diff');Element.toggle('student_check_#{check.id}_raw');" ) %>)
+     <% io_count = 0 
+        count = 0 %>
+     <% for check in @assignment.io_checks %>         
+	   <table width="100%" class="fancy">
+	     <tr>
+		   <th>Output Line</td>
+		   <th colspan="2" align="center" valign="top"><%= image_tag 'map.png' %> I/O Check: '<%= check.name %>' 
+			  <% unless @student_io_check[check.id].nil? %>
+		       :: Match Percentage <b><%= sprintf( "%.2f", @student_io_check[check.id].match_percent ) %>
+			  <% end %>
+			</th>
+		 </tr>
 		
-		       <% end %>
-		     </th>
-		   </tr>
-		
-		   <tr>
-			 <% if show_input %>
-	           <td class="diffReport" valign="top"><%= check.input.to_html %></td>
-	         <% else %>
-			   <td class="diffReport" valign="top">
-			       <%= check.output.to_html %>
-			   </td>
-	         <% end %>
-	         <td class="diffReport<%= '2' if show_input %>" colspan="1" valign="top">
-			  <div id="student_check_<%=check.id%>_diff">
-				 <% if @student_io_check[check.id].nil? %>
-				   <b><%= image_tag 'flag_red.png' %>No output found for this test.</b>
-				 <% else %>
-		  		    <%= @student_io_check[check.id].diff_report.non_span_space_convert %>
-				 <% end %>
-				
-				<div class="standout">Viewing Diff Output.</div>
-			  </div>
-			  <div id="student_check_<%=check.id%>_raw" style="display:none;">
-				 <% if @student_io_check[check.id].nil? %>
-				   <b><%= image_tag 'flag_red.png' %>No output found for this test.</b>
-				 <% else %>
-		  		    <%= @student_io_check[check.id].output.to_html %>
-				 <% end %>				
-				
-				<div class="standout">Viewing Raw Output.</div>
-			  </div>
+		 <% max = @student_io_check_lines[check.id][:EXPECTED].size
+		    max = @student_io_check_lines[check.id][:STUDENT].size if @student_io_check_lines[check.id][:STUDENT].size > max
+		    count = 0
+		  %>
+		 <% 0.upto(max-1) do |i| %>
+           <% count = count.next 
+	          odd = "odd"
+	          odd = "even" if count.even? %>
+           <tr class="<%=odd%> hover">
+	         <td width="5%" nowrap="nowrap" rowspan="2" align="center" valign="middle" class="code"><%= i + 1 %></td>
+	         <td width="5%" nowrap="nowrap" >EXPECTED OUTPUT</td>
+	         <td class="codeB"><%= @student_io_check_lines[check.id][:EXPECTED][i] unless @student_io_check_lines[check.id][:EXPECTED][i].nil? %></td>
+	       </tr>
+	       <tr class="<%=odd%> hover"><td width="5%" nowrap="nowrap">YOUR OUTPUT<br/>DIFFERENCES</td>
+	         <td class="codeA">
+			  <% unless @student_io_check[check.id].nil? %>
+            	<%= @student_io_check_lines[check.id][:STUDENT][i] unless @student_io_check_lines[check.id][:STUDENT][i].nil? %> <br/>
+                <%= @student_io_check_lines[check.id][:DIFF][i] unless @student_io_check_lines[check.id][:DIFF][i].nil? %>
+              <% end %>
              </td>
-		   </tr>
-		
-       <% end %>
+	       </tr>
+	     <% end %>
+       </table>
+
+		<p>&nbsp;<br/></p>
      <% end %>
-     </table>
    <% else %>
      <p><%= image_tag 'flag_yellow.png' %><i>Automatic grading by way of output verification is enabled for this assignment, but the results are hidden until the grades and instructor comments are released.</i></p>
    <% end %>  
