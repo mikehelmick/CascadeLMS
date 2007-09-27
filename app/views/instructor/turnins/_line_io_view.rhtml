@@ -20,14 +20,18 @@
          odd = "odd"
          odd = "even" if count.even? %>
       <tr class="<%=odd%> hover">
-        <td width="5%" nowrap="nowrap" rowspan="2" align="center" valign="middle" class="code"><%= i + 1 %></td>
-        <td width="5%" nowrap="nowrap" >EXPECTED OUTPUT</td>
+        <td width="5%" nowrap="nowrap" rowspan="3" align="center" valign="middle" class="code"><%= i + 1 %></td>
+        <td width="5%" nowrap="nowrap"  align="right">EXPECTED OUTPUT:</td>
         <td class="codeB"><%= @student_io_check_lines[check.id][:EXPECTED][i] unless @student_io_check_lines[check.id][:EXPECTED][i].nil? %></td>
       </tr>
-      <tr class="<%=odd%> hover"><td width="5%" nowrap="nowrap">YOUR OUTPUT<br/>DIFFERENCES</td>
+      <tr class="<%=odd%> hover"><td width="5%" nowrap="nowrap" align="right">YOUR OUTPUT:</td>
         <td class="codeA">
 		  <% unless @student_io_check[check.id].nil? %>
-       	<%= @student_io_check_lines[check.id][:STUDENT][i] unless @student_io_check_lines[check.id][:STUDENT][i].nil? %> <br/>
+       	<%= @student_io_check_lines[check.id][:STUDENT][i] unless @student_io_check_lines[check.id][:STUDENT][i].nil? %> 
+		</td>
+	  </tr>
+	  <tr class="<%=odd%> hover"><td width="5%" nowrap="nowrap" align="right">DIFFERENCES:</td>
+        <td class="codeC">
            <%= @student_io_check_lines[check.id][:DIFF][i] unless @student_io_check_lines[check.id][:DIFF][i].nil? %>
          <% end %>
         </td>
