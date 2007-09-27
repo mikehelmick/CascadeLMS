@@ -557,6 +557,13 @@ div.Right .col h2 {
 	border: 1px solid #84CA82;
 }
 
+.fancy .codeC {
+	font-family: "courier", verdana, sans-serif;
+	font-size: 9pt;
+	background: #A4B7C8;
+	border: 1px solid #EE2022;
+}
+
 /* message / announcements */
 
 .announcement {

@@ -68,6 +68,13 @@
 		   <th colspan="2" align="center" valign="top"><%= image_tag 'map.png' %> I/O Check: '<%= check.name %>' 
 			  <% unless @student_io_check[check.id].nil? %>
 		       :: Match Percentage <b><%= sprintf( "%.2f", @student_io_check[check.id].match_percent ) %>
+				<% if 100 - @student_io_check[check.id].match_percent < check.tolerance %>
+		           <%= image_tag 'accept.png' %>Pass
+		         <% else %> 
+		           <%= image_tag 'cancel.png' %>Failure
+		         <% end %>
+			
+			
 			  <% end %>
 			</th>
 		 </tr>
@@ -81,18 +88,24 @@
 	          odd = "odd"
 	          odd = "even" if count.even? %>
            <tr class="<%=odd%> hover">
-	         <td width="5%" nowrap="nowrap" rowspan="2" align="center" valign="middle" class="code"><%= i + 1 %></td>
+	         <td width="5%" nowrap="nowrap" rowspan="3" align="center" valign="middle" class="code"><%= i + 1 %></td>
 	         <td width="5%" nowrap="nowrap" >EXPECTED OUTPUT</td>
 	         <td class="codeB"><%= @student_io_check_lines[check.id][:EXPECTED][i] unless @student_io_check_lines[check.id][:EXPECTED][i].nil? %></td>
 	       </tr>
-	       <tr class="<%=odd%> hover"><td width="5%" nowrap="nowrap">YOUR OUTPUT<br/>DIFFERENCES</td>
+	       <tr class="<%=odd%> hover"><td width="5%" nowrap="nowrap">YOUR OUTPUT</td>
 	         <td class="codeA">
 			  <% unless @student_io_check[check.id].nil? %>
-            	<%= @student_io_check_lines[check.id][:STUDENT][i] unless @student_io_check_lines[check.id][:STUDENT][i].nil? %> <br/>
-                <%= @student_io_check_lines[check.id][:DIFF][i] unless @student_io_check_lines[check.id][:DIFF][i].nil? %>
+            	<%= @student_io_check_lines[check.id][:STUDENT][i] unless @student_io_check_lines[check.id][:STUDENT][i].nil? %> 
               <% end %>
              </td>
 	       </tr>
+	       <tr class="<%=odd%> hover"><td width="5%" nowrap="nowrap">DIFFERENCES:</td>
+		     <td class="codeC">
+			    <% unless @student_io_check[check.id].nil? %>
+	              <%= @student_io_check_lines[check.id][:DIFF][i] unless @student_io_check_lines[check.id][:DIFF][i].nil? %>
+	            <% end %>
+			 </td>
+		   </tr>
 	     <% end %>
        </table>
 
