@@ -2,7 +2,7 @@
 # migrations feature of ActiveRecord to incrementally modify your database, and
 # then regenerate this schema definition.
 
-ActiveRecord::Schema.define(:version => 78) do
+ActiveRecord::Schema.define(:version => 79) do
 
   create_table "announcements", :force => true do |t|
     t.column "headline",  :string
@@ -304,6 +304,8 @@ ActiveRecord::Schema.define(:version => 78) do
     t.column "match_percent",  :float,    :default => 0.0, :null => false
     t.column "created_at",     :datetime,                  :null => false
   end
+
+  add_index "io_check_results", ["io_check_id", "user_turnin_id"], :name => "index_io_check_results_on_io_check_id_and_user_turnin_id", :unique => true
 
   create_table "io_checks", :force => true do |t|
     t.column "name",            :string,  :default => "",    :null => false
