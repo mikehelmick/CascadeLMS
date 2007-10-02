@@ -3,9 +3,11 @@ require_dependency 'path_tracker'
 class Admin::RailStatController < ApplicationController
   include PathTracker
   
-  before_filter :ensure_logged_in, :ensure_admin, :extract_subdomain
+  before_filter :ensure_logged_in, :except => :track 
+  before_filter :ensure_admin, :except => :track
+  before_filter :extract_subdomain
 
-   layout 'rail_stat'
+  layout 'rail_stat'
 
   def index
     redirect_to(:action=>'path')
