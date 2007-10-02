@@ -6,21 +6,21 @@ module PathTracker
 
   def track_path
     begin
-      referer = @params['referer'] # env['HTTP_REFERER']
-      req_uri = @params['doc'] # env['REQUEST_URI']
+      referer = params['referer'] # env['HTTP_REFERER']
+      req_uri = params['doc'] # env['REQUEST_URI']
       
-      req_uri = @request.env['HTTP_REFERER'] if req_uri.nil?
+      req_uri = request.env['HTTP_REFERER'] if req_uri.nil?
       
       req_uri = get_doc_url(req_uri)
       
-      size = @params['size']
-      colors = @params['colors']
-      java = @params['java']
-      je = @params['je']
-      flash = @params['flash']
+      size = params['size']
+      colors = params['colors']
+      java = params['java']
+      je = params['je']
+      flash = params['flash']
               
-      env = @request.env.nil? ? {'HTTP_USER_AGENT' => nil, 'HTTP_REFERER' => nil,
-        'REMOTE_ADDR' => nil, 'HTTP_ACCEPT_LANGUAGE' => nil, 'REQUEST_URI' => nil} : @request.env
+      env = request.env.nil? ? {'HTTP_USER_AGENT' => nil, 'HTTP_REFERER' => nil,
+        'REMOTE_ADDR' => nil, 'HTTP_ACCEPT_LANGUAGE' => nil, 'REQUEST_URI' => nil} : request.env
       br = parse_user_agent(env['HTTP_USER_AGENT'])
       subdomain = detect_subdomain
       domain = get_urls_host(referer)
@@ -321,7 +321,7 @@ module PathTracker
   def detect_subdomain
     subd = ''
     begin
-      subd = ((@request.subdomains and @request.subdomains.first) ? @request.subdomains.first : nil)
+      subd = ((request.subdomains and request.subdomains.first) ? request.subdomains.first : nil)
     rescue Exception => e
       logger.error("Error on subdomain parse #{e.backtrace.join('\n')}" )
     end

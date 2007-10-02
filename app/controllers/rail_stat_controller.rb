@@ -1,10 +1,10 @@
 require_dependency 'path_tracker'
 
-class Admin::RailStatController < ApplicationController
+class RailStatController < ApplicationController
   include PathTracker
   
-  before_filter :ensure_logged_in, :except => :track 
-  before_filter :ensure_admin, :except => :track
+  before_filter :ensure_logged_in, :except => { :track, :tracker_js }
+  before_filter :ensure_admin, :except => { :track, :tracker_js }
   before_filter :extract_subdomain
 
   layout 'rail_stat'
@@ -16,8 +16,8 @@ class Admin::RailStatController < ApplicationController
   def path
     @ordered_resources, @orarr = RailStat.get_ordered40resources(@subdomain)
 
-    @number_hits = (@params['nh'] or not @params['nh'].nil?) ? @params['nh'].to_i : 50
-    @include_search_engines = ((@params['ise'] == '' or @params['ise'] == "1") ? 1 : 0)
+    @number_hits = (params['nh'] or not params['nh'].nil?) ? params['nh'].to_i : 50
+    @include_search_engines = ((params['ise'] == '' or params['ise'] == "1") ? 1 : 0)
 
     @count_totals = RailStat.resource_count_totals    
     @paths = RailStat.find_all_by_flag(@include_search_engines == 0, @number_hits, @subdomain)
@@ -78,7 +78,7 @@ class Admin::RailStatController < ApplicationController
   end
 
   def tracker_js
-    if @request.env['HTTP_REFERER'] and @request.env['HTTP_REFERER'].include?(request.host)
+    if request.env['HTTP_REFERER'] and request.env['HTTP_REFERER'].include?(request.host)
     str = <<-JSDATA
     c=0;
     s=0;
@@ -111,19 +111,19 @@ class Admin::RailStatController < ApplicationController
   
   def track
     track_path
-    @response.headers['Pragma'] = ' '
-    @response.headers['Cache-Control'] = ' '
-    @response.headers['Content-Length'] = 68
-    @response.headers['Accept-Ranges'] = 'bytes'
-    @response.headers['Content-type'] = 'image/gif'
-    @response.headers['Content-Disposition'] = 'inline'
+    response.headers['Pragma'] = ' '
+    response.headers['Cache-Control'] = ' '
+    response.headers['Content-Length'] = 68
+    response.headers['Accept-Ranges'] = 'bytes'
+    response.headers['Content-type'] = 'image/gif'
+    response.headers['Content-Disposition'] = 'inline'
     File.open("#{RAILS_ROOT}/public/images/railstat/1pxtr.gif", 'rb') { |file| render :text => file.read }
   end
 
 
   private
   def extract_subdomain
-    @subdomain = ((@request.subdomains and @request.subdomains.first) ? @request.subdomains.first : nil)
+    @subdomain = ((request.subdomains and request.subdomains.first) ? request.subdomains.first : nil)
   end
 
 end
