@@ -1,0 +1,39 @@
+<h1> Statistic on web hits for <%= @subdomain %> </h1>
+<%=render_partial 'menu'%>
+
+
+<h2>Hits Summary</h2>
+<div id="path_stats_hs">
+  <table class="list">
+    <tr>
+      <th>Time Period</th>
+      <th>Total Hits</th>
+      <th>Unique Hits</th>
+    </tr>
+    <tr class='<%= alternator %>'>
+      <td>Today</td>
+      <td><%= @today_total %></td>
+      <td><%= @today_unique %></td>
+    </tr>
+    <tr class='<%= alternator %>'>
+      <td>Past 7 Days</td>
+      <td><%= @past_7_total %></td>
+      <td><%= @past_7_unique %></td>
+    </tr>
+    <% for day in @lastweek -%>
+    <tr class='<%= alternator %>'>
+          <td>&nbsp;&nbsp;<%=day['created_on']%></td>
+          <td><%=day['total_hits']%></td>
+          <td><%=day['unique_hits']%></td>
+    </tr>
+    <% end -%>
+    <tr class='<%= alternator %>'>
+      <td>Since <%= @first_hit.datetime %></td>
+      <td><%= @total_hits %></td>
+      <td><%= @unique_hits %></td>
+    </tr>
+    
+  </table>
+</div>
+</div>
+</div>

@@ -2,7 +2,7 @@
 # migrations feature of ActiveRecord to incrementally modify your database, and
 # then regenerate this schema definition.
 
-ActiveRecord::Schema.define(:version => 79) do
+ActiveRecord::Schema.define(:version => 80) do
 
   create_table "announcements", :force => true do |t|
     t.column "headline",  :string
@@ -322,6 +322,16 @@ ActiveRecord::Schema.define(:version => 79) do
   add_index "io_checks", ["name", "assignment_id"], :name => "io_checks_name_by_assignment", :unique => true
   add_index "io_checks", ["assignment_id"], :name => "io_checks_assignment_id_index"
 
+  create_table "iptocs", :force => true do |t|
+    t.column "ip_from",       :integer, :default => 0,  :null => false
+    t.column "ip_to",         :integer, :default => 0,  :null => false
+    t.column "country_code2", :string,  :default => "", :null => false
+    t.column "country_code3", :string,  :default => "", :null => false
+    t.column "country_name",  :string,  :default => "", :null => false
+  end
+
+  add_index "iptocs", ["ip_from", "ip_to"], :name => "index_iptocs_on_ip_from_and_ip_to", :unique => true
+
   create_table "journal_entry_stop_reasons", :id => false, :force => true do |t|
     t.column "journal_id",             :integer
     t.column "journal_stop_reason_id", :integer
@@ -407,6 +417,38 @@ ActiveRecord::Schema.define(:version => 79) do
   end
 
   add_index "quizzes", ["assignment_id"], :name => "index_quizzes_on_assignment_id", :unique => true
+
+  create_table "rail_stats", :force => true do |t|
+    t.column "remote_ip",    :string
+    t.column "country",      :string
+    t.column "language",     :string
+    t.column "domain",       :string
+    t.column "subdomain",    :string
+    t.column "referer",      :string
+    t.column "resource",     :string
+    t.column "user_agent",   :string
+    t.column "platform",     :string
+    t.column "browser",      :string
+    t.column "version",      :string
+    t.column "created_at",   :datetime
+    t.column "created_on",   :date
+    t.column "screen_size",  :string
+    t.column "colors",       :string
+    t.column "java",         :string
+    t.column "java_enabled", :string
+    t.column "flash",        :string
+  end
+
+  add_index "rail_stats", ["subdomain"], :name => "index_rail_stats_on_subdomain"
+
+  create_table "search_terms", :force => true do |t|
+    t.column "subdomain",   :string,  :default => ""
+    t.column "searchterms", :string,  :default => "", :null => false
+    t.column "count",       :integer, :default => 0,  :null => false
+    t.column "domain",      :string
+  end
+
+  add_index "search_terms", ["subdomain"], :name => "index_search_terms_on_subdomain"
 
   create_table "sessions", :force => true do |t|
     t.column "session_id", :string

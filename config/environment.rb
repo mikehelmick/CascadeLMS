@@ -64,4 +64,6 @@ my_formats = {
   :friendly_time => '%I:%M:%S %p %Z'
 }
 
+SITE_NAME = 'my.csi.muohio.edu'
+
 ActiveSupport::CoreExtensions::Time::Conversions::DATE_FORMATS.merge!(my_formats)

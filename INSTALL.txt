@@ -170,6 +170,10 @@ Install Diff-LCS - for running diff reports
 
 sudo gem install diff-lcs
 
+Install railstat - Statistics on running application
+
+sudo gem install rail_stat_generator
+
 Patch Rails - You must patch the Rails source by hand
 
 The comment on line 75 and the if statement on lines 76-78 to read

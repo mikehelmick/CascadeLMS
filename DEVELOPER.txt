@@ -43,6 +43,7 @@ It is best to follow the instructions for your platform as described here -> htt
   sudo gem install mysql
   sudo gem install RedCloth
   sudo gem install diff-lcs
+  sudo gem install rail_stat_generator
 
 5) Patch rails - You must patch the Rails source by hand
 The comment on line 75 and the if statement on lines 76-78 to read

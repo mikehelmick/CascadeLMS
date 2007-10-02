@@ -1,0 +1,54 @@
+table.list {
+  width:      98%;
+  border: #E6E6E6 solid 0.5px;
+  margin: 1px;
+  text-align: left;
+  font-family: Verdana, Arial, Helvetica, sans-serif;
+  font-size: 12px;
+}
+
+table.list a, table.list a:link, table.list a:active, table.list a:visited {
+  color: #e70;
+  text-decoration: none;
+  font-family: Verdana, Arial, Helvetica, sans-serif;
+}
+
+table.list a:hover { color: #000000; }
+
+table.list td#alphaListHeader a, table.list td#alphaListHeader a:link, table.list td#alphaListHeader a:active, table.list td#alphaListHeader a:visited {
+  font-size:14px;
+  color:#F2820A;
+  font-weight:bold;
+}
+
+table.list td#alphaListHeader a:hover {
+  font-size:14px;
+  background-color:#000000;
+  color:#F2820A;
+  font-weight:bold;
+}
+
+table.list td { margin: 0; padding: 0 0 0 5px; }
+
+table.list th {
+  background-color: #E6E6E6;
+  font-family: Verdana, Arial, Helvetica, sans-serif;
+  font-size: 12px;
+  font-weight: bold;
+  color: #e70;
+  text-align: left;  
+  padding-left: 1em;
+}
+
+table.list tr.even { background-color: #fcfcfc; }
+table.list tr.odd{ background-color: #f7f7f7 }
+table.list tr:hover { background: #eed !important; }
+table.list a img { border: 0; }
+
+#path_stats img { border: 0; }
+#pathslegend img { border: 0; }
+#path_stats table.list tr td { font-size: 10px; }
+#path_stats table.list th  { font-size: 10px; }
+
+.cutField { width: 100%; overflow: hidden; }
+

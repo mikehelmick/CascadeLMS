@@ -1,0 +1,37 @@
+<h1>Language and countries statistics for <%= @subdomain %> </h1>
+<%=render_partial 'menu'%>
+<h2>Languages</h2>
+<div id="path_stats_lang">
+  <table class="list">
+    <tr>
+      <th>Language</th>
+      <th>Percentage</th>
+      <th>Hit Count</th>
+    </tr>
+<% for language in @languages %>
+    <tr class='<%= alternator %>'>
+      <td><%= get_lang(language.language) %></td>
+      <td><%= sprintf("%000.2f", (language.total.to_f/@total_hits)*100) %>%</td>
+      <td><%= language.total %></td>
+    </tr>
+<% end %>
+  </table>
+</div>
+
+<h2>Countries</h2>
+<div id="path_stats_country">
+  <table class="list">
+    <tr>
+      <th>Country</th>
+      <th>Percentage</th>
+      <th>Hit Count</th>
+    </tr>
+<% for country in @countries %>
+    <tr class="<%= alternator %>">
+      <td><%= country.country %></td>
+      <td><%= sprintf("%000.2f", (language.total.to_f/@total_hits)*100) %>%</td>
+      <td><%= country.total %></td>
+    </tr>
+<% end %>
+  </table>
+</div>
