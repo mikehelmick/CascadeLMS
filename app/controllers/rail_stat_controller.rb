@@ -2,18 +2,22 @@ require_dependency 'path_tracker'
 
 class RailStatController < ApplicationController
   include PathTracker
-  
-  before_filter :ensure_logged_in, :except => { :track, :tracker_js }
-  before_filter :ensure_admin, :except => { :track, :tracker_js }
+
   before_filter :extract_subdomain
 
   layout 'rail_stat'
 
   def index
+    return unless ensure_logged_in
+    return unless ensure_admin
+    
     redirect_to(:action=>'path')
   end
 
   def path
+    return unless ensure_logged_in
+    return unless ensure_admin
+    
     @ordered_resources, @orarr = RailStat.get_ordered40resources(@subdomain)
 
     @number_hits = (params['nh'] or not params['nh'].nil?) ? params['nh'].to_i : 50
@@ -28,6 +32,9 @@ class RailStatController < ApplicationController
   end
   
   def hits
+    return unless ensure_logged_in
+    return unless ensure_admin
+    
     @lastweek = RailStat.find_by_days(:subdomain=>@subdomain, :days => 7)
     @first_hit = RailStat.find_first_hit(:subdomain=>@subdomain)
     @total_hits = RailStat.count_hits(:subdomain => @subdomain)
@@ -41,23 +48,35 @@ class RailStatController < ApplicationController
   end
   
   def platform
+    return unless ensure_logged_in
+    return unless ensure_admin
+    
     @total_hits = RailStat.count_hits(:subdomain => @subdomain)
     @platforms = RailStat.find_by_platform(:subdomain => @subdomain)
     @browsers = RailStat.find_by_browser(:subdomain => @subdomain)
   end
   
   def lang
+    return unless ensure_logged_in
+    return unless ensure_admin
+    
     @total_hits = RailStat.count_hits(:subdomain => @subdomain)
     @languages = RailStat.find_by_language(:subdomain => @subdomain)
     @countries = RailStat.find_by_country(:subdomain => @subdomain)    
   end
   
   def refs
+    return unless ensure_logged_in
+    return unless ensure_admin
+    
     @refs = RailStat.find_by_domain(:subdomain => @subdomain)
     @searchterms = SearchTerm.find_grouped(:subdomain => @subdomain)
   end
   
   def other
+    return unless ensure_logged_in
+    return unless ensure_admin
+    
     #hits = RailStat.count_hits(:subdomain => @subdomain)
     #@total_hits = RailStat.count_hits()
     
