@@ -10,11 +10,11 @@ class DiffCount
     0.upto( key_arr.size - 1 ) do |i|
       (i+1).upto( key_arr.size - 1 ) do |j|
       
-        puts "#{diff_cmd} #{files[key_arr[i]]} #{files[key_arr[j]]} | #{wc_cmd} -l"
+        #puts "#{diff_cmd} #{files[key_arr[i]]} #{files[key_arr[j]]} | #{wc_cmd} -l"
       
         lines = `#{diff_cmd} #{files[key_arr[i]]} #{files[key_arr[j]]} | #{wc_cmd} -l`
       
-        puts "------\n#{lines}\n-----"
+        #puts "------\n#{lines}\n-----"
       
         begin
           if ( lines.to_i <= diff_count )
