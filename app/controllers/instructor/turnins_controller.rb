@@ -1,5 +1,6 @@
 require 'SimpleProgramRunner'
 require 'FileManager'
+require 'DiffCount'
 
 class Instructor::TurninsController < Instructor::InstructorBase
   
@@ -67,6 +68,14 @@ class Instructor::TurninsController < Instructor::InstructorBase
       members = TeamMember.find(:all, :conditions => ["course_id = ?", @course.id] )
       members.each { |tm| @team_members[tm.user_id] = @teams[tm.project_team_id] }
         
+    end
+    
+    ## If programming
+    if @assignment.programming
+      ## load the text file types for diff
+      @textfiles = FileManager.text_extension_map.sort
+      @diffsize = diff_arr
+      @count = 25
     end
     
     @title = "Turnins for #{@assignment.title}"
@@ -938,11 +947,170 @@ class Instructor::TurninsController < Instructor::InstructorBase
     render :layout => 'noright'
   end
   
+  def diff_count
+    return unless load_course( params[:course] )
+    return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_grade_individual', 'ta_view_student_files', 'ta_grade_individual' )
+    @assignment = Assignment.find( params[:assignment] )
+    return unless assignment_in_course( @course, @assignment )
     
+    if params['extension'].nil?
+      flash[:notice] = "No extension selected".
+      redirect_to :action => 'index', :course => @course, :assignment => @assignment, :id => nil
+    end
+    
+    # load the students
+    @students = @course.students
+    
+    @apply_to_team = false
+    if @assignment.team_project
+      @apply_to_team = true unless @team.nil?
+      @teams = @course.project_teams
+    end
+    
+    @files_to_check = Hash.new
+    
+    if @apply_to_team
+      ### get files for each team
+      @teams.each do |team|
+        turnin = UserTurnin.find(:first, :conditions => ["project_team_id=? and assignment_id=?", team.id, @assignment.id ], :order => "position DESC" )
+        unless turnin.nil?
+          directories = Hash.new
+          turnin.user_turnin_files.each do |utf|
+            directories[utf.id] = utf if utf.directory_entry?
+          end
+          directory = turnin.get_team_dir( @app['external_dir'], team ) 
+          
+          turnin.user_turnin_files.each do |file|
+            if file.extension.downcase.eql?( params['extension'].downcase )
+              @files_to_check[file.id] = "#{directory}#{file.full_filename( directories )}"
+            end
+          end
+        end
+     
+      end
+      
+    else
+      ### get files for each student
+      @students.each do |student|
+        turnin = UserTurnin.find(:first, :conditions => ["user_id=? and assignment_id=?", student.id, @assignment.id ], :order => "position DESC" )
+        unless turnin.nil?
+          directories = Hash.new
+          turnin.user_turnin_files.each do |utf|
+            directories[utf.id] = utf if utf.directory_entry?
+          end
+          directory = turnin.get_dir( @app['external_dir'] ) 
+          
+          turnin.user_turnin_files.each do |file|
+            unless file.extension.nil?
+              if file.extension.downcase.eql?( params['extension'].downcase )
+                @files_to_check[file.id] = "#{directory}#{file.full_filename( directories )}"
+              end
+            end
+          end
+        end
+  
+      end
+      
+    end
+    
+    ## for display
+    @textfiles = FileManager.text_extension_map.sort
+    @diffsize = diff_arr
+    
+    @count = params['diffcount'].to_i rescue count = 10
+    @differences = DiffCount.assignment_diff( @app['diff_command'], @app['wc_command'], @files_to_check, @count )
+
+
+  end
+  
+  def sidebyside
+    return unless load_course( params[:course] )
+    return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_grade_individual', 'ta_view_student_files', 'ta_grade_individual' )
+    @assignment = Assignment.find( params[:assignment] )
+    return unless assignment_in_course( @course, @assignment )
+    
+    @utf1 = UserTurninFile.find( params['file1'].to_i ) rescue utf1 = nil
+    @utf2 = UserTurninFile.find( params['file2'].to_i ) rescue utf2 = nil
+    
+    if @utf1.nil? || @utf2.nil? || @utf1.user_turnin.assignment_id != @assignment.id || @utf2.user_turnin.assignment_id != @assignment.id
+      flash[:notice] = "Invalid files requested"
+      redirect_to :action => 'index', :course => @course, :assignment => @assignment, :id => nil
+      return
+    end
+    
+    
+    @turnin1 = @utf1.user_turnin
+    @turnin2 = @utf2.user_turnin
+    
+    if @assignment.team_project
+      ## load the directories
+      @directories1 = Hash.new
+      @turnin1.user_turnin_files.each do |utf|
+        @directories1[utf.id] = utf if utf.directory_entry?
+      end
+      @directory1 = turnin.get_team_dir( @app['external_dir'], @turnin1.team )
+ 
+      @directories2 = Hash.new
+      @turnin2.user_turnin_files.each do |utf|
+        @directories2[utf.id] = utf if utf.directory_entry?
+      end
+      @directory2 = turnin.get_team_dir( @app['external_dir'], @turnin2.team )
+    
+    else
+      ## load the directories
+      @directories1 = Hash.new
+      @turnin1.user_turnin_files.each do |utf|
+        @directories1[utf.id] = utf if utf.directory_entry?
+      end
+      @directory1 = @turnin1.get_dir( @app['external_dir'] )
+      
+      @directories2 = Hash.new
+      @turnin2.user_turnin_files.each do |utf|
+        @directories2[utf.id] = utf if utf.directory_entry?
+      end
+      @directory2 = @turnin2.get_dir( @app['external_dir'] )
+    end
+    
+    ## now we can grab the files
+    filename1 = "#{@directory1}#{@utf1.full_filename( @directories1 )}"
+    filename2 = "#{@directory2}#{@utf2.full_filename( @directories2 )}"
+    
+   
+    
+    @lines1 = Array.new
+    File.open(filename1, "r") do |file|
+      while (line = file.gets)
+        @lines1 << line
+      end
+    end
+    
+    @lines2 = Array.new
+    File.open(filename2, "r") do |file|
+      while (line = file.gets)
+        @lines2 << line
+      end
+    end
+    
+    @changesets = Array.new
+    diffs = TextDiff.run_diff( @lines1, @lines2 )
+    diffs.each do |da|
+      da.each do |change| 
+        @changesets << change
+      end
+    end
+  
+    @max = @lines1.size
+    @max = @lines2.size if @lines2.size > @lines1.size
+    
+  end
   
   
   ## BEGIN PRIVATE UTILITY METHODS
 private  
+
+  def diff_arr
+    return [5,10,15,25,50,75,100,150,500]
+  end
   
   def set_tab
     @show_course_tabs = true

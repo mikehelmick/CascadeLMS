@@ -96,7 +96,7 @@ Last Updated: <%= @display_turnin.updated_at.to_formatted_s(:friendly_date) %><b
      <% if @tif.directory_entry %>
        <s>Download</s>
      <% else %>
-       <%= link_to 'Download', :action => 'download_file', :id => @tif.id %>
+       <%= link_to 'Download', :course => @course, :assignment => @assignment, :action => 'download_file', :id => @tif.id, :file => @tif.without_extension, :extension => @tif.extension %>
      <% end %>
     </td>
 

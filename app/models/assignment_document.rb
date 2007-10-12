@@ -16,6 +16,12 @@ class AssignmentDocument < ActiveRecord::Base
     self.save
   end
   
+  def without_extension
+    return filename if self.extension.nil?
+    idx = self.filename.rindex(self.extension)
+    return self.filename[0...idx-1]
+  end
+  
   def delete_file( path )
     path = "#{path}/" unless path[-1] == '/'
     full_path = "#{path}term/#{self.assignment.course.term.id}/course/#{self.assignment.course.id}/assignments"

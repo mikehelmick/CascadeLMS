@@ -1,0 +1,86 @@
+<h2>Comparing files for assignment '<%= @assignment.title %>'</h2>
+<h3>Course '<%= @course.title %>'</h3>
+
+<table class="fancy" width="100%">
+  <tr class="header">
+	   <th width="1%" align="right">#</th>
+    <% if @assignment.team_project %>
+	   <th align="center" valign="top" width="49%">
+		 Team: <%= @turnin1.team.name %> - <%= @turnin1.team.team_member_names %><br/>
+	     Filename: <%= @utf1.filename %>
+	   </th>
+       <th width="1%">&nbsp;</th>
+      <th width="1%" align="right">#</th>	
+       <th align="center" valign="top" width="49%">
+		 Team: <%= @turnin2.team.name %> - <%= @turnin2.team.team_member_names %><br/>
+	     Filename: <%= @utf2.filename %>
+	   </th>
+	<% else %>
+	  <th align="center" valign="top" width="49%">
+		 Student: <%= @turnin1.user.display_name %><br/>
+	     Filename: <%= @utf1.filename %>
+	   </th>
+      <th width="1%">&nbsp;</th>
+      <th width="1%" align="right">#</th>	
+      <th align="center" valign="top" width="49%">
+		 Student: <%= @turnin2.user.display_name %><br/>
+	     Filename: <%= @utf2.filename %>
+	   </th>	
+	<% end %>
+	
+	<% i = 0
+	   j = 0
+	   count = 0
+	   csCount = 0
+	   while( i < @lines1.size && j < @lines2.size ) %>
+	<% odd = "odd"
+	   odd = "even" if count.even?
+	
+	   aDifference = false
+	   action = '&nbsp;'
+	 
+	   skipJ = false
+	   skipI = false
+	
+	   unless @changesets[csCount].nil?
+	     change = @changesets[csCount]
+	
+		 if change.old_position == i || change.new_position == j
+		   action = change.action
+	       if change.action.eql?('-')
+			 skipJ = true
+			 action = "<<"
+			 j = change.new_position
+		   elsif change.action.eql?('!')
+			 i = change.old_position
+		 	 j = change.new_position
+		   elsif change.action.eql?('+')
+		  	 skipI = true
+		     action = ">>"
+		     i = change.old_position
+		   end	
+		   aDifference = true
+		   csCount = csCount + 1
+	     end
+	   end
+	
+	   style = "background: green;"
+	   style = "background: red;" unless aDifference
+  	%>
+	<tr class="<%=odd%> hover">
+	  <td align="right"><%= i unless skipI %></td>
+	  <td class="fixedFont"><%= @lines1[i].to_html rescue '' unless skipI %></td>
+	  <td style="<%=style%>"><%= action %></td>
+	  <td align="right"><%= j unless skipJ %></td>
+	  <td class="fixedFont"><%= @lines2[j].to_html rescue '' unless skipJ %></td>
+	<% 
+	   i = i + 1 unless skipI
+	   j = j + 1 unless skipJ
+	   count = count.next
+	   end %>
+
+</table>
+
+<ul>
+
+</ul>

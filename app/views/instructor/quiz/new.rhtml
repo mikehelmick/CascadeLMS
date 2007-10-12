@@ -1,4 +1,4 @@
-<h2>New Quiz for <%= @course.title %></h2>
+<h2>New Quiz/Survey for <%= @course.title %></h2>
 
 <div id="form_area">
 
@@ -6,11 +6,6 @@
 
   <%= render :partial => 'form', :locals => { :edit_mode => false } %>
 
-<div class="blockintro">If you enter a point value, a GradeBook item will be created and associated with this quiz.  <b>If you do NOT enter a grade, I'll assume that each question on the quiz is worth 1 point.</b></div>
-<div class="block">
-<p><label for="point_value" class="required">Points:</label>
-  <%= text_field_tag 'point_value', @points  %></p>
-</div>
 
 <div class="submit">
   <div id="button"><%= submit_tag "Create" %></div>
@@ -18,6 +13,6 @@
 </div>
 <%= end_form_tag %>
 
-<p><%= link_to 'Cancel', :action => 'index' %></p>
+<p><%= link_to 'Cancel', :controller => '/instructor/course_assignments', :action => 'index', :course => @course, :id => nil, :assignment => nil %></p>
 
 </div>

@@ -46,8 +46,7 @@
 
 <% if @current_turnin.sealed %>
 <p><b>This turn-in set is finalized, no changes can be made.</b></p>
-<% end %>
-
+<% else %>
 <div id="form_area">
 
   <%= error_messages_for 'utf' %>
@@ -79,6 +78,7 @@
   </div>
   <%= end_form_tag %>
 </div>
+<% end %>
 
 <% if @assignment.auto_grade && !@assignment.closed? && @assignment.enable_upload && !@current_turnin.sealed%>
 <div id="form_area">
@@ -133,7 +133,7 @@
     <% if @team %><td><%= ut.user.display_name %></td><% end %>
     <td><% if ut.sealed %> <%= image_tag 'accept.png' %> <% else %> <%= image_tag 'cross.png' %> <% end %></td>
     <td><% if ut.finalized %> <%= image_tag 'accept.png' %> <% else %> <%= image_tag 'cross.png' %> <% end %></td>
-    <td><%= link_to 'View', :action => 'view', :id => ut.id %></td>
+    <td><%= link_to 'View', :course => @course, :assignment => @assignment, :action => 'view', :id => ut.id %></td>
   </tr>
 <% end %>
 </table>

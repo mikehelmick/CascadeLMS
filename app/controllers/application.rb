@@ -29,7 +29,7 @@ require 'MyString'
 # Likewise, all the methods added will be available for all controllers.
 class ApplicationController < ActionController::Base
   ## CSCW Application version
-  @@VERSION = '0.9.5 (Hide and Seek) 20071003'
+  @@VERSION = '0.9.6 (Hide and Seek) 20071012'
   
   layout 'application' rescue puts "couldn't load default layout"
   
@@ -288,6 +288,16 @@ class ApplicationController < ActionController::Base
       @course = Course.find( course_id )
     rescue
       flash[:badnotice] = "Requested course could not be found."
+      redirect_to :controller => '/home' if redirect
+      return false
+    end
+  end
+  
+  def load_assignment( assignment_id, redirect = true )
+    begin
+      @assignment = Assignment.find( assignment_id )
+    rescue
+      flash[:badnotice] = "Requested assignment could not be found."
       redirect_to :controller => '/home' if redirect
       return false
     end

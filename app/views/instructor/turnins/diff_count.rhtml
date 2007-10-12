@@ -1,0 +1,69 @@
+
+<h2>Files with less than <%= @count %> differences.</h2>
+<h3>'<%= @assignment.title %>' in class <%= @course.title %></h3>
+
+<p><%= link_to 'Back to turnins', :action => 'index', :course => @course, :assignment => @assignment %>
+
+<p><%= image_tag 'table_relationship.png' %> Look for similarities in submissions: 
+	<% form_tag( :action => 'diff_count', :course => @course, :assignment => @assignment, :id => nil ) do %>
+			File Extension: <%= select_tag 'extension', options_for_select(@textfiles,'java') %>
+			Max Differences: <%= select_tag 'diffcount', options_for_select(@diffsize,@count) %>
+			<%= submit_tag 'Look for differences' %>
+	<% end %>
+</p>
+
+<% if @differences.size == 0 %>
+ <p><i>There are no pars of files with less than <%= @count %> differences between them.</i></p>
+<% else %>
+
+<p>There are <%= @differences.size %> pairs of files with less than <%= @count %> differences.</p>
+
+<table class="fancy">
+  <tr class="header">
+	  <th>View</th>
+	  <th>Differences</th>
+	  <th>User 1</th>
+	  <th>User 2</th>
+  </tr>
+
+  <% count = 0 %>
+  <% for diffset in @differences %>
+    <% count = count.next 
+	   odd = "odd"
+	   odd = "even" if count.even?
+  	%>
+	<tr class="<%=odd%> hover">
+		<td align="left" valign="top"> <%= link_to 'View Side-by-Side', {:action => 'sidebyside', :file1 => diffset[1], :file2 => diffset[2], :course => @course, :assignment => @assignment}, :popup => true %> </td>
+		<td align="left" valign="top"><%= diffset[0] %></td>
+		
+		<% file1 = UserTurninFile.find( diffset[1].to_i ) 
+		   turnin1 = file1.user_turnin
+		   file2 = UserTurninFile.find( diffset[2].to_i ) 
+		   turnin2 = file2.user_turnin
+		 %>
+		
+		<% if @assignment.team_project %>
+		  <td align="left" valign="top">
+			Team: <%= turnin1.project_team.team_member_names %><br/>
+		    File: <%= file1.filename rescue "" %>	
+		  </td>
+		  <td align="left" valign="top">
+			Team: <%= turnin2.project_team.team_member_names %><br/>
+		    File: <%= file2.filename rescue "" %>	
+		  </td>
+		<% else %>
+		  <td align="left" valign="top">
+			Student: <%= turnin1.user.display_name %><br/>
+		    File: <%= file1.filename rescue "" %>	
+		  </td>
+		  <td align="left" valign="top">
+			Student: <%= turnin2.user.display_name %><br/>
+		    File: <%= file2.filename rescue "" %>	
+		  </td>		
+		<% end %>
+    </tr>
+
+  <% end %>
+</table>
+
+<% end %>

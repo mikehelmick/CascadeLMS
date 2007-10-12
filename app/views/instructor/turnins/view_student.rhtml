@@ -43,7 +43,7 @@ Originally Submitted: <%= @display_turnin.created_at.to_formatted_s(:friendly_da
 Last Updated: <%= @display_turnin.updated_at.to_formatted_s(:friendly_date) %><br/>
 </p>
 
-<p><b>Download entire turn-in set:</b> <%= link_to 'as tar file', :action => 'download_set', :id => @display_turnin.id %></p>
+<p><b>Download entire turn-in set:</b> <%= link_to 'as tar file', :action => 'download_set', :id => @display_turnin.id, :file => "assignment#{@assignment.id}", :extension => ".tar.gz" %></p>
 
 <% if @display_turnin.id == @current_turnin.id && @current_turnin.user_turnin_files.size == 1 && @turnins.size > 1 %>
 <div class="errorExplanation">This student's current turn-in set does not have any files in it, and there are previous turn-in sets.  You may <%= link_to 'rollback to the previous turn-in set', :action => 'rollback', :id => @student %></div>
@@ -142,7 +142,7 @@ Last Updated: <%= @display_turnin.updated_at.to_formatted_s(:friendly_date) %><b
      <% if @tif.directory_entry %>
        <s>Download</s>
      <% else %>
-       <%= link_to 'Download', :action => 'download_file', :id => @tif.id %>
+       <%= link_to 'Download', :course => @course, :assignment => @assignment, :action => 'download_file', :id => @tif.id %>
      <% end %>
     </td>
   

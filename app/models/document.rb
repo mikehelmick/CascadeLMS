@@ -52,6 +52,16 @@ class Document < ActiveRecord::Base
     'page'
   end
   
+  def without_extension
+    return filename if self.extension.nil?
+    idx = self.filename.rindex(self.extension)
+    return self.filename[0...idx-1]
+  end
+  
+  def dot_extension
+    return ".#{self.extension}"
+  end
+  
   def after_destroy
     docs = Document.find( :all, :conditions => ["document_parent = ? and course_id = ?", self.id, self.course_id ] )
     docs.each { |x| x.destroy }

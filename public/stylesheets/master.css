@@ -739,7 +739,7 @@ a img {
 }
 
 .fixedWidth {
-	font-family:  "courier", verdana, sans-serif;
+	font-family:  times, verdana, sans-serif;
 	font-size:  10pt;
 }
 
@@ -753,6 +753,11 @@ a img {
 
 .hidden_style {
 	background: #F3B802;
+}
+
+.fixedFont {
+	font-family: "Courier", verdana, sans-serif;
+	font-size: 10pt;	
 }
 
 .code {

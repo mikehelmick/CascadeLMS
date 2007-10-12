@@ -96,6 +96,12 @@ class FileManager
      'vm' => 'html',
      'sql' => 'sql'
   }
+  
+  def FileManager.text_extension_map
+    ext = Hash.new
+    @@text_exts.keys.each { |k| ext[k] = k }
+    return ext
+  end
               
   def FileManager.enscript_language( extension )
     format = @@enscripts[extension]

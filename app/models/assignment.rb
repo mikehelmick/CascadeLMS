@@ -20,6 +20,7 @@ class Assignment < ActiveRecord::Base
   
   has_many :io_checks, :dependent => :destroy
   
+  
   validates_presence_of :title
   # NEEDS extended validations
   # open < due <= close dates
@@ -27,6 +28,19 @@ class Assignment < ActiveRecord::Base
   # if a SVN path is given, that is is appropriate 
   
   before_save :transform_markup
+  
+  def default_dates
+    self.open_date = Time.now
+    self.due_date = self.open_date + 1.day
+    self.close_date = self.open_date + 1.day
+  end
+  
+  def make_quiz
+    self.quiz_assignment = true
+    self.programming = false
+    self.use_subversion = false
+    self.auto_grade = false
+  end
   
   def ensure_style_defaults
     already_have = Hash.new
@@ -122,7 +136,7 @@ class Assignment < ActiveRecord::Base
     errors.add_to_base( 'The assinment due date must be before the assignment close date and after the available date.') unless close_date >= due_date || due_date <= open_date
    
     if ! self.file_uploads && (self.description.nil?  || self.description.size == 0)
-      errors.add('description', 'can not be empty if you are not uploading a file.')
+      errors.add('description', 'can not be empty if you are not uploading a file.') unless self.quiz
     end
    
     if self.programming && self.use_subversion

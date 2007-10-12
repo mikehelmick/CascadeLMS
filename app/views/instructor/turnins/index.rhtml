@@ -17,9 +17,20 @@
 
 <% end %>
 
+<ul>
 <% if( (@assignment.use_subversion || @assignment.enable_upload) &&  @any_turnins  ) %>
-<p><%= link_to "Download all student files.", {:action => 'download_all_files', :course => @course, :assignment => @assignment}, :confirm => "Press OK to gather and download students files.  This make take several minutes depending on class size." %></p>
+  <li><%= image_tag 'page_white_compressed.png' %> <%= link_to "Download all student files.", {:action => 'download_all_files', :course => @course, :assignment => @assignment }, :confirm => "Press OK to gather and download students files.  This make take several minutes depending on class size." %></li>
 <% end %>
+<% if ( @assignment.programming )%>
+  <li><%= image_tag 'table_relationship.png' %> Look for similarities in submissions: 
+	<% form_tag( {:action => 'diff_count', :course => @course, :assignment => @assignment, :id => nil} ) do %>
+		File Extension: <%= select_tag 'extension', options_for_select(@textfiles,'java') %>
+		Max Differences: <%= select_tag 'diffcount', options_for_select(@diffsize,@count) %>
+		<%= submit_tag 'Look for differences' %>
+	<% end %>
+	</li>
+<% end %>
+</ul>
 
 <% form_tag( :controller => '/instructor/turnins', :action => 'save_all_grades', :course => @course, :assignment => @assignment, :id => nil ) do %>
 
@@ -122,7 +133,7 @@
 	  <% end %>
 
       <td>
-        <%= link_to "View files/journals", :action => 'view_student', :id => student %>
+        <%= link_to "View files/journals", :action => 'view_student', :id => student, :course => @course, :assignment => @assignment %>
       </td> 
     </tr>
 	

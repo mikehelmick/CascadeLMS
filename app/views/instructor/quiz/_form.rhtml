@@ -1,6 +1,5 @@
 <%= error_messages_for 'assignment' %>
-
-
+<%= error_messages_for 'quiz' %>
 
 <div class="blockintro">Create a new quiz for this course.</div>
 
@@ -29,13 +28,63 @@
 </table>
 
     <p><label for="assignment[description]" class="required">Quiz Description (optional):</label>
-      <%= text_area 'assignment', 'description'  %></p>
+      <%= text_area 'assignment', 'description', :rows => '5', :cols => '60'  %></p>
 
   </div>
- 
-<div class="blockintro">Enter the number of attempts that a student may have for this quiz - enter a negative number to allow for unlimited attempts (default).</div>
+
+<% quiz_style = 'display: block;'
+   survey_style = 'display: none;'
+   if @quiz.survey
+	 t = quiz_style
+	 quiz_style = survey_style
+	 survey_style = t
+   end
+%>
+
+<div class="blockintro">A quiz can be a traditional kind of online quiz, or can be a survey.  Surveys are not assigned a point value by default, although an instructor can do this manually.</div>
 <div class="block">
-	<p><label for="attempts" class="required">Quiz Attempts:</label>
-      <%= text_field_tag 'assignment', @attempts  %></p>
-	
+  <p><label for="survey" class="required">Quiz or Survey:</label>
+	<%= radio_button 'quiz', 'survey', false, :onclick => 'new Effect.Puff("survey_settings");new Effect.SlideDown("quiz_settings")' %> Quiz
+	<%= radio_button 'quiz', 'survey', true, :onclick => 'new Effect.Puff("quiz_settings");new Effect.SlideDown("survey_settings")' %> Survey
+	</p>
 </div>
+
+<div id="quiz_settings" style="<%=quiz_style%>" >
+
+	<div class="blockintro">Enter the number of attempts that a student may have for this quiz - enter a negative number to allow for unlimited attempts (default).</div>
+	<div class="block">
+		<p><label for="quiz[attempt_maximum]" class="required">Quiz Attempts:</label>
+	      <%= text_field 'quiz', 'attempt_maximum'  %></p>
+	</div>
+
+	<div class="blockintro">Randomizing a quiz allow you to display the questions to a student in random order, and also to display to them a random subset of the questions.   Individual questions can be weighted to cause them to appear more frequently.</div>
+	<div class="block">
+		<label for="quiz[random_questions]" class="required">Randomize Questions:</label>
+	       <%= radio_button 'quiz', 'random_questions', true, :onclick => 'new Effect.SlideDown("number_of_questions_settings")' %> Yes
+		   <%= radio_button 'quiz', 'random_questions', false, :onclick => 'new Effect.Puff("number_of_questions_settings")' %> No</p>
+		
+		<% number_of_questions_style = "display: block;" 
+		   number_of_questions_style = "display: none;" unless @quiz.random_questions
+		%>
+		<div id="number_of_questions_settings" class="sub_form" style="<%=number_of_questions_style%>">
+			<p>Enter the number of questions that each student should be presented with.  If you enter a number higher than the number of questions that you create, then each student will receive all questions, but in a random order.   Enter <b>-1</b> to always use all questions.</p>
+			<p><label for="quiz[number_of_questions]" class="required">Number of Questions:</label>
+		      <%= text_field 'quiz', 'number_of_questions'  %></p>
+		</div>
+	</div>
+
+	<% if @new_quiz %>
+	<div class="blockintro">If you enter a point value, a GradeBook item will be created and associated with this quiz.  <b>If you do NOT enter a grade, I'll assume that each question on the quiz is worth 1 point.</b></div>
+	<div class="block">
+	<p><label for="point_value" class="required">Points:</label>
+	  <%= text_field_tag 'point_value', @points  %></p>
+	</div>
+	<% end %>
+</div>
+
+<div id="survey_settings" style="<%=survey_style%>">
+	<div class="GoodMessage">
+		<p><b>You will continue your survey configuration on the next screen.</b></p>
+	</div>
+</div>
+ 

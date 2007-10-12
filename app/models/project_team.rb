@@ -16,4 +16,14 @@ class ProjectTeam < ActiveRecord::Base
     return false
   end
   
+  def team_member_names
+    names = Array.new
+    
+    self.team_members.each do |user|
+      names << user.display_name
+    end    
+    
+    names.join(', ')
+  end
+  
 end

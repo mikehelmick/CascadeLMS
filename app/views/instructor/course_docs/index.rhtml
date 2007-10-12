@@ -69,7 +69,7 @@
 	  <% if document.folder %>
 	    <%= link_to 'Open', :action => 'index', :id => document %>
 	  <% else %>
-        <%= link_to 'Download', :action => 'download', :id => document %>
+        <%= link_to 'Download', :action => 'download', :id => document, :file => document.without_extension, :extension => document.extension %>
 	  <% end %>
 	 |
     <%= link_to 'Move Up', :action => 'move_up', :id => document, :folder => @folder_id %> |

@@ -100,7 +100,7 @@
 	  %>
 	  <tr class="<%=odd%> hover" id="assignment_document_<%=asgn_doc.id%>">
 	    <td><%=h asgn_doc.position %></td>
-	    <td><%= link_to "#{image_tag asgn_doc.icon_file, :align => 'absmiddle'} #{h asgn_doc.filename}", :action => 'download', :id => @assignment, :course => @course, :document => asgn_doc.id %></td>
+	    <td><%= link_to "#{image_tag asgn_doc.icon_file, :align => 'absmiddle'} #{h asgn_doc.filename}", :action => 'download', :id => @assignment, :course => @course, :document => asgn_doc.id, :file => asgn_doc.without_extension, :extension => asgn_doc.extension %></td>
 	    <td><%=h asgn_doc.size_text %></td>
 	    <td><%= link_to 'Move Up', :action => 'file_move_up', :id => @assignment, :course => @course, :document => asgn_doc.id %> | 
 	        <%= link_to 'Move Down', :action => 'file_move_down', :id => @assignment, :course => @course, :document => asgn_doc.id %> |  

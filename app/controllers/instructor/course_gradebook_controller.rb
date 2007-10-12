@@ -105,6 +105,10 @@ class Instructor::CourseGradebookController < Instructor::InstructorBase
     @grade_item = GradeItem.find(params[:id]) rescue @grade_item = nil
     return unless item_in_course( @course, @grade_item )
     
+    unless @grade_item.assignment.nil?
+      redirect_to :controller => '/instructor/turnins', :action => nil, :course => @course, :assignment => @grade_item.assignment, :id => nil
+    end
+    
     @students = @course.students
     
     @grade_matrix = Hash.new

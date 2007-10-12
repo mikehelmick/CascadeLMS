@@ -2,7 +2,7 @@
 # migrations feature of ActiveRecord to incrementally modify your database, and
 # then regenerate this schema definition.
 
-ActiveRecord::Schema.define(:version => 80) do
+ActiveRecord::Schema.define(:version => 82) do
 
   create_table "announcements", :force => true do |t|
     t.column "headline",  :string
@@ -50,7 +50,7 @@ ActiveRecord::Schema.define(:version => 80) do
     t.column "grade_category_id",           :integer
     t.column "released",                    :boolean,  :default => false, :null => false
     t.column "team_project",                :boolean,  :default => false, :null => false
-    t.column "quiz",                        :boolean,  :default => false, :null => false
+    t.column "quiz_assignment",             :boolean,  :default => false, :null => false
   end
 
   create_table "auto_grade_settings", :id => false, :force => true do |t|
@@ -323,14 +323,15 @@ ActiveRecord::Schema.define(:version => 80) do
   add_index "io_checks", ["assignment_id"], :name => "io_checks_assignment_id_index"
 
   create_table "iptocs", :force => true do |t|
-    t.column "ip_from",       :integer, :default => 0,  :null => false
-    t.column "ip_to",         :integer, :default => 0,  :null => false
-    t.column "country_code2", :string,  :default => "", :null => false
-    t.column "country_code3", :string,  :default => "", :null => false
-    t.column "country_name",  :string,  :default => "", :null => false
+    t.column "ip_from",       :integer, :limit => 10, :default => 0,  :null => false
+    t.column "ip_to",         :integer, :limit => 10, :default => 0,  :null => false
+    t.column "country_code2", :string,  :limit => 2,  :default => "", :null => false
+    t.column "country_code3", :string,  :limit => 3,  :default => "", :null => false
+    t.column "country_name",  :string,  :limit => 50, :default => "", :null => false
   end
 
-  add_index "iptocs", ["ip_from", "ip_to"], :name => "index_iptocs_on_ip_from_and_ip_to", :unique => true
+  add_index "iptocs", ["ip_from", "ip_to"], :name => "ip_from", :unique => true
+  add_index "iptocs", ["id"], :name => "id", :unique => true
 
   create_table "journal_entry_stop_reasons", :id => false, :force => true do |t|
     t.column "journal_id",             :integer
@@ -411,9 +412,10 @@ ActiveRecord::Schema.define(:version => 80) do
   create_table "quizzes", :force => true do |t|
     t.column "assignment_id",       :integer, :default => 0,     :null => false
     t.column "attempt_maximum",     :integer, :default => -1,    :null => false
-    t.column "retake_after_close",  :boolean, :default => true,  :null => false
     t.column "random_questions",    :boolean, :default => false, :null => false
     t.column "number_of_questions", :integer, :default => -1,    :null => false
+    t.column "linear_score",        :boolean, :default => false, :null => false
+    t.column "survey",              :boolean, :default => false, :null => false
   end
 
   add_index "quizzes", ["assignment_id"], :name => "index_quizzes_on_assignment_id", :unique => true

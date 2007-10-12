@@ -54,10 +54,10 @@ This folder is a podcast: <%= link_to "#{image_tag 'ipod_cast.png'} Subscribe", 
 		        <%= link_to "#{image_tag 'ipod_cast.png'} Subscribe", :action => 'subscribe', :course => @course.id, :id => document %>
 		      <% end %>
 		    <% else %>
-		      <%= link_to "#{image_tag document.icon_file, :align=> 'absmiddle'} #{document.title}", :action => 'download', :course => @course.id, :id => document %>
+		      <%= link_to "#{image_tag document.icon_file, :align=> 'absmiddle'} #{document.title}", :action => 'download', :course => @course.id, :id => document, :file => document.without_extension, :extension => document.extension %>
 		    <% end %>
 		  </td>
-		  <td><% unless document.folder %><%= link_to "#{document.filename}", :action => 'download', :course => @course.id, :id => document %><% end %> &nbsp;</td>
+		  <td><% unless document.folder %><%= link_to "#{document.filename}", :action => 'download', :course => @course.id, :id => document, :file => document.without_extension, :extension => document.extension %><% end %> &nbsp;</td>
 		
 		<% else %>
 		
