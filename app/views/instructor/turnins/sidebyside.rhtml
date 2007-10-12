@@ -6,13 +6,13 @@
 	   <th width="1%" align="right">#</th>
     <% if @assignment.team_project %>
 	   <th align="center" valign="top" width="49%">
-		 Team: <%= @turnin1.team.name %> - <%= @turnin1.team.team_member_names %><br/>
+		 Team: <%= @turnin1.project_team.name %> - <%= @turnin1.project_team.team_member_names %><br/>
 	     Filename: <%= @utf1.filename %>
 	   </th>
        <th width="1%">&nbsp;</th>
       <th width="1%" align="right">#</th>	
        <th align="center" valign="top" width="49%">
-		 Team: <%= @turnin2.team.name %> - <%= @turnin2.team.team_member_names %><br/>
+		 Team: <%= @turnin2.project_team.name %> - <%= @turnin2.project_team.team_member_names %><br/>
 	     Filename: <%= @utf2.filename %>
 	   </th>
 	<% else %>

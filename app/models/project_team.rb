@@ -21,7 +21,7 @@ class ProjectTeam < ActiveRecord::Base
     
     
     self.team_members.each do |user|
-      names << user.display_name rescue names << "unknown"
+      names << user.user.display_name rescue names << "unknown"
     end    
     
     names.join(', ')

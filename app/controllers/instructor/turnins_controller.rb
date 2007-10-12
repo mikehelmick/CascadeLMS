@@ -963,7 +963,7 @@ class Instructor::TurninsController < Instructor::InstructorBase
     
     @apply_to_team = false
     if @assignment.team_project
-      @apply_to_team = true unless @team.nil?
+      @apply_to_team = true 
       @teams = @course.project_teams
     end
     
@@ -981,8 +981,10 @@ class Instructor::TurninsController < Instructor::InstructorBase
           directory = turnin.get_team_dir( @app['external_dir'], team ) 
           
           turnin.user_turnin_files.each do |file|
-            if file.extension.downcase.eql?( params['extension'].downcase )
-              @files_to_check[file.id] = "#{directory}#{file.full_filename( directories )}"
+            unless file.extension.nil?
+              if file.extension.downcase.eql?( params['extension'].downcase )
+                @files_to_check[file.id] = "#{directory}#{file.full_filename( directories )}"
+              end
             end
           end
         end
@@ -1042,19 +1044,19 @@ class Instructor::TurninsController < Instructor::InstructorBase
     @turnin1 = @utf1.user_turnin
     @turnin2 = @utf2.user_turnin
     
-    if @assignment.team_project
+    if @assignment.team_project == true
       ## load the directories
       @directories1 = Hash.new
       @turnin1.user_turnin_files.each do |utf|
         @directories1[utf.id] = utf if utf.directory_entry?
       end
-      @directory1 = turnin.get_team_dir( @app['external_dir'], @turnin1.team )
+      @directory1 = @turnin1.get_team_dir( @app['external_dir'], @turnin1.project_team )
  
       @directories2 = Hash.new
       @turnin2.user_turnin_files.each do |utf|
         @directories2[utf.id] = utf if utf.directory_entry?
       end
-      @directory2 = turnin.get_team_dir( @app['external_dir'], @turnin2.team )
+      @directory2 = @turnin2.get_team_dir( @app['external_dir'], @turnin2.project_team )
     
     else
       ## load the directories
@@ -1063,7 +1065,7 @@ class Instructor::TurninsController < Instructor::InstructorBase
         @directories1[utf.id] = utf if utf.directory_entry?
       end
       @directory1 = @turnin1.get_dir( @app['external_dir'] )
-      
+    
       @directories2 = Hash.new
       @turnin2.user_turnin_files.each do |utf|
         @directories2[utf.id] = utf if utf.directory_entry?
@@ -1074,8 +1076,6 @@ class Instructor::TurninsController < Instructor::InstructorBase
     ## now we can grab the files
     filename1 = "#{@directory1}#{@utf1.full_filename( @directories1 )}"
     filename2 = "#{@directory2}#{@utf2.full_filename( @directories2 )}"
-    
-   
     
     @lines1 = Array.new
     File.open(filename1, "r") do |file|
