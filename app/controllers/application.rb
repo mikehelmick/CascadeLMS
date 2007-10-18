@@ -29,7 +29,7 @@ require 'MyString'
 # Likewise, all the methods added will be available for all controllers.
 class ApplicationController < ActionController::Base
   ## CSCW Application version
-  @@VERSION = '0.9.6 (Hide and Seek) 20071012'
+  @@VERSION = '0.9.7 (Hide and Seek) 20071018'
   
   layout 'application' rescue puts "couldn't load default layout"
   
