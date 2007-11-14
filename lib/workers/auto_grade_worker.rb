@@ -288,18 +288,18 @@ class AutoGradeWorker < BackgrounDRb::Worker::RailsBase
           queue.message = "Performing static analysis on your code."
           queue.save
         end
-        GradeQueue.transaction( queue, user_turnin ) do
+        ##GradeQueue.transaction( queue, user_turnin ) do
           run_pmd( queue, user_turnin, dir, directories, app )
-        end
+        ##end
         
         ## Again - to have status outside of transaction
         if user_turnin.assignment.auto_grade_setting.io_check?
           queue.message = "Compiling and running I/O based tests on your code."
           queue.save
         end
-        GradeQueue.transaction( queue, user_turnin ) do
+        ##GradeQueue.transaction( queue, user_turnin ) do
           run_io_check( queue, user_turnin, dir, directories, app )
-        end
+        ##end
 
         queue.serviced = true
         queue.message = "AutoGrade complete."
