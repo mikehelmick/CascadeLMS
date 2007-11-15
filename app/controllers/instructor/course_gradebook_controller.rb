@@ -222,8 +222,93 @@ class Instructor::CourseGradebookController < Instructor::InstructorBase
     render :layout => false
   end
   
-## private  
+  def students
+    return unless load_course( params[:course] )
+    return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_gradebook' )
   
+    @students = @course.students
+    
+    size = @students.size / 2
+    
+    @column1 = Array.new
+    0.upto(size) { |i| @column1 << @students[i] }
+    @column2 = Array.new
+    (size+1).upto(@students.size-1) { |i| @column2 << @students[i] }
+    
+  end
+  
+  def for_student
+    return unless load_course( params[:course] )
+    return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_gradebook' )
+    
+    @student = nil
+    @course.students.each do |s|
+      @student = s if s.id.to_i == params[:id].to_i
+    end
+    if @student.nil?
+      flash[:notice] = "Invalid student requested."
+      redirect_to :action => 'students', :id => nil
+      return
+    end
+    
+    @grade_items = @course.grade_items
+    grades = GradeEntry.find(:all, :conditions => ["user_id=? and course_id=?", @student.id, @course.id ] )
+    @total_points = 0
+    @total_points_possible = 0
+    
+    @grade_map = Hash.new
+    grades.each do |x| 
+      if x.grade_item.visible
+        @grade_map[x.grade_item_id] = x.points 
+        @total_points += x.points
+      end
+    end
+    
+    @grade_items.each {|x| @total_points_possible += x.points if x.visible }
+    
+    # Weighting
+    if !@course.gradebook.nil? && @course.gradebook.weight_grades
+      weights = GradeWeight.reconcile( @course )
+      @weight_map = Hash.new
+      weights.each { |x| @weight_map[x.grade_category_id] = x.percentage }
+      
+      cat_max_points = Hash.new
+      @grade_items.each do |gi|
+        if cat_max_points[gi.grade_category_id].nil?
+          cat_max_points[gi.grade_category_id] = gi.points if gi.visible
+        else
+          cat_max_points[gi.grade_category_id] += gi.points if gi.visible
+        end
+      end
+      
+      @student_cat_total = Hash.new
+      grades.each do |x|
+        if @student_cat_total[x.grade_item.grade_category_id].nil?
+          @student_cat_total[x.grade_item.grade_category_id] = x.points
+        else
+          @student_cat_total[x.grade_item.grade_category_id] += x.points
+        end
+      end
+    
+      @weighted_average = 0
+      # acutually weight the grades
+      weights.each do |weights|
+        begin
+          @weighted_average = @weighted_average +
+             @student_cat_total[weights.grade_category_id] / 
+             cat_max_points[weights.grade_category_id] *
+             @weight_map[weights.grade_category_id]
+        rescue
+          
+        end
+      end
+      
+    
+    end
+    
+  end
+  
+## private
   def set_tab
     @show_course_tabs = true
     @tab = "course_instructor"

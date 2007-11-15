@@ -23,7 +23,8 @@
   <tr> 
     <td>
 	<% if @course.course_setting.enable_gradebook %>
-	  <%= link_to "#{image_tag 'cog.png', :align => 'absmiddle'} Gradebook", :controller => '/instructor/course_gradebook', :course => @course %>
+	  <%= link_to "#{image_tag 'cog.png', :align => 'absmiddle'} Gradebook", :controller => '/instructor/course_gradebook', :course => @course %> /
+	  <%= link_to "By Student", :controller => '/instructor/course_gradebook', :action => 'students', :course => @course %>
 	<% end %>
 	</td>
 	<td><%= link_to "#{image_tag 'cog.png', :align => 'absmiddle'} Settings", :controller => '/instructor/course_setting', :course => @course %></td>
@@ -82,7 +83,7 @@
   <tr> 
     <td>
 	    <% if @course.course_setting.ta_course_gradebook %>
-	      <%= link_to "#{image_tag 'cog.png', :align => 'absmiddle'} Gradebook", :controller => '/instructor/course_gradebook', :course => @course %>
+	      <%= link_to "#{image_tag 'cog.png', :align => 'absmiddle'} Gradebook", :controller => '/instructor/course_gradebook', :course => @course %> / <%= link_to "By Student", :controller => '/instructor/course_gradebook', :action => 'students', :course => @course %>
 	    <% else %>
 	      <%= image_tag 'cancel', :align => 'absmiddle' %><s>Gradebook</s>
 	    <% end %>
