@@ -258,13 +258,11 @@ class Instructor::CourseGradebookController < Instructor::InstructorBase
     
     @grade_map = Hash.new
     grades.each do |x| 
-      if x.grade_item.visible
-        @grade_map[x.grade_item_id] = x.points 
-        @total_points += x.points
-      end
+      @grade_map[x.grade_item_id] = x.points 
+      @total_points += x.points
     end
     
-    @grade_items.each {|x| @total_points_possible += x.points if x.visible }
+    @grade_items.each {|x| @total_points_possible += x.points }
     
     # Weighting
     if !@course.gradebook.nil? && @course.gradebook.weight_grades
@@ -275,9 +273,9 @@ class Instructor::CourseGradebookController < Instructor::InstructorBase
       cat_max_points = Hash.new
       @grade_items.each do |gi|
         if cat_max_points[gi.grade_category_id].nil?
-          cat_max_points[gi.grade_category_id] = gi.points if gi.visible
+          cat_max_points[gi.grade_category_id] = gi.points 
         else
-          cat_max_points[gi.grade_category_id] += gi.points if gi.visible
+          cat_max_points[gi.grade_category_id] += gi.points
         end
       end
       
@@ -301,8 +299,7 @@ class Instructor::CourseGradebookController < Instructor::InstructorBase
         rescue
           
         end
-      end
-      
+      end      
     
     end
     
