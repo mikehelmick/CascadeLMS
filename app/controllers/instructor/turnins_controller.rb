@@ -10,6 +10,9 @@ class Instructor::TurninsController < Instructor::InstructorBase
   layout 'noright'
   
   
+  verify :method => :post, :only => [ :save_all_grades ],
+         :redirect_to => { :action => :index }
+  
   def index
     return unless load_course( params[:course] )
     return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_grade_individual', 'ta_view_student_files', 'ta_grade_individual' )
