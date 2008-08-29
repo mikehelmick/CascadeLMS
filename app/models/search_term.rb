@@ -1,6 +1,6 @@
 class SearchTerm < ActiveRecord::Base
   def self.register(searchterms, domain, subdomain)
-    terms = find_all(["domain = ? and subdomain = ? and searchterms = ?", domain, subdomain, searchterms.to_s])
+    terms = find(:all, conditions => ["domain = ? and subdomain = ? and searchterms = ?", domain, subdomain, searchterms.to_s])
     if terms and terms.size > 0
       terms.each {|term| 
         term.count = term.count + 1

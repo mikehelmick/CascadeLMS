@@ -18,7 +18,7 @@ class Instructor::BlogController < Instructor::InstructorBase
     
     set_title
     
-    @page = @params[:page].to_i
+    @page = params[:page].to_i
     @page = 1 if @page.nil? || @page == 0
     @post_pages = Paginator.new self, Post.count(:conditions => ["course_id = ?", @course.id]), 20, @page
     @posts = Post.find(:all, :conditions => ['course_id = ?', @course.id], :order => 'created_at DESC', :limit => 20, :offset => @post_pages.current.offset)

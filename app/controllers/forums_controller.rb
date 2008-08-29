@@ -344,7 +344,7 @@ class ForumsController < ApplicationController
     @topic = ForumTopic.find(params[:id])
     return unless topic_in_course( @course, @topic )
   
-    @page = @params[:page].to_i
+    @page = params[:page].to_i
     @page = 1 if @page.nil? || @page == 0
     @post_pages = Paginator.new self, ForumPost.count(:conditions => ["forum_topic_id = ? and parent_post = ?", @topic.id, 0]), 25, @page
     @posts = ForumPost.find(:all, :conditions => ["forum_topic_id = ? and parent_post = ?", @topic.id, 0 ], :order => 'updated_at DESC', :limit => 25, :offset => @post_pages.current.offset)
@@ -364,7 +364,7 @@ class ForumsController < ApplicationController
       return
     end
     
-    @page = @params[:page].to_i
+    @page = params[:page].to_i
     @page = 1 if @page.nil? || @page == 0
     @post_pages = Paginator.new self, ForumPost.count(:conditions => ["forum_topic_id = ? and parent_post = ?", @topic.id, @parent_post.id]), 15, @page
     @posts = ForumPost.find(:all, :conditions => ["forum_topic_id = ? and parent_post = ?", @topic.id, @parent_post.id ], :order => 'created_at ASC', :limit => 15, :offset => @post_pages.current.offset)

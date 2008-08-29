@@ -1,5 +1,4 @@
 require 'digest/sha1'
-require 'MyArray'
 
 class User < ActiveRecord::Base
   validates_uniqueness_of :uniqueid
@@ -125,7 +124,10 @@ class User < ActiveRecord::Base
     (0..9).to_a.each { |i| letters << i }
     
     tok = ''
-    1.upto(size) { |x| tok = "#{tok}#{letters.random}"}
+    1.upto(size) do |x| 
+      idx = rand(letters.size)
+      tok = "#{tok}#{letters[idx]}"
+    end
     return tok
   end
   

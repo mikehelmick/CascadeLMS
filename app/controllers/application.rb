@@ -29,7 +29,10 @@ require 'MyString'
 # Likewise, all the methods added will be available for all controllers.
 class ApplicationController < ActionController::Base
   ## CSCW Application version
-  @@VERSION = '0.9.11 (Hide and Seek) 20080201'
+  @@VERSION = '1.0.0 () 20080330'
+  
+  ## Supress password logging
+  filter_parameter_logging :password
   
   layout 'application' rescue puts "couldn't load default layout"
   
@@ -212,7 +215,8 @@ class ApplicationController < ActionController::Base
     
     if !session_valid?
       redirect_to :controller => '/index', :action => 'expired'
-      session[:post_login] = redirect_uri
+      # don't want to accidently clobber post data
+      session[:post_login] = redirect_uri if request.method.eql?("GET")
       
       return false
     end
@@ -309,7 +313,11 @@ class ApplicationController < ActionController::Base
   
   def authenticate( user, redirect = true )
     auth = BasicAuthentication.new()
-    auth = LdapAuthentication.new( @app ) if @app['authtype'].downcase.eql?('ldap')
+    is_ldap = false
+    if @app['authtype'].downcase.eql?('ldap')
+      auth = LdapAuthentication.new( @app )
+      is_ldap = true
+    end
     
     begin
       @user = auth.authenticate( user.uniqueid, user.password )
@@ -332,6 +340,12 @@ class ApplicationController < ActionController::Base
       return true
     rescue SecurityError => doh
       if redirect
+        
+        ## should we log this error
+        unless doh.message.index('No such object') || doh.message.index('Invalid credentials')
+          log_error(doh)
+        end
+        
         @login_error = doh.message
         @user.password = '' 
         render :action => 'index' 
@@ -373,7 +387,7 @@ class ApplicationController < ActionController::Base
     
     @@auth_locations.each do |key|
       if request.env.has_key?(key)
-        authdata = @request.env[key].to_s.split
+        authdata = request.env[key].to_s.split
         if authdata and authdata[0] == 'Basic' 
           user, pass = Base64.decode64(authdata[1]).split(':')[0..1] 
           logger.info("#{user},#{pass}")
@@ -404,9 +418,9 @@ class ApplicationController < ActionController::Base
         @app['error_email'],
         exception, 
         clean_backtrace(exception), 
-        @session.instance_variable_get("@data"), 
-        @params, 
-        @request.env)
+        session, 
+        params, 
+        request.env)
     rescue => e
       logger.error(e)
     end

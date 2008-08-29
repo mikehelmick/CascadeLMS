@@ -22,14 +22,23 @@ class FeedController < ApplicationController
         if course_allows_rss( @course )
           if allowed_to_see_course( @course, @user )
           
-            @recent_activity = FreshItems.fresh( @course, @app['recent_items'].to_i )
-            @headers["Content-Type"] = "application/rss+xml"
+            respond_to do |format| 
+              format.xml {
+                 @recent_activity = FreshItems.fresh( @course, @app['recent_items'].to_i )
+                 headers["Content-Type"] = "application/rss+xml"
             
-            if ( @recent_activity[0].class.to_s.eql?('Assignment' ) ) 
-              @fresh_date = @recent_activity[0].open_date
-            else
-              @fresh_date = @recent_activity[0].created_at
-            end
+                 @fresh_date = DateTime.new
+                 if ( @recent_activity.size > 0 )
+                   if ( @recent_activity[0].class.to_s.eql?('Assignment' ) ) 
+                     @fresh_date = @recent_activity[0].open_date
+                   else
+                     @fresh_date = @recent_activity[0].created_at
+                   end
+                 end
+               }
+             end
+            
+            
           
           end
           #render_text( 'You are not authorized to view this RSS feed.', 401 ) 

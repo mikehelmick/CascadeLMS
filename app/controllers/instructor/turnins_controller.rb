@@ -447,7 +447,7 @@ class Instructor::TurninsController < Instructor::InstructorBase
     if @deleted
       flash[:notice] = "Grade for '#{@student.display_name}' has been deleted for this assignment (Since no point value was entered)."
     elsif @success
-      flash[:notice] = "Grade for '#{@student.display_name}' has been updated to '#{@params[:grade_entry]['points']}' for this assignment."
+      flash[:notice] = "Grade for '#{@student.display_name}' has been updated to '#{params[:grade_entry]['points']}' for this assignment."
     else
       flash[:badnotice] = "Error updating student grade - results not saved."
     end

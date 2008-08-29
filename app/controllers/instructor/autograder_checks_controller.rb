@@ -7,7 +7,7 @@ class Instructor::AutograderChecksController < Instructor::InstructorBase
     return unless load_course( params[:course] )
     return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_assignments' )
     return unless course_open( @course, :controller => '/instructor/index', :action => 'index', :course => @course )
-    @assignment = Assignment.find( @params[:assignment] )
+    @assignment = Assignment.find( params[:assignment] )
     return unless assignment_in_course( @course, @assignment )
     return unless assignment_uses_autograde( @course, @assignment )
     

@@ -177,7 +177,7 @@ class TeamController < ApplicationController
     @team = ProjectTeam.find( params[:id] )
     return unless on_team_or_instructor( @course, @team, @user )  
    
-    @page = @params[:page].to_i
+    @page = params[:page].to_i
     @page = 1 if @page.nil? || @page == 0
     @email_pages = Paginator.new self, TeamEmail.count(:conditions => ["project_team_id = ?", @team.id ]), 50, @page
     @emails = TeamEmail.find(:all, :conditions => ["project_team_id = ?", @team.id ], :order => 'created_at DESC', :limit => 50, :offset => @email_pages.current.offset)

@@ -7,7 +7,7 @@ class Public::BlogController < ApplicationController
     return unless load_course( params[:course] )
     return unless course_is_public( @course )
     
-    @page = @params[:page].to_i
+    @page = params[:page].to_i
     @page = 1 if @page.nil? || @page == 0
     @post_pages = Paginator.new self, Post.count(:conditions => ["course_id = ? and published = ?", @course.id, true]), 10, @page
     @posts = Post.find(:all, :conditions => ['course_id = ? and published = ?', @course.id, true], :order => 'created_at DESC', :limit => 10, :offset => @post_pages.current.offset)

@@ -8,7 +8,7 @@ class Public::DocumentsController < ApplicationController
     return unless course_is_public( @course )
     return unless load_folder( params[:id].to_i )
   
-    @page = @params[:page].to_i
+    @page = params[:page].to_i
     @page = 1 if @page.nil? || @page == 0
     @document_pages = Paginator.new self, Document.count(:conditions => ["course_id = ? and published = ? and document_parent = ?", @course.id, true, @folder_id]), 25, @page
     @documents = Document.find(:all, :conditions => ['course_id = ? and published = ? and document_parent = ?', @course.id, true, @folder_id], :order => 'position', :limit => 25, :offset => @document_pages.current.offset)  

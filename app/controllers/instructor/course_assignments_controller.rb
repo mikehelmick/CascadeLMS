@@ -112,7 +112,7 @@ class Instructor::CourseAssignmentsController < Instructor::InstructorBase
     return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_assignments' )
     return unless course_open( @course, :action => 'index' )
     
-    @assignment = Assignment.find @params['id'] rescue @assignment = Assignment.new
+    @assignment = Assignment.find params['id'] rescue @assignment = Assignment.new
     return unless assignment_in_course( @course, @assignment )
     
     (@course.assignments.to_a.find {|s| s.id == @assignment.id}).move_higher
@@ -125,7 +125,7 @@ class Instructor::CourseAssignmentsController < Instructor::InstructorBase
     return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_assignments' )
     return unless course_open( @course, :action => 'index' )
     
-    @assignment = Assignment.find @params['id'] rescue @assignment = Assignment.new
+    @assignment = Assignment.find params['id'] rescue @assignment = Assignment.new
     return unless assignment_in_course( @course, @assignment )
     
     (@course.assignments.to_a.find {|s| s.id == @assignment.id}).move_lower
@@ -138,7 +138,7 @@ class Instructor::CourseAssignmentsController < Instructor::InstructorBase
     return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_assignments' )
     return unless course_open( @course, :action => 'index' )
     
-    @assignment = Assignment.find( @params['id'] )
+    @assignment = Assignment.find( params['id'] )
     return unless assignment_in_course( @course, @assignment )
     
     @assignment.assignment_documents.each { |x| x.delete_file( @app['external_dir'] ) }
@@ -152,7 +152,7 @@ class Instructor::CourseAssignmentsController < Instructor::InstructorBase
     return unless load_course( params[:course] )
     return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_assignments' )
     return unless course_open( @course, :action => 'index' )
-    @assignment = Assignment.find( @params['id'] )
+    @assignment = Assignment.find( params['id'] )
     return unless assignment_in_course( @course, @assignment )
     return unless assignment_uses_autograde( @course, @assignment )  
     
@@ -168,7 +168,7 @@ class Instructor::CourseAssignmentsController < Instructor::InstructorBase
     return unless load_course( params[:course] )
     return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_assignments' )
     return unless course_open( @course, :action => 'index' )
-    @assignment = Assignment.find( @params['id'] )
+    @assignment = Assignment.find( params['id'] )
     return unless assignment_in_course( @course, @assignment )
     return unless assignment_uses_autograde( @course, @assignment )  
     
@@ -186,7 +186,7 @@ class Instructor::CourseAssignmentsController < Instructor::InstructorBase
     return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_assignments' )
     return unless course_open( @course, :action => 'index' )
     
-    @assignment = Assignment.find( @params['id'] )
+    @assignment = Assignment.find( params['id'] )
     return unless assignment_in_course( @course, @assignment )   
     
     @journal_field = @assignment.journal_field
@@ -199,7 +199,7 @@ class Instructor::CourseAssignmentsController < Instructor::InstructorBase
     return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_assignments' )
     return unless course_open( @course, :action => 'index' )
     
-    @assignment = Assignment.find( @params['id'] )
+    @assignment = Assignment.find( params['id'] )
     return unless assignment_in_course( @course, @assignment )
     
     begin
@@ -238,7 +238,7 @@ class Instructor::CourseAssignmentsController < Instructor::InstructorBase
       return unless load_course( params[:course] )
       return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_assignments' )
       return unless course_open( @course, :action => 'index' )
-      @assignment = Assignment.find( @params['id'] )
+      @assignment = Assignment.find( params['id'] )
       return unless assignment_in_course( @course, @assignment )
       return unless assignment_uses_autograde( @course, @assignment )
       return unless assignment_uses_pmd( @course, @assignment )
@@ -268,12 +268,12 @@ class Instructor::CourseAssignmentsController < Instructor::InstructorBase
     return unless load_course( params[:course] )
     return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_assignments' )
     return unless course_open( @course, :action => 'index' )
-    @assignment = Assignment.find( @params['id'] )
+    @assignment = Assignment.find( params['id'] )
     return unless assignment_in_course( @course, @assignment )
     return unless assignment_uses_autograde( @course, @assignment )
     return unless assignment_uses_pmd( @course, @assignment )
     
-    @copy_from = Assignment.find( @params['copy_from_id'])   
+    @copy_from = Assignment.find( params['copy_from_id'])   
     return unless assignment_in_course( @course, @copy_from )
     return unless assignment_uses_autograde( @course, @copy_from )
     return unless assignment_uses_pmd( @course, @copy_from )
@@ -299,7 +299,7 @@ class Instructor::CourseAssignmentsController < Instructor::InstructorBase
     return unless load_course( params[:course] )
     return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_assignments' )
     return unless course_open( @course, :action => 'index' )
-    @assignment = Assignment.find( @params['id'] )
+    @assignment = Assignment.find( params['id'] )
     return unless assignment_in_course( @course, @assignment )
     return unless assignment_uses_autograde( @course, @assignment )
     return unless assignment_uses_pmd( @course, @assignment )
@@ -339,10 +339,10 @@ class Instructor::CourseAssignmentsController < Instructor::InstructorBase
     return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_assignments' )
     return unless course_open( @course, :action => 'index' )
     
-    @assignment = Assignment.find @params[:id] rescue @assignment = Assignment.new
+    @assignment = Assignment.find params[:id] rescue @assignment = Assignment.new
     return unless assignment_in_course( @course, @assignment )
     
-    @document = AssignmentDocument.find( @params[:document] ) rescue @document = AssignmentDocument.new
+    @document = AssignmentDocument.find( params[:document] ) rescue @document = AssignmentDocument.new
     return unless document_in_assignment( @document, @assignment )
     
     (@assignment.assignment_documents.to_a.find {|s| s.id == @document.id}).move_higher
@@ -355,10 +355,10 @@ class Instructor::CourseAssignmentsController < Instructor::InstructorBase
     return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_assignments' )
     return unless course_open( @course, :action => 'index' )
     
-    @assignment = Assignment.find( @params[:id] ) rescue @assignment = Assignment.new
+    @assignment = Assignment.find( params[:id] ) rescue @assignment = Assignment.new
     return unless assignment_in_course( @course, @assignment )
     
-    @document = AssignmentDocument.find( @params[:document] ) rescue @document = AssignmentDocument.new
+    @document = AssignmentDocument.find( params[:document] ) rescue @document = AssignmentDocument.new
     return unless document_in_assignment( @document, @assignment )
     
     (@assignment.assignment_documents.to_a.find {|s| s.id == @document.id}).move_lower
@@ -371,10 +371,10 @@ class Instructor::CourseAssignmentsController < Instructor::InstructorBase
     return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_assignments' )
     return unless course_open( @course, :action => 'index' )
     
-    @assignment = Assignment.find( @params[:id] ) rescue @assignment = Assignment.new
+    @assignment = Assignment.find( params[:id] ) rescue @assignment = Assignment.new
     return unless assignment_in_course( @course, @assignment )
     
-    @document = AssignmentDocument.find( @params[:document] ) rescue @document = AssignmentDocument.new
+    @document = AssignmentDocument.find( params[:document] ) rescue @document = AssignmentDocument.new
     return unless document_in_assignment( @document, @assignment )
     
     if @assignment.assignment_documents.size == 1 && (@assignment.description.nil? || @assignment.description.size == 0)
@@ -389,10 +389,10 @@ class Instructor::CourseAssignmentsController < Instructor::InstructorBase
     return unless load_course( params[:course] )
     return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_assignments' )
     
-    @assignment = Assignment.find( @params[:id] ) rescue @assignment = Assignment.new
+    @assignment = Assignment.find( params[:id] ) rescue @assignment = Assignment.new
     return unless assignment_in_course( @course, @assignment )
     
-    @document = AssignmentDocument.find( @params[:document] ) rescue @document = AssignmentDocument.new
+    @document = AssignmentDocument.find( params[:document] ) rescue @document = AssignmentDocument.new
     return unless document_in_assignment( @document, @assignment )
     
     begin  
