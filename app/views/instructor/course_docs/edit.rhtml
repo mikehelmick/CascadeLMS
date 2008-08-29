@@ -7,12 +7,12 @@
 <% end %>
 
 <div id="form_area">
-<%= start_form_tag( { :action => 'update', :id => @document, :folder => @folder_id }, :multipart => true )%>
+<% form_tag( { :action => 'update', :id => @document, :folder => @folder_id }, :multipart => true ) do %>
   <%= render :partial => 'form' %>
 <div class="submit"> 
   <%= submit_tag 'Edit' %>
 </div>
-<%= end_form_tag %>
+<% end %>
 
 </div>
 

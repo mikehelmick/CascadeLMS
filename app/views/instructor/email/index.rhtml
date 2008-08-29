@@ -3,7 +3,7 @@
 <h3>Send Email to users (select below)</h3>
 
 <div id="form_area">
-<%= start_form_tag :action => 'send_email', :id => nil %>
+<% form_tag( :action => 'send_email', :id => nil ) do %>
 
 <hr/>
 <h2>TA/Grader(s) for <%= @course.title %></h2>
@@ -51,7 +51,7 @@
 <div class="submit">
   <%= submit_tag 'Send Email' %>
 </div>
-<%= end_form_tag %>
+<% end %>
 </div>
 
 <hr/>

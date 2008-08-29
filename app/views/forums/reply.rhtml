@@ -15,14 +15,14 @@
 <% end %>
 
 <div id="form_area">
-<%= start_form_tag :action => 'submit_post' %>
+<% form_tag( :action => 'submit_post' ) do %>
   <%= hidden_field_tag 'topic', @topic.id %>
   <%= hidden_field_tag 'parent', @parent.id %>
   <%= render :partial => 'post_form' %>
 <div class="submit">
   <%= submit_tag "Submit Reply" %>
 </div>
-<%= end_form_tag %>
+<% end %>
 
 </div>
 

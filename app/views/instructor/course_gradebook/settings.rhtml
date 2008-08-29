@@ -1,6 +1,6 @@
 <div id="form_area">
 
-<%= start_form_tag :action => 'save_settings', :id => @course %>
+<% form_tag( :action => 'save_settings', :id => @course ) do %>
 <h2>Edit Grade Book Settings for <%= @course.title %></h2>
 
   <%= error_messages_for 'gradebook' %>
@@ -23,7 +23,7 @@
 <div class="submit">
   <%= submit_tag 'Save Settings' %>
 </div>
-<%= end_form_tag %>
+<% end %>
 </div>
 
 <%= link_to 'Cancel', :controller => '/instructor/course_gradebook', :course => @course, :action => 'index' %>

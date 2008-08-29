@@ -30,7 +30,7 @@
     <td>To: <%=h announcement.end %></td>
     <td><%= link_to 'Show', :action => 'show', :id => announcement %> |
 	    <%= link_to 'Edit', :action => 'edit', :id => announcement %> |
-	    <%= link_to 'Destroy', { :action => 'destroy', :id => announcement }, :confirm => 'Are you sure?', :post => true %></td>
+	    <%= link_to 'Destroy', { :action => 'destroy', :id => announcement }, :confirm => 'Are you sure?', :method => :post %></td>
   </tr>
   <tr>
 	<td colspan="4">

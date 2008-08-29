@@ -2,12 +2,12 @@
 <h2>New project team for <%= @course.title %></h2>
 <p><%= link_to 'Cancel', :course => @course, :controller => '/instructor/teams' %></p>
 
-<%= start_form_tag :action => 'create' %>
+<% form_tag( :action => 'create' ) %>
   <%= render :partial => 'form' %>
 <div class="submit">
   <%= submit_tag "Create" %>
 </div>
-<%= end_form_tag %>
+<% end %>
 
 </div>
 

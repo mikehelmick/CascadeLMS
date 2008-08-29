@@ -32,7 +32,7 @@
 <hr/>
 
 <div id="form_area">
-<%= start_form_tag :action => 'load_crns' %>
+<% form_tag( :action => 'load_crns' ) do %>
 <h2>Load new CRNs from external source</h2>
 
 <div class="block_intro">
@@ -47,5 +47,5 @@ The subjects to load are a space separated list of the subjects areas to load CR
 <div class="submit">
   <%= submit_tag "Load..." %>
 </div>
-<% end_form_tag %>
+<% end %>
 </div>

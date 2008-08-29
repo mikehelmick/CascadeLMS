@@ -10,7 +10,7 @@
 
 <div id="form_area">
   <%= error_messages_for 'comment' %>	
-  <%= start_form_tag :action => 'comment', :id => @post %>
+  <% form_tag( :action => 'comment', :id => @post ) do %>
 
    <div class="block">
 	<p><label for="comment_body" class="required">Your Comment:</label>
@@ -20,7 +20,7 @@
   <div class="submit">
 	<%= submit_tag "Leave Comment" %>
   </div>
-  <%= end_form_tag %>	
+  <% end %>	
 </div>
 
 </div>

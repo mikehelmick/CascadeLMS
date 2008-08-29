@@ -5,13 +5,13 @@
 <% unless @attending_current %>
 <h2>Record You Attendance</h2>
 <div id="form_area">
-<%= start_form_tag :action => 'record_attendance' %>
+<% form_tag( :action => 'record_attendance' ) do %>
 <p><label for="key"  class="required">Class Key: </label>
 <%= text_field_tag 'key'  %> (<i>Key is only available in the classroom.</i>)</p>
 <div class="submit">
   <%= submit_tag "I'm Here!" %>
 </div>
-<% end_form_tag %>
+<% end %>
 </div>
 <% end %>
 <% end %>

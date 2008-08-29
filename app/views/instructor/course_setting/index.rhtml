@@ -1,6 +1,6 @@
 <div id="form_area">
 
-<%= start_form_tag :action => 'update', :id => @course %>
+<% form_tag( :action => 'update', :id => @course ) do %>
 <h2>Edit Settings for <%= @course.title %></h2>
 
   <%= render :partial => 'form' %>
@@ -8,7 +8,7 @@
 <div class="submit">
   <%= submit_tag 'Save Settings' %>
 </div>
-<%= end_form_tag %>
+<% end %>
 </div>
 
 <%= link_to 'Cancel', :controller => '/instructor/index', :course => @course, :action => 'index' %>

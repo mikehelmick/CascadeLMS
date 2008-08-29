@@ -5,12 +5,12 @@
 <p><b>Creating new post</b> | <%= link_to 'Cancel', :action => 'view_topic', :id => @topic.id %></p>
 
 <div id="form_area">
-<%= start_form_tag :action => 'submit_post', :topic => @topic.id %>
+<% form_tag( :action => 'submit_post', :topic => @topic.id ) do %>
   <%= render :partial => 'post_form' %>
 <div class="submit">
   <%= submit_tag "Submit Post" %>
 </div>
-<%= end_form_tag %>
+<% end %>
 
 </div>
 

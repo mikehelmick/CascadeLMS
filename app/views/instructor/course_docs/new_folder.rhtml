@@ -7,13 +7,13 @@
 <% end %>
 
 <div id="form_area">
-<%= start_form_tag( :action => 'create_folder', :id => @folder_id ) %>
+<% form_tag( :action => 'create_folder', :id => @folder_id ) do %>
   <%= render :partial => 'folder_form' %>
 
 <div class="submit">
   <%= submit_tag "Create Folder" %>
 </div>
-<%= end_form_tag %>
+<% end %>
 
 </div>
 

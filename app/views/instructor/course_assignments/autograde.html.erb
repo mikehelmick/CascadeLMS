@@ -9,7 +9,7 @@
 
 <div id="form_area">
 
-<%= start_form_tag( { :action => 'save_autograde', :id => @assignment } ) %>
+<% form_tag( { :action => 'save_autograde', :id => @assignment } ) do %>
 
 <div class="blockintro">Java style checking using PMD.</div>
 <div class="block">
@@ -61,7 +61,7 @@
   <div id="button"><%= submit_tag "Save AutoGrade Settings" %></div>
 </div>
 
-<%= end_form_tag %>
+<% end %>
 
 <p><%= link_to 'Back', :action => 'index' %></p>
 

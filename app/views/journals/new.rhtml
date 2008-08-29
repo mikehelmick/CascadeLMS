@@ -9,12 +9,12 @@
 <b>Assignment:</b> <%=h @assignment.title %>
 </p>
 
-<%= start_form_tag :action => 'create', :course => @course, :assignment => @assignment %>
+<% form_tag( :action => 'create', :course => @course, :assignment => @assignment ) do %>
   <%= render :partial => 'form' %>
 <div class="submit">
   <%= submit_tag "Create" %>
 </div>
-<%= end_form_tag %>
+<% end %>
 
 <%= link_to 'Back', :controller => 'assignments', :action => 'view', :course => @course, :assignment => nil, :id => @assignment %>
 

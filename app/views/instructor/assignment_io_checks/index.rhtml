@@ -29,7 +29,7 @@
 		 <td><% if check.show_input %><%= image_tag 'thumb_up.png' %> Yes <% else %><%= image_tag 'thumb_down.png' %> No <%end %></td>
 		 <td>
 		   <%= link_to 'Edit', :action => 'edit', :id => check, :course => @course, :assignment => @assignment %> |
-		   <%= link_to 'Delete', { :action => 'destroy', :id => check, :course => @course, :assignment => @assignment  }, :confirm => "Are you sure you want to delete the I/O Test '#{check.name}' and all of it's associated data including reports of previously run student code? This action can no be undone.", :post => true %>	
+		   <%= link_to 'Delete', { :action => 'destroy', :id => check, :course => @course, :assignment => @assignment  }, :confirm => "Are you sure you want to delete the I/O Test '#{check.name}' and all of it's associated data including reports of previously run student code? This action can no be undone.", :method => :post %>	
 		 
 		 </td>
       </tr>

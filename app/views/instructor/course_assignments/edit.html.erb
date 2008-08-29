@@ -6,7 +6,7 @@
 
 <div id="form_area">
 
-<%= start_form_tag( { :action => 'update', :id => @assignment }, :multipart => true, :onsubmit => "new Element.toggle('button'); new Element.toggle( 'spinner');" ) %>
+<% form_tag( { :action => 'update', :id => @assignment }, :multipart => true, :onsubmit => "new Element.toggle('button'); new Element.toggle( 'spinner');" ) do %>
 
   <%= render :partial => 'form', :locals => { :edit_mode => true } %>
 
@@ -15,7 +15,7 @@
   <div id="spinner" style="display: none;"><%= image_tag 'spinner.gif' %></div>
 </div>
 
-<%= end_form_tag %>
+<% end %>
 
 <p><%= link_to 'Back', :action => 'index' %></p>
 

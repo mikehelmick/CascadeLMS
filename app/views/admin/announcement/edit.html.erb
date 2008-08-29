@@ -1,6 +1,6 @@
 <div id="form_area">
 
-<%= start_form_tag :action => 'update', :id => @announcement %>
+<% form_tag( :action => 'update', :id => @announcement ) do %>
   <h2>Editing announcement</h2>
 
   <%= render :partial => 'form' %>
@@ -8,7 +8,7 @@
   <div class="submit">
     <%= submit_tag "Edit" %>
   </div>
-<%= end_form_tag %>
+<% end %>
 
 <%= link_to 'Show', :action => 'show', :id => @announcement %> |
 <%= link_to 'Back', :action => 'list' %>

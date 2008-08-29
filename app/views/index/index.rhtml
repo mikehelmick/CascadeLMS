@@ -13,7 +13,7 @@
 
 
 <div id="form_area">
-<%= start_form_tag :action => 'login' %>
+<% form_tag( :action => 'login' ) do %>
   <h2>Please login</h2>
   <p class="blockintro">Please enter your username and password.</p>
   <div class="block">
@@ -32,7 +32,7 @@
     <%= submit_tag 'Login', 'tabindex' => '3' %>
   </div>
 
-<%= end_form_tag %>
+<% end %>
 </div>
 
 <h2>Public Access</h2>

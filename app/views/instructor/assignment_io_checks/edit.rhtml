@@ -4,13 +4,13 @@
 
 <div id="form_area">
 
-<%= start_form_tag :action => 'update', :id => @io_check  %>
+<% form_tag( :action => 'update', :id => @io_check ) do %>
   <%= render :partial => 'form' %>
  
   <div class="submit">
     <%= submit_tag "Save Changes" %>
   </div>
-<%= end_form_tag %>
+<% end %>
 
 </div>
 

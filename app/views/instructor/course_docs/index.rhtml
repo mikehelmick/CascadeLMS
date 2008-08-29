@@ -82,9 +82,9 @@
       <% end %>
 
       <% if document.folder %>
-        <%= link_to 'Delete', { :action => 'destroy', :id => document }, :confirm => 'Are you sure you want to permanently delete this folder AND ALL NEXTED FOLDERS AND DOCUMENTS.  This action can not be undone.?', :post => true %>
+        <%= link_to 'Delete', { :action => 'destroy', :id => document }, :confirm => 'Are you sure you want to permanently delete this folder AND ALL NEXTED FOLDERS AND DOCUMENTS.  This action can not be undone.?', :method => :post %>
       <%else %> 
-        <%= link_to 'Delete', { :action => 'destroy', :id => document }, :confirm => 'Are you sure you want to permanently delete this file?  This action can not be undone.', :post => true %>
+        <%= link_to 'Delete', { :action => 'destroy', :id => document }, :confirm => 'Are you sure you want to permanently delete this file?  This action can not be undone.', :method => :post %>
       <% end %></td>
   </tr>
 <% end %>

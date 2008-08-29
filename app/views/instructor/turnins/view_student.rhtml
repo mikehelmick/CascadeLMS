@@ -215,7 +215,7 @@ Last Updated: <%= @display_turnin.updated_at.to_formatted_s(:friendly_date) %><b
 <p><i>Warning - this assignment is not connected with an entry in the GradeBook.</i></p>
 <% else %>
   <div id="form_area">
-  <%= start_form_tag :action => 'submit_grade', :id => @student, :course => @course, :assignment => @assignment %>
+  <% form_tag( :action => 'submit_grade', :id => @student, :course => @course, :assignment => @assignment ) do %>
     <%= error_messages_for 'grade_entry' %>    
 
 	<p class="blockintro">You can enter general assignment comments here.   You also have the ability to comment on individual files below as well as to make annotations tied to specific line numbers for text files.   <b>If you enter a negative point value, the student's grade for this assignment will be deleted (including the comments entered below).</b> Leaving the points value blank, results in a score of zero.</p>
@@ -241,7 +241,7 @@ Last Updated: <%= @display_turnin.updated_at.to_formatted_s(:friendly_date) %><b
 	     <%= submit_tag "Save Grade and Go to Next Student"%>
 	  </div>
 	</div>
-  <%= end_form_tag %>
+  <% end %>
   </div>
 
 <% end %>

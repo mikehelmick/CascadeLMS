@@ -3,7 +3,7 @@
 <div id="form_area">
 <p><%= link_to 'Cancel', :course => @course, :controller => '/instructor/teams' %></p>
 
-<%= start_form_tag :action => 'update_team_members', :id => @team %>
+<% form_tag( :action => 'update_team_members', :id => @team ) do %>
 
 <table class="fancy">
   <tr class="header">
@@ -37,7 +37,7 @@
 <div class="submit">
   <%= submit_tag 'Save Team Members' %>
 </div>
-<%= end_form_tag %>
+<% end %>
 
 </div>
 

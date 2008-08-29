@@ -4,7 +4,7 @@
 <h3>for course '<%= @course.title %>'</h3>
 
 
-<%= start_form_tag :action => 'save_grades', :course => @course, :id => @grade_item %>
+<% form_tag( :action => 'save_grades', :course => @course, :id => @grade_item ) %>
 <div class="block">
 
 <% if @students.size == 0 %>
@@ -50,7 +50,7 @@
 <div class="submit">
   <%= submit_tag 'Save Grades' %>
 </div>
-<%= end_form_tag %>
+<% end %>
 
 
 <%= link_to 'Cancel / Back to Grade Book', :controller => '/instructor/course_gradebook', :course => @course, :action => 'index' %>

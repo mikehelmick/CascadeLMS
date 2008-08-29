@@ -28,13 +28,13 @@
   </tr>
 
   <tr class="<%=odd%> hover" id="setting_<%=setting.id%>" style="display: none;">
-	<td align="right"><b>Edit '<%=h setting.name %>'</b><br/><%= image_tag 'cog' %></td>
+	<td align="right"><b>Edit '<%=h setting.name %>'</b><br/><%= image_tag 'cog.png' %></td>
     <td colspan="2">
-    	<%= form_remote_tag :url => { :controller => "/admin/settings", :action => "update", :id => setting.id }, :success => "new Effect.Highlight( 'setting_#{setting.id}' );", :failure => "alert('There was an error saving the setting \"#{setting.name}\".');", :update => "main_#{setting.id}"  %>
+    	<% form_remote_tag( :url => { :controller => "/admin/settings", :action => "update", :id => setting.id }, :success => "new Effect.Highlight( 'setting_#{setting.id}' );", :failure => "alert('There was an error saving the setting \"#{setting.name}\".');", :update => "main_#{setting.id}" ) do  %>
            
 		   <%= text_area_tag 'value', setting.value, "cols" => 90, "rows" => 4 %> 
            <%= submit_tag "Update" %>
-        <%= end_form_tag %>
+        <% end %>
     </td>
   </tr>
 

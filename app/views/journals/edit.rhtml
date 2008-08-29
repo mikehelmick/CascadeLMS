@@ -11,12 +11,12 @@
 </p>
 
 
-<%= start_form_tag :action => 'update', :course => @course, :assignment => @assignment,  :id => @journal %>
+<% form_tag( :action => 'update', :course => @course, :assignment => @assignment,  :id => @journal ) do %>
   <%= render :partial => 'form' %>
 <div class="submit">
   <%= submit_tag 'Edit' %>
 </div>
-<%= end_form_tag %>
+<% end %>
 
 <%= link_to 'Back', :controller => 'assignments', :action => 'view', :course => @course, :assignment => nil, :id => @assignment %>
 </div>

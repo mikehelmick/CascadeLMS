@@ -22,7 +22,7 @@
     <td><%=h programming_language.name %></td>
     <td><%= link_to 'Show', :action => 'show', :id => programming_language %> |
         <%= link_to 'Edit', :action => 'edit', :id => programming_language %> |
-        <%= link_to 'Destroy', { :action => 'destroy', :id => programming_language }, :confirm => 'Are you sure?', :post => true %></td>
+        <%= link_to 'Destroy', { :action => 'destroy', :id => programming_language }, :confirm => 'Are you sure?', :method => :post %></td>
   </tr>
 <% end %>
 </table>

@@ -1,10 +1,10 @@
 <div id="form_area">
-<%= form_remote_tag( :update => 'courses', :url => { :action => :change_term }, :complete => "new Effect.BlindDown('courses')" ) %>
+<% form_remote_tag( :update => 'courses', :url => { :action => :change_term }, :complete => "new Effect.BlindDown('courses')" )do  %>
 <div id="block">
 <label for="id">Term:</label> <%= select_tag 'id', options_from_collection_for_select(@terms, "id", "semester", @current_term.id ) %> 
-<%= submit_tag 'Change Term', :on_click => "new Effect.BlindUp('courses')" %><br/>
+<%= submit_tag( 'Change Term', :on_click => "new Effect.BlindUp('courses')" ) %><br/>
 </div>
-<%= end_form_tag %>
+<% end %>
 </div>
 
 <%= link_to 'Create a New Course', :action => 'new' %> | 

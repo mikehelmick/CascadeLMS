@@ -2,7 +2,7 @@
 
 <div id="form_area">
 
-<%= start_form_tag :action => 'save_weights', :id => @course %>
+<% form_tag( :action => 'save_weights', :id => @course ) do %>
 
 <p class="blockintro">Enter category weights, they must total 100%</p>
 <table class="fancy">
@@ -29,7 +29,7 @@
 <div class="submit">
   <%= submit_tag 'Save Weights' %>
 </div>
-<%= end_form_tag %>
+<% end %>
 </div>
 
 <%= link_to 'Cancel', :controller => '/instructor/course_gradebook', :course => @course, :action => 'index' %>

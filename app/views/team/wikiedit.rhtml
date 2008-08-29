@@ -8,7 +8,7 @@
 <h2>Editing Wiki page '<%= @page.page %>'</h2>
 <p><%= link_to 'Cancel', :course => @course, :action => 'wiki', :id => @team, :page => @page.page %></p>
 
-<%= start_form_tag :action => 'wikisave', :id => @team, :page => @page.page %>
+<% form_tag( :action => 'wikisave', :id => @team, :page => @page.page ) %>
   
 
 <%= render :partial => 'forums/formatting', :locals => { :wiki => true }%>
@@ -21,7 +21,7 @@
 <div class="submit">
   <%= submit_tag 'Save Changes' %>
 </div>
-<%= end_form_tag %>
+<% end %>
 
 </div>
 

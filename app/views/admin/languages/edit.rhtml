@@ -1,12 +1,12 @@
 <h2>Editing Programming Language '<%= @programming_language.name %>'</h2>
 
 <div id="form_area">
-<%= start_form_tag :action => 'update', :id => @programming_language %>
+<% form_tag( :action => 'update', :id => @programming_language ) do %>
   <%= render :partial => 'form' %>
 <div class="submit">
   <%= submit_tag 'Edit' %>
 </div>
-<%= end_form_tag %>
+<% end %>
 
 </div>
 <%= link_to 'Show', :action => 'show', :id => @programming_language %> |

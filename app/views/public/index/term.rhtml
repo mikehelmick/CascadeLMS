@@ -5,9 +5,9 @@ options = ""
 @terms.each { |x| options = "#{options} <option value=\"#{x.id}\" #{"selected=\"selected\"" if @term.id==x.id}> #{x.semester.capitalize} #{ '(CURRENT)' if x.current }</option>" }
 %>
 
-<%= start_form_tag( { :action => 'cterm', :id => nil}, :method => :post ) %>
+<% form_tag( { :action => 'cterm', :id => nil}, :method => :post ) do %>
 <p><b>View Term: <%= select_tag 'id', options %></b> <%= submit_tag "Change" %>
-<%= end_form_tag %>
+<% end %>
 
 <% if @term.current %>
   <div class="GoodMessage" align="center"><b>'<%=@term.semester%>' is the current term.</b></div>

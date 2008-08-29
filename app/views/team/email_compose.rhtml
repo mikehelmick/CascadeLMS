@@ -6,7 +6,7 @@
 <h2>Send new email to team '<%= @team.name %>'</h2>
 <p><%= link_to 'Cancel', :course => @course, :action => 'email', :id => @team %></p>
 
-<%= start_form_tag :action => 'email_send', :id => @team %>
+<% form_tag( :action => 'email_send', :id => @team ) do %>
  
 <%= error_messages_for 'email' %>
 
@@ -21,6 +21,6 @@
 <div class="submit">
   <%= submit_tag 'Send Email' %>
 </div>
-<%= end_form_tag %>
+<% end %>
 
 </div>

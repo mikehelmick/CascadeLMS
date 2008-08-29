@@ -12,7 +12,7 @@
 <p>This file is marked as the Java main class for this turn-in.   This gives you the option to simply compile and run this single file.  If you need to pull in more source files, consider configuring AutoGrade for this assignment.</p>
 <p>Before compiling and running this file - please check the file for malicious code (deletion/creation of files, network usage, System.exec, infinite loops).  <b>Code that expects more input than is provided will not terminate.</b></p>
 
-<%= start_form_tag( {:course => @course, :assignment => @assignment, :student => @student, :action => 'view_file', :id => @utf }, :onsubmit => "new Element.toggle('button');new Element.toggle( 'spinner');" ) %>
+<% form_tag( {:course => @course, :assignment => @assignment, :student => @student, :action => 'view_file', :id => @utf }, :onsubmit => "new Element.toggle('button');new Element.toggle( 'spinner');" ) do %>
   <%= hidden_field_tag 'execute_java', true %>
 <p>
 
@@ -24,7 +24,7 @@
   
  <div id='button'><%= submit_tag 'Compile and Execute this file' %></div>
  <div id='spinner' style="display:none;"><%= image_tag 'spinner.gif' %></div>
-<%= end_form_tag %>
+<% end %>
 </div>
 <% end %>
 
@@ -98,9 +98,9 @@
        end %>
     <tr id="comments_line_<%=line_num%>" style="<%= comment_style %>">
       <td colspan="4" class="formcell">
- 		<%= form_remote_tag :url => { :controller => "/instructor/turnins", :action => "file_comment", :course => @course, :assignment => @assignment, :student => @student, :id => @utf.id }, :success => "new Effect.Highlight( 'line_#{line_num}' );", :failure => "alert('There was an error saving the comment for line #{line_num}, please refresh the page.');", :update => "status_#{line_num}"  %>
+ 		<% form_remote_tag( :url => { :controller => "/instructor/turnins", :action => "file_comment", :course => @course, :assignment => @assignment, :student => @student, :id => @utf.id }, :success => "new Effect.Highlight( 'line_#{line_num}' );", :failure => "alert('There was an error saving the comment for line #{line_num}, please refresh the page.');", :update => "status_#{line_num}" ) do %>
 <!-- 
-        <%= form_tag( :controller => "/instructor/turnins", :action => "file_comment", :course => @course, :assignment => @assignment, :student => @student, :id => @utf.id ) %> -->
+        <% form_tag( :controller => "/instructor/turnins", :action => "file_comment", :course => @course, :assignment => @assignment, :student => @student, :id => @utf.id ) %> -->
            <%= hidden_field_tag 'line', line_num.to_s %>
            <% if @comments[line_num] %>
              <i>Comment by <%= @comments[line_num].user.display_name %></i><br/>
@@ -109,7 +109,7 @@
              <%= text_area_tag 'comments', '', "cols" => 120, "rows" => 8 %>
            <% end %>
            <%= submit_tag "Save Comments for line #{line_num}" %>
-        <%= end_form_tag %>
+        <% end %>
       </td>
     </tr>
     <% if @styles[line_num] %>
