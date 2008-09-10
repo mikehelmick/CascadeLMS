@@ -29,7 +29,7 @@ require 'MyString'
 # Likewise, all the methods added will be available for all controllers.
 class ApplicationController < ActionController::Base
   ## CSCW Application version
-  @@VERSION = '1.0.0 () 20080330'
+  @@VERSION = '1.0.0 (To The Light) 20080828'
   
   ## Supress password logging
   filter_parameter_logging :password
@@ -375,9 +375,9 @@ class ApplicationController < ActionController::Base
       return @user         
     else  
       # the user does not exist or the password was wrong 
-      @response.headers["Status"] = "Unauthorized" 
-      @response.headers["WWW-Authenticate"] = "Basic realm=\"#{realm}\"" 
-      render_text(errormessage, 401)     
+      response.headers["Status"] = "Unauthorized" 
+      response.headers["WWW-Authenticate"] = "Basic realm=\"#{realm}\"" 
+      #render_text(errormessage, 401)     
       nil  
     end 
   end 

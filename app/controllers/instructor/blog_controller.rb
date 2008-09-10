@@ -9,7 +9,7 @@ class Instructor::BlogController < Instructor::InstructorBase
   end
 
   # GETs should be safe (see http://www.w3.org/2001/tag/doc/whenToUseGet.html)
-  verify :method => :post, :only => [ :destroy, :create, :update ],
+  verify :method => :post, :only => [ :destroy, :create, :update, :delete_comment ],
          :redirect_to => { :action => :list }
 
   def list
@@ -86,7 +86,7 @@ class Instructor::BlogController < Instructor::InstructorBase
   def delete_comment
     return unless load_course( params[:course ] )
     return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_blog_edit' )
-    post = Post.find(params[:post])
+    post = Post.find(params[:post_id])
     return unless post_in_course( @course, post )
     return unless course_open( @course, :action => 'index' )
   

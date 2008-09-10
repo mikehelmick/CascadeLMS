@@ -8,6 +8,7 @@ class Admin::IndexController < ApplicationController
   end
   
   def set_tab
+    @title = "CSCW Administration"
     @tab = 'administration'
   end
   

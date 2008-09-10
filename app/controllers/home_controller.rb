@@ -25,6 +25,15 @@ class HomeController < ApplicationController
     @other_courses.delete_if { |x| x.term.id == @term.id }
   end
   
+  def courses
+    set_tab
+    
+    @title = "All courses for #{@user.display_name}"
+    
+    @courses = @user.courses
+    @courses.sort! { |x,y| y.term.term <=> x.term.term }
+  end
+  
   def account
     return unless ensure_basic_auth
     

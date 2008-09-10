@@ -5,7 +5,11 @@ xml.rss "version" => "2.0", "xmlns:dc" => "http://purl.org/dc/elements/1.1" do
 	xml.link_for url_for( :only_path => false,
 	                      :controller => '/overview',
 	                      :course => @course )
-	xml.pubDate CGI.rfc1123_date(@fresh_date)
+	if @fresh_date.nil?
+	  xml.putDate DateTime.now().new_offset(0)
+	else
+	  xml.pubDate CGI.rfc1123_date(@fresh_date)
+	end
 	xml.description("Information about the course '#{@course.title}' (#{@course.term.semester}) at #{@app['organization']}")
 	@recent_activity.each do |recent|
 		xml.item do

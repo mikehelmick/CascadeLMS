@@ -1,6 +1,6 @@
 
 body {
-	background: #DCDDDE;
+	background: #EEEECE;
 	font-family: Verdana, Arial, Helvetica, sans-serif;
 	font-size: 11px;
 	margin: 0;
@@ -102,7 +102,7 @@ div.Right .col {
 }
 
 .left a:hover {
-	color: #990000;
+	color: #1463B4;
 }
 
 
@@ -131,7 +131,7 @@ div#navcontainer {
 	width: auto;
 	margin: 0 auto;
 	padding: 0 15px 0 0;
-	background-color: #990000;
+	background-color: #1463B4;
 	border-bottom: 1px solid #FFFFFF;
 }
 div#navcontainer ul {
@@ -153,12 +153,12 @@ div#navcontainer ul li a {
 	padding: 5px 10px 5px 10px;
 	color: #000;
 	text-decoration: none;
-	background-color: #fc0;
+	background-color: #DCDDDE;
 }
 
 div#navcontainer ul li a#current {
 	padding: 5px 10px 5px 10px;
-	background-color: #DCDDDE;
+	background-color: #FF9201;
 	color: #000000;
 	text-decoration: none;
 	border-left: 1px solid #fff;
@@ -168,7 +168,7 @@ div#navcontainer ul li a#current {
 }
 
 div#navcontainer ul li a:hover {
-	background-color: #DCDDDE;
+	background-color: #FF9201;
 	color: #000000;
 	text-decoration: none;
 }
@@ -200,7 +200,7 @@ div#headerright a:hover {
 	text-decoration: underline;
 }
 
-#active a { border-left: 1px solid #990000; }
+#active a { border-left: 1px solid #1463B4; }
 
 
 /** ERRORS **/
@@ -407,7 +407,7 @@ div.Right .col h2 {
 .sub_form {
 	margin: 5px 0 0 10px;
 	padding: 0 0 0 5px;
-	border-left: 2px solid #990000;
+	border-left: 2px solid #1463B4;
 }
 
 /** table **/
@@ -420,7 +420,7 @@ div.Right .col h2 {
 
 .forum .poster {
 	background-color: #84CA82;
-	border-right:  1px dashed #990000;
+	border-right:  1px dashed #1463B4;
 	padding: 2px 4px 2px 4px;
 	margin: 0;
 }
@@ -467,15 +467,15 @@ div.Right .col h2 {
 }
 
 .fancy .cell {
-	border-left: 1px solid #990000;
+	border-left: 1px solid #1463B4;
 	padding-left: 2px;
 	padding-right: 2px;
 	text-align: right;
 }
 
 .fancy .summaryCell {
-	border-top: 1px dashed #990000;
-	border-left: 1px solid #990000;
+	border-top: 1px dashed #1463B4;
+	border-left: 1px solid #1463B4;
 	padding-left: 2px;
 	padding-right: 2px;
 	text-align: right;
@@ -568,8 +568,8 @@ div.Right .col h2 {
 
 .announcement {
 	padding: 3px 0px 5px 5px;
-	border-left: 1px dashed #990000;
-	border-bottom: 1px dashed #990000;
+	border-left: 1px dashed #1463B4;
+	border-bottom: 1px dashed #1463B4;
 }
 
 
@@ -595,7 +595,7 @@ div.Right .col h2 {
 	margin: 5px 0 5px 0;
 	border: none;
 	width: 100%;
-	border-left: 1px solid #990000;
+	border-left: 1px solid #1463B4;
 }
 
 .FadeTable tr.header {
@@ -646,7 +646,7 @@ div.Right .col h2 {
 
 .BlogPost h2 {
 	margin: 0 0 0 0;
-	border-bottom: 1px solid #990000;
+	border-bottom: 1px solid #1463B4;
 }
 
 .BlogPost p.author {
@@ -670,7 +670,7 @@ a img {
 .Comment {
 	margin: 5px 0 0 10px;
 	padding: 0 0 0 5px;
-	border-left: 2px solid #990000;
+	border-left: 2px solid #1463B4;
 }
 
 .Comment p.commentAuthor {
@@ -684,14 +684,14 @@ a img {
 }
 	
 #leave_comment {
-	border: 1px dotted #990000;
+	border: 1px dotted #1463B4;
 	padding: 5px 5px 5px 5px;
 	margin: 5px 5px 5px 5px;
 }
 
 #featured {
 	border: 3px solid #DCDDDE;
-	border: 2px solid #990000;
+	border: 2px solid #1463B4;
 	padding: 10px 10px 10px 10px;
 }
 
@@ -708,7 +708,7 @@ a img {
 #Assignment div.blockintro {
 	color: #333;
     margin: 5px 0 0 0;
-    border-bottom: 1px solid #990000;
+    border-bottom: 1px solid #1463B4;
 }
 
 #Assignment div.blockintro p {
@@ -780,7 +780,7 @@ a img {
 
 .codeout {
 	background: #EEEEEE;
-	border: 1px solid #990000;
+	border: 1px solid #1463B4;
 	margin: 5px 5px 5px 5px;
 	padding: 10px 10px 10px 10px;
 	font-family: "courier", verdana, sans-serif;
@@ -803,7 +803,7 @@ a img {
 
 .standout {
 	background: #FFFFCC;
-	border: 1px solid #990000;
+	border: 1px solid #1463B4;
 	margin: 5px 5px 5px 5px;
 	padding: 10px 10px 10px 10px;
 }

@@ -27,7 +27,7 @@ class FeedController < ApplicationController
                  @recent_activity = FreshItems.fresh( @course, @app['recent_items'].to_i )
                  headers["Content-Type"] = "application/rss+xml"
             
-                 @fresh_date = DateTime.new
+                 @fresh_date = nil
                  if ( @recent_activity.size > 0 )
                    if ( @recent_activity[0].class.to_s.eql?('Assignment' ) ) 
                      @fresh_date = @recent_activity[0].open_date

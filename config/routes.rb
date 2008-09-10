@@ -15,31 +15,32 @@ ActionController::Routing::Routes.draw do |map|
   
   map.connect '', :controller => 'index'
   
-  map.connect '/admin', :controller => 'admin/index'
-  
-  map.connect '/public', :controller => 'public/index'
-  
-  map.connect '/admin/course_admin/:action/:id/course/:course',
-    :controller => 'admin/course_admin', :action => 'index'
-
-  map.connect '/course/:course/assignment/:assignment/:controller/:action/:id',
-    :controller => 'assignment/index', :action => 'index', :id => nil
-    
-    map.connect '/course/:course/assignment/:assignment/student/:student/:controller/:action/:id',
+  map.connect '/course/:course/assignment/:assignment/student/:student/:controller/:action/:id',
       :controller => 'home', :action => 'index', :id => nil
 
+  map.connect '/course/:course/assignment/:assignment/:controller/:action/:id',
+      :controller => 'assignment/index', :action => 'index', :id => nil
+
+  map.connect '/course/:course/:controller/:action/:id/:file.:extension',
+      :controller => 'documents', :action => 'podcast_download', :course => nil, :id => nil  
+  
   map.connect '/course/:course/:controller/:action/:id',
     :controller => 'overview', :action => 'index', :course => nil, :id => nil
     
-    map.connect '/course/:course/:controller/:action/:id/:file.:extension',
-      :controller => 'documents', :action => 'podcast_download', :course => nil, :id => nil
-
   map.connect '/redirect/type/:type/:id',
     :controller => 'redirect', :action => 'index', :type => nil, :id => nil
     
   map.connect '/public/redirect/type/:type/:id',
     :controller => 'public/redirect', :action => 'index', :type => nil, :id => nil
+  
+  map.connect '/admin/course_admin/:action/:id/course/:course',
+    :controller => 'admin/course_admin', :action => 'index'
 
+
+  map.connect '/admin', :controller => 'admin/index'
+
+  map.connect '/public', :controller => 'public/index'
+  
   # Allow downloading Web Service WSDL as a file with an extension
   # instead of a file named 'wsdl'
   map.connect ':controller/service.wsdl', :action => 'wsdl'

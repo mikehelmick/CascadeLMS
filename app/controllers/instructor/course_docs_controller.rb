@@ -2,6 +2,12 @@ class Instructor::CourseDocsController < Instructor::InstructorBase
  
   before_filter :ensure_logged_in
   before_filter :set_tab
+  
+  
+  # GETs should be safe (see http://www.w3.org/2001/tag/doc/whenToUseGet.html)
+  verify :method => :post, :only => [ :destroy, :create, :update ],
+         :redirect_to => { :action => :index }
+
  
   def index
     return unless load_course( params[:course] )
@@ -16,11 +22,7 @@ class Instructor::CourseDocsController < Instructor::InstructorBase
      
     set_title
   end
-
-  # GETs should be safe (see http://www.w3.org/2001/tag/doc/whenToUseGet.html)
-  verify :method => :post, :only => [ :destroy, :create, :update ],
-         :redirect_to => { :action => :index }
-
+  
   def new
     return unless load_course( params[:course] )
     return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_documents' )
