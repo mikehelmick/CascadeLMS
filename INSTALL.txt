@@ -57,7 +57,7 @@ including:
 
 And that you have SUDO access
 
-You will be installing Ruby 1.8.6 and Rails 1.2.3 (latest releases as of this writing).  
+You will be installing Ruby 1.8.6 and Rails 2.0.x 
 A few third party add-ons to Ruby will also be installed, again please try to follow this document
 in order.
 
@@ -174,14 +174,11 @@ Install railstat - Statistics on running application
 
 sudo gem install rail_stat_generator
 
-Patch Rails - You must patch the Rails source by hand
+Install chronic and package (dependencies for autograding)
 
-The comment on line 75 and the if statement on lines 76-78 to read
+sudo gem install chronic packet
 
-# This is an uploaded file. 
-if value.respond_to?(:original_filename) && !value.original_filename.blank?
 
-This allows users with the Safari 3 browser to use the site
 
 
 
