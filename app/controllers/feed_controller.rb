@@ -15,17 +15,22 @@ class FeedController < ApplicationController
   end
   
   def index
-    user = rss_authorize()
+    @user = rss_authorize()
+    params[:format] = 'xml'
+  
+  puts "HELLO #{@user}"
     
-    unless user.nil?
-      if load_course( params[:course] ) 
+    unless @user.nil?
+      @course = load_course( params[:course] ) 
+      if @course
         if course_allows_rss( @course )
           if allowed_to_see_course( @course, @user )
           
             respond_to do |format| 
               format.xml {
+                 
                  @recent_activity = FreshItems.fresh( @course, @app['recent_items'].to_i )
-                 headers["Content-Type"] = "application/rss+xml"
+                 #headers["Content-Type"] = "application/rss+xml"
             
                  @fresh_date = nil
                  if ( @recent_activity.size > 0 )
@@ -59,6 +64,7 @@ class FeedController < ApplicationController
     end
     true
   end
+  
 
   def set_tab
     @show_course_tabs = true

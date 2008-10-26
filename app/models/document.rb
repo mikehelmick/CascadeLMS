@@ -49,7 +49,7 @@ class Document < ActiveRecord::Base
   end
   
   def icon
-    'page'
+    'page.png'
   end
   
   def without_extension

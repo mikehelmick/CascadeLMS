@@ -28,7 +28,7 @@
 	    <% end %>
 	
         <% if grade_item.assignment_id && grade_item.assignment_id > 0 %>
-          <%= link_to "#{grade_item.name}", :controller => '/assignments', :course => @course, :action => 'view', :id => grade_item.assignment_id %>
+          <%= link_to "#{grade_item.name}", :controller => '/instructor/turnins', :action => 'view_student', :id => @student.id, :course => @course, :assignment => grade_item.assignment_id %>
   	    <% else %>	
           <%= grade_item.name %>
 	    <% end %>

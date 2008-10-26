@@ -41,8 +41,8 @@
 	  <% end %>
 	  <tr><td class="label" width="15%" nowrap="nowrap" valign="top">Turnin methods:</td>
 		  <td valign="top">
-		   <% if @assignment.use_subversion && @assignment.enable_upload %> Subversion or Upload to this site.
-		   <% elsif @assignment.use_subversion %> Subversion only.
+		   <% if (@assignment.use_subversion && @assignment.programming) && @assignment.enable_upload %> Subversion or Upload to this site.
+		   <% elsif @assignment.use_subversion && @assignment.programming %> Subversion only.
 		   <% elsif @assignment.enable_upload %> 
 		     <%= link_to 'Upload to this site.', :controller => '/turnins', :course => @course, :assignment => @assignment, :action => 'index', :id => nil  %> 
 		   <% else %> Printout. 
@@ -56,7 +56,7 @@
 	        <%= link_to "#{image_tag 'folder_table.png'} Manage Submitted Files #{"and AutoGrade" if @assignment.auto_grade}", :controller => '/turnins', :course => @course, :assignment => @assignment, :action => 'index'  %>
 	      </td>
 	  <% end %>
-	  <% if @assignment.use_subversion %>  
+	  <% if @assignment.use_subversion && @assignment.programming %>  
 	  <tr><td class="label" width="15%" nowrap="nowrap" valign="top">Subversion Server:</td>
 		  <td valign="top"><%=  @assignment.subversion_server %></td></tr>
 	    
@@ -115,7 +115,7 @@
     </table>
   </div>
 
-<% if @assignment.use_subversion %>
+<% if @assignment.use_subversion && @assignment.programming %>
   <div class="blockintro"><p><b>Subversion</b> <%= link_to_function "#{image_tag 'eye.png', :align => 'absmiddle'}", visual_effect(:toggle_slide, 'subversion_setup_area' ) %></p></div>
   <% if @assignment.use_subversion && @assignment.auto_grade %>
     <%= render :partial => '/turnins/agwarning' %>

@@ -208,7 +208,7 @@ class ApplicationController < ActionController::Base
  	
  	  if session[:user].nil?
  	    flash[:notice] = "Please log in before proceeding."
- 	    session[:post_login] = redirect_uri
+ 	    session[:post_login] = redirect_uri if request.method().eql?("GET")
  	    redirect_to :controller => '/index'
  	    return false
     end
@@ -216,6 +216,7 @@ class ApplicationController < ActionController::Base
     if !session_valid?
       redirect_to :controller => '/index', :action => 'expired'
       # don't want to accidently clobber post data
+      session[:post_login] = "#{request.protocol()}#{request.host()}#{request.port_string}/home"
       session[:post_login] = redirect_uri if request.method.eql?("GET")
       
       return false
@@ -337,7 +338,7 @@ class ApplicationController < ActionController::Base
       else 
         redirect_to_url session[:post_login] if redirect
       end
-      return true
+      return @user
     rescue SecurityError => doh
       if redirect
         
@@ -361,43 +362,31 @@ class ApplicationController < ActionController::Base
       return @user
     end
     
-    username, passwd = get_auth_data 
-    passwd = '' if passwd.nil?
+    #username, passwd = get_auth_data 
+    credArray = 
+        authenticate_with_http_basic() { |u,p| return u, p }
     
     # check if authorized 
     # try to get user 
     user = User.new()
-    user.uniqueid = username
-    user.password = passwd 
-    
-    session[:post_login] = nil
-    if authenticate( user, false )
-      return @user         
-    else  
-      # the user does not exist or the password was wrong 
-      response.headers["Status"] = "Unauthorized" 
-      response.headers["WWW-Authenticate"] = "Basic realm=\"#{realm}\"" 
-      #render_text(errormessage, 401)     
-      nil  
-    end 
-  end 
-
-  def get_auth_data 
-    user, pass = '', '' 
-    
-    @@auth_locations.each do |key|
-      if request.env.has_key?(key)
-        authdata = request.env[key].to_s.split
-        if authdata and authdata[0] == 'Basic' 
-          user, pass = Base64.decode64(authdata[1]).split(':')[0..1] 
-          logger.info("#{user},#{pass}")
-          return user, pass
-        end
-      end
+    user.uniqueid = ''
+    user.password = ''
+    unless credArray.nil?
+      user.uniqueid = credArray[0] 
+      user.password = credArray[1] if credArray.size > 1
     end
     
-    return user, pass
-  end
+    session[:post_login] = nil
+    userObject = authenticate( user, false )
+    
+    if userObject
+      return userObject         
+    else  
+      # the user does not exist or the password was wrong 
+      request_http_basic_authentication(realm)
+      return nil
+    end 
+  end 
   
   def count_todays_turnins( assignment, user, max = 3 )
     now = Time.now
@@ -407,8 +396,6 @@ class ApplicationController < ActionController::Base
     @remaining_count = max - @today_count 
     @remaining_count = 0 if @remaining_count < 0
   end
-
-  private :get_auth_data
 
   def log_error(exception) 
     super(exception)

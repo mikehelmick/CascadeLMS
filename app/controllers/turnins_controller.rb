@@ -405,7 +405,7 @@ class TurninsController < ApplicationController
       redirect_to :action => 'index'
       return
     end
-
+    
     # create the new file (but don't save yet)
     @utf = UserTurninFile.new
     @utf.user_turnin = @current_turnin
@@ -414,6 +414,13 @@ class TurninsController < ApplicationController
     @utf.filename = FileManager.base_part_of( file_field.original_filename )
     @utf.extension = @utf.filename.split('.').last.downcase rescue @utf.extension = ''
     @utf.user = @user
+
+    # Check extension - we don't accept .class files
+    if "class".eql?( @utf.extension ) 
+      flash[:badnotice] = "You selected a .class file for submimission.  Compiled Java code is not accepted."
+      redirect_to :action => 'index'
+      return     
+    end
 
     mover = UserTurninFile.get_parent( @current_turnin.user_turnin_files, @utf )
     dir_name = ""

@@ -134,13 +134,15 @@ class FileManager
   end
   
   def FileManager.java_banned( path, banned )
+    # convert to array if not already
+    banned = banned.split(" ") if banned.class.to_s.eql?("String")
     msg = ""
     
     line_num = 1
     if path.reverse[0..4].eql?("avaj.")
       File.open( path ).each do |line|
         banned.each do |str|
-          
+
           unless line.index( str ).nil?
             msg = "#{msg}\nline #{line_num}: Contains disallowed string '#{str}'"
             
@@ -178,7 +180,7 @@ class FileManager
               
   def FileManager.icon( extension ) 
     icn = @@icons[extension]
-    icn = 'page_white' if icn.nil?
+    icn = 'page_white.png' if icn.nil?
     return icn
   end
   

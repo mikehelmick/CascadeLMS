@@ -46,11 +46,11 @@
       <th valign="bottom">Team</th>
     <% end %>
 
-    <% if @assignment.use_subversion %>
+    <% if @assignment.use_subversion && @assignment.programming %>
       <th valign="bottom">SVN Repo</th>
     <% end %>
 
-    <% if @assignment.use_subversion || @assignment.enable_upload %>
+    <% if (@assignment.use_subversion && @assignment.programming) || @assignment.enable_upload %>
       <th valign="bottom">Files<br/>Submitted</th>
     <% end %>
     <% if @assignment.enable_journal %>
@@ -89,13 +89,13 @@
 	    </td>
 	  <% end %>
 
-	  <% if @assignment.use_subversion && @assignment.team_project %>
+	  <% if (@assignment.use_subversion && @assignment.programming) && @assignment.team_project %>
 	    <td><a href="<%=@assignment.subversion_server%><%=@assignment.development_path_replace( student.uniqueid, @team_members[student.id] )%>" target="_blank">dev</a> | <a href="<%=@assignment.subversion_server%><%=@assignment.release_path_replace( student.uniqueid, @team_members[student.id] )%>"  target="_blank">rel</a></td>
-	  <% elsif @assignment.use_subversion %>
+	  <% elsif (@assignment.use_subversion && @assignment.programming) %>
 	    <td><a href="<%=@assignment.subversion_server%><%=@assignment.development_path_replace( student.uniqueid )%>" target="_blank">dev</a> | <a href="<%=@assignment.subversion_server%><%=@assignment.release_path_replace( student.uniqueid )%>"  target="_blank">rel</a></td>
 	  <% end %>
 
-      <% if @assignment.use_subversion || @assignment.enable_upload %>
+      <% if (@assignment.use_subversion && @assignment.programming) || @assignment.enable_upload %>
         <td><% if @turnin_sets[student.id] %>Yes
 	        <% else %>No<% end %>
         </td>
@@ -145,7 +145,7 @@
   <% if @grade_item %>
   <tr class="none">
 	<td colspan="2" class="none">&nbsp;</td>
-	<% if @assignment.use_subversion || @assignment.enable_upload %><td class="none">&nbsp;</td><% end %>
+	<% if (@assignment.use_subversion && @assignment.programming) || @assignment.enable_upload %><td class="none">&nbsp;</td><% end %>
 	<% if @assignment.enable_journal %><td class="none">&nbsp;</td><% end %>
     <% if @grade_item %>
       <td colspan="2" class="none">

@@ -32,7 +32,7 @@ class Comment < ActiveRecord::Base
   end
   
   def icon
-    'comment'
+    'comment.png'
   end
   
   def transform_markup

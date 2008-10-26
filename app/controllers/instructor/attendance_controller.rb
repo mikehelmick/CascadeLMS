@@ -173,6 +173,7 @@ class Instructor::AttendanceController < Instructor::InstructorBase
     graph.add :axis_category_text, @categories
     
     ## calculate the series for each student
+    @students = @course.students
     @students.each do |student|
       
       @forStudent = Array.new

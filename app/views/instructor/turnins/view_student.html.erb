@@ -1,7 +1,9 @@
 <h2>'<%= @assignment.title %>' turn-ins for '<%= @student.display_name %>'</h2>
 <h3>Course: <%= @course.title %> (<%= @course.term.semester%>)</h3>
 
-<p><%= link_to 'Back to all students', :controller => '/instructor/turnins', :course => @course, :assignment => @assignment %></p>
+<p><%= link_to 'Back to all students', :controller => '/instructor/turnins', :course => @course, :assignment => @assignment %> |
+   <%= link_to "Grade overview for #{@student.display_name}", :controller => '/instructor/course_gradebook', :action => 'for_student', :course => @course, :id => @student.id %>
+	</p>
 
 <!-- team -->
 <% if @assignment.team_project %>

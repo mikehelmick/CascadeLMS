@@ -54,9 +54,9 @@ class UserTurninFile < ActiveRecord::Base
   
   def icon()
     if ( self.directory_entry )
-      "folder"
+      "folder.png"
     elsif ( self.extension.nil? )
-      "page"
+      "page.png"
     else
       FileManager.icon( self.extension )
     end

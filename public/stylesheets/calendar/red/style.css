@@ -26,11 +26,11 @@
 .otherMonth, .day, .specialDay {
   padding: 0.5em 0.5em;
   border-right: 1px solid white;
-
+  background-color: #ffffff;
 }
 
 .otherMonth {
-  color: #eeeeee;
+  color: #eeaaaa;
 }
 .weekendDay {
   background-color: #eeeeee;

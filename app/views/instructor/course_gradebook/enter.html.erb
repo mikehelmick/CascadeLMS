@@ -4,7 +4,7 @@
 <h3>for course '<%= @course.title %>'</h3>
 
 
-<% form_tag( :action => 'save_grades', :course => @course, :id => @grade_item ) %>
+<% form_tag( :action => 'save_grades', :course => @course, :id => @grade_item ) do %>
 <div class="block">
 
 <% if @students.size == 0 %>
