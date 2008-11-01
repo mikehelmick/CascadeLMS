@@ -7,7 +7,9 @@ class Instructor::EmailController < Instructor::InstructorBase
      return unless load_course( params[:course] )
      return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_send_email' )
     
-     @email = ''
+     signature = @course.course_setting.email_signature
+         
+     @email = "\n\n\n#{signature}"
      @email_subject = "#{@course.title}"
      @users_hash = Hash.new
      @course.instructors.each { |u| @users_hash[u.id] = true }

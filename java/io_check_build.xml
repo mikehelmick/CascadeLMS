@@ -30,6 +30,10 @@
   	</target>
 
 	<target name="execute" depends="compile">
+		<copy todir="${build}"> 
+		    <fileset dir="${src}"/> 
+		</copy>
+		
 		<java classname="${classname}" classpath="${build}"
 	        jvm="${jvm}" dir="${build}" fork="true"
 	        input="${input}" output="${output}" timeout="30000" />

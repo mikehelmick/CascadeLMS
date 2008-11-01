@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20081026203500) do
+ActiveRecord::Schema.define(:version => 20081101173900) do
 
   create_table "announcements", :force => true do |t|
     t.string   "headline"
@@ -159,6 +159,7 @@ ActiveRecord::Schema.define(:version => 20081026203500) do
     t.boolean "enable_quizzes",                          :default => true,  :null => false
     t.boolean "ta_create_quizzes",                       :default => false, :null => false
     t.boolean "enable_wiki",                             :default => false, :null => false
+    t.text    "email_signature",                                            :null => false
   end
 
   add_index "course_settings", ["course_id"], :name => "course_settings_course_id_index", :unique => true
