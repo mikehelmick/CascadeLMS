@@ -7,7 +7,15 @@ require 'text_diff'
 # run automatically in a thread. You have access to all of your rails
 # models.  You also get logger and results method inside of this class
 # by default.
-class AutoGradeWorker < BackgrounDRb::Worker::RailsBase
+class AutoGradeWorker < BackgrounDRb::MetaWorker
+  
+  set_worker_name :auto_grade_worker
+  reload_on_schedule true
+  
+  
+  def create(args = nil)
+    logger.debug("Initialied auto_grade_monitor_worker")
+  end
   
   def run_pmd( queue, user_turnin, dir, directories, app )
     if user_turnin.assignment.auto_grade_setting.check_style?
@@ -244,8 +252,16 @@ class AutoGradeWorker < BackgrounDRb::Worker::RailsBase
     end
   end
   
-  def do_work(args)
-    queue = GradeQueue.find(args.to_i)
+    
+  def execute( args = 0 )  
+    begin
+      queue = GradeQueue.find(args.to_i)  
+    rescue
+      queue = nil
+      logger.error("AutoGrade worker initialized with no ID.")
+      return
+    end
+    
     begin
     
       # This method is called in it's own new thread when you
@@ -321,10 +337,6 @@ class AutoGradeWorker < BackgrounDRb::Worker::RailsBase
       end
     end
     
-      results[:do_work_time] = Time.now.to_s
-      results[:done_with_do_work] = true
-      delete
   end
 
 end
-AutoGradeWorker.register

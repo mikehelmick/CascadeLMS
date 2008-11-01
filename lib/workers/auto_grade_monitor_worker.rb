@@ -1,13 +1,17 @@
-# Put your code that runs your task inside the do_work method it will be
-# run automatically in a thread. You have access to all of your rails
-# models.  You also get logger and results method inside of this class
-# by default.
-class AutoGradeMonitorWorker < BackgrounDRb::Worker::RailsBase
+require 'auto_grade_worker'
+
+# Worker that moniters the AutoGrade queue
+class AutoGradeMonitorWorker < BackgrounDRb::MetaWorker
   
-  def do_work(args)
-    # This method is called in it's own new thread when you
-    # call new worker. args is set to :args
-    
+  set_worker_name :auto_grade_monitor_worker
+  
+  
+  def create(args = nil)
+      logger.debug("Initialied auto_grade_monitor_worker")
+      add_timer(1) { check_queue }
+  end
+
+  def free_in_service( args )
     ## Free the in_service count
     to_free = GradeQueue.find(:all, :conditions => ["serviced = ? and (acknowledged = ? or queued = ? )", false, true, true] )
     to_free.each do |item|
@@ -16,12 +20,16 @@ class AutoGradeMonitorWorker < BackgrounDRb::Worker::RailsBase
       item.save
     end
     
-    while( true )
+  end
+  
+  def check_queue( args = nil )
+    # This method is called in it's own new thread when you
+    # call new worker. args is set to :args
     
-      item = GradeQueue.find(:all, :conditions => ["acknowledged = ? and serviced = ? and queued = ?", false, false, false], :order => "created_at asc" ) rescue item = Array.new
-      item = Array.new if item.nil?
+    item = GradeQueue.find(:all, :conditions => ["acknowledged = ? and serviced = ? and queued = ?", false, false, false], :order => "created_at asc" ) rescue item = Array.new
+    item = Array.new if item.nil?
 
-      in_service = GradeQueue.count(:all, :conditions => ["serviced = ? and (acknowledged = ? or queued = ? )", false, true, true] ) rescue in_service = 0
+    in_service = GradeQueue.count(:all, :conditions => ["serviced = ? and (acknowledged = ? or queued = ? )", false, true, true] ) rescue in_service = 0
 
       if item.size > 0 && in_service < 2
 
@@ -33,12 +41,11 @@ class AutoGradeMonitorWorker < BackgrounDRb::Worker::RailsBase
 
         logger.info("Monitor found item to be scheduled, id=#{schedule_me.id}")
 
-        MiddleMan.schedule_worker(
-          :class => :auto_grade_worker,
-          :args => schedule_me.id,
-          :trigger_args => {
-                :start => Time.now + 3.seconds
-              }
+        puts "HELLO THERE - SCHEDULE #{schedule_me.inspect}"
+        MiddleMan.new_worker(
+             :worker => :auto_grade_worker,
+             :args => schedule_me.id,
+             :scheduled_at => Time.now + 1.seconds 
         )
 
         logger.info("scheduled grade request #{schedule_me.id} ")
@@ -71,12 +78,8 @@ class AutoGradeMonitorWorker < BackgrounDRb::Worker::RailsBase
       end
     
       sleep(10)
-    end 
+    #end 
     
-    results[:do_work_time] = Time.now.to_s
-    results[:done_with_do_work] = true
-    delete
   end
 
 end
-AutoGradeMonitorWorker.register

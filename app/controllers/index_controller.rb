@@ -36,7 +36,7 @@ class IndexController < ApplicationController
   def expired
     redirect_uri = session[:post_login]
     reset_session
-    session[:post_login] = redirect_uri
+    #session[:post_login] = redirect_uri
     redirect_to :action => 'index', :out => 'exp'
   end
   

@@ -19,3 +19,8 @@
 <% end %>
 
 </p>
+
+<%if request.path_parameters[:controller].eql?('instructor/index') %>
+  <h2>Move Course</h2>
+  <p>If this course spans multiple terms (log research project, senior project, etc...) you can have an administrator move the course for you, all course related information will be preserved.</p>
+<%end%>

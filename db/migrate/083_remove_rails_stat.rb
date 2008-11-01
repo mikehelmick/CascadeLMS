@@ -7,9 +7,7 @@ class RemoveRailsStat < ActiveRecord::Migration
 
   def self.down
     ## copied from migration 80
-  
-    def self.up
-      create_table :rail_stats do |t|
+    create_table :rail_stats do |t|
         t.column :remote_ip, :string
         t.column :country, :string
         t.column :language, :string
@@ -48,4 +46,6 @@ class RemoveRailsStat < ActiveRecord::Migration
       end
       add_index :iptocs, [:ip_from, :ip_to], :unique
   end
+  
+  
 end

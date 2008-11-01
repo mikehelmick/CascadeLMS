@@ -78,9 +78,27 @@ class Admin::CourseAdminController < ApplicationController
   def update
     @course = Course.find(params[:id])
     @term = Term.find(params[:term])
-    @course.term = @term
+    
+    changing_term = false
+    old_term_id = 0
+    # if term is changing - we need to move items
+    if ( @course.term.id != @term.id )
+       old_term_id = @course.term.id 
+       @course.term = @term
+       changing_term = true
+    end
     
     if @course.update_attributes(params[:course])
+      if changing_term 
+        # need to do a move of course information
+        # make sure that term dir is created
+        `mkdir -p #{@app['external_dir']}/term/#{@term.id}/course`
+        # move everything
+        `mv #{@app['external_dir']}/term/#{old_term_id}/course/#{@course.id} #{@app['external_dir']}/term/#{@term.id}/course/#{@course.id}`
+        
+      end
+      
+      
       flash[:notice] = "Course #{@course.title} (#{@term.semester}) has been updated."
       redirect_to :action => 'edit', :id => @course
     else

@@ -335,8 +335,8 @@ class ApplicationController < ActionController::Base
       
       if ( redirect && session[:post_login].nil? )
         redirect_to :controller => 'home' 
-      else 
-        redirect_to_url session[:post_login] if redirect
+      #else 
+      #  redirect_to_url session[:post_login] if redirect
       end
       return @user
     rescue SecurityError => doh

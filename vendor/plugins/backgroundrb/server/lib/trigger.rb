@@ -4,9 +4,10 @@ module BackgrounDRb
     attr_accessor :start_time, :end_time, :repeat_interval
 
     def initialize(opts={})
-      @start_time = Time.parse(opts[:start])
-      @end_time = Time.parse(opts[:end])
-      @repeat_interval = opts[:repeat_interval].to_i
+      @start_time = Time.parse(opts[:start]) if opts.has_key?(:start)
+      #@end_time = Time.parse(opts[:end])
+      @end_time = Time.parse(opts[:end]) if opts.has_key?(:end)
+      @repeat_interval = opts[:repeat_interval].to_i if opts.has_key?(:repeat_interval)
     end
 
     def fire_after_time(time)
