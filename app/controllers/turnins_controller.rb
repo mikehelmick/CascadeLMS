@@ -40,6 +40,9 @@ class TurninsController < ApplicationController
   
     count_todays_turnins( @app["turnin_limit"].to_i )
     
+    # load extneions - if there are any
+    @extension = @assignment.extension_for_user( @user )
+    
     @now = Time.now
     set_title
   end
@@ -200,7 +203,11 @@ class TurninsController < ApplicationController
     return unless assignment_in_course( @assignment, @course )
     return unless assignment_available( @assignment )
     
-    return unless assignment_open( @assignment )
+    # check extension - we won't check open date if extension is allowd
+    @extension = @assignment.extension_for_user( @user )
+    if @extension.nil? || (@extension.nil? && !extension.past?)
+      return unless assignment_open( @assignment )
+    end
     
     return unless load_team( @course, @assignment, @user )
     
@@ -271,7 +278,11 @@ class TurninsController < ApplicationController
     return unless assignment_in_course( @assignment, @course )
     return unless assignment_available( @assignment )
     
-    return unless assignment_open( @assignment )
+    # check extension - we won't check open date if extension is allowd
+    @extension = @assignment.extension_for_user( @user )
+    if @extension.nil? || (@extension.nil? && !extension.past?)
+      return unless assignment_open( @assignment )
+    end
     
     return unless load_team( @course, @assignment, @user )
     
@@ -385,7 +396,11 @@ class TurninsController < ApplicationController
     return unless assignment_in_course( @assignment, @course )
     return unless assignment_available( @assignment )
     
-    return unless assignment_open( @assignment )
+    # check extension - we won't check open date if extension is allowd
+    @extension = @assignment.extension_for_user( @user )
+    if @extension.nil? || (@extension.nil? && !extension.past?)
+      return unless assignment_open( @assignment )
+    end
     
     return unless load_team( @course, @assignment, @user )
     load_turnins

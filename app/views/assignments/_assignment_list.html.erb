@@ -63,6 +63,19 @@
 	      <% else %>
 	        (<b><%= distance_of_time_in_words_to_now( assignment.due_date, true )%> ago</b>)
 	      <% end %>
+	
+	      <% extension = assignment.extension_for_user(@user) %>
+	      <% unless extension.nil? %>
+	        <br/><b>EXTENSION GRANTED:</b><br/>
+	        <% unless extension.past? %>
+	          <%= image_tag 'clock.png', :align => 'absmiddle' %> <%= extension.extension_date.to_formatted_s(:long) %>
+	          (<i><%= distance_of_time_in_words_to_now( extension.extension_date, true )%> from now</i>)
+		    <% else %>
+		      <%= image_tag 'clock_red.png', :align => 'absmiddle' %> <%= extension.extension_date.to_formatted_s(:long) %>
+		      (<b><%= distance_of_time_in_words_to_now( extension.extension_date, true )%> ago</b>)
+		    <% end %> 
+	      <% end %>
+	
 	    </td>
 	  </tr>
     <% end %>

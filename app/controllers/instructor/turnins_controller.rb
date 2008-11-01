@@ -481,6 +481,82 @@ class Instructor::TurninsController < Instructor::InstructorBase
     end
   end
   
+  def grant
+    return unless load_course( params[:course] )
+    return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_view_student_files', 'ta_grade_individual' )
+    
+    @assignment = Assignment.find( params[:assignment] )
+    return unless assignment_in_course( @course, @assignment )
+    
+    # make sure the student exists
+    @student = User.find(params[:id])
+    if ! @student.student_in_course?( @course.id )
+      flash[:badnotice] = "Invalid student record requested."
+      redirect_to :action => 'index'
+    end
+    
+    @extension = @assignment.extension_for_user( @student )
+    if @extension.nil? 
+      @extension = Extension.new
+      @extension.extension_date = @assignment.due_date
+    end  
+  end
+  
+  def update_grant
+    return unless load_course( params[:course] )
+    return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_view_student_files', 'ta_grade_individual' )
+    
+    @assignment = Assignment.find( params[:assignment] )
+    return unless assignment_in_course( @course, @assignment )
+    
+    # make sure the student exists
+    @student = User.find(params[:id])
+    if ! @student.student_in_course?( @course.id )
+      flash[:badnotice] = "Invalid student record requested."
+      redirect_to :action => 'index'
+    end
+    
+    # find the current extension
+    extension = @assignment.extension_for_user( @student )
+    if extension.nil?
+      extension = Extension.new( params[:extension] )
+      extension.assignment = @assignment
+      extension.user = @student
+    else
+      extension.update_attributes(params[:extension])
+    end
+    
+    if extension.save
+      flash[:notice] = "#{@student.display_name} was granted an extension until #{extension.extension_date.to_formatted_s(:long)}"
+      redirect_to :action => nil, :controller => 'instructor/turnins', :course => @course, :assignment => @assignment, :id => nil
+    else
+      redirect_to :action => 'grant', :course => @course, :assignment => @assignment, :id => @student
+    end   
+  end
+  
+  def revoke
+    return unless load_course( params[:course] )
+    return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_view_student_files', 'ta_grade_individual' )
+    
+    @assignment = Assignment.find( params[:assignment] )
+    return unless assignment_in_course( @course, @assignment )
+    
+    # make sure the student exists
+    @student = User.find(params[:id])
+    if ! @student.student_in_course?( @course.id )
+      flash[:badnotice] = "Invalid student record requested."
+      redirect_to :action => 'index'
+    end
+    
+    extension = @assignment.extension_for_user( @student )
+    if ! extension.nil?
+       extension.destroy
+       flash[:notice] = "#{@student.display_name} extension has been revoked."
+    end
+    
+    redirect_to :action => nil, :controller => 'instructor/turnins', :course => @course, :assignment => @assignment, :id => nil
+  end
+  
   def download_all_files
     return unless load_course( params[:course] )
     return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_view_student_files', 'ta_grade_individual' )

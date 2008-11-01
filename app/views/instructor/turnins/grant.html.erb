@@ -1,0 +1,27 @@
+<h3>Course: <%= @course.title %> (<%= @course.term.semester%>)</h3>
+<h4>Assignment: '<%= @assignment.title %>'</h4>
+
+<p><%= link_to 'Back to turnins', :course => @course, :assignment => @assignment, :controller => '/instructor/turnins', :action => nil %></p>
+
+
+<p>Edit due-date extension for <b><%= @student.display_name %></b></p>
+
+<div id="form_area">
+<% form_tag( :action => 'update_grant', :id => @student.id, :course => @course, :assignment => @assignment ) do %>
+	
+<p class="blockintro">Extensions are granted on a per-student basis.</p>
+<div class="block">
+
+	<ul>
+	  <li><b>Assignment Due Date:</b> <%= @assignment.due_date.to_formatted_s(:long) %></li>
+	  <li><b>Assignment Late Turnin Date:</b> <%= @assignment.close_date.to_formatted_s(:long) %></li>
+	</ul>
+  <p><label for="extension_extension_date" class="required">Due date for <%= @student.display_name %>:</label>
+	 <%= datetime_select 'extension', 'extension_date'  %></p>
+</div>
+ 
+<div class="submit">
+  <%= submit_tag 'Save Assignment Extension Grant' %>
+</div>
+<% end %>
+</div>

@@ -5,8 +5,6 @@
 <%= render :partial => 'group' %>
 
 <% if !@assignment.closed? && @assignment.enable_upload %>
-
-
   <% if @turnins.size == 0 %> 
     <p><%= link_to "#{image_tag 'add.png'} Create First Turn-in Set.", :action => 'create_set', :course => @course, :assignment => @assignment %></p>
   <% else %>
@@ -15,7 +13,18 @@
 	  </p>
   <% end %>
 
+<% elsif !@extension.nil? && !@extension.past? %>
+  <% if @turnins.size == 0 %> 
+    <p><%= link_to "#{image_tag 'add.png'} Create First Turn-in Set.", :action => 'create_set', :course => @course, :assignment => @assignment %></p>
+  <% else %>
+    <p><%= link_to "#{image_tag 'add.png'} Archive your current turn-in set and create a new one.", :action => 'create_set', :course => @course, :assignment => @assignment %>
+	    <% if  @assignment.auto_grade %><b>This does NOT count against submission limits.</b><% end %>
+	</p>
+  <% end %>
+
 <% end %>
+
+
 
   <% unless @current_turnin.nil? %>
     <% if @assignment.auto_grade && !@current_turnin.sealed %>
@@ -46,6 +55,9 @@
 
 <% if @current_turnin.sealed %>
 <p><b>This turn-in set is finalized, no changes can be made.</b></p>
+
+<% elsif @assignment.closed? && (@extension.nil? || @extension.past?)%>
+
 <% else %>
 <div id="form_area">
 

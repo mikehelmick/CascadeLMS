@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20081101180107) do
+ActiveRecord::Schema.define(:version => 20081101181837) do
 
   create_table "announcements", :force => true do |t|
     t.string   "headline"
@@ -212,6 +212,17 @@ ActiveRecord::Schema.define(:version => 20081101180107) do
     t.boolean  "folder",                        :default => false, :null => false
     t.boolean  "podcast_folder",                :default => false, :null => false
   end
+
+  create_table "extensions", :force => true do |t|
+    t.integer  "assignment_id",  :limit => 11
+    t.integer  "user_id",        :limit => 11
+    t.datetime "extension_date"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "extensions", ["assignment_id", "user_id"], :name => "extension_assignment_user_idx", :unique => true
+  add_index "extensions", ["assignment_id"], :name => "extension_assignment_id_idx"
 
   create_table "file_comments", :force => true do |t|
     t.integer "user_turnin_file_id", :limit => 11, :default => 0, :null => false

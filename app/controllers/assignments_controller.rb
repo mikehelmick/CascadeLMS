@@ -48,6 +48,8 @@ class AssignmentsController < ApplicationController
       end
     end
     
+    @extension = @assignment.extension_for_user( @user )
+    
     @now = Time.now
     set_title
   end

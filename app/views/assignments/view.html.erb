@@ -23,6 +23,10 @@
           <td valign="top"><%= @assignment.due_date.to_formatted_s(:friendly_date) %></td></tr>
       <tr><td class="label" width="15%" nowrap="nowrap" valign="top">Last Submission Date:</td>
           <td valign="top"><%= @assignment.close_date.to_formatted_s(:friendly_date) %></td></tr>
+<% unless @extension.nil? %>
+	  <tr><td class="label" width="15%" nowrap="nowrap" valign="top">Your Extension Date:</td>
+	      <td valign="top"><%= @extension.extension_date.to_formatted_s(:friendly_date) %></td></tr>
+<% end %>
       <tr><td class="label" width="15%" nowrap="nowrap" valign="top">Journals Required:</td>
 	      <td valign="top"><%=  @assignment.enable_journal.yes_no %></td></tr>
 	  <% unless @assignment.grade_item.nil? %>

@@ -20,6 +20,8 @@ class Assignment < ActiveRecord::Base
   
   has_many :io_checks, :dependent => :destroy
   
+  has_many :extensions, :dependent => :destroy
+  
   
   validates_presence_of :title
   # NEEDS extended validations
@@ -100,6 +102,25 @@ class Assignment < ActiveRecord::Base
   
   def upcoming?
     Time.now < open_date
+  end
+  
+  def extension_for_user( user ) 
+    ext = nil
+    self.extensions.each do |i|
+      if i.user_id == user.id 
+        ext = i
+      end
+    end
+    return ext
+  end
+  
+  def extension_still_valid( user )
+    extension = extension_for_user( user ) 
+    if extension.nil?
+       return false
+    else 
+       return ! extension.past?
+    end
   end
   
   def current?

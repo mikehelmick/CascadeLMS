@@ -67,6 +67,7 @@
 	<% end %>
 
     <th valign="bottom">View</th>
+    <th valign="bottom">Extensions</th>
   </tr>
 
   <% count = 0 %>
@@ -135,6 +136,17 @@
       <td>
         <%= link_to "View files/journals", :action => 'view_student', :id => student, :course => @course, :assignment => @assignment %>
       </td> 
+
+      <td align="center"> 
+	    <% extension = @assignment.extension_for_user( student ) %>
+	    <% if extension.nil? %>
+	      <%= link_to 'Grant', :action => 'grant', :assignment => @assignment, :course => @course, :id => student.id %>
+	    <% else %>
+	      <%= extension.extension_date.to_formatted_s(:long) %> | 
+	      <%= link_to 'Edit Grant', :action => 'grant', :assignment => @assignment, :course => @course, :id => student.id %> |
+	      <%= link_to 'Revoke', :action => 'revoke', :assignment => @assignment, :course => @course, :id => student.id %> 
+	    <% end %>
+	  </td>
     </tr>
 	
 	<tr id="<%="agsummary_#{student.id}"%>"> 
