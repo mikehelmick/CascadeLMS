@@ -8,7 +8,7 @@ class AutoGradeMonitorWorker < BackgrounDRb::MetaWorker
   
   def create(args = nil)
       logger.debug("Initialied auto_grade_monitor_worker")
-      add_timer(1) { check_queue }
+      add_periodic_timer(15) { check_queue }
   end
 
   def free_in_service( args )
@@ -41,12 +41,8 @@ class AutoGradeMonitorWorker < BackgrounDRb::MetaWorker
 
         logger.info("Monitor found item to be scheduled, id=#{schedule_me.id}")
 
-        puts "HELLO THERE - SCHEDULE #{schedule_me.inspect}"
-        MiddleMan.new_worker(
-             :worker => :auto_grade_worker,
-             :args => schedule_me.id,
-             :scheduled_at => Time.now + 1.seconds 
-        )
+        MiddleMan.worker(:auto_grade_worker).async_execute(:arg => schedule_me.id,
+                                                           :job_key => "ag#{schedule_me.id}")
 
         logger.info("scheduled grade request #{schedule_me.id} ")
 
@@ -77,7 +73,6 @@ class AutoGradeMonitorWorker < BackgrounDRb::MetaWorker
         logger.info("no grade requests at #{Time.now.to_formatted_s(:rfc822)}.")
       end
     
-      sleep(10)
     #end 
     
   end

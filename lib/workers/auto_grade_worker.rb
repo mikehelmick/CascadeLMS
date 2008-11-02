@@ -10,8 +10,7 @@ require 'text_diff'
 class AutoGradeWorker < BackgrounDRb::MetaWorker
   
   set_worker_name :auto_grade_worker
-  reload_on_schedule true
-  
+  pool_size 2
   
   def create(args = nil)
     logger.debug("Initialied auto_grade_monitor_worker")
@@ -254,6 +253,8 @@ class AutoGradeWorker < BackgrounDRb::MetaWorker
   
     
   def execute( args = 0 )  
+    puts "RUNNING WITH #{args}"
+    
     begin
       queue = GradeQueue.find(args.to_i)  
     rescue
@@ -261,6 +262,8 @@ class AutoGradeWorker < BackgrounDRb::MetaWorker
       logger.error("AutoGrade worker initialized with no ID.")
       return
     end
+    
+    puts "Background grader started for request #{args.to_i}"
     
     begin
     
@@ -337,6 +340,8 @@ class AutoGradeWorker < BackgrounDRb::MetaWorker
       end
     end
     
+    
+    persistent_job.finish!
   end
 
 end

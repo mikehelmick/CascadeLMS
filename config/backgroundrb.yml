@@ -2,11 +2,10 @@
     :port: 11006
     :ip: 127.0.0.1
     :environment: production
-    :log: all
+    :log: foreground
     :debug_log: true
-    :persistent_disabled: false
-    :persistent_delay: 10
-    
+    :persistent_disabled: true
+    :persistent_delay: 10  
 :schedules:
     :auto_grade_monitor_worker:
         :free_in_service:

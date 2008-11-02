@@ -1,7 +1,7 @@
 <div class="bottom">&nbsp;</div>
  <div id="Footer">
    Copyright &copy; 2006 - 2008 <a href="http://www.users.muohio.edu/helmicmt/">Mike Helmick</a> | <%= link_to "Credits", :controller => "/index", :action => 'credits', :course => nil, :assignment => nil, :id => nil %> |
-   <a href="http://www.cscourseware.org/projects/computer-science-courseware">Computer Science Courseware v<%=@app['version']%></a><br/>
+   <a href="https://svn.csi.muohio.edu/cscw/">Computer Science Courseware v<%=@app['version']%></a><br/>
    Installed for <%=@app['title']%>, Site contact: <a href="mailto:<%=@app['email']%>"><%=@app['email']%></a> <br/>
 
    <% unless session[:user].nil? %>
