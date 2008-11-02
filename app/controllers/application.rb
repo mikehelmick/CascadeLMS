@@ -208,7 +208,7 @@ class ApplicationController < ActionController::Base
  	
  	  if session[:user].nil?
  	    flash[:notice] = "Please log in before proceeding."
- 	    session[:post_login] = redirect_uri if request.method().eql?("GET")
+ 	    session[:post_login] = redirect_uri if request.method.to_s.downcase.eql?("get") && !redirect_uri.index('/redirect/').nil?
  	    redirect_to :controller => '/index'
  	    return false
     end
@@ -217,7 +217,7 @@ class ApplicationController < ActionController::Base
       redirect_to :controller => '/index', :action => 'expired'
       # don't want to accidently clobber post data
       session[:post_login] = "#{request.protocol()}#{request.host()}#{request.port_string}/home"
-      session[:post_login] = redirect_uri if request.method.eql?("GET")
+      session[:post_login] = redirect_uri if request.method.to_s.downcase.eql?("get") && !redirect_uri.index('/redirect/').nil?
       
       return false
     end
@@ -318,7 +318,7 @@ class ApplicationController < ActionController::Base
     if @app['authtype'].downcase.eql?('ldap')
       auth = LdapAuthentication.new( @app )
       is_ldap = true
-    end
+    end    
     
     begin
       @user = auth.authenticate( user.uniqueid, user.password )
@@ -335,8 +335,10 @@ class ApplicationController < ActionController::Base
       
       if ( redirect && session[:post_login].nil? )
         redirect_to :controller => 'home' 
-      #else 
-      #  redirect_to_url session[:post_login] if redirect
+      elsif redirect && !session[:post_login].index("/redirect/").nil? 
+        redirect_to session[:post_login] if redirect
+      else 
+        redirect_to :controller => 'home' 
       end
       return @user
     rescue SecurityError => doh
@@ -364,7 +366,9 @@ class ApplicationController < ActionController::Base
     
     #username, passwd = get_auth_data 
     credArray = 
-        authenticate_with_http_basic() { |u,p| return u, p }
+        authenticate_with_http_basic do |u,p| 
+           [u, p]
+        end
     
     # check if authorized 
     # try to get user 
@@ -378,7 +382,7 @@ class ApplicationController < ActionController::Base
     
     session[:post_login] = nil
     userObject = authenticate( user, false )
-    
+
     if userObject
       return userObject         
     else  

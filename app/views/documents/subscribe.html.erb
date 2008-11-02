@@ -9,12 +9,11 @@ To subscribe to the postcast <b><%= @folder.title %></b> in the course <b><%= @c
 <p><B>Podcast description:</b> <%= @folder.comments_html %></p>
 	
 	
-<B>Podcast Subscription URL:</b>
-		
+<B>Podcast Subscription URL:</b>		
 <%= link_to "#{url_for :controller => '/documents', :action => 'podcast', :id => @folder.id, :course => @course, :only_path => false }", :controller => '/documents', :action => 'podcast', :id => @folder.id, :course => @course, :only_path => false %>
 <br/>
-
 Depending on your system configuration you can click the above link or copy and paste it into your favorite podcast client.
+
 
 </p>
 </div>

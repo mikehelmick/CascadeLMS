@@ -20,10 +20,11 @@ class DocumentsController < ApplicationController
   end
   
   def podcast_download
-    user = rss_authorize()
+    return unless load_course( params[:course] )
+    @user = rss_authorize( "CSCourseware podcast for course '#{@course.title}'.")
     
-    unless user.nil?
-      if load_course( params[:course] )
+    unless @user.nil?
+      if @course
         if allowed_to_see_course( @course, @user )
     
           begin 
@@ -41,18 +42,17 @@ class DocumentsController < ApplicationController
   end
   
   def podcast
-    user = rss_authorize()
+    return unless load_course( params[:course] )
+    @user = rss_authorize( "CSCourseware podcast for course '#{@course.title}'.")
     
-    unless user.nil?
+    unless @user.nil?
+      params[:format] = 'xml'
       if load_course( params[:course] ) 
-          if allowed_to_see_course( @course, @user )
-          
+          if allowed_to_see_course( @course, @user )       
             if load_folder( params[:id].to_i )
               
-              @documents = Document.find(:all, :conditions => ['course_id = ? and published = ? and document_parent = ?', @course.id, true, @folder_id], :order => 'created_at desc' )  
-              
+              @documents = Document.find(:all, :conditions => ['course_id = ? and published = ? and document_parent = ?', @course.id, true, @folder_id], :order => 'created_at desc' )               
               @fresh_date = @documents[0].created_at rescue @fresh_date = Time.now
-              
               headers["Content-Type"] = "application/rss+xml"
               ## probably need to do fresh date
           

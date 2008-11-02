@@ -15,20 +15,20 @@ class FeedController < ApplicationController
   end
   
   def index
-    @user = rss_authorize()
-    params[:format] = 'xml'
-  
-  puts "HELLO #{@user}"
+    return unless load_course( params[:course] )
+    
+    @user = rss_authorize( "CSCourseware RSS feed for course '#{@course.title}'.")
+    
+    return if @user.nil?
     
     unless @user.nil?
+      params[:format] = 'xml'
       @course = load_course( params[:course] ) 
       if @course
         if course_allows_rss( @course )
-          if allowed_to_see_course( @course, @user )
-          
+          if allowed_to_see_course( @course, @user )     
             respond_to do |format| 
               format.xml {
-                 
                  @recent_activity = FreshItems.fresh( @course, @app['recent_items'].to_i )
                  #headers["Content-Type"] = "application/rss+xml"
             
@@ -42,9 +42,6 @@ class FeedController < ApplicationController
                  end
                }
              end
-            
-            
-          
           end
           #render_text( 'You are not authorized to view this RSS feed.', 401 ) 
         end
