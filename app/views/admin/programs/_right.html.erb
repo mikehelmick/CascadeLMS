@@ -1,0 +1,23 @@
+<h2>Programs (Accreditation Groupings)</h2>
+
+<p>This section allows you to set up the various programs that program objectives are categorized under.</p>
+
+
+<% if request.path_parameters['action'].eql?('managers') %>
+
+<h2>Add Managers/Auditors</h2>
+<div id="search_area">
+<% form_remote_tag( :update => 'search_results', :url => { :action => :search, :id => @program }, :complete => "new Effect.BlindDown('search_results');" ) do %>
+	<label for="id">Search Terms:</label> 
+	<%= text_field_tag 'searchterms', '' %>
+	<%= submit_tag 'Search' %><br/>
+<% end %>
+<span id="spinner" style="display: none;"><%= image_tag 'spinner.gif' %></span>
+</div>
+
+<div id="search_results" style="display: none;">
+
+</div>
+	
+<% end %>
+

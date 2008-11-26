@@ -8,6 +8,9 @@ class User < ActiveRecord::Base
   has_many :courses_users
   has_many :courses, :through => :courses_users
   
+  has_many :programs_users
+  has_many :programs, :through => :programs_users
+  
   has_many :posts
   has_many :comments
   
@@ -88,6 +91,23 @@ class User < ActiveRecord::Base
     self.courses_users.each do |x|
       if x.course_id.to_i == course_id.to_i
         #puts "#{x.inspect}\n --- #{cb.call(x)} \n\n"
+        return cb.call( x )
+      end
+    end
+    false
+  end
+  
+  def manager_in_program?( program_id )  
+    blank_in_program( program_id ) { |x| x.program_manager }
+  end
+  
+  def auditor_in_program?( program_id )
+    blank_in_program( program_id ) { |x| x.program_auditor }
+  end
+  
+  def blank_in_program( program_id, &cb ) 
+    self.programs_users.each do |x|
+      if x.program_id.to_i == program_id.to_i
         return cb.call( x )
       end
     end

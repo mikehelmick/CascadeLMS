@@ -1,0 +1,48 @@
+<%= link_to_function(image_tag("arrow_up.png"), "new Effect.BlindUp('search_results')") %>
+<% if @invalid %>
+<div id="ErrorExplanation">You must enter at least 2 characters in your search term.</div>
+<% else %>
+
+<% if @users.size == 0 %>
+<div id="ErrorExplanation">No users matched your search term.</div>
+<% else %>
+
+<table class="fancy">
+
+<% count = 0 %>
+<% for user in @users %>
+<% count = count.next 
+   odd = "odd"
+   odd = "even" if count.even?
+%>
+
+  <tr class="<%=odd%> hover" id="item_<%=user.id%>">
+    <td>
+	<table><tr>
+	  <td colspan="3"><%=h user.display_name %> | uid='<%=h user.uniqueid %>'</td>
+    </tr><tr>
+	  <td align="right">Add As:</td>
+	  <td>
+		<% if user.manager_in_program?(@program.id) %>
+		  <s>Manager</s>
+		<% else %>
+		  <%= link_to_remote( "Manager", :update => "managers_list", :url => { :action => 'adduser', :type => 'manager', :program => @program.id, :id => user }, :complete => "new Effect.Highlight( 'managers_list' )" ) %>
+		<% end %>
+	  </td>
+	  <td>
+		<% if user.auditor_in_program?(@program.id) %>
+		  <s>Auditor</s>
+		<%else%>
+		  <%= link_to_remote( "Auditor", :update => "auditors_list", :url => { :action => 'adduser', :type => 'auditor', :program => @program.id, :id => user }, :complete => "new Effect.Highlight( 'auditors_list' )" ) %>
+		<%end%>
+	  </td>
+	</tr></table>
+	</td>
+  </tr>
+
+<% end %>
+
+</table>
+
+<% end %>
+<% end %>

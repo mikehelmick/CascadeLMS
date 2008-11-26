@@ -1,0 +1,36 @@
+<h2>Program Managers/Auditors for '<%= @program.title %>'</h2>
+
+<p><%= link_to 'Back to all Programs', :action => 'list', :id => nil %></p>
+
+<h3>Program Managers</h3>
+
+<div id="managers_list">
+<% if @managers.length == 0 %>
+  <p><i>No program managers</i></p>
+<% else %>
+  <ul>
+	<% for user in @managers %>	
+	   <li id="manager_user_<%=user.id%>">
+		<%= link_to_remote( image_tag('delete.png', :align => 'absmiddle' ), :url => { :action => 'deluser', :type => 'manager', :program => @program.id, :id => user }, :confirm => "Remove user #{user.display_name} from this program?", :success => "new Effect.Puff( 'manager_user_#{user.id}' )", :failure => "alert('There was an error removing the selected user from this program.');" ) %> <%=h user.display_name %> - <b><%=h user.uniqueid %></b> - (<%=h user.email%>)
+	   </li>		
+	<% end %>
+  </ul>
+<% end %>
+</div>
+
+<hr/>
+<h3>Program Auditors</h3>
+
+<div id="auditors_list">
+<% if @managers.length == 0 %>
+  <p><i>No program auditors</i></p>
+<% else %>
+  <ul>
+	<% for user in @auditors %>
+	  <li id="auditor_user_<%=user.id%>">
+		<%= link_to_remote( image_tag('delete.png', :align => 'absmiddle' ), :url => { :action => 'deluser', :type => 'auditor', :program => @program.id, :id => user }, :confirm => "Remove user #{user.display_name} from this program?", :success => "new Effect.Puff( 'auditor_user_#{user.id}' )", :failure => "alert('There was an error removing the selected user from this program.');" ) %> <%=h user.display_name %> - <b><%=h user.uniqueid %></b> - (<%=h user.email%>)
+		</li>
+	<% end %>
+  </ul>
+<% end %>
+</div>

@@ -1,0 +1,12 @@
+<h2>Editing Program '<%= @program.title %>'</h2>
+
+<div id="form_area">
+<% form_tag( :action => 'update', :id => @program ) do %>
+  <%= render :partial => 'form' %>
+<div class="submit">
+  <%= submit_tag 'Edit' %>
+</div>
+<% end %>
+
+</div>
+<%= link_to 'Back', :action => 'list' %>

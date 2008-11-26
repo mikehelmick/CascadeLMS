@@ -112,6 +112,14 @@
   </tr>
   <% end %>
 
+  <% if @course.course_setting.enable_outcomes && @user.instructor_in_course?( @course.id ) %>
+  <tr>
+    <td><%= link_to "#{image_tag 'cog.png', :align => 'absmiddle'} Course Outcomes", :controller => '/instructor/outcomes', :course => @course %></td>
+    <td>&nbsp;</td>
+  </tr>
+  <% end %>
+
+
   <% if @user.instructor_in_course?( @course.id ) %>
   <tr class="header">
     <th class="full" colspan="2"><b>Instructor Application Consoles</b></th>
@@ -121,7 +129,8 @@
 	<td><%= link_to "#{image_tag 'cog.png', :align => 'absmiddle'} AutoGrade Failures", :controller => '/instructor/monitor', :action => 'agfailed', :course => @course %></td>
   </tr>
   <% end %>
- 
+
+
 </table>
 
 <% if @user.instructor_in_course?(@course.id) %>

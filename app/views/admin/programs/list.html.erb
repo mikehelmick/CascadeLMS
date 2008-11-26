@@ -1,0 +1,35 @@
+<h2>Programs (Accreditation Groupings)</h2>
+
+
+<% if @programs.size == 0 %>
+  <p><i>There are no programs defined.</i></p>
+<% else %>
+
+<table class="fancy">
+  <tr class="header">
+    <th>Program Name</th>
+    <th>Controls</th>
+  </tr>
+  
+<% count = 0 %>
+<% for program in @programs %>
+<% count = count.next 
+   odd = "odd"
+   odd = "even" if count.even?
+%>
+
+  <tr class="<%=odd%> hover" id="language_<%=program.id%>">
+    <td><%=h program.title %></td>
+    <td><%= link_to 'Edit', :action => 'edit', :id => program %> |
+        <%= link_to 'Edit Managers/Auditors', :action => 'managers', :id => program %>    
+    </td>
+  </tr>
+<% end %>
+</table>
+
+<% end %>
+
+<br />
+
+<%= link_to 'New Program', :action => 'new' %> |
+<%= link_to 'Back', :controller => '/admin' %>

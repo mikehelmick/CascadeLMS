@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20081101181837) do
+ActiveRecord::Schema.define(:version => 20081126045553) do
 
   create_table "announcements", :force => true do |t|
     t.string   "headline"
@@ -160,6 +160,7 @@ ActiveRecord::Schema.define(:version => 20081101181837) do
     t.boolean "ta_create_quizzes",                       :default => false, :null => false
     t.boolean "enable_wiki",                             :default => false, :null => false
     t.text    "email_signature",                                            :null => false
+    t.boolean "enable_outcomes",                         :default => false, :null => false
   end
 
   add_index "course_settings", ["course_id"], :name => "course_settings_course_id_index", :unique => true
@@ -430,6 +431,23 @@ ActiveRecord::Schema.define(:version => 20081101181837) do
     t.string  "execute_command",     :default => "",   :null => false
     t.string  "extension",           :default => "",   :null => false
   end
+
+  create_table "programs", :force => true do |t|
+    t.string   "title",      :default => "", :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "programs_users", :force => true do |t|
+    t.integer  "user_id",         :limit => 11, :default => 0,     :null => false
+    t.integer  "program_id",      :limit => 11, :default => 0,     :null => false
+    t.boolean  "program_manager",               :default => true,  :null => false
+    t.boolean  "program_auditor",               :default => false, :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "programs_users", ["user_id", "program_id"], :name => "index_programs_users_on_user_id_and_program_id", :unique => true
 
   create_table "project_teams", :force => true do |t|
     t.integer "course_id", :limit => 11, :default => 0,  :null => false
