@@ -4,7 +4,7 @@
 <%= render :partial => 'controls' %>
 </div>
 
-<% if @app['authtype'].eql?('ldap') %>
+<% if @app['authtype'].eql?('ldap') && !@app['allow_fallback_auth'].eql?(true.to_s) %>
 <p><i>You can not add users in this system since you are using LDAP authentication.</i></p>
 <% end %>
 

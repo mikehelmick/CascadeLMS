@@ -1,0 +1,1 @@
+<%= link_to_remote( "#{@user.auditor}", :update => "auditor_#{@user.id}", :url => { :action => 'toggle_auditor', :id => @user }, :complete => "new Effect.Highlight( 'item_#{@user.id}' )" ) %>

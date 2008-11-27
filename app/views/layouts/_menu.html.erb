@@ -117,7 +117,15 @@
 		    <% end %>
 		
 		  <% end %>
-		  
+		
+		  <% if @user && @user.program_manager? %>
+		    <% if @tab.nil? || !@tab.eql?('programs') %>
+		      <li style="padding-left: 25px"><%= link_to 'Programs', :controller => '/program', :course => nil %>
+		    <% else %>
+		      <li style="padding-left: 25px"><%= link_to 'Programs', { :controller => '/program', :course => nil }, { :id => 'current' } %></li>
+		    <% end %>		  
+		  <% end %>
+		
 		  <% if @user && @user.admin %>
 		    <% if @tab.nil? || !@tab.eql?('administration') %>
 		      <li style="padding-left: 25px"><%= link_to 'Administration', :controller => '/admin', :course => nil %>

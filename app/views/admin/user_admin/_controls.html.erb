@@ -1,4 +1,4 @@
-<% if @app['authtype'].eql?('basic') %>
+<% if @app['authtype'].eql?('basic') || @app['allow_fallback_auth'].eql?(true.to_s)%>
 <p><%= link_to 'Create a new User', :action => 'new' %></p>
 <% end %>
 

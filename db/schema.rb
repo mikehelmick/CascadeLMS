@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20081126045553) do
+ActiveRecord::Schema.define(:version => 20081127061427) do
 
   create_table "announcements", :force => true do |t|
     t.string   "headline"
@@ -423,6 +423,14 @@ ActiveRecord::Schema.define(:version => 20081126045553) do
     t.boolean  "published",                     :default => true,  :null => false
   end
 
+  create_table "program_outcomes", :force => true do |t|
+    t.integer  "program_id", :limit => 11
+    t.text     "outcome",                  :null => false
+    t.integer  "position",   :limit => 11
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "programming_languages", :force => true do |t|
     t.string  "name"
     t.boolean "enable_compile_step", :default => true, :null => false
@@ -590,6 +598,7 @@ ActiveRecord::Schema.define(:version => 20081126045553) do
     t.string  "activation_token",               :default => "",    :null => false
     t.string  "forgot_token",                   :default => "",    :null => false
     t.boolean "enabled",                        :default => true,  :null => false
+    t.boolean "auditor",                        :default => false, :null => false
   end
 
   create_table "wikis", :force => true do |t|

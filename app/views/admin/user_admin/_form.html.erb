@@ -37,6 +37,11 @@ edit = false if edit.nil?
 		<%= radio_button 'new_user', 'instructor', false %> No
 	</p>
 
+	<p><b>Auditor:</b>
+		<%= radio_button 'new_user', 'auditor', true %> Yes
+		<%= radio_button 'new_user', 'auditor', false %> No
+	</p>
+
 	<p><b>Administrator:</b> <i>*be careful who you give this to.</i>
 		<%= radio_button 'new_user', 'admin', true %> Yes
 		<%= radio_button 'new_user', 'admin', false %> No

@@ -1,0 +1,48 @@
+<div class="SectionHeader"><div class="Full">
+<h2>Outcomes for <%= @program.title %></h2>
+</div></div>
+
+<br/>
+
+<% if @program.program_outcomes.length == 0 %>
+  <p><i>There are no outcomes defined for this program.</i></p>
+<% else %>
+<table class="fancy" width="99%">
+  <tr class="header">
+	  <th width="90%">Program Outcome</th>
+	  <th>Controls</th>
+	</tr>
+
+  <% count = 0 %>
+  <% for outcome in @program.program_outcomes %>	
+    <% count = count.next 
+       odd = "odd"
+       odd = "even" if count.even? %>
+    <tr class="<%=odd%> hover" id="outcome_<%=outcome.id%>">
+      <td><%= count %>) <%=h outcome.outcome %></td>
+      <td nowrap="nowrap">
+	      <%= link_to 'Move Up', :action => 'move_up', :id => @program, :outcome => outcome %> |
+	      <%= link_to 'Move Down', :action => 'move_down', :id => @program, :outcome => outcome %> |		
+	      <%= link_to 'Edit', :action => 'edit', :id => @program, :outcome => outcome %> | 
+	      <%= link_to 'Delete', { :action => 'destroy', :id => @program, :outcome => outcome }, :confirm => "Are you sure you want to delete the program outcome '#{outcome.outcome}' and all of it's associated data? This action can not be undone." %>
+	  </td>
+	</tr>
+  <% end %>	
+</table>
+<% end %>
+
+<div class="SectionHeader"><div class="Full">
+<h2>Add new Program Outcome for <%= @program.title %></h2>
+</div></div>
+
+<div id="form_area">
+  <%= error_messages_for 'program_outcome' %>	
+  <% form_tag( :action => 'save_outcome', :program => @program ) do %>
+
+  <%= render :partial => 'form' %>
+ 
+  <div class="submit">
+	<%= submit_tag "Save New Outcome" %>
+  </div>
+  <% end %>	
+</div>

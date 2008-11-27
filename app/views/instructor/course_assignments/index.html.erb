@@ -67,7 +67,7 @@
 	    <td nowrap="nowrap">		  
 	      <%= link_to 'Move Up', :action => 'move_up', :id => assignment %> |
 	      <%= link_to 'Move Down', :action => 'move_down', :id => assignment %> |
-	      <%= link_to 'Delete', { :action => 'destroy', :id => assignment }, :confirm => "Are you sure you want to delete the assignment '#{assignment.title}' and all of it's associated data? This action can no be undone." %>
+	      <%= link_to 'Delete', { :action => 'destroy', :id => assignment }, :confirm => "Are you sure you want to delete the assignment '#{assignment.title}' and all of it's associated data? This action can not be undone." %>
 	    </td>
 	    <% end %> 
 	  </tr>

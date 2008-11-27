@@ -1,0 +1,39 @@
+<div class="SectionHeader"><div class="Full">
+<h2>Programs - Courses of Study</h2>
+</div></div>
+
+<p>Programs that you are a manager of:</p>
+
+<table class="fancy" width="99%">
+  <tr class="header">
+	  <th width="90%">Program</th>
+	  <th>&nbsp;</th>
+	</tr>
+
+  <% count = 0 %>
+  <% for program in @user.programs_users %>	
+    <% count = count.next 
+       odd = "odd"
+       odd = "even" if count.even? %>
+    <tr class="<%=odd%> hover" id="program_<%=program.program.id%>">
+      <td><%=h program.program.title %></td>
+      <td nowrap="nowrap">
+	    <% if program.program_manager %>
+	      <%= link_to 'Edit Program Outcomes', :action => 'outcomes', :id => program.program.id %>
+	    <% end %>
+	  </td>
+	</tr>
+	<tr class="<%=odd%> hover" style="padding-left: 1px;">
+	  <td colspan="2>">
+		<ul>
+		  <% count = 0 %>
+		  <% for outcome in program.program.program_outcomes %>
+		    <% count = count.next %>
+		    <li><%= count %>) <%= outcome.outcome %></li>
+		  <% end %>
+		</ul>
+	  </td>
+	</tr>
+  <% end %>	
+
+</table>

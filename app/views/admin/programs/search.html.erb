@@ -23,7 +23,7 @@
     </tr><tr>
 	  <td align="right">Add As:</td>
 	  <td>
-		<% if user.manager_in_program?(@program.id) %>
+		<% if user.manager_in_program?(@program.id) || (user.auditor && !(user.admin || user.instructor)) %>
 		  <s>Manager</s>
 		<% else %>
 		  <%= link_to_remote( "Manager", :update => "managers_list", :url => { :action => 'adduser', :type => 'manager', :program => @program.id, :id => user }, :complete => "new Effect.Highlight( 'managers_list' )" ) %>

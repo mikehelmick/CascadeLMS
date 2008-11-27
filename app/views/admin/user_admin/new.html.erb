@@ -1,5 +1,9 @@
 <h2>Create a new User</h2>
 
+<% if @app['authtype'].eql?('ldap') && @app['allow_fallback_auth'].eql?(true.to_s) %>
+<p><b>Since LDAP is enabled, it is recommended that you only use this screen to create temporary auditor accounts.</b></p>
+<% end %>
+
 <p><%= link_to 'Cancel', :action => 'index' %></p>
 
 <div id="form_area">

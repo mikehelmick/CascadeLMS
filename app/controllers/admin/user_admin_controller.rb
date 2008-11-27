@@ -26,6 +26,13 @@ class Admin::UserAdminController < ApplicationController
     render(:layout => false)
   end
   
+  def toggle_auditor
+    @user = User.find(params[:id])
+    @user.toggle_auditor
+    @user.save
+    render(:layout => false)    
+  end
+  
   def toggle_admin
     @user = User.find(params[:id])
     @user.toggle_admin
@@ -113,7 +120,7 @@ class Admin::UserAdminController < ApplicationController
   private
   
   def ensure_basic_auth
-    unless @app['authtype'].eql?('basic')
+    unless @app['authtype'].eql?('basic') || @app['allow_fallback_auth'].eql?(true.to_s)
       flash[:badnotice] = "You can not manually create users when using basic authentication.  With LDAP authentication enabled, new users must be created in the LDAP directory tree."
       redirect_to :action => 'index'
       return false

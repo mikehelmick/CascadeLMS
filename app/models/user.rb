@@ -97,6 +97,15 @@ class User < ActiveRecord::Base
     false
   end
   
+  def program_manager?
+    self.programs_users.each do |x|
+      if x.program_manager
+        return true
+      end
+    end
+    false
+  end
+  
   def manager_in_program?( program_id )  
     blank_in_program( program_id ) { |x| x.program_manager }
   end
@@ -116,6 +125,10 @@ class User < ActiveRecord::Base
   
   def toggle_instructor
     self.instructor = !self.instructor
+  end
+  
+  def toggle_auditor
+    self.auditor = !self.auditor   
   end
   
   def toggle_admin

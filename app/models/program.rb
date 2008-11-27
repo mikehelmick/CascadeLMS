@@ -3,6 +3,8 @@ class Program < ActiveRecord::Base
   has_many :programs_users
   has_many :users, :through => :programs_users
   
+  has_many :program_outcomes, :order => "position", :dependent => :destroy
+  
   def managers
     managers = Array.new   
     self.programs_users.each do |i|

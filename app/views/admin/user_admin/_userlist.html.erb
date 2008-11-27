@@ -12,6 +12,7 @@
     <th>Email</th>
     <th>Affiliation</th>
     <th>Instructor</th>
+    <th>Auditor</th>
     <th>Admin</th>
     <th>Login Enabled</th>
 <% if @app['authtype'].eql?('basic') %>
@@ -35,6 +36,9 @@
     <td><%= user.email %></td>
     <td><%= user.affiliation %></td>
     <td id="instructor_<%=user.id%>"><%= link_to_remote( "#{user.instructor}", :update => "instructor_#{user.id}", :url => { :action => 'toggle_instructor', :id => user }, :complete => "new Effect.Highlight( 'item_#{user.id}' )" ) %></td>
+
+    <td id="auditor_<%=user.id%>"><%= link_to_remote( "#{user.auditor}", :update => "auditor_#{user.id}", :url => { :action => 'toggle_auditor', :id => user }, :complete => "new Effect.Highlight( 'item_#{user.id}' )" ) %></td>
+
     <td id="admin_<%=user.id%>"><%= link_to_remote( "#{user.admin}", :update => "admin_#{user.id}", :url => { :action => 'toggle_admin', :id => user }, :complete => "new Effect.Highlight( 'item_#{user.id}' )" ) %></td>
 
 	<td id="enable_<%=user.id%>"><%= link_to_remote( "#{user.enabled}", :update => "enable_#{user.id}", :url => { :action => 'toggle_enabled', :id => user }, :complete => "new Effect.Highlight( 'enable_#{user.id}' )" ) %></td>

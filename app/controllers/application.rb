@@ -166,12 +166,21 @@ class ApplicationController < ActionController::Base
     return true
   end
   
+  def ensure_program_manager
+    unless session[:user].program_manager?
+      flash[:badnotice] = "You do not have the rights to view the requested page."
+      redirect_to :controller => '/home'
+      return false
+    end
+    return true    
+  end
+  
   def nil_or_empty( str )
     return str.nil? || str.eql?('')
   end
   
   def ensure_basic_auth
-    unless @app['authtype'].eql?('basic')
+    unless @app['authtype'].eql?('basic') || @app['allow_fallback_auth'].eql?(true.to_s)
       redirect_to :action => 'index'
       return false
     end
@@ -248,6 +257,15 @@ class ApplicationController < ActionController::Base
     return true
   end
   
+  def allowed_to_manage_program( program, user, redirect = true )
+    unless user.manager_in_program?( program.id )
+      flash[:badnotice] = "You are not authorized to view the requested program."
+      redirect_to :controller => '/program' if redirect
+      return false      
+    end
+    true
+  end
+  
   def allowed_to_see_course( course, user, redirect = true)
     user.courses_users.each do |cu|
       if cu.course_id == course.id
@@ -279,6 +297,15 @@ class ApplicationController < ActionController::Base
     true
   end
   
+  def outcome_for_program( program, outcome, redirect = true )
+    unless outcome.program_id == program.id 
+      flash[:badnotice] = "The requested outcome could not be found."
+      redirect_to :controller => 'program', :action => 'outcomes', :id => @program if redirect
+      return false
+    end
+    true    
+  end
+  
   def assignment_has_journals( assignment )
     unless assignment.enable_journal
       flash[:badnotice] = "The selected assignment does not have a journal requirement."
@@ -298,6 +325,16 @@ class ApplicationController < ActionController::Base
     end
   end
   
+  def load_program( program_id, redirect = true )
+    begin
+      @program = Program.find( program_id )
+    rescue
+      flash[:badnotice] = "Requested program could not be found."
+      redirect_to :controller => '/program' if redirect
+      return false
+    end    
+  end
+  
   def load_assignment( assignment_id, redirect = true )
     begin
       @assignment = Assignment.find( assignment_id )
@@ -312,10 +349,10 @@ class ApplicationController < ActionController::Base
     flash[:highlight] = dom_id
   end
   
-  def authenticate( user, redirect = true )
+  def authenticate( user, redirect = true, force_basic = false )
     auth = BasicAuthentication.new()
     is_ldap = false
-    if @app['authtype'].downcase.eql?('ldap')
+    if @app['authtype'].downcase.eql?('ldap') && !force_basic
       auth = LdapAuthentication.new( @app )
       is_ldap = true
     end    
@@ -342,18 +379,22 @@ class ApplicationController < ActionController::Base
       end
       return @user
     rescue SecurityError => doh
-      if redirect
-        
-        ## should we log this error
-        unless doh.message.index('No such object') || doh.message.index('Invalid credentials')
-          log_error(doh)
+      if !force_basic && @app['allow_fallback_auth'].eql?(true.to_s)
+        return authenticate( user, redirect, true )
+      else
+        if redirect
+
+          ## should we log this error
+          unless doh.message.index('No such object') || doh.message.index('Invalid credentials')
+            log_error(doh)
+          end
+
+          @login_error = doh.message
+          @user.password = '' 
+          render :action => 'index' 
         end
-        
-        @login_error = doh.message
-        @user.password = '' 
-        render :action => 'index' 
+        return false
       end
-      return false
     end
   end
   
