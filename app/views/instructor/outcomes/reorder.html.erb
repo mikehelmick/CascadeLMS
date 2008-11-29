@@ -1,0 +1,43 @@
+<p><%= link_to 'Back', :controller => '/instructor/outcomes', :action => nil, :course => @course %></p>
+
+<div class="SectionHeader"><div class="Full">
+<h2>Reorder outcome for '<%=h @course.title%>' </h2>
+</div></div>
+
+<p class="blockintro">Outcome reordering is done for one level of the hierarchy at a time.   To change the hierarchy, go back one screen and click the 'edit' link for the item you wish to move.</p>
+
+<div id="reorder">
+  <p>Drag and Drop the objectives to move them.</p>
+
+  <p><b><%= link_to "I'm done reordering objectives.", :action => 'index', :course => @course %></b></p>
+
+  <% unless @parent_outcome.nil? %>
+    <p>Reordering objectives that are children of '<%=@parent_outcome.outcome%>'.</p>
+  <% end %>
+
+  <ul id="outcome-order">
+    <% for outcome in @course_outcomes %>
+      <li id="course_outcome_<%= outcome.id %>"><%= image_tag 'arrow_switch.png', :align => 'absmiddle' %>
+        <b><%= outcome.outcome %></b>
+        
+        <% children = outcome.child_outcomes %>
+        <% if children.length > 0 %>
+          <ul>
+ 	        <% for child in children %>
+              <li><%= child.outcome %></li>
+              <% if child.child_outcomes.length > 0 %>
+                <ul><li>...</li></ul>
+              <% end %>
+            <% end %>
+  	      </ul>
+        <% end %>
+      </li>
+    <% end %>
+  </ul>
+</div>
+
+<%= sortable_element 'outcome-order', 
+    :url => { :action => 'sort', :course => @course, :id => @parent },
+    :complete => visual_effect(:highlight, 'outcome-order')
+%>
+

@@ -26,6 +26,10 @@
 	<tr class="<%=odd%> hover" style="padding-left: 1px;">
 	  <td colspan="2>">
 		<ul>
+		  <% if program.program.program_outcomes.length == 0 %>	
+		    <li>No program outcomes defined.</li>
+		  <% end %>
+			
 		  <% count = 0 %>
 		  <% for outcome in program.program.program_outcomes %>
 		    <% count = count.next %>

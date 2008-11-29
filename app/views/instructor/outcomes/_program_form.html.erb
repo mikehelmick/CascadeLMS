@@ -1,0 +1,4 @@
+<div class="block">
+	<p><label for="course_program" class="required">Add mapping to program:</label>
+	<%= select_tag 'program_id', options_from_collection_for_select(@programs, "id", "title" ) %></p>
+</div>

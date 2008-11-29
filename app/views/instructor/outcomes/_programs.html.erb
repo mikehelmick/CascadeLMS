@@ -1,0 +1,34 @@
+<div class="SectionHeader"><div class="Full">
+<h2>Programs for Course '<%=h @course.title%>' </h2>
+</div></div>
+
+<% if @course.programs.length == 0 %>
+	<p><i>This course is not in any programs.</i></p>
+<% else %>
+    <p>This course is part of the following programs:
+	<ul>
+	  <% for cprogram in @course.programs %>
+	    <li id="program_<%=cprogram.id%>"><%=h cprogram.title %></span>
+		
+		<%= link_to_remote( image_tag('delete.png', :align => 'absmiddle' ), :url => { :action => 'unmap_program', :program => cprogram.id, :course => @course }, :confirm => "Remove this course from the program '#{cprogram.title}'?.   This will destroy any mappings from course objectives to program objectives.", :success => "new Effect.Puff( 'program_#{cprogram.id}' )",  :failure => "alert('There was an error unmapping this program.');" ) %>
+		
+		</li>
+	  <% end %>
+	</ul>
+	</p>
+<% end %>
+
+<% if @programs.length > 0 %>
+<p><%= link_to_function( "#{image_tag('add.png', :align => 'absmiddle' )} Map to additional programs:", "blindToggle( 'form_area' )" ) %></p>
+<div id="form_area" style="display: none;">
+  <%= error_messages_for 'course_program' %>	
+  <% form_tag( :action => 'map_program', :course => @course ) do %>
+
+  <%= render :partial => 'program_form' %>
+ 
+  <div class="submit">
+	<%= submit_tag "Map Course to Program" %>
+  </div>
+  <% end %>	
+</div>
+<% end %>

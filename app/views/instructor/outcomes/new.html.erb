@@ -1,0 +1,17 @@
+<p><%= link_to 'Back', :controller => '/instructor/outcomes', :action => nil, :course => @course %></p>
+
+<div class="SectionHeader"><div class="Full">
+<h2>Create new Course Outcome for '<%=h @course.title%>' </h2>
+</div></div>
+
+<div id="form_area">
+  <%= error_messages_for 'course_outcome' %>	
+  <% form_tag( :action => 'create_outcome', :course => @course ) do %>
+
+  <%= render :partial => 'outcome_form' %>
+ 
+  <div class="submit">
+	<%= submit_tag "Create Outcome" %>
+  </div>
+  <% end %>	
+</div>

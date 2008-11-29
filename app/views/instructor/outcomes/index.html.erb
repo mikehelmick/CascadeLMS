@@ -1,0 +1,7 @@
+<p><%= link_to 'Back', :controller => '/instructor/index', :action => nil, :course => @course %></p>
+
+<%= error_messages_for 'course_program' %>
+
+<%= render :partial => 'programs' %>
+
+<%= render :partial => 'outcomes' %>

@@ -68,6 +68,20 @@ class ProgramController < ApplicationController
     redirect_to :action => 'outcomes', :id => @program
   end
   
+  def sort
+    return unless load_program( params[:id] )
+    return unless allowed_to_manage_program( @program, @user )
+    
+    ProgramOutcome.transaction do
+      @program.program_outcomes.each do |outcome|
+        outcome.position = params['outcome-order'].index( outcome.id.to_s ) + 1
+        outcome.save
+      end
+    end
+        
+    render :nothing => true
+  end
+  
   def move_up
     return unless load_program( params[:id] )
     return unless allowed_to_manage_program( @program, @user )

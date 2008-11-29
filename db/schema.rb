@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20081127061427) do
+ActiveRecord::Schema.define(:version => 20081128180629) do
 
   create_table "announcements", :force => true do |t|
     t.string   "headline"
@@ -131,6 +131,24 @@ ActiveRecord::Schema.define(:version => 20081127061427) do
 
   add_index "course_informations", ["course_id"], :name => "course_informations_course_id_index", :unique => true
 
+  create_table "course_outcomes", :force => true do |t|
+    t.integer  "course_id",  :limit => 11
+    t.text     "outcome",                                  :null => false
+    t.integer  "position",   :limit => 11
+    t.integer  "parent",     :limit => 11, :default => -1, :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "course_outcomes_program_outcomes", :id => false, :force => true do |t|
+    t.integer  "course_outcome_id",  :limit => 11, :default => 0, :null => false
+    t.integer  "program_outcome_id", :limit => 11, :default => 0, :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "course_outcomes_program_outcomes", ["course_outcome_id", "program_outcome_id"], :name => "courses_outcomes_program_outcomes_unique", :unique => true
+
   create_table "course_settings", :id => false, :force => true do |t|
     t.integer "course_id",                 :limit => 11
     t.boolean "enable_blog",                             :default => true,  :null => false
@@ -161,6 +179,7 @@ ActiveRecord::Schema.define(:version => 20081127061427) do
     t.boolean "enable_wiki",                             :default => false, :null => false
     t.text    "email_signature",                                            :null => false
     t.boolean "enable_outcomes",                         :default => false, :null => false
+    t.boolean "ta_edit_outcomes",                        :default => false, :null => false
   end
 
   add_index "course_settings", ["course_id"], :name => "course_settings_course_id_index", :unique => true
@@ -179,6 +198,15 @@ ActiveRecord::Schema.define(:version => 20081127061427) do
   end
 
   add_index "courses_crns", ["course_id", "crn_id"], :name => "courses_crns_course_id_index", :unique => true
+
+  create_table "courses_programs", :force => true do |t|
+    t.integer  "course_id",  :limit => 11, :default => 0, :null => false
+    t.integer  "program_id", :limit => 11, :default => 0, :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "courses_programs", ["course_id", "program_id"], :name => "index_courses_programs_on_course_id_and_program_id", :unique => true
 
   create_table "courses_users", :force => true do |t|
     t.integer "user_id",           :limit => 11, :default => 0,     :null => false

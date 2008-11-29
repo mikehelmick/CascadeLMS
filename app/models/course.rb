@@ -24,6 +24,10 @@ class Course < ActiveRecord::Base
   
   has_many :project_teams, :order => "team_id", :dependent => :destroy
   
+  has_and_belongs_to_many :programs
+  has_many :course_outcomes, :order => "position", :dependent => :destroy
+  
+  
   before_create :solidify
   
   def merge( other )
@@ -84,7 +88,7 @@ class Course < ActiveRecord::Base
       self.save
     end
   end
-  
+    
   def open_text
     return 'Yes' if self.open
     return 'No'
@@ -138,16 +142,6 @@ class Course < ActiveRecord::Base
     sort_c_users inst
   end
   
-  def sort_c_users(arr)
-    arr.sort! do |x,y|
-      res = x.last_name.downcase <=> y.last_name.downcase
-      if res == 0 
-        res = x.uniqueid.downcase <=> y.uniqueid.downcase
-      end
-      res
-    end
-  end
-  
   def team_for_user( user_id )
     self.project_teams.each do |team|
       team.team_members.each do |tm|
@@ -166,6 +160,47 @@ class Course < ActiveRecord::Base
     self.course_setting = CourseSetting.new if self.course_setting.nil?
   end
   
-  private :sort_c_users
+  def ordered_outcomes
+    all_outcomes = self.course_outcomes
+    
+    ordered = add_outcomes_at_level( Array.new, all_outcomes, -1 )
+      
+    return ordered
+  end
+  
+  def add_outcomes_at_level( rtnArr, outcomes, parent ) 
+    #puts "ADD parent: #{parent} \n    -----> #{rtnArr.inspect}\n"
+    
+    this_level_outcomes = extract_outcome_by_parent( outcomes, parent ).sort { |a,b| a.position <=> b.position }
+    #puts "THIS LEVEL: #{this_level_outcomes.inspect}\n"
+    this_level_outcomes.each do |outcome|
+      rtnArr << outcome
+      rtnArr = add_outcomes_at_level( rtnArr, outcomes, outcome.id )
+    end   
+    
+    rtnArr
+  end
+  
+  def extract_outcome_by_parent( outcomes, parent ) 
+    #puts "EXTRACT: parent: #{parent}\n"  
+    rtnArr = Array.new
+    outcomes.each do |outcome|
+      rtnArr << outcome if outcome.parent == parent
+    end
+    return rtnArr
+  end
+ 
+  private
+  
+  def sort_c_users(arr)
+    arr.sort! do |x,y|
+      res = x.last_name.downcase <=> y.last_name.downcase
+      if res == 0 
+        res = x.uniqueid.downcase <=> y.uniqueid.downcase
+      end
+      res
+    end
+  end
+  
   
 end

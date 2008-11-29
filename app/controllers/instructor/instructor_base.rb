@@ -110,4 +110,9 @@ class Instructor::InstructorBase < ApplicationController
     return false
   end
   
+  def set_tab
+    @show_course_tabs = true
+    @tab = "course_instructor"
+  end
+  
 end
