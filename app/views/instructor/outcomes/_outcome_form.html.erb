@@ -28,7 +28,7 @@
     parent_stack[0..-2].each { |i| spaces="#{spaces}&nbsp;&nbsp;" }
     number = count_stack.join('.')
 		
-	options = "#{options}\n    <option value=\"#{outcome.id}\" #{"selected=\"selected\"" if @course_outcome.parent==outcome.id}>#{spaces}#{number}) #{outcome.outcome}</option>"	
+	options = "#{options}\n    <option value=\"#{outcome.id}\" #{"selected=\"selected\"" if @course_outcome.parent==outcome.id}>#{spaces}#{number}) #{outcome.outcome[0...100]}#{"..." if outcome.outcome.length>100}</option>"	
   end
 %>
 

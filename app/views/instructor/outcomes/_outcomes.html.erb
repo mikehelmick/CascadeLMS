@@ -72,7 +72,8 @@
 	   </td>
        <td nowrap="nowrap">
          <%= link_to 'Edit', :action => 'edit', :course => @course, :id => outcome %> |
-         <%= link_to 'Reorder', :action => 'reorder', :course => @course, :id => outcome.parent %>
+         <%= link_to 'Reorder', :action => 'reorder', :course => @course, :id => outcome.parent %> |
+         <%= link_to 'Delete', { :action => 'destroy', :course => @course, :id => outcome }, :confirm => "Are you sure you want to delete the course outcome '#{outcome.outcome}' and all of it's associated data? This action can not be undone." %>
        </td>
    <% end %>
 

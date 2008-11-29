@@ -186,6 +186,32 @@ class Instructor::OutcomesController < Instructor::InstructorBase
     render :nothing => true
   end
   
+  def destroy
+    return unless load_course( params[:course] )
+    return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_edit_outcomes' )
+    
+    @course_outcome = CourseOutcome.find(params[:id])
+    children = @course_outcome.child_outcomes
+    
+    CourseOutcome.transaction do
+      if children.length > 0
+        parents_children = @course.extract_outcome_by_parent( @course.course_outcomes, @course_outcome.parent )
+        position = parents_children.length + 1
+        
+        children.each do |child|
+          child.parent = @course_outcome.parent
+          child.position = position
+          position = position.next
+          child.save
+        end       
+      end
+      
+      @course_outcome.destroy
+    end
+    
+    
+    redirect_to :action => 'index', :course => @course
+  end
 
 private
   def set_title
