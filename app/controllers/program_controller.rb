@@ -165,13 +165,13 @@ class ProgramController < ApplicationController
     return unless load_program( params[:id] )
     return unless allowed_to_manage_program( @program, @user )
     
-    @course_templates = @program.course_templates
-    @course_templates.sort! do |a,b|
+    @course_templates = @program.course_templates.sort do |a,b|
       rtn = a.title <=> b.title
       if rtn == 0 
-        return a.start_date <=> b.start_date
+         a.start_date <=> b.start_date
+      else
+         rtn
       end
-      return rtn
     end
   end
   
@@ -458,7 +458,7 @@ class ProgramController < ApplicationController
       @new_template.save
       
       flash[:notice] = "Course template clone succeeded.  You should edit the name to reflect the new course title or start date."
-      redirect_to :action => 'template_outcomes', :id => @program, :template => @course_template
+      redirect_to :action => 'template_outcomes', :id => @program, :template => @new_template
       return
     end
     
