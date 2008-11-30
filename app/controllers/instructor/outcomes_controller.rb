@@ -212,6 +212,110 @@ class Instructor::OutcomesController < Instructor::InstructorBase
     
     redirect_to :action => 'index', :course => @course
   end
+  
+  def import_outcomes
+    return unless load_course( params[:course] )
+    return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_edit_outcomes' )
+    
+    @course_template = CourseTemplate.find(params[:import_from]) rescue @course_template = nil
+    
+    if @course_template.nil?
+      flash[:badnotice] = "Course template could not be found."
+      redirect_to :action => 'index', :course => @course
+      return
+    end
+    
+    success = false
+    Course.transaction do
+      # make sure that this course is mapped to the same programs as in the program template
+      @course_template.programs.each do |program|
+        add = true
+        @course.programs.each do |course_program|
+          if course_program.id == program.id
+            add = false
+          end
+        end 
+        @course.programs << program if add == true
+      end
+      @course.save
+      
+      # for each outcome in the template
+      parent_map = Hash.new
+      parent_map[-1] = -1
+      # hard part - copy all the objectives
+      @course_template.ordered_outcomes.each do |copy_outcome|
+        new_outcome = CourseOutcome.new
+        new_outcome.outcome = copy_outcome.outcome
+        new_outcome.position = copy_outcome.position
+        new_outcome.parent = parent_map[copy_outcome.parent]
+        new_outcome.save
+        
+        copy_outcome.program_outcomes.each do |outcome_program|
+          new_outcome.program_outcomes << outcome_program
+        end
+        new_outcome.save
+        
+        parent_map[copy_outcome.id] = new_outcome.id
+        
+        @course.course_outcomes << new_outcome
+      end
+      @course.save
+      
+      
+      flash[:notice] = 'Course outcomes import from template succeeded.'
+      success = true
+    end
+    
+    flash[:badnotice] = "Outcomes import failed." unless success
+    redirect_to :action => 'index', :course => @course
+  end
+
+  def export_outcomes
+    return unless load_course( params[:course] )
+    return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_edit_outcomes' )
+    
+    success = false
+    CourseTemplate.transaction do
+      @new_template = CourseTemplate.new
+      @new_template.title = "EXPORT #{@course.title} - #{@course.short_description}"
+      @new_template.start_date = "#{@course.term.semester}"
+      @new_template.save
+      
+      # map to programs
+      @course.programs.each do |program|
+        @new_template.programs << program
+      end
+      
+      # create the outcomes
+      # for each outcome in the template
+      parent_map = Hash.new
+      parent_map[-1] = -1
+      # hard part - copy all the objectives
+      @course.ordered_outcomes.each do |copy_outcome|
+        new_outcome = CourseTemplateOutcome.new
+        new_outcome.outcome = copy_outcome.outcome
+        new_outcome.position = copy_outcome.position
+        new_outcome.parent = parent_map[copy_outcome.parent]
+        new_outcome.save
+        
+        copy_outcome.program_outcomes.each do |outcome_program|
+          new_outcome.program_outcomes << outcome_program
+        end
+        new_outcome.save
+        
+        parent_map[copy_outcome.id] = new_outcome.id
+        
+        @new_template.course_template_outcomes << new_outcome
+      end
+      @new_template.save
+      
+      flash[:notice] = 'Course outcomes export to template succeeded.'
+      success = true
+    end
+    
+    flash[:badnotice] = "Outcomes export failed." unless success
+    redirect_to :action => 'index', :course => @course
+  end
 
 private
   def set_title

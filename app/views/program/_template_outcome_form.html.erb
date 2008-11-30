@@ -1,0 +1,61 @@
+
+<p class="blockintro">Create a new course template outcome:</p>
+<div class="block">
+<p><label for="course_template_outcome_outcome" class="required">Outcome:</label>
+   <%= text_area 'course_template_outcome', 'outcome', "cols" => 80, "rows" => 5  %></p>
+
+<%
+  options = "\n<option value=\"-1\" #{"selected=\"selected\"" if @course_template_outcome.parent==-1}>none (top level)</option> "
+
+  parent_stack = [-1]
+  count_stack = [0]
+ 
+  @course_template.ordered_outcomes.each do |outcome|
+    if outcome.parent == parent_stack[-1] ## Same level 
+      count_stack.push( count_stack.pop + 1 ) 
+    elsif parent_stack.index( outcome.parent ).nil?  ## New level 
+      parent_stack.push outcome.parent 
+      count_stack.push 1 
+    else ## need to pop back to correct level 
+      while (parent_stack[-1] != outcome.parent) 
+        parent_stack.pop
+        count_stack.pop
+      end 
+      count_stack.push( count_stack.pop + 1 )
+    end 
+
+    spaces = ""
+    parent_stack[0..-2].each { |i| spaces="#{spaces}&nbsp;&nbsp;" }
+    number = count_stack.join('.')
+		
+	options = "#{options}\n    <option value=\"#{outcome.id}\" #{"selected=\"selected\"" if @course_template_outcome.parent==outcome.id}>#{spaces}#{number}) #{outcome.outcome[0...100]}#{"..." if outcome.outcome.length>100}</option>"	
+  end
+%>
+
+<p><label for="course_template_outcome_parent" class="required">Child of outcome:</label>
+   <%= select_tag 'parent', options %></b> </p>
+</div>
+
+<p class="blockintro">Map to program outcome:</p>
+<div class="block">
+
+<ul>
+<% for program in @course_template.programs %>
+  <li>Program outcomes for <b><%= program.title %></b></li>
+  <ul>
+    <% if program.program_outcomes.length == 0 %>
+      <li><i>No program outcomes defined.</i></li>
+    <% else %>
+      <% count = 0
+         for prog_outcome in program.program_outcomes
+	       count = count.next %>
+        <li><%= check_box_tag "program_outcome_#{prog_outcome.id}", prog_outcome.id, @course_template_outcome.mapped_to_program_outcome?(prog_outcome.id) %>
+            <%= count %>) <%= prog_outcome.outcome %></li>
+      <% end %>
+    <% end %>
+  </ul>
+<% end %>
+<ul>
+
+
+</div>

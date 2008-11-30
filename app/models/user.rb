@@ -131,6 +131,10 @@ class User < ActiveRecord::Base
     self.auditor = !self.auditor   
   end
   
+  def toggle_program_coordinator
+    self.program_coordinator = !self.program_coordinator
+  end
+  
   def toggle_admin
     self.admin = !self.admin   
   end

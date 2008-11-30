@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20081128180629) do
+ActiveRecord::Schema.define(:version => 20081129215842) do
 
   create_table "announcements", :force => true do |t|
     t.string   "headline"
@@ -183,6 +183,38 @@ ActiveRecord::Schema.define(:version => 20081128180629) do
   end
 
   add_index "course_settings", ["course_id"], :name => "course_settings_course_id_index", :unique => true
+
+  create_table "course_template_outcomes", :force => true do |t|
+    t.integer  "course_template_id", :limit => 11
+    t.text     "outcome",                                          :null => false
+    t.integer  "position",           :limit => 11
+    t.integer  "parent",             :limit => 11, :default => -1, :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "course_template_outcomes_program_outcomes", :id => false, :force => true do |t|
+    t.integer  "course_template_outcome_id", :limit => 11, :default => 0, :null => false
+    t.integer  "program_outcome_id",         :limit => 11, :default => 0, :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "course_template_outcomes_program_outcomes", ["course_template_outcome_id", "program_outcome_id"], :name => "course_template_outcomes_program_outcomes_unique", :unique => true
+
+  create_table "course_templates", :force => true do |t|
+    t.string   "title",      :default => "", :null => false
+    t.string   "start_date"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "course_templates_programs", :id => false, :force => true do |t|
+    t.integer  "course_template_id", :limit => 11, :default => 0, :null => false
+    t.integer  "program_id",         :limit => 11, :default => 0, :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "courses", :force => true do |t|
     t.integer "term_id",           :limit => 11, :default => 0,     :null => false
@@ -609,24 +641,25 @@ ActiveRecord::Schema.define(:version => 20081128180629) do
   end
 
   create_table "users", :force => true do |t|
-    t.string  "uniqueid",         :limit => 15, :default => "",    :null => false
+    t.string  "uniqueid",            :limit => 15, :default => "",    :null => false
     t.string  "password"
     t.string  "preferred_name"
-    t.string  "first_name",                     :default => "",    :null => false
+    t.string  "first_name",                        :default => "",    :null => false
     t.string  "middle_name"
-    t.string  "last_name",                      :default => "",    :null => false
-    t.boolean "instructor",                     :default => false, :null => false
-    t.boolean "admin",                          :default => false, :null => false
+    t.string  "last_name",                         :default => "",    :null => false
+    t.boolean "instructor",                        :default => false, :null => false
+    t.boolean "admin",                             :default => false, :null => false
     t.string  "affiliation"
     t.string  "personal_title"
     t.string  "office_hours"
     t.string  "phone_number"
-    t.string  "email",                          :default => "",    :null => false
-    t.boolean "activated",                      :default => false, :null => false
-    t.string  "activation_token",               :default => "",    :null => false
-    t.string  "forgot_token",                   :default => "",    :null => false
-    t.boolean "enabled",                        :default => true,  :null => false
-    t.boolean "auditor",                        :default => false, :null => false
+    t.string  "email",                             :default => "",    :null => false
+    t.boolean "activated",                         :default => false, :null => false
+    t.string  "activation_token",                  :default => "",    :null => false
+    t.string  "forgot_token",                      :default => "",    :null => false
+    t.boolean "enabled",                           :default => true,  :null => false
+    t.boolean "auditor",                           :default => false, :null => false
+    t.boolean "program_coordinator",               :default => false, :null => false
   end
 
   create_table "wikis", :force => true do |t|

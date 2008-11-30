@@ -6,6 +6,7 @@ class Program < ActiveRecord::Base
   has_many :program_outcomes, :order => "position", :dependent => :destroy
 
   has_and_belongs_to_many :courses
+  has_and_belongs_to_many :course_templates
   
   def managers
     managers = Array.new   

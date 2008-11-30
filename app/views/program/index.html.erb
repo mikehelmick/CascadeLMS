@@ -19,7 +19,9 @@
       <td><%=h program.program.title %></td>
       <td nowrap="nowrap">
 	    <% if program.program_manager %>
-	      <%= link_to 'Edit Program Outcomes', :action => 'outcomes', :id => program.program.id %>
+	      <%= link_to 'Edit Program Outcomes', :action => 'outcomes', :id => program.program.id %> |
+	      <%= link_to 'Course Outcome Templates', :action => 'templates', :id => program.program.id %> |
+	      <%= link_to 'Program Managers/Auditors', :action => 'users', :id => program.program.id %>
 	    <% end %>
 	  </td>
 	</tr>

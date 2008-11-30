@@ -2,7 +2,59 @@
 <h2>Outcomes for Course '<%=h @course.title%>' </h2>
 </div></div>
 
-<p><%= link_to "#{image_tag('add.png', :align => 'absmiddle' )} Create new course outcome", :controller => '/instructor/outcomes', :action => 'new', :course => @course.id %></p>
+<br/>
+<%= link_to "#{image_tag('add.png', :align => 'absmiddle' )} Create new course outcome", :controller => '/instructor/outcomes', :action => 'new', :course => @course.id %>	
+<% if @course.programs.length > 0 %>
+  <br/><%= link_to_function "#{image_tag('database_refresh.png', :align => 'absmiddle' )} Import outcomes from program template.", "blindToggle('import')" %>
+
+<div id="import" class ="sub_form" style="display:none;">
+<div id="form_area">
+  <% form_tag( :action => 'import_outcomes', :course => @course ) do %>
+   
+  <p class="blockintro">Import course outcomes from a standard program template.</p>
+  <div class="block">
+    <% # build options list
+       options = ""
+       @course.programs.each do |program|
+	     program.course_templates.each do |course_template|
+		   options = "#{options}\n    <option value=\"#{course_template.id}\">(#{program.title}) #{course_template.title} :: #{course_template.start_date}</option>"
+		 end
+	   end
+     %>
+    <p><label for="import_from" class="required">Import from template:</label>
+	   <%= select_tag 'import_from', options %></b> </p>
+  </div>
+
+  <div class="submit">
+	<%= submit_tag "Import outcomes from template" %>
+  </div>
+  <% end %>	
+</div>
+</div>
+
+  <% if @course.course_outcomes.size == 0 %>
+    <br/><s><%= image_tag('database_save.png', :align => 'absmiddle' ) %> Export these outcomes as a template.</s>
+  <% else %> 
+    <br/><%= link_to_function "#{image_tag('database_save.png', :align => 'absmiddle' )} Export these outcomes as a template.", "blindToggle('export')" %>
+  <% end %>
+
+<div id="export" class ="sub_form" style="display:none;">
+<div id="form_area">
+  <% form_tag( :action => 'export_outcomes', :course => @course ) do %>	
+    <p class="blockintro">Exporting the outcomes from this course will create a new course template that will be shared by all programs that this course is mapped to.   The template will be named "<i>EXPORT - <%= @course.title %> - <%= @course.short_description %></i>" with a start date of "<i><%= @course.term.semester %></i>"</p>
+    
+    <div class="submit">
+	  <%= submit_tag "Export Outcomes" %>
+    </div>
+  <% end %>
+</div>
+</div>
+
+<% else %>
+<br/>If you map this course to a program, you might be able to import course objectives from one of the program templates.
+<% end %>
+
+<p>&nbsp;</p>
 
 <% if @course.course_outcomes.length == 0 %>
 	<p><i>There are no outcomes defined for this course.</i></p>

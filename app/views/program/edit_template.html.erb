@@ -1,0 +1,29 @@
+<%= link_to 'Back to Course Templates', :action => 'templates', :id => @program %>
+
+<div class="SectionHeader"><div class="Full">
+<h2>Edit Course Template: <%= @course_template.title %></h2>
+</div></div>
+
+<br/>
+
+<div id="form_area">
+  <%= error_messages_for 'course_template' %>	
+  <% form_tag( :action => 'update_template', :id => @program, :template => @course_template ) do %>
+
+  <%= render :partial => 'course_template_form' %>
+ 
+  <p class="blockintro">This course satisfies program objectives in the following programs:</p>
+  <div class="block">
+    <ul>
+	  <% for program in @all_programs %>
+	    <li><%= check_box_tag "program_#{program.id}", program.id, @course_template.mapped_to_program?(program.id) %>
+             <%= program.title %></li>
+	  <% end %>
+	</ul>
+  </div>
+
+  <div class="submit">
+	<%= submit_tag "Save New Course Template" %>
+  </div>
+  <% end %>	
+</div>

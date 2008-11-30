@@ -60,7 +60,7 @@ class Admin::ProgramsController < ApplicationController
     st = params[:searchterms].downcase
     if st.length >= 2
       sv = "%#{st}%"
-      @users = User.find(:all, :conditions => ["(instructor=? or admin=? or auditor=?) and (LOWER(uniqueid) like ? or LOWER(first_name) like ? or LOWER(last_name) like ? or LOWER(preferred_name) like ?)", true, true, true, sv, sv, sv, sv ], :order => "uniqueid asc")
+      @users = User.find(:all, :conditions => ["(instructor=? or admin=? or auditor=? or program_coordinator=?) and (LOWER(uniqueid) like ? or LOWER(first_name) like ? or LOWER(last_name) like ? or LOWER(preferred_name) like ?)", true, true, true, true, sv, sv, sv, sv ], :order => "uniqueid asc")
     else
       @invalid = true
     end
@@ -94,8 +94,8 @@ class Admin::ProgramsController < ApplicationController
     added = false
     @program.programs_users.each do |u|
       if u.user_id.to_i == params[:id].to_i
-        u.program_manager = true if @utype.eql?('manager') && (u.user.instructor || u.user.admin)
-        u.program_auditor = true if @utype.eql?('auditor') && (u.user.instructor || u.user.admin || u.user.auditor)
+        u.program_manager = true if @utype.eql?('manager') && (u.user.instructor || u.user.admin || u.user.program_coordinator)
+        u.program_auditor = true if @utype.eql?('auditor') && (u.user.instructor || u.user.admin || u.user.program_coordinator || u.user.auditor)
         u.save
         @program.save
         added = true
@@ -108,8 +108,8 @@ class Admin::ProgramsController < ApplicationController
       p.program = @program
       p.user = user
       p.program_manager = false
-      p.program_manager = true if @utype.eql?('manager') && (user.instructor || user.admin)
-      p.program_auditor = true if @utype.eql?('auditor') && (user.instructor || user.admin || user.auditor)
+      p.program_manager = true if @utype.eql?('manager') && (user.instructor || user.admin || u.user.program_coordinator)
+      p.program_auditor = true if @utype.eql?('auditor') && (user.instructor || user.admin || u.user.program_coordinator || user.auditor)
       @program.programs_users << p
       @program.save   
     end
@@ -120,12 +120,6 @@ class Admin::ProgramsController < ApplicationController
     render :layout => false, :partial => 'userlist'
   end
   
-
-  def destroy
-    Program.find(params[:id]).destroy
-    redirect_to :action => 'list'
-  end
-
   def set_tab 
     @title = 'Programs (Accreditation Categories)'
     @tab = 'administration'

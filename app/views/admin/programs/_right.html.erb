@@ -8,7 +8,7 @@
 <h2>Add Managers/Auditors</h2>
 <div id="search_area">
 <% form_remote_tag( :update => 'search_results', :url => { :action => :search, :id => @program }, :complete => "new Effect.BlindDown('search_results');" ) do %>
-	<label for="id">Search Terms:</label> 
+	<label for="id">Search:</label> 
 	<%= text_field_tag 'searchterms', '' %>
 	<%= submit_tag 'Search' %><br/>
 <% end %>

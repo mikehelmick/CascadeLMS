@@ -1,0 +1,19 @@
+<p><%= link_to 'Back', :controller => '/program', :action => 'template_outcomes', :id => @program, :template => @course_template %></p>
+
+<div class="SectionHeader"><div class="Full">
+<h2>Edit outcome for template:<br/>'<%=h @course_template.title%>' </h2>
+</div></div>
+
+<p class="blockintro">If you change the parent outcome for this outcome, all positions and numberings will be recalculated.   All outcomes that are children of this outcome will be moved as well.</p>
+
+<div id="form_area">
+  <%= error_messages_for 'course_template_outcome' %>	
+  <% form_tag( :action => 'update_template_outcome', :id => @program, :template => @course_template.id, :outcome => @course_template_outcome ) do %>
+
+  <%= render :partial => 'template_outcome_form' %>
+ 
+  <div class="submit">
+	<%= submit_tag "Save Changes to Outcome" %>
+  </div>
+  <% end %>	
+</div>

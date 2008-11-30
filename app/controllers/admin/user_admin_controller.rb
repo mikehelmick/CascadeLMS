@@ -33,6 +33,13 @@ class Admin::UserAdminController < ApplicationController
     render(:layout => false)    
   end
   
+  def toggle_program_coordinator
+    @user = User.find(params[:id])
+    @user.toggle_program_coordinator
+    @user.save
+    render(:layout => false)    
+  end
+  
   def toggle_admin
     @user = User.find(params[:id])
     @user.toggle_admin

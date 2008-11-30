@@ -5,19 +5,20 @@
 
 <table class="fancy">
   <tr class="header">
-    <th>Uniqueid</th>
-    <th>First Name</th>
-    <th>Nickname</th>
-    <th>Last Name</th>
-    <th>Email</th>
-    <th>Affiliation</th>
-    <th>Instructor</th>
-    <th>Auditor</th>
-    <th>Admin</th>
-    <th>Login Enabled</th>
+    <th valign="bottom">Uniqueid</th>
+    <th valign="bottom">First Name</th>
+    <th valign="bottom">Nickname</th>
+    <th valign="bottom">Last Name</th>
+    <th valign="bottom">Email</th>
+    <th valign="bottom">Affiliation</th>
+    <th valign="bottom">Instructor</th>
+    <th valign="bottom">Program<br/>Coordinator</th>
+    <th valign="bottom">Auditor</th>
+    <th valign="bottom">Admin</th>
+    <th valign="bottom">Login Enabled</th>
 <% if @app['authtype'].eql?('basic') %>
-    <th>Activated?</th>
-    <th>Edit</td>
+    <th valign="bottom">Activated?</th>
+    <th valign="bottom">Edit</td>
 <% end %>
   </tr>
 
@@ -36,6 +37,8 @@
     <td><%= user.email %></td>
     <td><%= user.affiliation %></td>
     <td id="instructor_<%=user.id%>"><%= link_to_remote( "#{user.instructor}", :update => "instructor_#{user.id}", :url => { :action => 'toggle_instructor', :id => user }, :complete => "new Effect.Highlight( 'item_#{user.id}' )" ) %></td>
+
+    <td id="program_coordinator_<%=user.id%>"><%= link_to_remote( "#{user.program_coordinator}", :update => "program_coordinator_#{user.id}", :url => { :action => 'toggle_program_coordinator', :id => user }, :complete => "new Effect.Highlight( 'item_#{user.id}' )" ) %></td>
 
     <td id="auditor_<%=user.id%>"><%= link_to_remote( "#{user.auditor}", :update => "auditor_#{user.id}", :url => { :action => 'toggle_auditor', :id => user }, :complete => "new Effect.Highlight( 'item_#{user.id}' )" ) %></td>
 

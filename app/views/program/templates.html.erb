@@ -1,0 +1,65 @@
+<%= link_to 'Back to programs', :action => nil, :id => nil %>
+
+<div class="SectionHeader"><div class="Full">
+<h2>Course Templates for <%= @program.title %></h2>
+</div></div>
+
+<br/>
+
+<% if @course_templates.length == 0 %>
+  <p><i>There are no course templates for this program</i></p>
+
+<% else %>
+
+ <table class="fancy" width="99%">
+  <tr class="header">
+	  <th width="80%">Course Template</th>
+	  <th width="15%">Start Date</th>
+	  <th>Controls</th>
+	</tr>
+	
+	<% count = 0 %>
+	  <% for course_template in @course_templates %>	
+	    <% count = count.next 
+	       odd = "odd"
+	       odd = "even" if count.even? %>
+	    <tr class="<%=odd%> hover" id="course_template_<%=course_template.id%>">
+	      <td><%=h course_template.title %></td>
+	      <td nowrap="nowrap"><%=h course_template.start_date %></td>
+	      <td nowrap="nowrap">
+		    <%= link_to 'Edit Template', :action => 'edit_template', :id => @program, :template => course_template %> |
+		    <%= link_to 'Edit Outcomes', :action => 'template_outcomes', :id => @program, :template => course_template %> |
+			<%= link_to 'Clone', {:action => 'clone_template', :id => @program, :template => course_template}, :confirm => 'Are you sure you want to clone this course template, and all outcomes and outcome mappings?' %> |
+		    <% extended = "" 
+		       extended = "ATTENTION: This course template is shared by multiple programs.  Deleting it will delete it from all programs!\n" if course_template.programs.length > 1 %>
+		    <%= link_to 'Delete', {:action => 'delete_template', :id => @program, :template => course_template}, :confirm => "#{extended}Are you sure you want to delete this course template, and all outcomes and outcome mappings?  This action cannot be undone." %>
+		  </td>
+	    </tr>
+	  <% end %>
+
+  </table>
+
+<% end %>
+
+
+
+<br/>
+<p><%= link_to_function 'Create new course template.', "blindToggle('create_new')" %></p>
+
+<div id="create_new" style="display:none;">
+<div class="SectionHeader"><div class="Full">
+<h2>Add new Course Template for <%= @program.title %></h2>
+</div></div>
+
+<div id="form_area">
+  <%= error_messages_for 'course_template' %>	
+  <% form_tag( :action => 'create_template', :id => @program ) do %>
+
+  <%= render :partial => 'course_template_form' %>
+ 
+  <div class="submit">
+	<%= submit_tag "Save New Course Template" %>
+  </div>
+  <% end %>	
+</div>
+</div>
