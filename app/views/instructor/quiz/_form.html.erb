@@ -44,8 +44,17 @@
 <div class="blockintro">A quiz can be a traditional kind of online quiz, or can be a survey.  Surveys are not assigned a point value by default, although an instructor can do this manually.</div>
 <div class="block">
   <p><label for="survey" class="required">Quiz or Survey:</label>
-	<%= radio_button 'quiz', 'survey', false, :onclick => 'new Effect.Puff("survey_settings");new Effect.SlideDown("quiz_settings")' %> Quiz
-	<%= radio_button 'quiz', 'survey', true, :onclick => 'new Effect.Puff("quiz_settings");new Effect.SlideDown("survey_settings")' %> Survey
+	<% if edit_mode %>
+	   <% if @quiz.survey %>
+	      <%= radio_button 'quiz', 'survey', true %> Survey
+	   <% else %>
+	      <%= radio_button 'quiz', 'survey', false %> Quiz
+	   <% end %>
+	   <br/><b><i>Once created - you cannot change between a quiz and a survey.</i></b>
+	<% else %>
+	  <%= radio_button 'quiz', 'survey', false, :onclick => 'new Effect.Puff("survey_settings");new Effect.SlideDown("quiz_settings")' %> Quiz
+	  <%= radio_button 'quiz', 'survey', true, :onclick => 'new Effect.Puff("quiz_settings");new Effect.SlideDown("survey_settings")' %> Survey
+	<% end %>
 	</p>
 </div>
 
@@ -73,7 +82,7 @@
 		</div>
 	</div>
 
-	<% if @new_quiz %>
+	<% if @new_quiz && !edit_mode %>
 	<div class="blockintro">If you enter a point value, a GradeBook item will be created and associated with this quiz.  <b>If you do NOT enter a grade, I'll assume that each question on the quiz is worth 1 point.</b></div>
 	<div class="block">
 	<p><label for="point_value" class="required">Points:</label>
@@ -83,8 +92,23 @@
 </div>
 
 <div id="survey_settings" style="<%=survey_style%>">
-	<div class="GoodMessage">
+  <% if @course.course_setting.enable_outcomes %>	
+    <p class="blockintro">If this is an entry/exit survey based on the course outcomes, then you might want to make it available to accreditation auditors.   You can also automatically generate a standard entry/exit survey based on the already defined course outcomes.</p>
+    <div class="block">
+      <label for="quiz[available_to_auditors]" class="required">Available to Auditors:</label>
+	    <p><%= radio_button 'quiz', 'available_to_auditors', true %> Yes
+	    <%= radio_button 'quiz', 'random_questions', false %> No</p>
+
+     <% if request.path_parameters['action'].eql?('new') %>
+      <label for="generate_survey">Automatically Generate Entry/Exit survey:</label>
+        <p><%= check_box_tag "generate_survey", 1, false %></p>		
+     <% end %>
+    </div>
+
+  <% else %>
+    <div class="GoodMessage">
 		<p><b>You will continue your survey configuration on the next screen.</b></p>
 	</div>
+  <% end %>
 </div>
  

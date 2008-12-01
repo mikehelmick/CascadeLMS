@@ -37,6 +37,10 @@ class Assignment < ActiveRecord::Base
     self.close_date = self.open_date + 1.day
   end
   
+  def is_quiz?
+    ! self.quiz.nil?
+  end
+  
   def make_quiz
     self.quiz_assignment = true
     self.programming = false

@@ -1,4 +1,5 @@
 class CourseTemplateOutcome < ActiveRecord::Base
+  validates_presence_of :outcome
   
   belongs_to :course_template
   has_and_belongs_to_many :program_outcomes

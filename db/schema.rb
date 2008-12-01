@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20081129215842) do
+ActiveRecord::Schema.define(:version => 20081201061931) do
 
   create_table "announcements", :force => true do |t|
     t.string   "headline"
@@ -523,13 +523,34 @@ ActiveRecord::Schema.define(:version => 20081129215842) do
     t.string  "name",                    :default => "", :null => false
   end
 
+  create_table "quiz_question_answers", :force => true do |t|
+    t.integer  "quiz_question_id", :limit => 11, :default => 0,     :null => false
+    t.integer  "position",         :limit => 11
+    t.text     "answer_text"
+    t.boolean  "correct",                        :default => false, :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "quiz_questions", :force => true do |t|
+    t.integer  "quiz_id",         :limit => 11, :default => 0,     :null => false
+    t.integer  "position",        :limit => 11
+    t.text     "question"
+    t.boolean  "text_response",                 :default => false, :null => false
+    t.boolean  "multiple_choice",               :default => true,  :null => false
+    t.boolean  "checkbox",                      :default => false, :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "quizzes", :force => true do |t|
-    t.integer "assignment_id",       :limit => 11, :default => 0,     :null => false
-    t.integer "attempt_maximum",     :limit => 11, :default => -1,    :null => false
-    t.boolean "random_questions",                  :default => false, :null => false
-    t.integer "number_of_questions", :limit => 11, :default => -1,    :null => false
-    t.boolean "linear_score",                      :default => false, :null => false
-    t.boolean "survey",                            :default => false, :null => false
+    t.integer "assignment_id",         :limit => 11, :default => 0,     :null => false
+    t.integer "attempt_maximum",       :limit => 11, :default => -1,    :null => false
+    t.boolean "random_questions",                    :default => false, :null => false
+    t.integer "number_of_questions",   :limit => 11, :default => -1,    :null => false
+    t.boolean "linear_score",                        :default => false, :null => false
+    t.boolean "survey",                              :default => false, :null => false
+    t.boolean "available_to_auditors",               :default => false, :null => false
   end
 
   add_index "quizzes", ["assignment_id"], :name => "index_quizzes_on_assignment_id", :unique => true

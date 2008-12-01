@@ -1,0 +1,31 @@
+<p><%= link_to 'Back to Quiz/Survey', :controller => '/instructor/quiz', :course => @course, :action => 'questions', :id => @assignment %></p>
+
+<div class="SectionHeader"><div class="Full">
+<h2>Edit Question order for
+<% if @assignment.quiz.survey %>
+  Survey:<br/>
+<% else %>
+  Quiz:<br/>
+<% end %>
+'<%= @assignment.title %>'</h2>
+</div></div>
+
+
+<div id="reorder">
+  <p>Drag and Drop the questions.</p>
+
+  <p><b><%= link_to "I'm done reordering questions.", :action => 'questions', :course => @course, :id => @assignment %></b></p>
+
+  <ul id="question-order">
+    <% for question in @quiz.quiz_questions %>
+      <li id="quiz_question_<%= question.id %>"><%= image_tag 'arrow_switch.png', :align => 'absmiddle' %>
+        <b><%= question.question %></b>
+      </li>
+    <% end %>
+  </ul>
+</div>
+
+<%= sortable_element 'question-order', 
+    :url => { :action => 'sort', :course => @course, :id => @assignment },
+    :complete => visual_effect(:highlight, 'question-order')
+%>

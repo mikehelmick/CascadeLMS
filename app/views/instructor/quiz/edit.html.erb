@@ -1,0 +1,19 @@
+<p><%= link_to 'Cancel', :action => 'questions', :course => @course, :id => @assignment %></p>
+
+<h2>Edit Quiz/Survey for <%= @course.title %></h2>
+
+<div id="form_area">
+
+<% form_tag( { :action => 'update', :course => @course, :id => @assignment }, :multipart => true, :onsubmit => "new Element.toggle('button'); new Element.toggle( 'spinner');" ) do %>
+
+  <%= render :partial => 'form', :locals => { :edit_mode => true } %>
+
+<div class="submit">
+  <div id="button"><%= submit_tag "Save Changes" %></div>
+  <div id="spinner" style="display: none;"><%= image_tag 'spinner.gif' %></div>
+</div>
+<% end %>
+
+<p><%= link_to 'Cancel', :action => 'questions', :course => @course, :id => @assignment %></p>
+
+</div>

@@ -1,2 +1,79 @@
+<p><%= link_to 'Back to All Assignments', :controller => '/instructor/course_assignments', :course => @course, :action => nil, :id => nil %></p>
 
-questions go here
+<div class="SectionHeader"><div class="Full">
+<h2>Edit Questions for 
+<% if @assignment.quiz.survey %>
+  survey
+<% else %>
+  quiz
+<% end %>
+'<%= @assignment.title %>'</h2>
+</div></div>
+
+
+<% if @assignment.upcoming? %>
+  <p><%= link_to "#{image_tag 'add.png', :align => 'absmiddle'} New Question", :action => 'new_question', :course => @course, :id => @assignment %> |
+ 	 <%= link_to "#{image_tag 'application_edit.png', :align => 'absmiddle'} Edit Quiz Details", :action => 'edit', :course => @course, :id => @assignment %>
+  </p>
+<% else %>
+  <p class="errorExplanation">You cannot edit or create questions for this quiz since it is already available to students.</p>
+
+  <p><%= link_to "#{image_tag 'application_edit.png', :align => 'absmiddle'} Edit Quiz Details", :action => 'edit', :course => @course, :id => @assignment %></p>
+<% end %>
+
+<% if @quiz.quiz_questions.length == 0 %>
+  <p><i>There are no questions for this quiz.</i></p>
+<% else %>
+ 
+  <p><%= link_to "#{image_tag 'arrow_switch.png'} Reorder Questions", :action => 'reorder', :course => @course, :id => @assignment %></p>
+
+
+  <table class="fancy" width="99%">
+  <tr class="header">
+	  <th align="center">#</th>
+	  <th align="center">Type</th>
+	  <th align="center" width="90%">Question</th>
+	  <th align="center">Controls</th>
+	</tr>
+
+   <% row_count = 0 %>
+   <% for question in @quiz.quiz_questions %>
+	 <% row_count = row_count.next 
+	    odd = "odd"
+        odd = "even" if row_count.even? %>
+     <tr class="<%=odd%> hover" id="quiz_question_<%=question.id%>">
+	   <td valign="top"><%= row_count %></td>
+	   <td valign="top" nowrap="nowrap">
+	      <%= 'Text' if question.text_response %>
+		  <%= 'Multiple Choice' if question.multiple_choice %>
+		  <%= 'Choose Many' if question.checkbox %>
+	   </td>
+	   <td valign="top"><%=h question.question %>
+	     <% if question.multiple_choice || question.checkbox %>
+	       <ul>
+		     <% for answer in question.quiz_question_answers %>
+		       <li><% if answer.correct %><b>correct</b>: <% end %><%=h answer.answer_text %></li>
+		     <% end %>
+		   </ul>
+	     <% end %>	
+	   </td>
+	   <td valign="top" nowrap="nowrap">
+		 <% if @assignment.upcoming? %>
+		   <%= link_to "#{image_tag 'application_edit.png'} Edit Question", :action => 'edit_question', :course => @course, :id => @assignment, :question => question %> <br/>
+		   <% unless question.text_response %>
+	  	     <%= link_to "#{image_tag 'arrow_switch.png'} Reorder Answers", :action => 'reorder_answers', :course => @course, :id => @assignment, :question => question %> <br/>
+	       <% end %>
+		   <%= link_to "#{image_tag 'delete.png'} Delete Question", {:action => 'delete_question', :course => @course, :id => @assignment, :question => question}, :confirm => "Are you sure you want to delete this question and all associated answers?" %>
+		 <% else %>
+		   <s><%= image_tag 'application_edit.png' %> Edit Question</s><br/>
+		   <% unless question.text_response %>
+			 <%= link_to "#{image_tag 'arrow_switch.png'} Reorder Answers", :action => 'reorder_answers', :course => @course, :id => @assignment, :question => question %> <br/>
+		   <% end %>
+		   <s><%= image_tag 'delete.png' %> Delete Question</s>
+		 <% end %>
+	   </td>  
+	 </tr>
+   <% end %>
+  </table>
+
+<% end %>

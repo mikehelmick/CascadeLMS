@@ -27,14 +27,22 @@
 	  <tr class="<%=odd%> hover" id="assignment_<%=assignment.id%>">
 	    <td align="right">
 	      <% if @user.instructor_in_course?(@course.id) || (@user.assistant_in_course?(@course.id) && @course.course_setting.ta_course_assignments) %>
-	        <%= link_to "#{h assignment.position}", :action => 'edit', :id => assignment %>
+	         <% if assignment.is_quiz? %>       
+	             <%= link_to "#{h assignment.position}", :controller => '/instructor/quiz', :action => 'questions', :id => assignment %>
+  	         <% else %>
+                 <%= link_to "#{h assignment.position}", :action => 'edit', :id => assignment %>
+             <% end %>
 	      <% else %>
 	        <%= h assignment.position %>
 	      <% end %>
 	    </td>
 	    <td nowrap="nowrap">
 	      <% if @user.instructor_in_course?(@course.id) || (@user.assistant_in_course?(@course.id) && @course.course_setting.ta_course_assignments) %>
-	        <%= link_to "#{image_tag 'page_edit.png', :align => 'absmiddle'} #{h assignment.title}", :action => 'edit', :id => assignment %>
+	         <% if assignment.is_quiz? %>       
+	             <%= link_to "#{image_tag 'page_edit.png', :align => 'absmiddle'} #{h assignment.title}", :controller => '/instructor/quiz', :action => 'questions', :id => assignment %>
+  	         <% else %>
+	             <%= link_to "#{image_tag 'page_edit.png', :align => 'absmiddle'} #{h assignment.title}", :action => 'edit', :id => assignment %>
+	         <% end %>
 	        <% if assignment.team_project %><%= image_tag 'group.png' %><% end %>
 	        <%if assignment.auto_grade %><br/> <%= link_to 'AutoGrade Settings', :action => 'autograde', :course => @course, :id => assignment.id %> <% end %>
 	      <% else %>

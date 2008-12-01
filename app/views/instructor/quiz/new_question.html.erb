@@ -1,0 +1,22 @@
+<p><%= link_to 'Back to Quiz/Survey', :controller => '/instructor/quiz', :course => @course, :action => 'questions', :id => @assignment %></p>
+
+<div class="SectionHeader"><div class="Full">
+<h2>Create Question for
+<% if @assignment.quiz.survey %>
+  Survey:
+<% else %>
+  Quiz:
+<% end %>
+'<%= @assignment.title %>'</h2>
+</div></div>
+
+<div id="form_area">  
+  <% form_tag( :action => 'create_question', :course => @course, :id => @assignment ) do %>
+
+  <%= render :partial => 'question_form' %>
+ 
+  <div class="submit">
+	<%= submit_tag "Create Question" %>
+  </div>
+  <% end %>	
+</div>

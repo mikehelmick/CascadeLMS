@@ -1,0 +1,8 @@
+<p><label for="<%=obj_name%>_answer_text" class="required">Answer <%= number %>:</label>
+   <%= text_area obj_name, 'answer_text', "cols" => 80, "rows" => 3  %></p>
+
+<% unless @assignment.quiz.survey %>
+<p><label for="<%=obj_name%>_correct" class="required">Answer <%= number %> is correct:</label>
+   	<p><%= radio_button obj_name, 'correct', true %> Yes
+       <%= radio_button obj_name, 'correct', false %> No</p>
+<% end %>
