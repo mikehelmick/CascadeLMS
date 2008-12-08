@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20081201061931) do
+ActiveRecord::Schema.define(:version => 20081207181438) do
 
   create_table "announcements", :force => true do |t|
     t.string   "headline"
@@ -522,6 +522,32 @@ ActiveRecord::Schema.define(:version => 20081201061931) do
     t.string  "team_id",                 :default => "", :null => false
     t.string  "name",                    :default => "", :null => false
   end
+
+  create_table "quiz_attempt_answers", :force => true do |t|
+    t.integer  "quiz_attempt_id",         :limit => 11, :default => 0,     :null => false
+    t.integer  "quiz_question_id",        :limit => 11, :default => 0,     :null => false
+    t.integer  "quiz_question_answer_id", :limit => 11
+    t.text     "text_answer"
+    t.boolean  "correct",                               :default => false, :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "quiz_attempt_answers", ["quiz_attempt_id"], :name => "index_quiz_attempt_answers_on_quiz_attempt_id"
+  add_index "quiz_attempt_answers", ["quiz_question_id"], :name => "index_quiz_attempt_answers_on_quiz_question_id"
+
+  create_table "quiz_attempts", :force => true do |t|
+    t.integer  "quiz_id",    :limit => 11, :default => 0,     :null => false
+    t.integer  "user_id",    :limit => 11, :default => 0,     :null => false
+    t.integer  "save_count", :limit => 11, :default => 0,     :null => false
+    t.boolean  "completed",                :default => false, :null => false
+    t.float    "score"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "quiz_attempts", ["quiz_id"], :name => "index_quiz_attempts_on_quiz_id"
+  add_index "quiz_attempts", ["user_id"], :name => "index_quiz_attempts_on_user_id"
 
   create_table "quiz_question_answers", :force => true do |t|
     t.integer  "quiz_question_id", :limit => 11, :default => 0,     :null => false

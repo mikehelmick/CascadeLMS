@@ -68,22 +68,13 @@
 
 	<div class="blockintro">Randomizing a quiz allow you to display the questions to a student in random order, and also to display to them a random subset of the questions.   Individual questions can be weighted to cause them to appear more frequently.</div>
 	<div class="block">
-		<label for="quiz[random_questions]" class="required">Randomize Questions:</label>
-	       <%= radio_button 'quiz', 'random_questions', true, :onclick => 'new Effect.SlideDown("number_of_questions_settings")' %> Yes
-		   <%= radio_button 'quiz', 'random_questions', false, :onclick => 'new Effect.Puff("number_of_questions_settings")' %> No</p>
-		
-		<% number_of_questions_style = "display: block;" 
-		   number_of_questions_style = "display: none;" unless @quiz.random_questions
-		%>
-		<div id="number_of_questions_settings" class="sub_form" style="<%=number_of_questions_style%>">
-			<p>Enter the number of questions that each student should be presented with.  If you enter a number higher than the number of questions that you create, then each student will receive all questions, but in a random order.   Enter <b>-1</b> to always use all questions.</p>
-			<p><label for="quiz[number_of_questions]" class="required">Number of Questions:</label>
-		      <%= text_field 'quiz', 'number_of_questions'  %></p>
-		</div>
+		<p><label for="quiz[random_questions]" class="required">Randomize Questions:</label>
+	       <%= radio_button 'quiz', 'random_questions', true %> Yes
+		   <%= radio_button 'quiz', 'random_questions', false %> No</p>
 	</div>
 
 	<% if @new_quiz && !edit_mode %>
-	<div class="blockintro">If you enter a point value, a GradeBook item will be created and associated with this quiz.  <b>If you do NOT enter a grade, I'll assume that each question on the quiz is worth 1 point.</b></div>
+	<div class="blockintro">If you enter a point value, a GradeBook item will be created and associated with this quiz.  All questions will be weighted equally.  Quizzes that do not have any free form text response questions will be automatically scored.</div>
 	<div class="block">
 	<p><label for="point_value" class="required">Points:</label>
 	  <%= text_field_tag 'point_value', @points  %></p>
@@ -97,7 +88,7 @@
     <div class="block">
       <label for="quiz[available_to_auditors]" class="required">Available to Auditors:</label>
 	    <p><%= radio_button 'quiz', 'available_to_auditors', true %> Yes
-	    <%= radio_button 'quiz', 'random_questions', false %> No</p>
+	    <%= radio_button 'quiz', 'available_to_auditors', false %> No</p>
 
      <% if request.path_parameters['action'].eql?('new') %>
       <label for="generate_survey">Automatically Generate Entry/Exit survey:</label>

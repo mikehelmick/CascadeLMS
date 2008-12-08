@@ -297,6 +297,24 @@ class ApplicationController < ActionController::Base
     true
   end
   
+  def assignment_available( assignment, redirect = true )
+    unless assignment.open_date <= Time.now
+      flash[:badnotice] = "The requisted assignment is not yet available."
+      redirect_to :action => 'index' if redirect
+      return false
+    end
+    true
+  end
+  
+  def assignment_open( assignment, redirect = true  ) 
+    unless assignment.close_date > Time.now
+      flash[:badnotice] = "The requisted assignment is closed, no more files or information may be submitted."
+      redirect_to :action => 'index' if redirect
+      return false
+    end
+    true    
+  end
+  
   def outcome_for_program( program, outcome, redirect = true )
     unless outcome.program_id == program.id 
       flash[:badnotice] = "The requested outcome could not be found."

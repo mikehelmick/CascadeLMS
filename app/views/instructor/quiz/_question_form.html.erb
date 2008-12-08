@@ -17,9 +17,11 @@
 	
 	<p><label for="quiz_question_type" class="required">Question Type:</label><br/>
 		
-	  <%= radio_button_tag 'question_type', 'text_response', @quiz_question.text_response, :onclick => 'new Effect.Puff("answers_area")' %> Free form text response<br/>
+	 
 	   <%= radio_button_tag 'question_type', 'multiple_choice', @quiz_question.multiple_choice, :onclick => 'new Effect.SlideDown("answers_area")' %> Multiple choice (allow selection of one answer)<br/>
 	   <%= radio_button_tag 'question_type', 'checkbox', @quiz_question.checkbox, :onclick => 'new Effect.SlideDown("answers_area")' %> Multiple choice (allow selection of multiple answers)<br/>
+	   <%= radio_button_tag 'question_type', 'text_response', @quiz_question.text_response, :onclick => 'new Effect.Puff("answers_area")' %> Free form text response<br/>
+	   <i>Free form text response is discouraged for quizzes.  It prevents your quiz from being automatically assessed and limits a student's ability to know if they should attempt the quiz again.</i><br/>
 	   </p>
 	
 </div>

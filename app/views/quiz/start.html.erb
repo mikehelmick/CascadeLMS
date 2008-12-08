@@ -1,0 +1,70 @@
+<%
+  item_type = "Quiz"
+  item_type = "Survey" if @quiz.survey
+%> 
+
+<div class="SectionHeader"><div class="Full">
+<h2>
+  <%= item_type %> <%= @assignment.title %></h2>
+</div></div>
+
+<p>You are now taking a <%= item_type %>.  You should remain on this page until you are completely finished.    The timer on the right side of the page will tell you how long you have been working (but there is no time limit).   You should save your answers periodically, this will ensure that no work is lost.</p>
+
+<div id="form_area">
+  <%= error_messages_for 'quiz_attempt' %>	
+  <% form_tag( :action => 'take', :course => @course, :id => @assignment, :qa => @quiz_attempt ) do %>
+
+  <% count = 0 %>
+  <% for question in @questions do %>  
+    <% count = count.next %>
+
+    <p class="blockintro"><b>Question #<%=count %> of <%= @questions.length %></b></p>
+    <div class="block">
+	   <p><label for="" class="required"><%= question.question %></label><br/>
+	
+	   <% if question.text_response %>
+	      <% answer = ""
+	         answer = @answer_map[question.id].text_answer unless @answer_map[question.id].nil? %>
+	      <%= text_area_tag( "answer_#{question.id}", answer, {"cols" => 80, "rows" => 5} ) %>
+	   <% elsif question.multiple_choice %>
+	      <% answer_id = 0
+	         answer_id = @answer_map[question.id].quiz_question_answer_id unless @answer_map[question.id].nil? %>
+	      <ul>
+	        <% for quiz_answer in question.quiz_question_answers %>      
+	          <li><%= radio_button_tag( "answer_#{question.id}", quiz_answer.id, answer_id == quiz_answer.id )  %>
+		          <%=h quiz_answer.answer_text %>
+		      </li>
+	        <% end %>
+	
+	      </ul>
+	   <% elsif question.checkbox %>
+	     <% answer_ids = Hash.new
+	 		unless @answer_map[question.id].nil?
+	        	@answer_map[question.id].each { |att| answer_ids[att.quiz_question_answer_id] = true } 
+            end
+          %>
+	     <ul>
+	       <% for quiz_answer in question.quiz_question_answers %>
+	         <li><%= check_box_tag( "answer_#{question.id}_#{quiz_answer.id}", quiz_answer.id, !answer_ids[quiz_answer.id].nil? ) %>
+		         <%=h quiz_answer.answer_text %>
+		     </li>
+	       <% end %>
+	     </ul>
+	
+	   <% else %>
+	      <br/><b>NO INPUT METHOD SPECIFIED FOR THIS QUESTION.</b>
+	   <% end %>
+	
+	   <br/>
+	   <%= submit_tag "Save Answers and Continue Taking #{item_type}" %>
+	   </p>
+	</div>
+
+  <% end %>
+
+ 
+  <div class="submit">
+	<%= submit_tag "Save Answers - Complete #{item_type}", {:confirm => 'Are you sure you want to submit your final answers?' } %>
+  </div>
+  <% end %>	
+</div>

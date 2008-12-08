@@ -21,9 +21,21 @@
 	     odd = "even" if count.even?
 	   %>
 	  <tr class="<%=odd%> hover" id="assignment_<%=assignment.id%>">
-	    <td align="right"><%= link_to "#{h assignment.position}", :action => 'view', :id => assignment %></td>
-	    <td nowrap="nowrap"><%= link_to "#{h assignment.title}", :action => 'view', :id => assignment %>
-		  <% if assignment.team_project %><%= image_tag 'group.png' %><% end %>
+	    <td align="right" valign="top">
+	      <% if assignment.quiz %>
+	        <%= link_to "#{h assignment.position}", :controller => '/quiz', :action => 'start', :course => @course, :id => assignment %>
+		  <% else %>
+		    <%= link_to "#{h assignment.position}", :action => 'view', :id => assignment %>
+		  <% end %>
+		</td>
+	    <td valign="top" align="left" nowrap="nowrap">
+	      <% if assignment.quiz %>
+  	        <%= link_to "#{h assignment.title}", :controller => '/quiz', :action => 'start', :course => @course, :id => assignment %><br/>
+            <% if assignment.quiz.survey %><i>online survey</i><% else %><i>online quiz</i><% end %>
+	      <% else %>
+	        <%= link_to "#{h assignment.title}", :action => 'view', :id => assignment %>
+  		    <% if assignment.team_project %><%= image_tag 'group.png' %><% end %>
+          <% end %>
 		</td>
 	    <td><%=h assignment.grade_category.category %></td>
 	    <% if !public %>

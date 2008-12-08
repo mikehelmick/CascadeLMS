@@ -38,7 +38,7 @@ class Instructor::QuizController < Instructor::InstructorBase
     return unless quiz_enabled( @course )
     return unless course_open( @course, :action => 'index' )
     
-    @points = params[:point_value]
+    @points = params['point_value']
     
     ## actually create the assignment, make it a quiz, and setup the quiz
     @assignment = Assignment.new( params[:assignment] )
@@ -60,7 +60,6 @@ class Instructor::QuizController < Instructor::InstructorBase
       @gradeItem.display_type = "s"
       @gradeItem.visible = false
       @gradeItem.grade_category_id = @assignment.grade_category_id
-      @gradeItem.assignment_id = @assignment.id
       @gradeItem.course_id = @course.id
     end
     
@@ -71,6 +70,7 @@ class Instructor::QuizController < Instructor::InstructorBase
         raise 'error' unless success
         success = @quiz.save
         raise 'error' unless success
+        @gradeItem.assignment = @assignment
         success = @gradeItem.save unless @gradeItem.nil?
         raise 'error' unless success
         
@@ -97,6 +97,7 @@ class Instructor::QuizController < Instructor::InstructorBase
               question.save
             end  
           end
+          
           # save everything down
           @quiz.save
         end
@@ -483,7 +484,7 @@ class Instructor::QuizController < Instructor::InstructorBase
   def assignment_is_quiz( assignment )
     unless assignment.is_quiz?
       flash[:badnotice] = "Assignment is not a quiz."
-      redirect_to :controller => '/instructor/course_assignments', :course => course
+      redirect_to :controller => '/instructor/course_assignments', :course => @course
       return false      
     end
     return true

@@ -344,25 +344,6 @@ class AssignmentsController < ApplicationController
     end
     return true #no team required
   end
-
-  def assignment_available( assignment, redirect = true )
-    unless assignment.open_date <= Time.now
-      flash[:badnotice] = "The requisted assignment is not yet available."
-      redirect_to :action => 'index' if redirect
-      return false
-    end
-    true
-  end
-  
-  def assignment_open( assignment, redirect = true  ) 
-    unless assignment.close_date > Time.now
-      flash[:badnotice] = "The requisted assignment is closed, no more files or information may be submitted."
-      redirect_to :action => 'index' if redirect
-      return false
-    end
-    true    
-  end
-
   
   def document_in_assignment( document, assignment )
     unless document.assignment_id == assignment.id 

@@ -1,0 +1,18 @@
+<%
+  item_type = "Quiz"
+  item_type = "Survey" if @quiz.survey
+%> 
+
+
+
+<h2><%= item_type %> in Progress</h2>
+<p>Please answer all questions before pressing enter or submit.   The below timer will continue to refresh while you take the quiz.</p>
+
+<p>You should <b>save your answers</b> after every few questions.</p>
+
+
+<div id="quiz_timing_area">
+<%= render :partial => 'timings' %>
+</div>
+
+<%= periodically_call_remote(:update => "quiz_timing_area", :frequency => 30,:url => { :action => 'attempt_info', :id => @quiz_attempt })%>
