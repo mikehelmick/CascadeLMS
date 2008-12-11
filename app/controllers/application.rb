@@ -368,6 +368,11 @@ class ApplicationController < ActionController::Base
   end
   
   def authenticate( user, redirect = true, force_basic = false )
+    if user.nil? || user.uniqueid.nil? || user.uniqueid.eql?('') || user.password.nil? || user.password.eql?('')
+      return false
+    end
+    
+    
     auth = BasicAuthentication.new()
     is_ldap = false
     if @app['authtype'].downcase.eql?('ldap') && !force_basic
@@ -392,7 +397,7 @@ class ApplicationController < ActionController::Base
         redirect_to :controller => 'home' 
       elsif redirect && !session[:post_login].index("/redirect/").nil? 
         redirect_to session[:post_login] if redirect
-      else 
+      elsif redirect
         redirect_to :controller => 'home' 
       end
       return @user
@@ -421,7 +426,7 @@ class ApplicationController < ActionController::Base
     unless session[:user].nil?
       @user = User.find(session[:user].id)
       return @user
-    end
+    end  
     
     #username, passwd = get_auth_data 
     credArray = 
@@ -440,7 +445,7 @@ class ApplicationController < ActionController::Base
     end
     
     session[:post_login] = nil
-    userObject = authenticate( user, false )
+    userObject = authenticate( user, false ) 
 
     if userObject
       return userObject         

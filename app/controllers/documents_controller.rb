@@ -44,18 +44,22 @@ class DocumentsController < ApplicationController
   def podcast
     return unless load_course( params[:course] )
     @user = rss_authorize( "CSCourseware podcast for course '#{@course.title}'.")
+    return if @user.nil?
     
+    request.env["HTTP_ACCEPT"] = "*/*"
     unless @user.nil?
-      params[:format] = 'xml'
-      if load_course( params[:course] ) 
+      session[:user] = @user
+      
+      unless @course.nil?
           if allowed_to_see_course( @course, @user )       
             if load_folder( params[:id].to_i )
-              
-              @documents = Document.find(:all, :conditions => ['course_id = ? and published = ? and document_parent = ?', @course.id, true, @folder_id], :order => 'created_at desc' )               
-              @fresh_date = @documents[0].created_at rescue @fresh_date = Time.now
-              headers["Content-Type"] = "application/rss+xml"
-              ## probably need to do fresh date
-          
+              params[:format] = 'xml'
+              respond_to do |format| 
+                format.xml {
+                  @documents = Document.find(:all, :conditions => ['course_id = ? and published = ? and document_parent = ?', @course.id, true, @folder_id], :order => 'created_at desc' )               
+                  @fresh_date = @documents[0].created_at rescue @fresh_date = Time.now
+                }
+              end
             end
             ## not loaded folder
           end
@@ -63,6 +67,7 @@ class DocumentsController < ApplicationController
         end
         #render_text( 'You are not authorized to view this RSS feed.', 401 ) 
     end
+    
   end
   
   def download
