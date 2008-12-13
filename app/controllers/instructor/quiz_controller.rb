@@ -472,24 +472,6 @@ class Instructor::QuizController < Instructor::InstructorBase
     return answers 
   end
   
-  def quiz_enabled( course )
-    unless course.course_setting.enable_quizzes
-      flash[:badnotice] = "Quizzes are not enabled for this course."
-      redirect_to :controller => '/instructor/index', :course => course
-      return false
-    end
-    return true
-  end
-  
-  def assignment_is_quiz( assignment )
-    unless assignment.is_quiz?
-      flash[:badnotice] = "Assignment is not a quiz."
-      redirect_to :controller => '/instructor/course_assignments', :course => @course
-      return false      
-    end
-    return true
-  end
-  
   def set_tab
      @show_course_tabs = true
      @tab = "course_instructor"

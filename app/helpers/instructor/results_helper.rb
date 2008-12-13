@@ -1,0 +1,2 @@
+module Instructor::ResultsHelper
+end

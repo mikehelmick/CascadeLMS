@@ -134,8 +134,13 @@ class Instructor::TurninsController < Instructor::InstructorBase
         end
       end
       
+      
       flash[:notice] = "Grades have been updated for all students."
-      redirect_to :action => 'index'
+      if @assignment.quiz.nil?  
+        redirect_to :action => 'index', :course => @course, :assignment => @assignment
+      else
+        redirect_to :controller => '/instructor/results', :action => 'quiz', :course => @course, :assignment => @assignment
+      end
       
     else
       flash[:badnotice] = "There is no gradebook entry associated with this assignment."
@@ -200,19 +205,23 @@ class Instructor::TurninsController < Instructor::InstructorBase
     return unless assignment_in_course( @course, @assignment )
     return unless course_open( @course, :action => 'index' )
     
-    @assignment.released = !@assignment.released
-    
-    
-    unless @assignment.save
-      flash[:badnotice] = "Error changing assignment comments status."
-    end
-    
-    unless @assignment.grade_item.nil?
-      @assignment.grade_item.visible = @assignment.released
-      @assignment.grade_item.save
+    Assignment.transaction do
+      @assignment.released = !@assignment.released
+      unless @assignment.save
+        flash[:badnotice] = "Error changing assignment comments status."
+      end
+
+      unless @assignment.grade_item.nil?
+        @assignment.grade_item.visible = @assignment.released
+        @assignment.grade_item.save
+      end
     end
       
-    redirect_to :action => 'index', :course => @course, :assignment => @assignment
+    if @assignment.quiz.nil?  
+      redirect_to :action => 'index', :course => @course, :assignment => @assignment
+    else
+      redirect_to :controller => '/instructor/results', :action => 'quiz', :course => @course, :assignment => @assignment
+    end
   end
   
   def rollback
@@ -472,12 +481,20 @@ class Instructor::TurninsController < Instructor::InstructorBase
       end
     rescue
     end
-     
-    unless student_id.nil?
-      redirect_to :action => 'view_student', :id => student_id
+    
+    if @assignment.quiz.nil?  
+      unless student_id.nil?
+        redirect_to :action => 'view_student', :id => student_id
+      else
+        flash[:notice] = "#{flash[:notice]}<br/>Grade for the last student on the roster was saved, nothing to advance to."
+        redirect_to :action => 'index', :id => nil
+      end
     else
-      flash[:notice] = "#{flash[:notice]}<br/>Grade for the last student on the roster was saved, nothing to advance to."
-      redirect_to :action => 'index', :id => nil
+      if student_id.nil?
+        redirect_to :controller => '/instructor/results', :action => 'quiz', :course => @course, :assignment => @assignment
+      else
+        redirect_to :controller => '/instructor/results', :action => 'for_student', :course => @course, :assignment => @assignment, :id => student_id
+      end
     end
   end
   
@@ -528,7 +545,11 @@ class Instructor::TurninsController < Instructor::InstructorBase
     
     if extension.save
       flash[:notice] = "#{@student.display_name} was granted an extension until #{extension.extension_date.to_formatted_s(:long)}"
-      redirect_to :action => nil, :controller => 'instructor/turnins', :course => @course, :assignment => @assignment, :id => nil
+      if @assignment.quiz
+        redirect_to :controller => '/instructor/results', :action => 'quiz', :course => @course, :assignment => @assignment
+      else
+        redirect_to :action => nil, :controller => 'instructor/turnins', :course => @course, :assignment => @assignment, :id => nil
+      end
     else
       redirect_to :action => 'grant', :course => @course, :assignment => @assignment, :id => @student
     end   
@@ -554,7 +575,11 @@ class Instructor::TurninsController < Instructor::InstructorBase
        flash[:notice] = "#{@student.display_name} extension has been revoked."
     end
     
-    redirect_to :action => nil, :controller => 'instructor/turnins', :course => @course, :assignment => @assignment, :id => nil
+    if @assignment.quiz
+      redirect_to :controller => '/instructor/results', :action => 'quiz', :course => @course, :assignment => @assignment
+    else
+      redirect_to :action => nil, :controller => 'instructor/turnins', :course => @course, :assignment => @assignment, :id => nil
+    end
   end
   
   def download_all_files

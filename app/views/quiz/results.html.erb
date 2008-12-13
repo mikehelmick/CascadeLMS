@@ -3,6 +3,22 @@
   Results for quiz: <%= @assignment.title %></h2>
 </div></div>
 
+
+<% if @assignment.released && @assignment.grade_item %>
+  <% if @grade_entry.nil? %>
+    <p><i>No grade has been submitted.</i></p>
+  <% else %> 
+    <div class="standout">
+    <p><b>Your grade:</b> <%= sprintf("%.1f",@grade_entry.points) %> out of <%= sprintf("%.1f",@assignment.grade_item.points) %> possible points</p>
+    <p><b>Instructor Comments:</b> 
+      <div class="fixedWidth">
+        <%= @feedback_html %>
+      </div>
+    </p>
+   </div>
+  <% end %>
+<% end %>
+
 <div id="form_area">
   <% count = 0 %>
   <% for question in @questions do %>  

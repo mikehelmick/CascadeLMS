@@ -16,3 +16,9 @@
 
 <%= periodically_call_remote(:update => "quiz_timing_area", :frequency => 30,:url => { :action => 'attempt_info', :id => @quiz_attempt })%>
 <% end %>
+
+
+<% if request.path_parameters['action'].eql?('results') %>
+<h2><%= item_type %> results</h2>
+<p>Here are the answers that you provided in your most recent quiz attempt.</p>
+<% end %>

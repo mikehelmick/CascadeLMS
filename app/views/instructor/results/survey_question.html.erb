@@ -1,0 +1,44 @@
+<p><%= link_to 'Back to All Questions', :controller => '/instructor/results', :action => 'survey', :course => @course, :assignment => @assignment, :id => nil %></p>
+
+<div class="SectionHeader"><div class="Full">
+<h2>Individual question results for</br> '<%= @assignment.title %>'</h2>
+</div></div>
+
+<p>Question: <b><%= @question.question %></b></p>
+
+<p>How each student answered:</p>
+
+<table class="fancy">
+  <tr class="header">
+	  <th align="center">Student</th>
+	  <% if @question.text_response %>
+	    <th align="center">Answer</th>
+	  <% else %>
+	    <% for answer in @question.quiz_question_answers %>
+          <th align="center"><b><%= answer.answer_text %></b></th>
+        <% end %>
+      <% end %>
+  </tr>
+
+<% row_count = 0 %>
+<% for student in @course.students %>
+	 <% row_count = row_count.next 
+	    odd = "odd"
+        odd = "even" if row_count.even? %>
+  <tr class="<%=odd%> hover" id="student_<%=student.id%>">
+	   <td valign="top"><%=h student.display_name %></td>
+	   
+	   <% if @question.text_response %>
+	     <td valign="top" align="left"><%=h @student_response[student.id][@question.id] %></td>
+	   <% else %>
+       <% for answer in @question.quiz_question_answers %>
+          <td align="center">
+            <% if @student_response[student.id][answer.id] %>
+              <%= image_tag 'accept.png' %>
+            <% end %>
+          </td>
+       <% end %>
+       <% end %>	   
+  </tr>
+<% end %>
+</table>

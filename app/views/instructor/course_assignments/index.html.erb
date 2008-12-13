@@ -28,7 +28,7 @@
 	    <td align="right">
 	      <% if @user.instructor_in_course?(@course.id) || (@user.assistant_in_course?(@course.id) && @course.course_setting.ta_course_assignments) %>
 	         <% if assignment.is_quiz? %>       
-	             <%= link_to "#{h assignment.position}", :controller => '/instructor/quiz', :action => 'questions', :id => assignment %>
+	             <%= link_to "#{h assignment.position}", :controller => '/instructor/quiz', :action => 'questions', :id => assignment, :assignment => nil %>
   	         <% else %>
                  <%= link_to "#{h assignment.position}", :action => 'edit', :id => assignment %>
              <% end %>
@@ -39,7 +39,7 @@
 	    <td nowrap="nowrap">
 	      <% if @user.instructor_in_course?(@course.id) || (@user.assistant_in_course?(@course.id) && @course.course_setting.ta_course_assignments) %>
 	         <% if assignment.is_quiz? %>       
-	             <%= link_to "#{image_tag 'page_edit.png', :align => 'absmiddle'} #{h assignment.title}", :controller => '/instructor/quiz', :action => 'questions', :id => assignment %>
+	             <%= link_to "#{image_tag 'page_edit.png', :align => 'absmiddle'} #{h assignment.title}", :controller => '/instructor/quiz', :action => 'questions', :id => assignment, :assignment => nil %>
   	         <% else %>
 	             <%= link_to "#{image_tag 'page_edit.png', :align => 'absmiddle'} #{h assignment.title}", :action => 'edit', :id => assignment %>
 	         <% end %>
@@ -53,9 +53,9 @@
 	      <% if assignment.quiz.nil? %>
 	      	 <%= link_to 'Turn-ins', :controller => '/instructor/turnins', :course => @course, :assignment => assignment %> 
 	      <% elsif assignment.quiz.survey %>
-	         <%= link_to 'Results', :controller => '/results', :action => 'survey', :course => @course, :assignment => assignment %>
+	         <%= link_to 'Results', :controller => '/instructor/results', :action => 'survey', :course => @course, :assignment => assignment %>
 	      <% else %>
-         	 <%= link_to 'Results', :controller => '/results', :action => 'quiz', :course => @course, :assignment => assignment %>
+         	 <%= link_to 'Submissions', :controller => '/instructor/results', :action => 'quiz', :course => @course, :assignment => assignment %>
 	      <% end %>
 	    </td>
 	

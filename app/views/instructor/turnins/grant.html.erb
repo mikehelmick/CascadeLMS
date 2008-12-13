@@ -1,8 +1,11 @@
 <h3>Course: <%= @course.title %> (<%= @course.term.semester%>)</h3>
 <h4>Assignment: '<%= @assignment.title %>'</h4>
 
-<p><%= link_to 'Back to turnins', :course => @course, :assignment => @assignment, :controller => '/instructor/turnins', :action => nil %></p>
-
+<% if @assignment.quiz %>
+  <p><%= link_to 'Back to Quiz Results', :course => @course, :assignment => @assignment, :controller => '/instructor/results', :action => 'quiz' %></p>
+<% else %>
+  <p><%= link_to 'Back to turnins', :course => @course, :assignment => @assignment, :controller => '/instructor/turnins', :action => nil %></p>
+<% end %>
 
 <p>Edit due-date extension for <b><%= @student.display_name %></b></p>
 

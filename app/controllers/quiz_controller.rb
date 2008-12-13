@@ -30,6 +30,7 @@ class QuizController < ApplicationController
   def attempt_info
     @quiz_attempt = QuizAttempt.find( params[:id] )
     @quiz = @quiz_attempt.quiz
+    @extension = @quiz.assignment.extension_for_user( @user )
     render :partial => 'timings', :layout => false
   end
   
@@ -68,7 +69,7 @@ class QuizController < ApplicationController
     @assignment = Assignment.find(params[:id]) rescue @assignment = Assignment.new
     return unless assignment_in_course( @assignment, @course )
     return unless assignment_is_quiz( @assignment )
-    return unless quiz_open( @assignment )
+    return unless quiz_available( @assignment )
     @quiz = @assignment.quiz
     
     if @quiz.survey
@@ -82,7 +83,13 @@ class QuizController < ApplicationController
       flash[:badnotice] = "You cannot view the results for this quiz, becuase your most recent attempt hasn't been completed."
       redirect_to :action => 'start', :course => @course, :id => @assignment
       return
-    end    
+    end 
+    
+    if @assignment.released && @assignment.grade_item
+      @grade_entry = GradeEntry.find(:first, :conditions => ["grade_item_id=? and user_id=?", @assignment.grade_item.id, @user.id ] )
+      @grade_entry = GradeEntry.new if @grade_entry.nil?
+      @feedback_html = @grade_entry.comment.to_html rescue @feedback_html = ''
+    end   
     
     @title = "Quiz Results"
     @show_course_tabs = true
@@ -379,11 +386,24 @@ class QuizController < ApplicationController
     end
   end
   
-  def quiz_open( assignment )
-    unless assignment.current?
+  def quiz_available( assignment )
+    if @assignment.upcoming?
       flash[:badnotice] = "Selected quiz is not available at this time."
       redirect_to :controller => '/assignments', :course => @course
       return false
+    end
+    return true
+  end
+  
+  def quiz_open( assignment )
+    # check extension - we won't check open date if extension is allowd
+    @extension = assignment.extension_for_user( @user )
+    if @extension.nil? || (@extension.nil? && !extension.past?)
+      unless assignment.current?
+        flash[:badnotice] = "Selected quiz is not available at this time."
+        redirect_to :controller => '/assignments', :course => @course
+        return false
+      end
     end
     return true
   end

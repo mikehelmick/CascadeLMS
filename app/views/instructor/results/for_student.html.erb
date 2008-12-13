@@ -1,0 +1,147 @@
+<p>
+ <% if @assignment.quiz.survey %>
+   <%= link_to 'Back to all students', :controller => '/instructor/results', :action => 'survey', :course => @course, :assignment => @assignment %>
+ <% else %>
+   <%= link_to 'Back to all students', :controller => '/instructor/results', :action => 'quiz', :course => @course, :assignment => @assignment %> |
+   <%= link_to "Grade overview for #{@student.display_name}", :controller => '/instructor/course_gradebook', :action => 'for_student', :course => @course, :id => @student.id %>
+ <% end %> 
+   </p>
+
+<div class="SectionHeader"><div class="Full">
+  <h2>
+	<% if @assignment.quiz.survey %>Survey
+	<% else %>Quiz<% end %>
+	Results for <%= @student.display_name %><br/>
+	'<%= @assignment.title %>'</h2>
+</div></div>
+
+<p>&nbsp;</p>
+
+<!-- begin grade area -->
+<% unless @assignment.quiz.survey %>
+<div class="SectionHeader"><div class="Full">
+  <h2>Grade</h2>
+</div></div>
+
+<% unless @assignment.grade_item %>
+  <p><i>Warning - this assignment is not connected with an entry in the GradeBook.</i></p>
+<% else %>
+  <div id="form_area">
+  <% form_tag( :controller => '/instructor/turnins', :action => 'submit_grade', :id => @student, :course => @course, :assignment => @assignment ) do %>
+    <%= error_messages_for 'grade_entry' %>    
+
+	<p class="blockintro">You can enter comments here, which will be available to the student. (A score for any multiple choice questions has already been calculated.)</p>
+	<div class="block">
+	  <p><label for="document_title">Points:</label>
+	    <%= text_field 'grade_entry', 'points', :size => 10  %> / <%= sprintf("%0.1f", @assignment.grade_item.points ) %>
+      </p>
+
+      <p><label for="document_comments">General comments:</label><br/>
+
+      <%= text_area 'grade_entry', 'comment', "cols" => 90, "rows" => 6, :class=>'short'  %><br/>
+      <%= link_to_function "More room to type", "Form.Element.toggleHeight(this, 'grade_entry_comment'); return false;", :class => 'bottab more' %>
+</p>
+
+    </div>
+
+  	<div class="submit">
+	  <div id="button">
+	     <%= submit_tag "Save Grade" %>
+	     <%= submit_tag "Save Grade and Go to Next Student"%>
+	  </div>
+	</div>
+  <% end %>
+  </div>
+
+<% end %>
+<% end %>
+<!-- END GRADE AREA -->
+
+<div class="SectionHeader"><div class="Full">
+  <h2><% if @assignment.quiz.survey %>Survey
+	  <% else %>Quiz<% end %> Responses</h2>
+</div></div>
+
+
+<div id="form_area">
+  <% count = 0 %>
+  <% for question in @questions do %>  
+    <% count = count.next %>
+
+    <p class="blockintro"><b>Question #<%=count %> of <%= @questions.length %></b></p>
+    <div class="block">
+	   <p><label for="" class="required"><%= question.question %></label><br/>
+	
+	   <% if question.text_response %>
+		  <% answer = ""
+	         answer = @answer_map[question.id].text_answer unless @answer_map[question.id].nil? %>      
+	      <div><b>Your Answer:</b> <%=h answer %></div>
+	
+	   <% elsif question.multiple_choice %>
+	      <% answer_id = 0
+	         answer_id = @answer_map[question.id].quiz_question_answer_id unless @answer_map[question.id].nil? %>
+	      <ul>
+	        <% for quiz_answer in question.quiz_question_answers %>      
+	          <li>
+	            <% if @quiz.survey %>
+	               <% if quiz_answer.id == answer_id %>
+	                 <%= image_tag 'accept.png' %>
+	               <% end %>
+	            <% else %>
+	              <% if quiz_answer.correct && quiz_answer.id == answer_id %>
+		             <b><font color="green">Correct! <%= image_tag 'accept.png' %></font></b>
+	  	          <% elsif quiz_answer.id == answer_id %>
+	                 <b><font color="red">Incorrect <%= image_tag 'cancel.png' %></font></b>
+	              <% end %>
+                <% end %>
+	              <%=h quiz_answer.answer_text %>
+		      </li>
+	        <% end %>
+	
+	      </ul>
+	   <% elsif question.checkbox %>
+	     <% answer_ids = Hash.new
+	 		unless @answer_map[question.id].nil?
+	        	@answer_map[question.id].each { |att| answer_ids[att.quiz_question_answer_id] = true } 
+            end
+            possible_correct = 0
+            total_correct = 0
+          %>
+	     <ul>
+	       <% for quiz_answer in question.quiz_question_answers %>
+	         <li>
+		      <% if @quiz.survey %>
+	             <% if answer_ids[quiz_answer.id] %>
+	               <%= image_tag 'accept.png', :align => 'absmiddle' %>
+	             <% end %>
+	          <% else %>
+	            <% if quiz_answer.correct && answer_ids[quiz_answer.id] %>
+		             <b><font color="green">Correct! <%= image_tag 'accept.png' %></font></b>
+		             <% possible_correct = possible_correct + 1 
+		                total_correct = total_correct + 1
+		              %>
+		         <% elsif quiz_answer.correct %>
+		             <% possible_correct = possible_correct + 1 %>
+		             <b><font color="red">Missing <%= image_tag 'cancel.png' %></font></b>
+	  	         <% elsif quiz_answer.id == answer_id %>
+	                 <b><font color="red">Incorrect <%= image_tag 'cancel.png' %></font></b>
+	             <% end %>
+              <% end %>
+	             <%=h quiz_answer.answer_text %>
+		     </li>
+	       <% end %>
+	     </ul>
+	     <% if ! @quiz.survey %><p><i>There are <%= possible_correct %> correct answers to this question.</i></p><% end %>
+	     
+	
+	   <% else %>
+	      <br/><b>NO INPUT METHOD SPECIFIED FOR THIS QUESTION.</b>
+	   <% end %>
+	
+	   </p>
+	</div>
+
+  <% end %>
+
+
+</div>

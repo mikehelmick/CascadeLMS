@@ -1,0 +1,106 @@
+<p><%= link_to 'Back to All Assignments', :controller => '/instructor/course_assignments', :course => @course, :action => nil, :id => nil %></p>
+
+<div class="SectionHeader"><div class="Full">
+<h2>Quiz Submissions '<%= @assignment.title %>'</h2>
+</div></div>
+
+
+<p>This page is an overview of quiz scores for students.  You can view individual student responses and assign grades to text response questions from this screen.</p>
+
+<% if @assignment.grade_item.nil? %>
+<p><i>Warning - this assignment is not connected with an entry in the GradeBook.</i></p>
+<% end %>
+
+<% if @assignment.released %>
+   <div class="GoodMessage">Comments and scores are available to students.  (<%= link_to 'change', :controller => '/instructor/turnins', :action => 'toggle_released', :course => @course, :assignment => @assignment %>)</div>
+<% else %>
+   <div class="errorExplanation">Comments and scores are NOT available to students.  (<%= link_to 'change', :controller => '/instructor/turnins', :action => 'toggle_released', :course => @course, :assignment => @assignment %>)</div>
+<% end %>
+
+<% if @assignment.grade_item %>
+  <ul>  
+    <% if @has_text_responses %>
+      <li>The multiple choice questions on this quiz have been automatically graded.</li>
+      <li><b>The free-form text response questions can not be automatically graded.</b></li>
+    <% else %>
+      <li><b>This quiz is automatically graded when students submit responses.</b></li>
+    <% end %>
+  </ul>
+<% end %>
+
+<% form_tag( :controller => '/instructor/turnins', :action => 'save_all_grades', :course => @course, :assignment => @assignment, :id => nil ) do %>
+
+<table class="fancy" width="99%">
+  <tr class="header">
+    <th valign="bottom">UniqueID</th>
+    <th valign="bottom">Student</th>
+    <th valign="bottom">Has Attempted?</th>
+    <% if @assignment.grade_item %>
+      <th valign="bottom" colspan="2" align="center">Score<br/><%= @assignment.grade_item.points %> points</th>
+    <% end %>
+    <th valign="bottom">View Responses / Feedback</th>
+    <th valign="bottom">
+		Due: <%= @assignment.due_date.to_formatted_s(:long) %><br/>
+		<% if @assignment.due_date !=   @assignment.close_date %>
+		  Late Turnin Date:<%= @assignment.close_date.to_formatted_s(:long) %><br/>
+		<% end %>
+	View/Grant Extensions</th>
+  </tr>
+  
+  <% row_count = 0 %>
+  <% for student in @course.students %>
+	 <% row_count = row_count.next 
+	    odd = "odd"
+        odd = "even" if row_count.even? %>
+     <tr class="<%=odd%> hover" id="student_<%=student.id%>">
+	   <td><%=h student.uniqueid %></td>
+       <td><%=h student.display_name %></td>
+       <td><% if @attempts[student.id] %>Yes
+	       <% else %>No<% end %>
+       </td>
+       <% if @assignment.grade_item %>
+	     <td align="right">
+	       <% if @grades[student.id] %>
+	         <%= sprintf("%0.1f", @grades[student.id] ) %>
+	       <% else %>
+	         <acronym title="no grade entered"><%= image_tag 'bullet_error.png' %></acronym>
+	       <% end %>
+	     </td>
+
+		 <td align="right">
+		   <% value = '' 
+		      value = sprintf("%0.1f", @grades[student.id]) unless @grades[student.id].nil?
+		    %>
+	 	   <%= text_field_tag "grade_#{student.id}", value, :size => 5 %>
+	 	 </td>
+       <% end %>
+       <td>
+          <%= link_to 'View Answers', :action => 'for_student', :course => @course, :assignment => @assignment, :id => student %>
+       </td>
+
+       <td align="center"> 
+	    <% extension = @assignment.extension_for_user( student ) %>
+	    <% if extension.nil? %>
+	      <%= link_to 'Grant', :controller => '/instructor/turnins', :action => 'grant', :assignment => @assignment, :course => @course, :id => student.id %>
+	    <% else %>
+	      <%= extension.extension_date.to_formatted_s(:long) %> | 
+	      <%= link_to 'Edit Grant', :controller => '/instructor/turnins', :action => 'grant', :assignment => @assignment, :course => @course, :id => student.id %> |
+	      <%= link_to 'Revoke', :controller => '/instructor/turnins', :action => 'revoke', :assignment => @assignment, :course => @course, :id => student.id %> 
+	    <% end %>
+	  </td>
+
+     </tr> 
+  <% end %>
+
+  <% if @assignment.grade_item %>
+  <tr class="none">
+	<td colspan="3" class="none">&nbsp;</td>
+	<td colspan="3" class="none">
+	    <%= submit_tag "Save All Grades" %>
+	</td>
+  </tr>
+  <% end %>
+
+</table>
+
+<% end %>
