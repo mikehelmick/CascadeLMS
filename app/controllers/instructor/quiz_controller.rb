@@ -70,7 +70,7 @@ class Instructor::QuizController < Instructor::InstructorBase
         raise 'error' unless success
         success = @quiz.save
         raise 'error' unless success
-        @gradeItem.assignment = @assignment
+        @gradeItem.assignment = @assignment unless @gradeItem.nil?
         success = @gradeItem.save unless @gradeItem.nil?
         raise 'error' unless success
         

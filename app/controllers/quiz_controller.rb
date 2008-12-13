@@ -54,16 +54,135 @@ class QuizController < ApplicationController
       redirect_to :action => 'results', :course => @course, :id => @assignment
       return
     else  # this was an intermediary save
-      flash[:notice] = "All previous work has been saved."
+      flash[:notice] = "All previous work has been saved.  You can continue taking the quiz, including chaning previous answer."
       load_quiz_dependencies
     end
     
     render :action => 'start'
   end
   
+  def results
+    return unless load_course( params[:course] )
+    return unless allowed_to_see_course( @course, @user )
+    
+    @assignment = Assignment.find(params[:id]) rescue @assignment = Assignment.new
+    return unless assignment_in_course( @assignment, @course )
+    return unless assignment_is_quiz( @assignment )
+    return unless quiz_open( @assignment )
+    @quiz = @assignment.quiz
+    
+    if @quiz.survey
+      flash[:notice] = "Your survey answers have been saved, thank you."
+      return redirect_to :controller => '/assignments', :course => @course
+    end
+    
+    load_quiz_dependencies( true )
+    
+    if !@quiz_attempt.completed
+      flash[:badnotice] = "You cannot view the results for this quiz, becuase your most recent attempt hasn't been completed."
+      redirect_to :action => 'start', :course => @course, :id => @assignment
+      return
+    end    
+    
+    @title = "Quiz Results"
+    @show_course_tabs = true
+    @tab = "course_assignments"
+    render :layout => 'application'
+  end
+  
+  def abort
+    return unless load_course( params[:course] )
+    return unless allowed_to_see_course( @course, @user )
+    
+    @assignment = Assignment.find(params[:id]) rescue @assignment = Assignment.new
+    return unless assignment_in_course( @assignment, @course )
+    return unless assignment_is_quiz( @assignment )
+    return unless quiz_open( @assignment )
+    @quiz = @assignment.quiz
+    
+    @attempts = @quiz.all_attempts_for_user( @user )
+    if @attempts.length == 0 || @attempts[0].completed
+      flash[:badnotice] = "You don't have an incomplete quiz attempt for the quiz #{@assignment.title}, so I can't abort the attempt."
+      redirect_to :controller => 'assignments', :course => @course, :id => nil
+    end
+    
+    # else  - first entry is incomplete
+    QuizAttempt.transaction do 
+      @attempts[0].destroy
+      score( @quiz, @attempts[1] )
+    end
+    
+    flash[:notice] = "Quiz attempt aborted - here is your current attempt."
+    redirect_to :action => 'results', :course => @course, :id => @assignment
+  end
   
   
   private
+  
+  def score( quiz, quiz_attempt )
+    # if it has a grade item, create a grade entry
+    unless quiz.assignment.grade_item.nil?
+      
+      correct_count = 0
+      quiz.quiz_questions.each do |question|
+      
+        if question.multiple_choice
+          # one correct answer
+          quiz_attempt.quiz_attempt_answers.each do |answer|
+            if answer.quiz_question_id == question.id && answer.correct
+              correct_count = correct_count + 1
+            end
+          end
+          
+        elsif question.checkbox
+          
+          max_correct = 0
+          question.quiz_question_answers.each do |qqa|
+            max_correct = max_correct + 1 if qqa.correct
+          end
+          
+          multi_correct = 0
+          multi_incorrect = 0
+          quiz_attempt.quiz_attempt_answers.each do |answer|
+            if answer.quiz_question_id == question.id && answer.correct
+              multi_correct = multi_correct + 1
+            elsif answer.quiz_question_id == question.id && !answer.correct
+              multi_incorrect = multi_incorrect + 1
+            end
+          end
+          
+          puts "MAX CORRECT: #{max_correct}"
+          puts "MULTI_CORRECT: #{multi_correct}"
+          puts "MULTI_INCORRECT: #{multi_incorrect}"
+          
+          # someone forgot to select a correct answer!
+          unless max_correct == 0 
+            add_here = multi_correct/max_correct.to_f - multi_incorrect/max_correct.to_f
+            add_here = 0 if add_here < 0
+            
+            puts "ADD FOR THIS MULTI Q: #{add_here}"
+            
+            correct_count = correct_count + add_here
+          end
+          
+        end
+      end
+      
+      # see if there is a grade entry
+      entry = GradeEntry.find(:first, :conditions => ["grade_item_id=? and user_id = ? and course_id=?", quiz.assignment.grade_item.id, @user.id, @course.id]) rescue entry = GradeEntry.new
+      entry = GradeEntry.new if entry.nil?
+      
+      entry.grade_item = quiz.assignment.grade_item
+      entry.user = @user
+      entry.course = @course
+      entry.points = quiz.assignment.grade_item.points/quiz.quiz_questions.length.to_f * correct_count
+      entry.save
+      
+      
+    end   
+  
+    # end assessment of answers
+  end
   
   def save_quiz_answers( params )
     QuizAttempt.transaction do
@@ -125,10 +244,11 @@ class QuizController < ApplicationController
         @quiz_attempt.completed = true
       end
       @quiz_attempt.save
+      score( @quiz, @quiz_attempt )
     end    
   end
   
-  def load_quiz_dependencies
+  def load_quiz_dependencies( load_for_results = false )
     
     ## initialization is different based on if it is a quiz or a survey
     if @quiz.survey
@@ -148,25 +268,35 @@ class QuizController < ApplicationController
     
     else
       # this is a quiz
-      allAttempts = QuizAttempt.find(:all, :conditions => ["quiz_id = ? and user_id = ?", @quiz.id, @user.id], :order => "created_at dsc")
+      @allAttempts = QuizAttempt.find(:all, :conditions => ["quiz_id = ? and user_id = ?", @quiz.id, @user.id], :order => "created_at desc")
       
       if @quiz.attempt_maximum > 0
-        if allAttempts.length >= @quiz.attempt_maximum && allAttempts[0].completed
+        if @allAttempts.length >= @quiz.attempt_maximum && @allAttempts[0].completed
           flash[:badnotice] = 'You have used all of your attempts on this quiz.'
-          redirect_to :controller => '/assignments', :course => @course
-          return
-        elsif allAttempts.length < @quiz.attempt_maximum && allAttempts[0].completed  
-          flash[:notice] = "This is attempt #{allAttempts.length + 1} out of a possible #{@quiz.attempt_maximum}."    
+          if !load_for_results
+            redirect_to :controller => '/assignments', :course => @course
+            return
+          end
+        elsif @allAttempts.length == 0  
+          flash[:notice] = "This is your first attempt at this quiz.  You may attempt it #{@quiz.attempt_maximum} times."
+        elsif @allAttempts.length < @quiz.attempt_maximum && ! @allAttempts[0].completed  
+          flash[:notice] = "This is attempt #{@allAttempts.length} out of a possible #{@quiz.attempt_maximum}."            
+        elsif @allAttempts.length < @quiz.attempt_maximum && @allAttempts[0].completed 
+          if load_for_results
+            flash[:notice] = "You can still attempt this quiz #{@quiz.attempt_maximum - @allAttempts.length} times."
+          else
+            flash[:notice] = "This is attempt #{@allAttempts.length + 1} out of a possible #{@quiz.attempt_maximum}."     
+          end     
         end
       else  
         flash[:notice] = "This quiz offeres unlimited retries."
       end
       
-      if allAttempts.length == 0
+      if @allAttempts.length == 0
         @quiz_attempt = nil
       else
-        @quiz_attempt = allAttempts[0]
-        @quiz_attempt = nil if @quiz_attempt.completed
+        @quiz_attempt = @allAttempts[0]
+        @quiz_attempt = nil if @quiz_attempt.completed && !load_for_results
       end
       
       if @quiz_attempt.nil?  

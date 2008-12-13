@@ -49,7 +49,15 @@
 	        <%= h assignment.title %>
 	      <% end %>
 	    </td>
-	    <td nowrap="nowrap"><%= link_to 'Turn-ins', :controller => '/instructor/turnins', :course => @course, :assignment => assignment %></td>
+	    <td nowrap="nowrap">
+	      <% if assignment.quiz.nil? %>
+	      	 <%= link_to 'Turn-ins', :controller => '/instructor/turnins', :course => @course, :assignment => assignment %> 
+	      <% elsif assignment.quiz.survey %>
+	         <%= link_to 'Results', :controller => '/results', :action => 'survey', :course => @course, :assignment => assignment %>
+	      <% else %>
+         	 <%= link_to 'Results', :controller => '/results', :action => 'quiz', :course => @course, :assignment => assignment %>
+	      <% end %>
+	    </td>
 	
 		<td align="right" nowrap="nowrap">
 		  <% if assignment.grade_item.nil? %>

@@ -22,15 +22,25 @@
 	   %>
 	  <tr class="<%=odd%> hover" id="assignment_<%=assignment.id%>">
 	    <td align="right" valign="top">
+          <% user_completed_quiz = false %>
 	      <% if assignment.quiz %>
-	        <%= link_to "#{h assignment.position}", :controller => '/quiz', :action => 'start', :course => @course, :id => assignment %>
+	        <% user_completed_quiz = assignment.quiz.user_has_completed_attempt?(@user) %>
+	        <% if user_completed_quiz %>
+	          <%= link_to "#{h assignment.position}", {:controller => '/quiz', :action => 'start', :course => @course, :id => assignment}, :confirm => "You have already completed this quiz, are you sure you want to take it again?" %>
+	        <% else %>
+	          <%= link_to "#{h assignment.position}", :controller => '/quiz', :action => 'start', :course => @course, :id => assignment %>
+	        <% end %>
 		  <% else %>
 		    <%= link_to "#{h assignment.position}", :action => 'view', :id => assignment %>
 		  <% end %>
 		</td>
 	    <td valign="top" align="left" nowrap="nowrap">
 	      <% if assignment.quiz %>
-  	        <%= link_to "#{h assignment.title}", :controller => '/quiz', :action => 'start', :course => @course, :id => assignment %><br/>
+	        <% if user_completed_quiz %>
+	          <%= link_to "#{h assignment.title}", {:controller => '/quiz', :action => 'start', :course => @course, :id => assignment}, :confirm => "You have already completed this quiz, are you sure you want to take it again?" %>
+	        <% else %>
+	          <%= link_to "#{h assignment.title}", :controller => '/quiz', :action => 'start', :course => @course, :id => assignment %>
+	        <% end %><br/>
             <% if assignment.quiz.survey %><i>online survey</i><% else %><i>online quiz</i><% end %>
 	      <% else %>
 	        <%= link_to "#{h assignment.title}", :action => 'view', :id => assignment %>
@@ -41,9 +51,21 @@
 	    <% if !public %>
 	    <td nowrap="nowrap" align="right">
 	      <% if assignment.released && !assignment.grade_item.nil? %>
-	        <%= link_to 'Yes', :controller => '/turnins', :course => @course, :assignment => assignment, :action => 'feedback' %><%= image_tag 'lightbulb.png' %>
+	        <% if assignment.quiz.nil? %>
+  	           <%= link_to 'Yes', :controller => '/turnins', :course => @course, :assignment => assignment, :action => 'feedback' %><%= image_tag 'lightbulb.png' %>
+            <% elsif assignment.quiz.survey %>
+               -N/A-
+            <% else %>
+               <%= link_to 'Yes', :controller => '/quiz', :action => 'results', :course => @course, :id => assignment %><%= image_tag 'lightbulb.png' %>
+            <% end %>
 	      <% else %>
-	        <%= link_to 'No', :controller => '/turnins', :course => @course, :assignment => assignment, :action => 'feedback' %> <%= image_tag 'lightbulb_off.png' %>
+	        <% if assignment.quiz.nil? %>
+	          <%= link_to 'No', :controller => '/turnins', :course => @course, :assignment => assignment, :action => 'feedback' %> <%= image_tag 'lightbulb_off.png' %>
+	        <% elsif assignment.quiz.survey %>
+               -N/A-
+	        <% else %>
+	          <%= link_to 'No', :controller => '/quiz', :action => 'results', :course => @course, :id => assignment %><%= image_tag 'lightbulb_off.png' %>
+	        <% end %>
 	      <% end %>
 	    </td>
 	    <td nowrap="nowrap" align="right">

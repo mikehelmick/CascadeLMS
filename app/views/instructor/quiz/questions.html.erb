@@ -52,7 +52,10 @@
 	     <% if question.multiple_choice || question.checkbox %>
 	       <ul>
 		     <% for answer in question.quiz_question_answers %>
-		       <li><% if answer.correct %><b>correct</b>: <% end %><%=h answer.answer_text %></li>
+		       <li><% if answer.correct %>
+			         <b><font color="green">Correct</font>
+			         <%= image_tag 'accept.png' %></b>: 
+			       <% end %><%=h answer.answer_text %></li>
 		     <% end %>
 		   </ul>
 	     <% end %>	

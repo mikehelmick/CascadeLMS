@@ -13,7 +13,7 @@
     <% if @quiz_attempt.created_at.eql?(@quiz_attempt.updated_at) %>
       <i>Answers have not been saved.</i></li>
 	<% else %>
-	  <%= @quiz_attempt.created_at.to_formatted_s(:long) %></li>
+	  <%= @quiz_attempt.updated_at.to_formatted_s(:long) %></li>
 	  <ul>
 		<li><b>Which is:</b> <%= distance_of_time_in_words_to_now( @quiz_attempt.updated_at, true )%> ago</li>
 	  </ul>

@@ -3,8 +3,7 @@
   item_type = "Survey" if @quiz.survey
 %> 
 
-
-
+<% if request.path_parameters['action'].eql?('start') || request.path_parameters['action'].eql?('take')  %>
 <h2><%= item_type %> in Progress</h2>
 <p>Please answer all questions before pressing enter or submit.   The below timer will continue to refresh while you take the quiz.</p>
 
@@ -16,3 +15,4 @@
 </div>
 
 <%= periodically_call_remote(:update => "quiz_timing_area", :frequency => 30,:url => { :action => 'attempt_info', :id => @quiz_attempt })%>
+<% end %>

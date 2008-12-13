@@ -1,0 +1,74 @@
+<div class="SectionHeader"><div class="Full">
+<h2>
+  Results for quiz: <%= @assignment.title %></h2>
+</div></div>
+
+<div id="form_area">
+  <% count = 0 %>
+  <% for question in @questions do %>  
+    <% count = count.next %>
+
+    <p class="blockintro"><b>Question #<%=count %> of <%= @questions.length %></b></p>
+    <div class="block">
+	   <p><label for="" class="required"><%= question.question %></label><br/>
+	
+	   <% if question.text_response %>
+		  <% answer = ""
+	         answer = @answer_map[question.id].text_answer unless @answer_map[question.id].nil? %>      
+	      <div><b>Your Answer:</b> <%=h answer %></div>
+	
+	   <% elsif question.multiple_choice %>
+	      <% answer_id = 0
+	         answer_id = @answer_map[question.id].quiz_question_answer_id unless @answer_map[question.id].nil? %>
+	      <ul>
+	        <% for quiz_answer in question.quiz_question_answers %>      
+	          <li><% if quiz_answer.correct && quiz_answer.id == answer_id %>
+		             <b><font color="green">Correct! <%= image_tag 'accept.png' %></font></b>
+	  	          <% elsif quiz_answer.id == answer_id %>
+	                 <b><font color="red">Incorrect <%= image_tag 'cancel.png' %></font></b>
+	              <% end %>
+	              <%=h quiz_answer.answer_text %>
+		      </li>
+	        <% end %>
+	
+	      </ul>
+	   <% elsif question.checkbox %>
+	     <% answer_ids = Hash.new
+	 		unless @answer_map[question.id].nil?
+	        	@answer_map[question.id].each { |att| answer_ids[att.quiz_question_answer_id] = true } 
+            end
+            possible_correct = 0
+            total_correct = 0
+          %>
+	     <ul>
+	       <% for quiz_answer in question.quiz_question_answers %>
+	         <li><% if quiz_answer.correct && answer_ids[quiz_answer.id] %>
+		             <b><font color="green">Correct! <%= image_tag 'accept.png' %></font></b>
+		             <% possible_correct = possible_correct + 1 
+		                total_correct = total_correct + 1
+		              %>
+		         <% elsif quiz_answer.correct %>
+		             <% possible_correct = possible_correct + 1 %>
+	  	         <% elsif quiz_answer.id == answer_id %>
+	                 <b><font color="red">Incorrect <%= image_tag 'cancel.png' %></font></b>
+	             <% end %>
+	             <%=h quiz_answer.answer_text %>
+		     </li>
+	       <% end %>
+	     </ul>
+	     <% if total_correct != possible_correct %>
+	       <p><i>There are <%= possible_correct - total_correct %> more correct answers to this question.</i></p>
+	     <% end %>
+	   
+	
+	   <% else %>
+	      <br/><b>NO INPUT METHOD SPECIFIED FOR THIS QUESTION.</b>
+	   <% end %>
+	
+	   </p>
+	</div>
+
+  <% end %>
+
+
+</div>

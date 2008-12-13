@@ -12,7 +12,7 @@ class Assignment < ActiveRecord::Base
   
   has_many :assignment_pmd_settings, :dependent => :destroy
   
-  has_one :grade_item
+  has_one :grade_item, :dependent => :destroy
   
   has_one :auto_grade_setting, :dependent => :destroy
   
