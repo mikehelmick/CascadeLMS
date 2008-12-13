@@ -217,7 +217,7 @@ class ApplicationController < ActionController::Base
  	
  	  if session[:user].nil?
  	    flash[:notice] = "Please log in before proceeding."
- 	    session[:post_login] = redirect_uri if request.method.to_s.downcase.eql?("get") && !redirect_uri.index('/redirect/').nil?
+ 	    session[:post_login] = redirect_uri if request.method.to_s.downcase.eql?("get") # && !redirect_uri.index('/redirect/').nil?
  	    redirect_to :controller => '/index'
  	    return false
     end
@@ -226,7 +226,7 @@ class ApplicationController < ActionController::Base
       redirect_to :controller => '/index', :action => 'expired'
       # don't want to accidently clobber post data
       session[:post_login] = "#{request.protocol()}#{request.host()}#{request.port_string}/home"
-      session[:post_login] = redirect_uri if request.method.to_s.downcase.eql?("get") && !redirect_uri.index('/redirect/').nil?
+      session[:post_login] = redirect_uri if request.method.to_s.downcase.eql?("get") # && !redirect_uri.index('/redirect/').nil?
       
       return false
     end
@@ -395,7 +395,7 @@ class ApplicationController < ActionController::Base
       
       if ( redirect && session[:post_login].nil? )
         redirect_to :controller => 'home' 
-      elsif redirect && !session[:post_login].index("/redirect/").nil? 
+      elsif redirect # && !session[:post_login].index("/redirect/").nil? 
         redirect_to session[:post_login] if redirect
       elsif redirect
         redirect_to :controller => 'home' 
