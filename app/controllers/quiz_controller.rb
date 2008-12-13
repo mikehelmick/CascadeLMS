@@ -30,7 +30,8 @@ class QuizController < ApplicationController
   def attempt_info
     @quiz_attempt = QuizAttempt.find( params[:id] )
     @quiz = @quiz_attempt.quiz
-    @extension = @quiz.assignment.extension_for_user( @user )
+    @assignment = @quiz.assignment
+    @extension = @assignment.extension_for_user( @user )
     render :partial => 'timings', :layout => false
   end
   
