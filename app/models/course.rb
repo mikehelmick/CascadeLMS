@@ -26,7 +26,8 @@ class Course < ActiveRecord::Base
   
   has_and_belongs_to_many :programs
   has_many :course_outcomes, :order => "position", :dependent => :destroy
-  
+  # rubrics are destroyed through the destruction of assignments
+  has_many :rubrics
   
   before_create :solidify
   

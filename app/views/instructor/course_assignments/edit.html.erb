@@ -1,7 +1,12 @@
 <h2>Assignment '<%= @assignment.title %>' for '<%= @course.title%>'</h2>
 
 <p><%= link_to 'Back', :action => 'index' %>
-<% if @assignment.auto_grade %>| <%= link_to 'AutoGrade Settings', :action => 'autograde', :course => @course, :id => @assignment %> <% end %>
+<% if @assignment.auto_grade %> 
+  | <%= link_to "#{image_tag 'computer.png', :align => 'absmiddle'} AutoGrade Settings", :action => 'autograde', :course => @course, :id => @assignment %> 
+<% end %>
+<% if @course.course_setting.enable_outcomes %>
+  | <%= link_to "#{image_tag 'pencil.png', :align => 'absmiddle'} Assignment Rubrics", :controller => '/instructor/rubrics', :course => @course, :assignment => @assignment %>
+<% end %>
 </p>
 
 <div id="form_area">

@@ -3,6 +3,7 @@ class CourseOutcome < ActiveRecord::Base
   
   belongs_to :course
   has_and_belongs_to_many :program_outcomes
+  has_and_belongs_to_many :rubrics
   
   def child_outcomes
     CourseOutcome.find(:all, :conditions => ["parent = ?",self.id], :order => "position ASC")

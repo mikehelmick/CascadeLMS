@@ -1,0 +1,17 @@
+<p><%= link_to 'Back to all rubrics', :controller => '/instructor/rubrics', :course => @course, :assignment => @assignment %></p>
+
+<div class="SectionHeader"><div class="Full">
+<h2>New Rubric for '<%=h @assignment.title%>' </h2>
+</div></div>
+
+<div id="form_area">
+  <%= error_messages_for 'rubric' %>	
+  <% form_tag( :action => 'create', :course => @course, :assignment => @assignment ) do %>
+
+  <%= render :partial => 'form' %>
+ 
+  <div class="submit">
+	<%= submit_tag "Create Rubric" %>
+  </div>
+  <% end %>	
+</div>

@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20081207181438) do
+ActiveRecord::Schema.define(:version => 20081215055121) do
 
   create_table "announcements", :force => true do |t|
     t.string   "headline"
@@ -148,6 +148,15 @@ ActiveRecord::Schema.define(:version => 20081207181438) do
   end
 
   add_index "course_outcomes_program_outcomes", ["course_outcome_id", "program_outcome_id"], :name => "courses_outcomes_program_outcomes_unique", :unique => true
+
+  create_table "course_outcomes_rubrics", :force => true do |t|
+    t.integer  "rubric_id",         :limit => 11, :default => 0, :null => false
+    t.integer  "course_outcome_id", :limit => 11, :default => 0, :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "course_outcomes_rubrics", ["rubric_id", "course_outcome_id"], :name => "index_course_outcomes_rubrics_on_rubric_id_and_course_outcome_id", :unique => true
 
   create_table "course_settings", :id => false, :force => true do |t|
     t.integer "course_id",                 :limit => 11
@@ -580,6 +589,26 @@ ActiveRecord::Schema.define(:version => 20081207181438) do
   end
 
   add_index "quizzes", ["assignment_id"], :name => "index_quizzes_on_assignment_id", :unique => true
+
+  create_table "rubrics", :force => true do |t|
+    t.integer  "assignment_id",                :limit => 11, :default => 0,    :null => false
+    t.integer  "course_id",                    :limit => 11, :default => 0,    :null => false
+    t.text     "primary_trait",                                                :null => false
+    t.text     "no_credit_criteria",                                           :null => false
+    t.integer  "no_credit_points",             :limit => 11, :default => 0,    :null => false
+    t.text     "part_credit_criteria",                                         :null => false
+    t.integer  "part_credit_points",           :limit => 11, :default => 0,    :null => false
+    t.text     "full_credit_criteria",                                         :null => false
+    t.integer  "full_credit_points",           :limit => 11, :default => 0,    :null => false
+    t.boolean  "visible_before_grade_release",               :default => true, :null => false
+    t.boolean  "visible_after_grade_release",                :default => true, :null => false
+    t.integer  "position",                     :limit => 11
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "rubrics", ["assignment_id"], :name => "index_rubrics_on_assignment_id"
+  add_index "rubrics", ["course_id"], :name => "index_rubrics_on_course_id"
 
   create_table "sessions", :force => true do |t|
     t.string   "session_id"

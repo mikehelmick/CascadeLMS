@@ -22,6 +22,8 @@ class Assignment < ActiveRecord::Base
   
   has_many :extensions, :dependent => :destroy
   
+  has_many :rubrics, :order => "position", :dependent => :destroy
+  
   
   validates_presence_of :title
   # NEEDS extended validations

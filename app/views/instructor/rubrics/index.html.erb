@@ -1,0 +1,58 @@
+<p><%= link_to 'Back to Assignment', :controller => '/instructor/course_assignments', :action => 'edit', :course => @course, :id => @assignment %> |
+   <%= link_to 'View All Assignments', :controller => '/instructor/course_assignments', :action => nil, :course => @course, :id => nil %></p>
+
+<div class="SectionHeader"><div class="Full">
+<h2>Rubrics for '<%=h @assignment.title%>' </h2>
+</div></div>
+
+<div class="Section">
+	
+<p>	
+<%= link_to "#{image_tag('add.png', :align => 'absmiddle' )} Create new rubric", :controller => '/instructor/rubrics', :action => 'new', :course => @course.id, :assignment => @assignment %>	
+</p>
+	
+<% if @assignment.rubrics.length == 0 %>
+  <p><i>There are no rubrics for this assignment.</i></p>
+<% else %>	
+	
+  <p>Reorder Rubrics for '<%= @assignment.title %>'</p>
+
+<table class="fancy" width="99%">
+  <tr class="header">
+	<th>#</td>
+    <th width="22%">Rubric</th>
+	<th width="22%">No Credit</th>
+	<th width="22%">Partial Credit</th>
+	<th width="22%">Full Credit</th>
+	<th>Controls</th>
+  </tr>
+
+  <% row_count = 0 %>
+  <% for rubric in @assignment.rubrics %>
+	 <% row_count = row_count.next 
+	    odd = "odd"
+        odd = "even" if row_count.even? %>
+    <tr class="<%=odd%> hover" id="rubric_<%=rubric.id%>">
+	  <td align="left" valign="top"><%= row_count %></td>	 
+	  <td align="left" valign="top"><%=h rubric.primary_trait %></td>
+	  <td align="left" valign="top"><%=h rubric.no_credit_criteria %> (<i><%= rubric.no_credit_points %> points</i>)</td>
+	  <td align="left" valign="top"><%=h rubric.part_credit_criteria %> (<i><%= rubric.part_credit_points %> points</i>)</td>
+	  <td align="left" valign="top"><%=h rubric.full_credit_criteria %> (<i><%= rubric.full_credit_points %> points</i>)</td>
+	  <td align="left" valign="top">
+		<%= link_to 'Edit', :controller => '/instructor/rubrics', :action => 'edit', :course => @course, :assignment => @assignment, :id => rubric %>
+	  </td>
+	</tr>
+	<tr class="<%=odd%> hover" id="rubric_<%=rubric.id%>_outcomes">
+	  <td align="right" valign="top" colspan="2"><i>Course outcomes:</i></td>
+	  <td align="left" valign="top" colspan="4">
+		
+	  </td>
+	</tr>
+  <% end %>
+
+</table>
+	
+<% end %>	
+	
+</div>
+
