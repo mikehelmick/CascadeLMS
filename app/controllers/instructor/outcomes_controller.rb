@@ -17,6 +17,9 @@ class Instructor::OutcomesController < Instructor::InstructorBase
       end
       @programs << program if add
     end
+    
+    @surveys = Quiz.find(:all, :conditions => ["course_id = ? and entry_exit = ?", @course, true], :order => "id asc")
+    
   
     set_title
   end

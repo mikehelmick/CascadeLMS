@@ -88,7 +88,11 @@
     <div class="block">
       <label for="quiz[available_to_auditors]" class="required">Available to Auditors:</label>
 	    <p><%= radio_button 'quiz', 'available_to_auditors', true %> Yes
-	    <%= radio_button 'quiz', 'available_to_auditors', false %> No</p>
+	       <%= radio_button 'quiz', 'available_to_auditors', false %> No</p>
+
+      <label for="quiz[anonymous]" class="required">Make survey anonymous:</label>
+        <p><%= radio_button 'quiz', 'anonymous', true %> Yes
+	       <%= radio_button 'quiz', 'anonymous', false %> No</p>
 
      <% if request.path_parameters['action'].eql?('new') %>
       <label for="generate_survey">Automatically Generate Entry/Exit survey:</label>

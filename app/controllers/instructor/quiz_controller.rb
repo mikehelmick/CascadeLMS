@@ -24,6 +24,7 @@ class Instructor::QuizController < Instructor::InstructorBase
     @assignment.default_dates
     @quiz = Quiz.new
     @quiz.attempt_maximum = -1
+    @quiz.anonymous = true
     
     @categories = GradeCategory.for_course( @course )
     
@@ -76,6 +77,7 @@ class Instructor::QuizController < Instructor::InstructorBase
         
         ## See if we should automatically generate the quiz
         unless params[:generate_survey].nil?
+          @quiz.entry_exit = true
           @course.ordered_outcomes.each do |outcome|
             # create question
             question = QuizQuestion.new

@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20081215055121) do
+ActiveRecord::Schema.define(:version => 20081219061633) do
 
   create_table "announcements", :force => true do |t|
     t.string   "headline"
@@ -586,9 +586,13 @@ ActiveRecord::Schema.define(:version => 20081215055121) do
     t.boolean "linear_score",                        :default => false, :null => false
     t.boolean "survey",                              :default => false, :null => false
     t.boolean "available_to_auditors",               :default => false, :null => false
+    t.boolean "anonymous",                           :default => false, :null => false
+    t.boolean "entry_exit",                          :default => false, :null => false
+    t.integer "course_id",             :limit => 11, :default => 0,     :null => false
   end
 
   add_index "quizzes", ["assignment_id"], :name => "index_quizzes_on_assignment_id", :unique => true
+  add_index "quizzes", ["course_id"], :name => "index_quizzes_on_course_id"
 
   create_table "rubrics", :force => true do |t|
     t.integer  "assignment_id",                :limit => 11, :default => 0,    :null => false

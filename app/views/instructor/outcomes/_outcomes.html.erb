@@ -47,11 +47,15 @@
 	  <%= submit_tag "Export Outcomes" %>
     </div>
   <% end %>
+
 </div>
 </div>
 
 <% else %>
 <br/>If you map this course to a program, you might be able to import course objectives from one of the program templates.
+<% end %>
+<% if @surveys.length > 0  %>
+  <br/><%= link_to "#{image_tag 'table_relationship.png', :align => 'absmiddle'} View entry and exit surveys.", :controller => '/instructor/results', :action => 'compare', :course => @course %>
 <% end %>
 
 <p>&nbsp;</p>
