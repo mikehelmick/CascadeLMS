@@ -16,4 +16,5 @@ class CourseOutcome < ActiveRecord::Base
     return false
   end
   
+  
 end

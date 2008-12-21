@@ -1,0 +1,61 @@
+<p><%= link_to 'Back', :controller => '/instructor/outcomes', :action => nil, :course => @course %></p>
+
+<div class="SectionHeader"><div class="Full">
+<h2>Assignment/Outcome report '<%=h @course.title%>' </h2>
+</div></div>
+
+<br/>
+
+<% all_outcomes = @course.ordered_outcomes %>
+
+<table class="fancy">
+  <tr class="header">
+	<th>Assignments \ Outcomes</th>
+	<% for outcome in all_outcomes %>
+	  <th align="center">
+	    <u><acronym title="<%=h outcome.outcome %>"><%= @numbers[outcome.id] %></acronym></u>
+	  </th>
+	<% end %>
+  </tr>
+
+
+
+ <% row_count = 0 
+    parent_stack = [-1]
+	count_stack = [0] %>
+ <% for assignment in @course.assignments %>
+  <% if !assignment.quiz %>
+	 <% row_count = row_count.next 
+	    odd = "odd"
+        odd = "even" if row_count.even? %> 
+    <tr class="<%=odd%> hover" id="assignment_<%=assignment.id%>">
+	  <td><%=h assignment.title %></td>
+	  <% for outcome in all_outcomes %>
+	    <% selected = false %>
+	    <td align="center" width="20">
+	      <% for rubric in assignment.rubrics %>
+	        <% for asgn_outcome in rubric.course_outcomes %>
+	          <% if outcome.id == asgn_outcome.id && !selected %>
+	            <% selected = true %>
+	            <acronym title="<%=h outcome.outcome %>"><%= image_tag 'accept.png' %></acronym>
+	          <% end %>
+	        <% end %>
+	      <% end %>
+	    </td>
+	  <% end %>
+	</tr>
+   <% end %>
+  <% end %>
+</table>
+
+<p><b>Course Outcomes</b></p>
+
+<ul>
+  <% for outcome in all_outcomes %>	
+	<% if outcome.parent < 0 %>
+	  <li><%= @numbers[outcome.id] %>) <%= outcome.outcome %></li>
+	  <%= render :partial => 'childoutcomes', :locals => { :outcome => outcome } %>
+	<% end %>
+  <% end %>	
+</ul>
+

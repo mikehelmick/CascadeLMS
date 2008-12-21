@@ -32,7 +32,7 @@ class Instructor::OutcomesController < Instructor::InstructorBase
     
     @course.programs << @program
     if @course.save
-        set_highlight = "program_#{@program.id}"
+        set_highlight( "program_#{@program.id}" )
         flash[:notice] = 'New course to program mapping saved.'
         redirect_to :action => 'index', :course => @course
     else
@@ -153,7 +153,7 @@ class Instructor::OutcomesController < Instructor::InstructorBase
         end
         @course_outcome.save
 
-        set_highlight = "course_outcome_#{@course_outcome.id}"
+        set_highlight( "course_outcome_#{@course_outcome.id}" )
         flash[:notice] = 'New course outcome has been saved.'
         redirect_to :action => 'index', :course => @course
       else
@@ -318,6 +318,15 @@ class Instructor::OutcomesController < Instructor::InstructorBase
     
     flash[:badnotice] = "Outcomes export failed." unless success
     redirect_to :action => 'index', :course => @course
+  end
+  
+  def assignments
+    return unless load_course( params[:course] )
+    return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_edit_outcomes' )
+    
+    @numbers = load_outcome_numbers( @course )
+    
+    render :layout => 'noright'
   end
 
 private

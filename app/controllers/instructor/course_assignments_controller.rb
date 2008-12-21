@@ -8,6 +8,33 @@ class Instructor::CourseAssignmentsController < Instructor::InstructorBase
     return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_assignments', 'ta_grade_individual', 'ta_view_student_files' )
   
     set_title
+    
+    render :layout => 'noright'
+  end
+  
+  def reorder
+    return unless load_course( params[:course] )
+    return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_assignments', 'ta_grade_individual', 'ta_view_student_files' )
+  
+    set_title
+    
+    render :layout => 'noright'
+  end
+  
+  def sort
+    return unless load_course( params[:course] )
+    return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_assignments', 'ta_grade_individual', 'ta_view_student_files' )
+    
+    
+    # get the outcomes at this level
+    Assignment.transaction do
+      @course.assignments.each do |assignment|
+        assignment.position = params['assignment-order'].index( assignment.id.to_s ) + 1
+        assignment.save
+      end
+    end
+    
+    render :nothing => true
   end
   
   def new
@@ -106,33 +133,7 @@ class Instructor::CourseAssignmentsController < Instructor::InstructorBase
     #  @document.create_file( params[:file], @app['external_dir'] )
     
   end
-  
-  def move_up
-    return unless load_course( params[:course] )
-    return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_assignments' )
-    return unless course_open( @course, :action => 'index' )
     
-    @assignment = Assignment.find params['id'] rescue @assignment = Assignment.new
-    return unless assignment_in_course( @course, @assignment )
-    
-    (@course.assignments.to_a.find {|s| s.id == @assignment.id}).move_higher
-    set_highlight "assignment_#{@assignment.id}"
-  	redirect_to :action => 'index'
-  end
-  
-  def move_down
-    return unless load_course( params[:course] )
-    return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_assignments' )
-    return unless course_open( @course, :action => 'index' )
-    
-    @assignment = Assignment.find params['id'] rescue @assignment = Assignment.new
-    return unless assignment_in_course( @course, @assignment )
-    
-    (@course.assignments.to_a.find {|s| s.id == @assignment.id}).move_lower
-    set_highlight "assignment_#{@assignment.id}"
-  	redirect_to :action => 'index'
-  end
-  
   def destroy
     return unless load_course( params[:course] )
     return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_assignments' )

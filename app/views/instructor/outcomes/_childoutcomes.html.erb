@@ -1,0 +1,9 @@
+<% children = outcome.child_outcomes %>
+<% if children.size > 0%>
+<ul>
+  <% for sub in children %>	
+	<li><%= @numbers[sub.id] %>) <%= sub.outcome %></li>
+	<%= render :partial => 'childoutcomes', :locals => { :outcome => sub } %>
+  <% end %>	
+</ul>
+<% end %>

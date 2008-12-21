@@ -43,7 +43,7 @@ class BlogController < ApplicationController
     @comment.course_id = @course.id
     
     if @comment.save
-      set_highlight = "comment_#{@comment.id}"
+      set_highlight( "comment_#{@comment.id}" )
       flash[:notice] = 'Your comment has been saved'
       redirect_to :action => 'post', :course => @course, :id => @post
     else

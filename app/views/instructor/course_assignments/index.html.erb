@@ -4,10 +4,14 @@
  <p><i>There are no assignments in this course.</i></p>
 <% else %>
 
- <table class="fancy"> 
+<p><%= link_to "#{image_tag 'arrow_switch.png'} Reorder Assignments", :action => 'reorder', :course => @course %></p>
+
+ <table class="fancy" id="asignment_table"> 
    <tr class="header"> 
     <th>#</th>
     <th>Title</th>
+    <th>Rubrics</th>
+    <th>AutoGrade</th>
     <th>Turn-ins</th>
     <th>Graded</th>
     <th>Category</th>
@@ -44,10 +48,28 @@
 	             <%= link_to "#{image_tag 'page_edit.png', :align => 'absmiddle'} #{h assignment.title}", :action => 'edit', :id => assignment %>
 	         <% end %>
 	        <% if assignment.team_project %><%= image_tag 'group.png' %><% end %>
-	        <%if assignment.auto_grade %><br/> <%= link_to 'AutoGrade Settings', :action => 'autograde', :course => @course, :id => assignment.id %> <% end %>
+	       
 	      <% else %>
 	        <%= h assignment.title %>
 	      <% end %>
+	    </td>
+	    <td>
+	      <% if assignment.is_quiz? %>
+	         &nbsp;
+	      <% else %>
+	        <% if assignment.rubrics.size > 0 %>
+	           <%= link_to "#{image_tag 'pencil.png', :align => 'absmiddle'} Edit", :controller => '/instructor/rubrics', :course => @course, :assignment => assignment %>
+	        <% else %>
+	           <%= link_to "#{image_tag 'add.png', :align => 'absmiddle'} Define", :controller => '/instructor/rubrics', :course => @course, :assignment => assignment %>
+	        <% end %>
+	      <% end %>
+	    </td>
+	    <td>
+	       <%if assignment.auto_grade %>
+	           <%= link_to "#{image_tag 'pencil.png', :align => 'absmiddle'} Edit", :action => 'autograde', :course => @course, :id => assignment.id %> 
+		   <% else %>
+		       &nbsp;
+		   <% end %>
 	    </td>
 	    <td nowrap="nowrap">
 	      <% if assignment.quiz.nil? %>
@@ -60,7 +82,9 @@
 	    </td>
 	
 		<td align="right" nowrap="nowrap">
-		  <% if assignment.grade_item.nil? %>
+		  <% if assignment.grade_item.nil? && assignment.quiz && assignment.quiz.survey %>
+		    &nbsp;
+		  <% elsif assignment.grade_item.nil? %>
 		    No Link <%= image_tag 'link_break.png' %>
 		  <% elsif assignment.released %>
 	        Yes <%= image_tag 'lightbulb.png' %>
@@ -76,14 +100,12 @@
 	    <% else %><%= image_tag 'clock_red.png' %>
 	    <% end %>
 	
-	    <%= assignment.open_date.to_formatted_s(:long) %></td>
-	    <td nowrap="nowrap"><%= assignment.due_date.to_formatted_s(:long) %></td>
+	    <%= assignment.open_date.to_formatted_s(:compact_date) %></td>
+	    <td nowrap="nowrap"><%= assignment.due_date.to_formatted_s(:compact_date) %></td>
 	    
 	    <% if @user.instructor_in_course?(@course.id) || (@user.assistant_in_course?(@course.id) && @course.course_setting.ta_course_assignments) %>
 	    <td nowrap="nowrap">		  
-	      <%= link_to 'Move Up', :action => 'move_up', :id => assignment %> |
-	      <%= link_to 'Move Down', :action => 'move_down', :id => assignment %> |
-	      <%= link_to 'Delete', { :action => 'destroy', :id => assignment }, :confirm => "Are you sure you want to delete the assignment '#{assignment.title}' and all of it's associated data? This action can not be undone." %>
+	      <%= link_to "#{image_tag 'delete.png', :align => 'absmiddle'} Delete", { :action => 'destroy', :id => assignment }, :confirm => "Are you sure you want to delete the assignment '#{assignment.title}' and all of it's associated data? This action can not be undone." %>
 	    </td>
 	    <% end %> 
 	  </tr>

@@ -48,6 +48,8 @@ class AssignmentsController < ApplicationController
       end
     end
     
+    @numbers = load_outcome_numbers(@course) if @assignment.rubrics.size > 0 
+    
     @extension = @assignment.extension_for_user( @user )
     
     @now = Time.now

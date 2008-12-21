@@ -8,7 +8,37 @@
 <div class="Section">
 	
 <p>	
-<%= link_to "#{image_tag('add.png', :align => 'absmiddle' )} Create new rubric", :controller => '/instructor/rubrics', :action => 'new', :course => @course.id, :assignment => @assignment %>	
+  <%= link_to "#{image_tag('add.png', :align => 'absmiddle' )} Create new rubric", :controller => '/instructor/rubrics', :action => 'new', :course => @course.id, :assignment => @assignment %> 
+  
+  <% if @all_rubrics.size > 0 %>
+    <br/>
+	<%= link_to_function "#{image_tag('database_refresh.png', :align => 'absmiddle' )} Copy rubric from another assignment.", "blindToggle('import')" %>
+
+	<div id="import" class ="sub_form" style="display:none;">
+	<div id="form_area">
+	  <% form_tag( :action => 'import_rubric', :course => @course, :assignment => @assignment ) do %>
+
+	  <p class="blockintro">Copy a rubric from another assignment into this assignment.</p>
+	  <div class="block">
+	    <% # build options list
+	       options = ""
+	       @all_rubrics.each do |rubric|
+		     unless rubric.assignment.id == @assignment.id
+		       options = "#{options}\n    <option value=\"#{rubric.id}\">(#{rubric.assignment.title}) #{rubric.primary_trait}</option>"
+		     end
+		   end
+	     %>
+	    <p><label for="id" class="required">Copy rubric:</label>
+		   <%= select_tag 'id', options %></b> </p>
+	  </div>
+
+	  <div class="submit">
+		<%= submit_tag "Copy selected rubric into this assignment" %>
+	  </div>
+	</div>
+	</div>
+    <% end %>
+  <% end %>
 </p>
 	
 <% if @assignment.rubrics.length == 0 %>
@@ -38,14 +68,23 @@
 	  <td align="left" valign="top"><%=h rubric.no_credit_criteria %> (<i><%= rubric.no_credit_points %> points</i>)</td>
 	  <td align="left" valign="top"><%=h rubric.part_credit_criteria %> (<i><%= rubric.part_credit_points %> points</i>)</td>
 	  <td align="left" valign="top"><%=h rubric.full_credit_criteria %> (<i><%= rubric.full_credit_points %> points</i>)</td>
-	  <td align="left" valign="top">
-		<%= link_to 'Edit', :controller => '/instructor/rubrics', :action => 'edit', :course => @course, :assignment => @assignment, :id => rubric %>
+	  <td align="left" valign="top" nowrap="nowrap">
+		<%= link_to "#{image_tag 'pencil.png'} Edit", :controller => '/instructor/rubrics', :action => 'edit', :course => @course, :assignment => @assignment, :id => rubric %><br/>
+		<%= link_to "#{image_tag 'delete.png'} Delete", {:controller => '/instructor/rubrics', :action => 'destroy', :course => @course, :assignment => @assignment, :id => rubric}, :confirm => "Are you sure you want to delete the rubric '#{rubric.primary_trait}' and all of it's associated data? This action can not be undone." %>
 	  </td>
 	</tr>
 	<tr class="<%=odd%> hover" id="rubric_<%=rubric.id%>_outcomes">
 	  <td align="right" valign="top" colspan="2"><i>Course outcomes:</i></td>
 	  <td align="left" valign="top" colspan="4">
-		
+		<% if rubric.course_outcomes.size == 0 %>
+		  <i>No course outcomes mapped to this rubric.</i>
+	    <% else %>
+	      <ul>
+		    <% for co in rubric.course_outcomes %>
+		      <li><%= @numbers[co.id] %>) <%= co.outcome %></li>
+		    <% end %>
+		  </ul>
+	    <% end %>
 	  </td>
 	</tr>
   <% end %>

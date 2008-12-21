@@ -57,6 +57,7 @@
 <% if @surveys.length > 0  %>
   <br/><%= link_to "#{image_tag 'table_relationship.png', :align => 'absmiddle'} View entry and exit surveys.", :controller => '/instructor/results', :action => 'compare', :course => @course %>
 <% end %>
+  <br/><%= link_to "#{image_tag 'report.png', :align => 'absmiddle'} View Assignments to Outcomes report.", :action => 'assignments', :course => @course %>
 
 <p>&nbsp;</p>
 

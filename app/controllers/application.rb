@@ -481,6 +481,33 @@ class ApplicationController < ActionController::Base
     end
   end
   
+  def load_outcome_numbers( course )
+    parent_stack = [-1]
+    count_stack = [0]
+    last_stack_size = 1
+
+    numbers = Hash.new
+
+    course.ordered_outcomes.each do |outcome|
+      if outcome.parent == parent_stack[-1] ## Same level 
+        count_stack.push( count_stack.pop + 1 ) 
+      elsif parent_stack.index( outcome.parent ).nil?  ## New level 
+        parent_stack.push outcome.parent 
+        count_stack.push 1 
+      else ## need to pop back to correct level 
+        while (parent_stack[-1] != outcome.parent) 
+          parent_stack.pop
+          count_stack.pop
+        end 
+        count_stack.push( count_stack.pop + 1 )
+      end 
+
+      numbers[outcome.id] = count_stack.join('.')
+    end
+
+    return numbers
+  end
+  
   protected :log_error
 
 end

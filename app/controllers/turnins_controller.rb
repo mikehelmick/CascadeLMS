@@ -516,6 +516,18 @@ class TurninsController < ApplicationController
       end
     end
     
+    # load any existing rubric entries
+    if @assignment.rubrics.size > 0
+       @rubric_entry_map = Hash.new
+       user_rubrics = RubricEntry.find(:all, :conditions => ["assignment_id = ? and user_id=?", @assignment.id, @user.id])
+       @assignment.rubrics.each do |rubric|
+         user_rubrics.each do |user_rubric|
+           @rubric_entry_map[rubric.id] = user_rubric if user_rubric.rubric_id == rubric.id  
+         end  
+       end
+    end
+    
+    
     @now = Time.now
     set_title
     

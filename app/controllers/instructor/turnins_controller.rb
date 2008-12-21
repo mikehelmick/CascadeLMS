@@ -380,6 +380,28 @@ class Instructor::TurninsController < Instructor::InstructorBase
     
     count_todays_turnins( @app["turnin_limit"].to_i )
     
+    # load any existing rubric entries
+    @rubric_entry_map = Hash.new
+    user_rubrics = RubricEntry.find(:all, :conditions => ["assignment_id = ? and user_id=?", @assignment.id, @student.id])
+    @assignment.rubrics.each do |rubric|
+      this_rubric_entry = nil
+      user_rubrics.each do |user_rubric|
+        this_rubric_entry = user_rubric if user_rubric.rubric_id == rubric.id  
+      end  
+      # if there isn't a rubric entry for this, we'll create one now
+      if this_rubric_entry.nil?
+        this_rubric_entry = create_rubric_entry( @assignment, @student, rubric )
+        this_rubric_entry.full_credit = false
+        this_rubric_entry.partial_credit = false
+        this_rubric_entry.no_credit = true
+        # this save may not work -- but it should, if it fails, it is for a duplicate key issue, race condition
+        this_rubric_entry.save rescue true == true
+      end      
+      
+      @rubric_entry_map[rubric.id] = this_rubric_entry
+    end
+    
+    
     @title = "#{@student.display_name} (#{@student.uniqueid}) - #{@assignment.title}"
     
   end
@@ -404,28 +426,36 @@ class Instructor::TurninsController < Instructor::InstructorBase
       @team = @course.team_for_user( @student.id )
     end
     
-    
     # get grade
     # load grades
     @grade_item = GradeItem.find(:first, :conditions => ["assignment_id = ?", @assignment.id] )
     if @grade_item
       
       entries = Hash.new
+      rubric_entries = Hash.new
       
       if @team.nil?
         entries[@student.id] = GradeEntry.find(:first, :conditions => ["grade_item_id=? and user_id=?", @grade_item.id, @student.id ] )
+        rubric_entries[@student.id] = Hash.new
+        
+        user_rubric_entries = RubricEntry.find(:all, :conditions => ["assignment_id = ? and user_id=?", @assignment.id, @student.id])
+        user_rubric_entries.each { |x| rubric_entries[@student.id][x.rubric_id] = x }
       else
         # load for all team members
         @team.team_members.each do |tm|
           entries[tm.user.id] = GradeEntry.find(:first, :conditions => ["grade_item_id=? and user_id=?", @grade_item.id, tm.user.id ] )
+          rubric_entries[tm.user.id] = Hash.new
+          
+          user_rubric_entries = RubricEntry.find(:all, :conditions => ["assignment_id = ? and user_id=?", @assignment.id, tm.user.id])
+          user_rubric_entries.each { |x| rubric_entries[tm.user.id][x.rubric_id] = x }
         end
-        
       end
       
       # for each entry save
       @success = true
       @deleted = false
       GradeEntry.transaction do
+        # process all the grade entries
         entries.keys.each do |key|
           grade_entry = entries[key]
           
@@ -446,7 +476,26 @@ class Instructor::TurninsController < Instructor::InstructorBase
             @deleted= true
           end
           
-          @success = grade_entry.save && @success
+          # since the key here is our user ID we can also update the rubrics in the same way
+          # for each rubric for this user (key)
+          @assignment.rubrics.each do |rubric|
+             rubric_entry = rubric_entries[key][rubric.id]
+             if rubric_entry.nil?
+               rubric_entry = RubricEntry.new
+               rubric_entry.assignment = @assignment
+               rubric_entry.user_id = key
+               rubric_entry.rubric = rubric
+             end
+             
+             # update the full/partial/no credit selector
+             rubric_entry.full_credit    = params["rubric_#{rubric.id}"].eql?("full")
+             rubric_entry.partial_credit = params["rubric_#{rubric.id}"].eql?("partial")
+             rubric_entry.no_credit      = params["rubric_#{rubric.id}"].eql?("no")
+             rubric_entry.comments       = params["rubric_#{rubric.id}_comments"]
+             @success = rubric_entry.save && @success
+          end
+          
+          @success = grade_entry.save && @success unless @deleted
         end
       end
     else 
@@ -1258,6 +1307,14 @@ private
     @today_count = UserTurnin.count( :conditions => [ "assignment_id = ? and user_id = ? and finalized = ? and updated_at >= ? and updated_at < ?", @assignment.id, @student.id, true, begin_time, end_time ] )
     @remaining_count = max - @today_count 
     @remaining_count = 0 if @remaining_count < 0
+  end
+  
+  def create_rubric_entry( assignment, student, rubric )
+    this_rubric_entry = RubricEntry.new
+    this_rubric_entry.assignment = assignment
+    this_rubric_entry.user = student
+    this_rubric_entry.rubric = rubric
+    return this_rubric_entry
   end
   
 end

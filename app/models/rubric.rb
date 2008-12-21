@@ -9,6 +9,8 @@ class Rubric < ActiveRecord::Base
   
   has_and_belongs_to_many :course_outcomes
   
+  has_many :rubric_entries, :dependent => :destroy
+  
   def mapped_to_course_outcome?( outcome_id )
     self.course_outcomes.each do |i|  
       return true if i.id == outcome_id

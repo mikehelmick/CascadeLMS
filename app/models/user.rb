@@ -21,6 +21,8 @@ class User < ActiveRecord::Base
   
   has_many :quiz_attempts, :dependent => :destroy
   
+  has_many :rubric_entries, :dependent => :destroy
+  
   has_many :project_teams
   
   attr_accessor :notice

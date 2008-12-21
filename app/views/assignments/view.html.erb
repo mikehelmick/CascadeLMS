@@ -119,6 +119,51 @@
     </table>
   </div>
 
+  <div class="blockintro"><p><b>Assignment Rubrics / Course Outcomes</b> <%= link_to_function "#{image_tag 'eye.png', :align => 'absmiddle'}", visual_effect(:toggle_slide, 'assignment_rubrics' ) %></p></div>
+  <div id="assignment_rubrics">
+	<br/>
+	<table class="fancy" width="99%">
+	  <tr class="header">
+		<th width="22%">Rubric</th>
+		<th width="22%">No Credit</th>
+		<th width="22%">Partial Credit</th>
+		<th width="22%">Full Credit</th>
+	  </tr>
+
+	  <% row_count = 0 %>
+	  <% for rubric in @assignment.rubrics %>
+	    <% if rubric.visible_before_grade_release || (@assignment.released && rubric.visible_after_grade_release) %>
+	
+		 <% row_count = row_count.next 
+		    odd = "odd"
+	        odd = "even" if row_count.even? %>
+	    <tr class="<%=odd%> hover" id="rubric_<%=rubric.id%>">
+		  <td align="left" valign="top"><%=h rubric.primary_trait %></td>
+		  <td align="left" valign="top"><%=h rubric.no_credit_criteria %> (<i><%= rubric.no_credit_points %> points</i>)</td>
+		  <td align="left" valign="top"><%=h rubric.part_credit_criteria %> (<i><%= rubric.part_credit_points %> points</i>)</td>
+		  <td align="left" valign="top"><%=h rubric.full_credit_criteria %> (<i><%= rubric.full_credit_points %> points</i>)</td>
+		</tr>
+		<tr class="<%=odd%> hover" id="rubric_<%=rubric.id%>_outcomes">
+		  <td align="right" valign="top" colspan="1"><i>Course outcomes:</i></td>
+		  <td align="left" valign="top" colspan="3">
+			<% if rubric.course_outcomes.size == 0 %>
+			  <i>No course outcomes mapped to this rubric.</i>
+		    <% else %>
+		      <ul>
+			    <% for co in rubric.course_outcomes %>
+			      <li><%= @numbers[co.id] %>) <%= co.outcome %></li>
+			    <% end %>
+			  </ul>
+		    <% end %>
+		  </td>
+		</tr>
+		<% end %>
+	  <% end %>
+
+	</table>
+	
+  </div>
+
 <% if @assignment.use_subversion && @assignment.programming %>
   <div class="blockintro"><p><b>Subversion</b> <%= link_to_function "#{image_tag 'eye.png', :align => 'absmiddle'}", visual_effect(:toggle_slide, 'subversion_setup_area' ) %></p></div>
   <% if @assignment.use_subversion && @assignment.auto_grade %>

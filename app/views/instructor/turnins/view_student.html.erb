@@ -56,7 +56,6 @@ Last Updated: <%= @display_turnin.updated_at.to_formatted_s(:friendly_date) %><b
    parent_spaces[0.to_s] = 0
    any_java = @display_turnin.any_java_files?
 %>
-
 <table class="fancy">
   <tr class="header">
     <th valign="bottom">File</th>
@@ -181,7 +180,6 @@ Last Updated: <%= @display_turnin.updated_at.to_formatted_s(:friendly_date) %><b
 <% end %>
 </table>
 
-
 <% else %>
   <p><i>No files submitted</i></p>
 <% end %>
@@ -217,23 +215,68 @@ Last Updated: <%= @display_turnin.updated_at.to_formatted_s(:friendly_date) %><b
 <p><i>Warning - this assignment is not connected with an entry in the GradeBook.</i></p>
 <% else %>
   <div id="form_area">
-  <% form_tag( :action => 'submit_grade', :id => @student, :course => @course, :assignment => @assignment ) do %>
+  <% form_tag( {:action => 'submit_grade', :id => @student, :course => @course, :assignment => @assignment}, {:name=>"gradeForm"} ) do %>
     <%= error_messages_for 'grade_entry' %>    
 
-	<p class="blockintro">You can enter general assignment comments here.   You also have the ability to comment on individual files below as well as to make annotations tied to specific line numbers for text files.   <b>If you enter a negative point value, the student's grade for this assignment will be deleted (including the comments entered below).</b> Leaving the points value blank, results in a score of zero.</p>
+	<p class="blockintro">You can enter general assignment comments here.   You also have the ability to comment on individual files below as well as to make annotations tied to specific line numbers for text files.   <b>If you enter a negative point value, the student's grade for this assignment will be deleted (including the comments entered below).</b> Leaving the points value blank, results in a score of zero.
+   <% if @assignment.rubrics.size > 0 %><br/>
+      <b>This assignment contains defined rubrics</b>, so they are displayed first.
+   <% end %>	
+  </p>
 	<div class="block">
+    
+<% if @assignment.rubrics.size > 0 %>
+  <p><b>Rubrics for this assignment</b><br/>
+  <ul><% for rubric in @assignment.rubrics %>
+    <li><b><%=h rubric.primary_trait %></b></li>
+
+<% pointValue = rubric.no_credit_points
+   pointValue = rubric.part_credit_points if @rubric_entry_map[rubric.id].partial_credit
+   pointValue = rubric.full_credit_points if @rubric_entry_map[rubric.id].full_credit
+%>
+
+<% javascript_tag :defer => 'defer' do %>
+var cur_rubric<%=rubric.id%>_value = <%= pointValue %>;
+
+function update_rubric_<%=rubric.id%>_to( newValue ) {
+  var oldValue = cur_rubric<%=rubric.id%>_value;
+  var curTotalValue = parseInt( document.getElementById("grade_entry_points").value )
+  if (isNaN( curTotalValue )) {
+    document.getElementById("grade_entry_points").value = newValue;
+  } else {
+    document.getElementById("grade_entry_points").value = curTotalValue - oldValue + newValue;
+  }
+  cur_rubric<%=rubric.id%>_value = newValue;
+}
+<% end %>
+
+    <ul>
+	  <li><%= radio_button_tag( "rubric_#{rubric.id}", 'full', @rubric_entry_map[rubric.id].full_credit, :onclick => "update_rubric_#{rubric.id}_to( #{rubric.full_credit_points} )" )%>  
+		  <%=h rubric.full_credit_criteria %> (<%=h rubric.full_credit_points%> points)</li>
+	  <li><%= radio_button_tag( "rubric_#{rubric.id}", 'partial', @rubric_entry_map[rubric.id].partial_credit, :onclick => "update_rubric_#{rubric.id}_to( #{rubric.part_credit_points} )" )%>
+	      <%=h rubric.part_credit_criteria %> (<%=h rubric.part_credit_points%> points)</li>
+	  <li><%= radio_button_tag( "rubric_#{rubric.id}", 'no', @rubric_entry_map[rubric.id].no_credit, :onclick => "update_rubric_#{rubric.id}_to( #{rubric.no_credit_points} )" )%>
+	      <%=h rubric.no_credit_criteria %> (<%=h rubric.no_credit_points%> points)</li>
+	  <li>Comments:<br/>
+		 <%= text_area_tag("rubric_#{rubric.id}_comments", @rubric_entry_map[rubric.id].comments, { "cols" => 80, "rows" => 7 } ) %>
+		 </li>
+	</ul>
+  <% end %></ul>
+  </b></p>	
+  <hr/>
+<% end %>				
+		
 	  <p><label for="document_title">Points:</label>
 	  <%= text_field 'grade_entry', 'points', :size => 10  %> / <%= sprintf("%0.1f", @grade_item.points ) %>
           <% if @assignment.team_project && !@team.nil? %>
              <br/><%= check_box_tag( 'apply_to_team', true, @apply_to_team )%> Apply grade and comments to all team members.
           <% end %> 
-          </p>
+      </p>
 
       <p><label for="document_comments">General comments:</label><br/>
-
-      <%= text_area 'grade_entry', 'comment', "cols" => 90, "rows" => 12, :class=>'short'  %><br/>
-      <%= link_to_function "More room to type", "Form.Element.toggleHeight(this, 'grade_entry_comment'); return false;", :class => 'bottab more' %>
-</p>
+        <%= text_area 'grade_entry', 'comment', "cols" => 90, "rows" => 12, :class=>'short'  %><br/>
+        <%= link_to_function "More room to type", "Form.Element.toggleHeight(this, 'grade_entry_comment'); return false;", :class => 'bottab more' %>
+      </p>
 
     </div>
 
@@ -251,30 +294,29 @@ Last Updated: <%= @display_turnin.updated_at.to_formatted_s(:friendly_date) %><b
 
 <!-- journals -->
 
+
+<% if @assignment.enable_journal %>
 <div class="SectionHeader"><div class="Full">
   <h2>Assignment Journals</h2>
 </div></div>
-
 <% if !@assignment.team_project || @team.nil? %>
-
 	<% if @journals.size == 0 %>
-	<p><i>This student has not submitted any journal entries.</i></p>
+	  <p><i>This student has not submitted any journal entries.</i></p>
 	<% else %>
-
-	<p><b>Reported Time:</b> <%= pluralize(@days,'day') %>, <%= pluralize(@hours,'hour') %>, <%= pluralize(@minutes,'minute') %>.
+  	  <p><b>Reported Time:</b> <%= pluralize(@days,'day') %>, <%= pluralize(@hours,'hour') %>, <%= pluralize(@minutes,'minute') %>.
 
     <table cellpadding="0" cellspacing="0" class="fancy">
     <%= render :partial => 'journalheader' %>
 
-   <% count = 0 %>
-   <% for journal in @journals %>
-	<% count = count.next 
+    <% count = 0 %>
+    <% for journal in @journals %>
+	 <% count = count.next 
 	     odd = "odd"
 	     odd = "even" if count.even?
 	   %>
  	 <%= render :partial => "journal", :locals => { :odd => odd, :journal => journal } %>
-   <% end %>
-   </table>
+    <% end %>
+    </table>
 
   <% end %>
 
@@ -305,7 +347,7 @@ Last Updated: <%= @display_turnin.updated_at.to_formatted_s(:friendly_date) %><b
   <% end %>
 
 <% end %>
-
+<% end %> <!-- end journals -->
 
 <!-- previous turn-in sets -->
 <div class="SectionHeader"><div class="Full">
@@ -318,11 +360,11 @@ Last Updated: <%= @display_turnin.updated_at.to_formatted_s(:friendly_date) %><b
 <% if @assignment.auto_grade %>
  <% unless @assignment.auto_grade_setting.nil? %>
   <% if @assignment.auto_grade_setting.student_style || @assignment.auto_grade_setting.student_io_check || @assignment.auto_grade_setting.student_autograde %> 
-  <div class="standout">
+    <div class="standout">
 	  <p><%= image_tag 'information.png' %> This assignment has automatic grading enabled and is <b>limited to <%= @app['turnin_limit'] %> submissions per day.</b></p>
 	  <p><%= @student.display_name %> has finalized <%= @today_count %> turn-in sets today, and may finalize <b><%= @remaining_count %>  more turn-in sets today.</b>   If the student requires additional turn-in sets, you may reopen the most recent turn-in set, allowing them to submit additional turn-in sets in a single day.</p>
 	</div>
-	<% end %>
+  <% end %>
  <% end %>
 <% end %>
 
@@ -366,3 +408,4 @@ Last Updated: <%= @display_turnin.updated_at.to_formatted_s(:friendly_date) %><b
 </table>
 </div>
 
+</div>

@@ -22,7 +22,7 @@ class ProgramController < ApplicationController
     @program_outcome.program = @program
     
      if @program_outcome.save
-        set_highlight = "outcome_#{@program_outcome.id}"
+        set_highlight( "outcome_#{@program_outcome.id}" )
         flash[:notice] = 'New outcome has been saved'
         redirect_to :action => 'outcomes', :id => @program
       else
@@ -48,7 +48,7 @@ class ProgramController < ApplicationController
     
     if @program_outcome.update_attributes(params[:program_outcome])
       flash[:notice] = 'Outcome was successfully updated.'
-      set_highlight = "outcome_#{@program_outcome.id}"
+      set_highlight( "outcome_#{@program_outcome.id}" )
       redirect_to :action => 'outcomes', :id => @program
     else
       render :action => 'edit'
@@ -186,7 +186,7 @@ class ProgramController < ApplicationController
         @course_template.save
       
         flash[:notice] = 'New course template was saved.'
-        set_highlight = "course_template_#{@course_template.id}"
+        set_highlight( "course_template_#{@course_template.id}" )
         redirect_to :action => 'templates', :id => @program  
     else
         @course_templates = @program.course_templates
@@ -221,7 +221,7 @@ class ProgramController < ApplicationController
         @course_template.save
         
         flash[:notice] = 'Course template updated.'
-        set_highlight = "course_template_#{@course_template.id}"
+        set_highlight( "course_template_#{@course_template.id}" )
         redirect_to :action => 'templates', :id => @program
         return
     end
@@ -270,7 +270,7 @@ class ProgramController < ApplicationController
         end
         @course_template_outcome.save
 
-        set_highlight = "course_template_outcome_#{@course_template_outcome.id}"
+        set_highlight( "course_template_outcome_#{@course_template_outcome.id}" )
         flash[:notice] = 'New course template outcome has been saved.'
         redirect_to :action => 'template_outcomes', :id => @program, :template => @course_template
       else

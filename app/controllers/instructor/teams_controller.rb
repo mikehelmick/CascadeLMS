@@ -54,7 +54,7 @@ class Instructor::TeamsController < Instructor::InstructorBase
     @team = ProjectTeam.find(params[:id])
     if @team.update_attributes(params[:team])
       flash[:notice] = 'Project team was successfully updated.'
-      set_highlight = "team_#{@team.id}"
+      set_highlight( "team_#{@team.id}" )
       redirect_to :action => 'index'
     else
       render :action => 'edit'

@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20081219061633) do
+ActiveRecord::Schema.define(:version => 20081220190316) do
 
   create_table "announcements", :force => true do |t|
     t.string   "headline"
@@ -149,14 +149,14 @@ ActiveRecord::Schema.define(:version => 20081219061633) do
 
   add_index "course_outcomes_program_outcomes", ["course_outcome_id", "program_outcome_id"], :name => "courses_outcomes_program_outcomes_unique", :unique => true
 
-  create_table "course_outcomes_rubrics", :force => true do |t|
-    t.integer  "rubric_id",         :limit => 11, :default => 0, :null => false
+  create_table "course_outcomes_rubrics", :id => false, :force => true do |t|
     t.integer  "course_outcome_id", :limit => 11, :default => 0, :null => false
+    t.integer  "rubric_id",         :limit => 11, :default => 0, :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  add_index "course_outcomes_rubrics", ["rubric_id", "course_outcome_id"], :name => "index_course_outcomes_rubrics_on_rubric_id_and_course_outcome_id", :unique => true
+  add_index "course_outcomes_rubrics", ["course_outcome_id", "rubric_id"], :name => "course_outcomes_rubrics_unique", :unique => true
 
   create_table "course_settings", :id => false, :force => true do |t|
     t.integer "course_id",                 :limit => 11
@@ -593,6 +593,21 @@ ActiveRecord::Schema.define(:version => 20081219061633) do
 
   add_index "quizzes", ["assignment_id"], :name => "index_quizzes_on_assignment_id", :unique => true
   add_index "quizzes", ["course_id"], :name => "index_quizzes_on_course_id"
+
+  create_table "rubric_entries", :force => true do |t|
+    t.integer  "assignment_id",  :limit => 11, :default => 0,     :null => false
+    t.integer  "user_id",        :limit => 11, :default => 0,     :null => false
+    t.integer  "rubric_id",      :limit => 11, :default => 0,     :null => false
+    t.boolean  "full_credit",                  :default => false, :null => false
+    t.boolean  "partial_credit",               :default => false, :null => false
+    t.boolean  "no_credit",                    :default => false, :null => false
+    t.text     "comments"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "rubric_entries", ["user_id", "rubric_id"], :name => "index_rubric_entries_on_user_id_and_rubric_id", :unique => true
+  add_index "rubric_entries", ["assignment_id"], :name => "index_rubric_entries_on_assignment_id"
 
   create_table "rubrics", :force => true do |t|
     t.integer  "assignment_id",                :limit => 11, :default => 0,    :null => false

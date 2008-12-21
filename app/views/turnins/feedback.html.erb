@@ -16,6 +16,63 @@
         <%= @feedback_html %>
       </div>
     </p>
+
+<!-- @rubric_entry_map -->
+
+<!-- RUBRICS FEEDBACK -->
+	<table class="fancy" width="99%" style="background: #FFFFFF;">
+	  <tr class="header">
+		<th width="22%">Rubric</th>
+		<th width="22%">No Credit</th>
+		<th width="22%">Partial Credit</th>
+		<th width="22%">Full Credit</th>
+	  </tr>
+
+	  <% row_count = 0 %>
+	  <% for rubric in @assignment.rubrics %>
+	    <% if rubric.visible_before_grade_release || (@assignment.released && rubric.visible_after_grade_release) %>
+	
+		 <% row_count = row_count.next 
+		    odd = "odd"
+	        odd = "even" if row_count.even? %>
+	    <tr class="<%=odd%> hover" id="rubric_<%=rubric.id%>">
+		  <td align="left" valign="top"><%=h rubric.primary_trait %></td>
+		  <td align="left" valign="top">
+		     <% if !@rubric_entry_map[rubric.id].nil? && @rubric_entry_map[rubric.id].no_credit %>
+		       <b><%= image_tag "accept.png", :align => 'absmiddle' %><%=h rubric.no_credit_criteria %> (<i><%= rubric.no_credit_points %> points</i>)</b>
+		     <% else %>
+		       <i><%=h rubric.no_credit_criteria %> (<%= rubric.no_credit_points %> points)</i>
+		     <% end %>
+		  </td>
+		  <td align="left" valign="top">
+		    <% if !@rubric_entry_map[rubric.id].nil? && @rubric_entry_map[rubric.id].partial_credit %>
+			  <b><%= image_tag "accept.png", :align => 'absmiddle' %><%=h rubric.part_credit_criteria %> (<i><%= rubric.part_credit_points %> points</i>)</b>
+		    <% else %>
+		       <i><%=h rubric.part_credit_criteria %> (<%= rubric.part_credit_points %> points)</i>
+		    <% end %>	
+		  </td>
+		  <td align="left" valign="top">
+		    <% if !@rubric_entry_map[rubric.id].nil? && @rubric_entry_map[rubric.id].full_credit %>
+			  <b><%= image_tag "accept.png", :align => 'absmiddle' %><%=h rubric.full_credit_criteria %> (<i><%= rubric.full_credit_points %> points</i>)</b>
+		    <% else %>
+		      <i><%=h rubric.full_credit_criteria %> (<%= rubric.full_credit_points %> points)</i>
+		    <% end %>	
+		  </td>
+		</tr>
+		<tr class="<%=odd%> hover" id="rubric_<%=rubric.id%>_comments">
+		  <td align="right" valign="top" colspan="1"><i>Instructor comments:</i></td>
+		  <td align="left" valign="top" colspan="3">
+			<p><b><%=h @rubric_entry_map[rubric.id].comments %></b></p>
+		  </td>
+		</tr>
+		<% end %>
+	  <% end %>
+
+	</table>	
+<!-- RUBRICS FEEDBACK -->
+
+
+
     </div>
   <% end %>
 

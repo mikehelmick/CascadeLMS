@@ -66,7 +66,7 @@
 	  <th>AutoGrade Results</th>
 	<% end %>
 
-    <th valign="bottom">View</th>
+    <th valign="bottom">View / Grade</th>
     <th valign="bottom">
 		Due: <%= @assignment.due_date.to_formatted_s(:long) %><br/>
 		<% if @assignment.due_date !=   @assignment.close_date %>
@@ -139,7 +139,7 @@
 	  <% end %>
 
       <td>
-        <%= link_to "View files/journals", :action => 'view_student', :id => student, :course => @course, :assignment => @assignment %>
+        <%= link_to "Grade / View files/journals", :action => 'view_student', :id => student, :course => @course, :assignment => @assignment %>
       </td> 
 
       <td align="center"> 

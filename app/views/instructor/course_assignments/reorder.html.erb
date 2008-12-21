@@ -1,0 +1,24 @@
+<div class="SectionHeader"><div class="Full">
+<h2>Reorder Assignments for 
+'<%= @course.title %>'</h2>
+</div></div>
+
+
+<div id="reorder">
+  <p>Drag and Drop the assignments to order.</p>
+
+  <p><b><%= link_to "I'm done reordering assignments.", :controller => '/instructor/course_assignments', :course => @course %></b></p>
+
+  <ul id="assignment-order">
+    <% for assignment in @course.assignments %>
+      <li id="assignment_<%= assignment.id %>"><%= image_tag 'arrow_switch.png', :align => 'absmiddle' %>
+        <b><%= assignment.title %>  -  (Due: <%= assignment.due_date.to_formatted_s(:compact_date) %>)</b>
+      </li>
+    <% end %>
+  </ul>
+</div>
+
+<%= sortable_element 'assignment-order', 
+    :url => { :action => 'sort', :course => @course },
+    :complete => visual_effect(:highlight, 'assignment-order')
+%>
