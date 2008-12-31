@@ -11,6 +11,11 @@ class AssignmentsController < ApplicationController
     return unless allowed_to_see_course( @course, @user )
 
     set_title
+    
+    respond_to do |format|
+      format.html
+      format.xml { render :layout => false }
+    end
   end
   
   def view
@@ -54,6 +59,11 @@ class AssignmentsController < ApplicationController
     
     @now = Time.now
     set_title
+    
+    respond_to do |format|
+      format.html
+      format.xml { render :layout => false }
+    end    
   end
 
   def download

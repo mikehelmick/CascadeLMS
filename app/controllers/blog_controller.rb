@@ -7,14 +7,22 @@ class BlogController < ApplicationController
     return unless load_course( params[:course] )
     return unless allowed_to_see_course( @course, @user )
     
-    @page = params[:page].to_i
-    @page = 1 if @page.nil? || @page == 0
-    @post_pages = Paginator.new self, Post.count(:conditions => ["course_id = ? and published = ?", @course.id, true]), 10, @page
-    @posts = Post.find(:all, :conditions => ['course_id = ? and published = ?', @course.id, true], :order => 'created_at DESC', :limit => 10, :offset => @post_pages.current.offset)
-    
-    @featured = Post.find(:all, :conditions => ['course_id = ? and published = ? and featured = ?', @course.id, true, true], :order => 'created_at DESC' )
-    
-    set_title
+    respond_to do |format|
+      format.html {
+        @page = params[:page].to_i
+        @page = 1 if @page.nil? || @page == 0
+        @post_pages = Paginator.new self, Post.count(:conditions => ["course_id = ? and published = ?", @course.id, true]), 10, @page
+        @posts = Post.find(:all, :conditions => ['course_id = ? and published = ?', @course.id, true], :order => 'created_at DESC', :limit => 10, :offset => @post_pages.current.offset)
+
+        @featured = Post.find(:all, :conditions => ['course_id = ? and published = ? and featured = ?', @course.id, true, true], :order => 'created_at DESC' )
+
+        set_title        
+      }
+      format.xml { 
+        @posts = Post.find(:all, :conditions => ['course_id = ? and published = ?', @course.id, true], :order => 'created_at DESC')
+        render :layout => false 
+      }
+    end
   end
   
   def post
@@ -25,6 +33,11 @@ class BlogController < ApplicationController
     return unless post_in_course( @course, @post )  
     
     @comment = Comment.new  
+    
+    respond_to do |format|
+      format.html
+      format.xml { render :layout => false }
+    end
   end
   
   # action to leave a comment

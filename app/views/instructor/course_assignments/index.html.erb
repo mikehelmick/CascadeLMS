@@ -104,8 +104,8 @@
 	    <td nowrap="nowrap"><%= assignment.due_date.to_formatted_s(:compact_date) %></td>
 	    
 	    <% if @user.instructor_in_course?(@course.id) || (@user.assistant_in_course?(@course.id) && @course.course_setting.ta_course_assignments) %>
-	    <td nowrap="nowrap">		  
-	      <%= link_to "#{image_tag 'delete.png', :align => 'absmiddle'} Delete", { :action => 'destroy', :id => assignment }, :confirm => "Are you sure you want to delete the assignment '#{assignment.title}' and all of it's associated data? This action can not be undone." %>
+	    <td nowrap="nowrap">	  
+	      <%= link_to "#{image_tag 'delete.png', :align => 'absmiddle'} Delete", { :action => 'destroy', :id => assignment }, :method => "post", :confirm => "Are you sure you want to delete the assignment '#{assignment.title}' and all of it's associated data? This action can not be undone." %> 
 	    </td>
 	    <% end %> 
 	  </tr>

@@ -4,6 +4,9 @@ class Instructor::QuizController < Instructor::InstructorBase
   before_filter :ensure_logged_in
   before_filter :set_tab
   
+  verify :method => :post, :only => [ :delete_question ],
+         :redirect_to => { :action => :questions }
+  
   def index
     flash[:notice] = "The quiz listing is shown with the assignment listing."
     redirect_to :controller => '/instructor/course_assignments', :action => nil, :id => params[:id], :course => params[:course]

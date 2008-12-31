@@ -62,7 +62,9 @@
 		<tr class="<%=odd%> hover" id="rubric_<%=rubric.id%>_comments">
 		  <td align="right" valign="top" colspan="1"><i>Instructor comments:</i></td>
 		  <td align="left" valign="top" colspan="3">
-			<p><b><%=h @rubric_entry_map[rubric.id].comments %></b></p>
+			<p><b><% unless @rubric_entry_map[rubric.id].nil? %> 
+				    <%=h @rubric_entry_map[rubric.id].comments %>
+				  <% end %></b></p>
 		  </td>
 		</tr>
 		<% end %>

@@ -2,6 +2,9 @@ class Instructor::CourseAssignmentsController < Instructor::InstructorBase
   
   before_filter :ensure_logged_in
   before_filter :set_tab
+  
+  verify :method => :post, :only => [ :destroy, :create, :update ],
+         :redirect_to => { :action => :index }
  
   def index
     return unless load_course( params[:course] )

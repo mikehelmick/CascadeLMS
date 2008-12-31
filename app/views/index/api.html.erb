@@ -1,0 +1,712 @@
+<div class="SectionHeader"><div class="Full">
+<h2>Computer Science CourseWare - REST API</h2>
+</div></div>
+
+<p>As of release 1.0, Computer Science CourseWare (CSCW) comes with an REST API.  This API is entirely REST and allows for the programming of other clients for CSCW.   As of now the Web services are read-only, but it is possible to fashion your own modification HTTP requests.   Modification APIs will be provided and documented later.</p>
+
+<p>For ALL APIs, you will need to add the accept HTTP header</br>
+<ul><li><tt>Accept: text/xml</tt></li></ul>
+This will allow your response to be returned as XML.  Otherwise you will be returned the full HTML for the same action.
+</p>
+
+<p>For ALL APIs (except the login API) you must pass your HTTP session cookie.   This is returned with a standard set-cookie heater when you authenticate.   Failure to pass this cookie will result in your other requests failing.</p>
+
+<p>There are also some general conventions that are used herein:
+  <ul>
+	<li>Most items have an <tt>id</tt> field, this is often a parameter in another request.</li>
+	<li>Most dates are RFC 1123 format, and as GMT.  This allows you to adjust the display to the remote user's local time zone.</li>
+  </ul>
+</p>
+
+<p><b>Table of Contents:</b>
+<ol>
+  <li><a href="#Authentication">Authentication</a></li>
+  <li><a href="#ListingCourses">Listing Courses</a></li>
+  <li>Course Information API
+    <ol>
+  	  <li><a href="#Course_RecentActivity">Course - Recent Activity</a></li>
+      <li><a href="#Course_BlogPosts">Course - Blog Posts</a></li>
+      <li><a href="#Course_BlogPostComments">Course - Blog Post w/ Comments</a></li>
+      <li><a href="#Course_Documents">Course - Documents</a></li>	
+      <li><a href="#Course_AssignmentsList">Course - Assignments List</a></li>
+      <li><a href="#Course_AssignmentView">Course - Assignment View</a></li>
+      <li><a href="#Course_AssignmentFeedback">Course - Assignment Feedback</a></li>
+    </ol> 
+  </li>
+  <li>Course Wiki
+    <ol>
+	  <li><a href="#CourseWiki">Wiki - View Page</a></li>
+	  <li><a href="#CourseWiki_ListPages">Wiki - List All Pages</a></li>
+	  <li><a href="#CourseWiki_PageHistory">Wiki - Page History</a></li>	
+	</ol>	
+  </li>
+</ol>
+
+<br/><div class="SectionHeader"><div class="Full">
+<h2><a name="Authentication">Authentication</a></h2>
+</div></div>
+
+<p>To authentication, make a call to the login service.   There are 2 parameters, username (as <tt>user[uniqueid]</tt>) and password (as <tt>user[password]</tt>).<p>
+
+<p><b>SAMPLE REQUEST</b>
+<ul>
+  <li><tt><%= url_for( :only_path => false, :controller => '/index', :action => @login ) %>?user[uniqueid]=<b>YOURUSERNAME</b>&user[password]=<b>YOURPASSWORD</b></tt></li>
+  <li>If successful, there will be an HTTP 302 redirect to <tt><%= url_for( :only_path => false, :controller => '/home' ) %></tt></li>
+  <li>If unsuccessful, there will be a redirect to a different page.</li>
+</ul>
+</p>
+
+<br/><div class="SectionHeader"><div class="Full">
+<h2><a name="ListingCourses">Listing Courses</a></h2>
+</div></div>
+
+<p>To list courses, make an HTTP GET call to <br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<tt><%= url_for( :only_path => false, :controller => '/home' ) %></tt><br/>
+Make sure that you pass the 2 required HTTP headers, (1) the Cookies passed back on login and (2) Accept with a value of text/xml.</p>
+
+<p><b><%= link_to_function "#{image_tag 'page_code.png', :align => 'absmiddle'} View Sample Response", visual_effect(:toggle_slide, 'Sample_ListingCourses' ) %></b></p>	
+<div class="code" id="Sample_ListingCourses" style="display: none;">
+<% segment =  "<?xml version=\"1.0\" encoding=\"UTF-8\"?> 
+<home> 
+  <announcements> 
+    <announcement> 
+      <id>1</id> 
+      <headline>Test announcement</headline> 
+      <text>this is an awesome test announcement.</text> 
+      <start>Sat, 20 Dec 2008 23:28:00 GMT</start> 
+      <end>Wed, 24 Dec 2008 23:28:00 GMT</end> 
+    </announcement> 
+    <!-- additional announcement elements --> 
+  </announcements> 
+  <current_courses> 
+    <course> 
+      <id>17</id> 
+      <title>TST 101</title> 
+      <short_description>Test Course</short_description> 
+    </course> 
+    <!-- additional course elements --> 
+  </current_courses> 
+  <past_courses> 
+    <past_course> 
+      <id>16</id> 
+      <title>CSA-174</title> 
+      <short_description>Fundamentals of Programming and Problem Solving</short_description> 
+    </past_course> 
+    <!-- additional past_course elements --> 
+  </past_courses> 
+</home>
+" %>
+<% for line in segment.split("\n") %><% 0.upto(line.size-1) do |i| %><% if line[i...i+1].eql?(" ") %>&nbsp;<% else %><%=h  line[i...i+1] %><% end %><% end %><br/><% end %>
+</div>
+
+
+<br/><div class="SectionHeader"><div class="Full">
+<h2><a name="Course_RecentActivity">Course - Recent Activity</a></h2>
+</div></div>
+
+<p>To list courses, make an HTTP GET call to <br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<tt><%= url_for( :only_path => false, :controller => "/overview", :course => 'COURSE_ID' ) %></tt><br/>
+</p>
+
+
+<p><b><%= link_to_function "#{image_tag 'page_code.png', :align => 'absmiddle'} View Sample Response", visual_effect(:toggle_slide, 'Sample_Course_RecentActivity' ) %></b></p>	
+<div class="code" id="Sample_Course_RecentActivity" style="display: none;">
+	<% segment =  "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
+<course_overview>
+  <course>
+    <id>17</id>
+    <title>TST 101</title>
+    <short_description>Test Course</short_description>
+  </course>
+  <recent>
+    <item>
+      <id>63</id>
+      <type>Assignment</type>
+      <summary_date>20 Dec</summary_date>
+      <summary>Program 1</summary>
+      <link_for>#{url_for( :only_path => false, :controller => "/assignments", :course => 17, :action => 'view', :id => 63 )}</link_for>
+    </item>
+    <item>
+      <id>33</id>
+      <type>Document</type>	
+      <summary_date>10 Dec</summary_date>
+      <summary>aSong</summary>
+      <extension>mp3</extension>
+      <size>9650289</size>
+      <link_for>#{url_for( :only_path => false, :controller => '/documents', :action => 'download', :course => 17, :id => 33)}</link_for>
+    </item>
+    <item>
+      <id>3</id>
+      <type>Comment</type>
+      <summary_date>30 Sep</summary_date>
+      <summary>re: Blog Post</summary>
+      <link_for>#{url_for( :only_path => false, :controller => '/blog', :action => 'post', :course => 17, :id => 3)}</link_for>
+    </item>
+    <item>
+      <id>3</id>
+      <type>Post</type>
+      <summary_date> 9 Sep</summary_date>
+      <summary>Blog Post</summary>
+      <link_for>#{url_for( :only_path => false, :controller => '/blog', :action => 'post', :course => 17, :id => 3)}</link_for>
+    </item>
+    <!-- additional item elements (there is an example for ALL CURRENT types above)--> 
+  </recent>
+</course_overview>
+	" %>
+	
+	<% for line in segment.split("\n") %><% 0.upto(line.size-1) do |i| %><% if line[i...i+1].eql?(" ") %>&nbsp;<% else %><%=h  line[i...i+1] %><% end %><% end %><br/><% end %>	
+</div>
+
+
+<br/><div class="SectionHeader"><div class="Full">
+<h2><a name="Course_BlogPosts">Course - Blog Posts</a></h2>
+</div></div>
+<p>To list courses, make an HTTP GET call to <br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<tt><%= url_for( :only_path => false, :controller => "/blog", :course => 'COURSE_ID' ) %></tt><br/>
+</p>
+<p><b><%= link_to_function "#{image_tag 'page_code.png', :align => 'absmiddle'} View Sample Response", visual_effect(:toggle_slide, 'Sample_Course_BlogPosts' ) %></b></p>	
+<div class="code" id="Sample_Course_BlogPosts" style="display: none;">
+	<% segment =  "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
+<blog_posts>
+  <blog_post>
+    <id>3</id>
+    <title>Blog Post</title>
+    <featured>false</featured>
+    <author>Michael (Mike) T. Helmick</author>
+    <posted_at>Wed, 10 Sep 2008 05:30:00 GMT</posted_at>
+    <comments>2</comments>
+  </blog_post>
+</blog_posts>
+	" %>	
+	<% for line in segment.split("\n") %><% 0.upto(line.size-1) do |i| %><% if line[i...i+1].eql?(" ") %>&nbsp;<% else %><%=h  line[i...i+1] %><% end %><% end %><br/><% end %>	
+</div>
+
+
+<br/><div class="SectionHeader"><div class="Full">
+<h2><a name="Course_BlogPostComments">Course - Blog Post w/ Comments</a></h2>
+</div></div>
+<p>To list courses, make an HTTP GET call to <br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<tt><%= url_for( :only_path => false, :controller => "/blog", :course => 'COURSE_ID', :action => 'post', :id => 'POST_ID' ) %></tt><br/>
+</p>
+<p><b><%= link_to_function "#{image_tag 'page_code.png', :align => 'absmiddle'} View Sample Response", visual_effect(:toggle_slide, 'Sample_Course_BlogPostComments' ) %></b></p>	
+<div class="code" id="Sample_Course_BlogPostComments" style="display: none;">
+	<% segment =  "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
+<blog_post>
+  <id>3</id>
+  <title>Blog Post</title>
+  <featured>false</featured>
+  <author>Michael (Mike) T. Helmick</author>
+  <posted_at>Wed, 10 Sep 2008 05:30:00 GMT</posted_at>
+  <body>
+    <![CDATA[<p>HTML formatted comment, in a CDATA block</p>]]>
+  </body>
+  <comments>
+    <comment>
+      <author>Michael (Mike) T. Helmick</author>
+      <posted_at>Wed, 01 Oct 2008 01:45:37 GMT</posted_at>
+      <body>
+        <![CDATA[<p>test</p>]]>
+      </body>
+    </comment>
+  </comments>
+</blog_post>
+	" %>	
+	<% for line in segment.split("\n") %><% 0.upto(line.size-1) do |i| %><% if line[i...i+1].eql?(" ") %>&nbsp;<% else %><%=h  line[i...i+1] %><% end %><% end %><br/><% end %>	
+</div>
+
+
+
+
+<br/><div class="SectionHeader"><div class="Full">
+<h2><a name="Course_Documents">Course - Documents</a></h2>
+</div></div>
+
+<p>When you list the documents for a course, you are really listing the contents of one folder at a time.    So you may have to make several calls to list all documents for a course, but it is suggested to use this to implement a 'filesystem' browser, just like in the CSCW screens.</p>
+
+<p>To list courses, make an HTTP GET call to <br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<tt><%= url_for( :only_path => false, :controller => "/documents", :course => 'COURSE_ID' ) %></tt><br/>
+<i>or, if you are browsing a sub-folder</i>, make an HTTP GET call to<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<tt><%= url_for( :only_path => false, :controller => "/documents", :course => 'COURSE_ID', :action => 'index', :id => 'DOCUMENT_ID' ) %></tt><br/>
+</p>
+<p><b><%= link_to_function "#{image_tag 'page_code.png', :align => 'absmiddle'} View Sample Response", visual_effect(:toggle_slide, 'Sample_Course_Documents' ) %></b></p>	
+<div class="code" id="Sample_Course_Documents" style="display: none;">
+	<% segment =  "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
+<documents>
+  <document>
+    <id>28</id>
+    <title>Test Folder</title>
+    <comments>
+      <![CDATA[]]>
+    </comments>
+    <folder>true</folder>
+  </document>
+  <document>
+    <id>29</id>
+    <title>Test Podcast</title>
+    <comments>
+      <![CDATA[]]>
+    </comments>
+    <folder>true</folder>
+    <podcast>true</podcast>
+    <podcast_url>http://localhost:3000/course/17/documents/podcast/29</podcast_url>
+  </document>
+  <document>
+    <id>30</id>
+    <title>image</title>
+    <comments>
+      <![CDATA[]]>
+    </comments>
+    <extension>jpg</extension>
+    <size>160863</size>
+    <document_url>http://localhost:3000/course/17/documents/download/30/Picture.jpg</document_url>
+  </document>
+</documents>
+	" %>	
+	<% for line in segment.split("\n") %><% 0.upto(line.size-1) do |i| %><% if line[i...i+1].eql?(" ") %>&nbsp;<% else %><%=h  line[i...i+1] %><% end %><% end %><br/><% end %>	
+</div>
+
+
+
+<br/><div class="SectionHeader"><div class="Full">
+<h2><a name="Course_AssignmentsList">Course - Assignments List</a></h2>
+</div></div>
+<p>To list courses, make an HTTP GET call to <br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<tt><%= url_for( :only_path => false, :controller => "/assignments", :course => 'COURSE_ID' ) %></tt><br/>
+</p>
+
+<p>The sample response for the assignment list is quite extensive, and is indented to be an extensive (but not complete) sample of assignment list output.</p>
+
+<p><b><%= link_to_function "#{image_tag 'page_code.png', :align => 'absmiddle'} View Sample Response", visual_effect(:toggle_slide, 'Sample_Course_AssignmentsList' ) %></b></p>	
+<div class="code" id="Sample_Course_AssignmentsList" style="display: none;">
+	<% segment =  "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
+<assignments>
+  <assignment>
+    <id>59</id>
+    <title>Entry Survey</title>
+    <category>Survey</category>
+    <open_date>Fri, 19 Dec 2008 06:02:00 GMT</open_date>
+    <due_date>Sat, 20 Dec 2008 06:02:00 GMT</due_date>
+    <close_date>Sat, 20 Dec 2008 06:02:00 GMT</close_date>
+    <upcomming>false</upcomming>
+    <current>false</current>
+    <past>true</past>
+    <closed>true</closed>
+    <quiz>true</quiz>
+    <grades_released>false</grades_released>
+  </assignment>
+  <assignment>
+    <id>32</id>
+    <title>Programming Assignment</title>
+    <category>Program</category>
+    <open_date>Sat, 25 Oct 2008 19:13:00 GMT</open_date>
+    <due_date>Sun, 30 Nov 2008 20:13:00 GMT</due_date>
+    <close_date>Sun, 30 Nov 2008 20:13:00 GMT</close_date>
+    <upcomming>false</upcomming>
+    <current>false</current>
+    <past>true</past>
+    <closed>true</closed>
+    <grades_released>true</grades_released>
+    <points_earned>20.0</points_earned>
+    <points_possible>20.0</points_possible>
+  </assignment>
+  <assignment>
+    <id>33</id>
+    <title>team assignment</title>
+    <category>Assignment</category>
+    <open_date>Wed, 01 Oct 2008 19:54:00 GMT</open_date>
+    <due_date>Fri, 10 Oct 2008 19:54:00 GMT</due_date>
+    <close_date>Fri, 10 Oct 2008 19:54:00 GMT</close_date>
+    <upcomming>false</upcomming>
+    <current>false</current>
+    <past>true</past>
+    <closed>true</closed>
+    <team_project>true</team_project>
+    <grades_released>false</grades_released>
+    <points_possible>10.0</points_possible>
+  </assignment>
+  <assignment>
+    <id>57</id>
+    <title>Entry Survey</title>
+    <category>Survey</category>
+    <open_date>Sat, 13 Dec 2008 22:47:00 GMT</open_date>
+    <due_date>Sun, 14 Dec 2008 22:47:00 GMT</due_date>
+    <close_date>Sun, 14 Dec 2008 22:47:00 GMT</close_date>
+    <upcomming>false</upcomming>
+    <current>false</current>
+    <past>true</past>
+    <closed>true</closed>
+    <quiz>true</quiz>
+    <grades_released>false</grades_released>
+  </assignment>
+  <assignment>
+    <id>58</id>
+    <title>Quiz 01</title>
+    <category>Quiz</category>
+    <open_date>Sat, 13 Dec 2008 23:00:00 GMT</open_date>
+    <due_date>Sun, 14 Dec 2008 23:08:00 GMT</due_date>
+    <close_date>Sun, 14 Dec 2008 23:08:00 GMT</close_date>
+    <upcomming>false</upcomming>
+    <current>false</current>
+    <past>true</past>
+    <closed>true</closed>
+    <quiz>true</quiz>
+    <grades_released>true</grades_released>
+    <points_earned>10.0</points_earned>
+    <points_possible>10.0</points_possible>
+  </assignment>
+  <assignment>
+    <id>60</id>
+    <title>Exit Survey</title>
+    <category>Survey</category>
+    <open_date>Tue, 23 Dec 2008 06:12:00 GMT</open_date>
+    <due_date>Fri, 26 Dec 2008 06:12:00 GMT</due_date>
+    <close_date>Fri, 26 Dec 2008 06:12:00 GMT</close_date>
+    <upcomming>false</upcomming>
+    <current>false</current>
+    <past>true</past>
+    <closed>true</closed>
+    <quiz>true</quiz>
+    <grades_released>false</grades_released>
+  </assignment>
+  <assignment>
+    <id>62</id>
+    <title>Assignment with Rubrics</title>
+    <category>Assignment</category>
+    <open_date>Sat, 20 Dec 2008 17:29:00 GMT</open_date>
+    <due_date>Wed, 31 Dec 2008 17:29:00 GMT</due_date>
+    <close_date>Wed, 31 Dec 2008 17:29:00 GMT</close_date>
+    <upcomming>false</upcomming>
+    <current>true</current>
+    <past>false</past>
+    <closed>false</closed>
+    <grades_released>true</grades_released>
+    <points_earned>8.0</points_earned>
+    <points_possible>8.0</points_possible>
+  </assignment>
+  <assignment>
+    <id>63</id>
+    <title>Program 1</title>
+    <category>Program</category>
+    <open_date>Sun, 21 Dec 2008 01:53:00 GMT</open_date>
+    <due_date>Tue, 23 Dec 2008 01:53:00 GMT</due_date>
+    <close_date>Tue, 23 Dec 2008 01:53:00 GMT</close_date>
+    <upcomming>false</upcomming>
+    <current>false</current>
+    <past>true</past>
+    <closed>true</closed>
+    <grades_released>true</grades_released>
+    <points_earned>8.0</points_earned>
+    <points_possible>10.0</points_possible>
+  </assignment>
+</assignments>	
+	" %>	
+	<% for line in segment.split("\n") %><% 0.upto(line.size-1) do |i| %><% if line[i...i+1].eql?(" ") %>&nbsp;<% else %><%=h  line[i...i+1] %><% end %><% end %><br/><% end %>	
+</div>
+
+
+
+
+<br/><div class="SectionHeader"><div class="Full">
+<h2><a name="Course_AssignmentView">Course - Assignment View</a></h2>
+</div></div>
+<p>To list courses, make an HTTP GET call to <br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<tt><%= url_for( :only_path => false, :controller => "/assignments", :course => 'COURSE_ID', :action => 'view', :id => 'ASSIGNMENT_ID' ) %></tt><br/>
+</p>
+
+<p>An assignment will either have a description or attached files, but not both.  Assignments that are quizzes or surveys can not have extended information retrieved through this API.  You must use the CSCW GUI to retrieve this information.</p>
+
+<p><b><%= link_to_function "#{image_tag 'page_code.png', :align => 'absmiddle'} View Sample Response 1", visual_effect(:toggle_slide, 'Sample_Course_AssignmentView' ) %></b></p>	
+<div class="code" id="Sample_Course_AssignmentView" style="display: none;">
+	<% segment =  "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
+<assignment>
+  <id>62</id>
+  <title>Assignment with Rubrics</title>
+  <category>Assignment</category>
+  <open_date>Sat, 20 Dec 2008 17:29:00 GMT</open_date>
+  <due_date>Wed, 31 Dec 2008 17:29:00 GMT</due_date>
+  <close_date>Wed, 31 Dec 2008 17:29:00 GMT</close_date>
+  <upcomming>false</upcomming>
+  <current>true</current>
+  <past>false</past>
+  <closed>false</closed>
+  <grades_released>true</grades_released>
+  <points_earned>8.0</points_earned>
+  <points_possible>8.0</points_possible>
+  <description>
+    <![CDATA[<p>This assignment has rubrics, isn&#8217;t that cool!</p>]]>
+  </description>
+  <turnin_methods>
+    <method>Printout</method>
+  </turnin_methods>
+  <journals_required>false</journals_required>
+  <rubrics>
+    <rubric>
+      <primary_trait>The student can configure an Axis2 server for execution in Eclipse.</primary_trait>
+      <no_credit_criteria>Axis2 server not executed</no_credit_criteria>
+      <no_credit_points>0</no_credit_points>
+      <part_credit_criteria>Axis2 server executed using batch file only</part_credit_criteria>
+      <part_credit_points>3</part_credit_points>
+      <full_credit_criteria>Axis2 server configured using an Eclipse run profile</full_credit_criteria>
+      <full_credit_points>5</full_credit_points>
+      <course_outcomes>
+        <outcome>
+          <number>1.2</number>
+          <outcome>Describe the concepts of syntax and semantics of a programming language</outcome>
+        </outcome>
+        <outcome>
+          <number>1.3</number>
+          <outcome>Describe the data representation commonly used for integers, characters, and strings</outcome>
+        </outcome>
+      </course_outcomes>
+    </rubric>
+    <rubric>
+      <primary_trait>Is the turnin awesome?</primary_trait>
+      <no_credit_criteria>Not at all</no_credit_criteria>
+      <no_credit_points>0</no_credit_points>
+      <part_credit_criteria>A little bit.</part_credit_criteria>
+      <part_credit_points>1</part_credit_points>
+      <full_credit_criteria>Yes!!</full_credit_criteria>
+      <full_credit_points>3</full_credit_points>
+      <course_outcomes>
+        <outcome>
+          <number>1.3</number>
+          <outcome>Describe the data representation commonly used for integers, characters, and strings</outcome>
+        </outcome>
+      </course_outcomes>
+    </rubric>
+  </rubrics>
+</assignment>	
+	" %>	
+	<% for line in segment.split("\n") %><% 0.upto(line.size-1) do |i| %><% if line[i...i+1].eql?(" ") %>&nbsp;<% else %><%=h  line[i...i+1] %><% end %><% end %><br/><% end %>	
+</div>
+<p><b><%= link_to_function "#{image_tag 'page_code.png', :align => 'absmiddle'} View Sample Response 2", visual_effect(:toggle_slide, 'Sample_Course_AssignmentView2' ) %></b></p>	
+<div class="code" id="Sample_Course_AssignmentView2" style="display: none;">
+	<% segment =  "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
+<assignment>
+  <id>32</id>
+  <title>Programming Assignment</title>
+  <category>Program</category>
+  <open_date>Sat, 25 Oct 2008 19:13:00 GMT</open_date>
+  <due_date>Sun, 30 Nov 2008 20:13:00 GMT</due_date>
+  <close_date>Sun, 30 Nov 2008 20:13:00 GMT</close_date>
+  <upcomming>false</upcomming>
+  <current>false</current>
+  <past>true</past>
+  <closed>true</closed>
+  <grades_released>true</grades_released>
+  <points_earned>20.0</points_earned>
+  <points_possible>20.0</points_possible>
+  <attachments>
+    <attachment>
+      <filename>TheErlangRationale.pdf</filename>
+      <size>73.50Kb</size>
+      <document_url>http://localhost:3000/course/17/assignments/download/32/TheErlangRationale.pdf?document=3</document_url>
+    </attachment>
+  </attachments>
+  <turnin_methods>
+    <method>Upload</method>
+  </turnin_methods>
+  <journals_required>false</journals_required>
+  <auto_grade_enabled>true</auto_grade_enabled>
+  <rubrics>
+    <rubric>
+      <primary_trait>The student can configure an Axis2 server for execution in Eclipse.</primary_trait>
+      <no_credit_criteria>Axis2 server not executed</no_credit_criteria>
+      <no_credit_points>0</no_credit_points>
+      <part_credit_criteria>Axis2 server executed using batch file only</part_credit_criteria>
+      <part_credit_points>3</part_credit_points>
+      <full_credit_criteria>Axis2 server configured using an Eclipse run profile</full_credit_criteria>
+      <full_credit_points>5</full_credit_points>
+      <course_outcomes>
+        <outcome>
+          <number>1.2</number>
+          <outcome>Describe the concepts of syntax and semantics of a programming language</outcome>
+        </outcome>
+        <outcome>
+          <number>1.3</number>
+          <outcome>Describe the data representation commonly used for integers, characters, and strings</outcome>
+        </outcome>
+      </course_outcomes>
+    </rubric>
+    <rubric>
+      <primary_trait>The program compiles</primary_trait>
+      <no_credit_criteria>Program does not compile due to errors</no_credit_criteria>
+      <no_credit_points>0</no_credit_points>
+      <part_credit_criteria>Program compiles with warnings</part_credit_criteria>
+      <part_credit_points>1</part_credit_points>
+      <full_credit_criteria>Program compiles with no warnings</full_credit_criteria>
+      <full_credit_points>2</full_credit_points>
+      <course_outcomes>
+        <outcome>
+          <number>2</number>
+          <outcome>Outcome two</outcome>
+        </outcome>
+        <outcome>
+          <number>2.1</number>
+          <outcome>Outcome two - sub two</outcome>
+        </outcome>
+        <outcome>
+          <number>2.1.1</number>
+          <outcome>Outcome two, sub two, sub one</outcome>
+        </outcome>
+      </course_outcomes>
+    </rubric>
+  </rubrics>
+</assignment>
+	" %>	
+	<% for line in segment.split("\n") %><% 0.upto(line.size-1) do |i| %><% if line[i...i+1].eql?(" ") %>&nbsp;<% else %><%=h  line[i...i+1] %><% end %><% end %><br/><% end %>	
+</div>
+
+
+
+<br/><div class="SectionHeader"><div class="Full">
+<h2><a name="Course_AssignmentFeedback">Course - Assignment Feedback</a></h2>
+</div></div>
+<p>If an assignment has the <tt>graded</tt> field set to <tt>true</tt>, you can access the detailed grade by making an HTTP GET call to <br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<tt><%= url_for( :only_path => false, :controller => "/turnins", :course => 'COURSE_ID', :action => 'feedback', :assignment => 'ASSIGNMENT_ID' ) %></tt><br/>
+</p>
+<p><b><%= link_to_function "#{image_tag 'page_code.png', :align => 'absmiddle'} View Sample Response", visual_effect(:toggle_slide, 'Sample_Course_AssignmentFeedback' ) %></b></p>	
+<div class="code" id="Sample_Course_AssignmentFeedback" style="display: none;">
+	<% segment =  "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
+<assignment_feedback>
+  <id>63</id>
+  <title>Program 1</title>
+  <category>Program</category>
+  <points_earned>8.0</points_earned>
+  <points_possible>10.0</points_possible>
+  <comments>Good job overall.</comments>
+  <rubrics>
+    <rubric>
+      <primary_trait>The program compiles</primary_trait>
+      <no_credit_criteria>Program does not compile due to errors</no_credit_criteria>
+      <no_credit_points>0</no_credit_points>
+      <part_credit_criteria>Program compiles with warnings</part_credit_criteria>
+      <part_credit_points>3</part_credit_points>
+      <full_credit_criteria>Program compiles with no warnings</full_credit_criteria>
+      <full_credit_points>5</full_credit_points>
+      <rubric_grade>
+        <no_credit_awarded>false</no_credit_awarded>
+        <partial_credit_awarded>true</partial_credit_awarded>
+        <full_credit_awarded>false</full_credit_awarded>
+        <comments>Improper import *</comments>
+      </rubric_grade>
+    </rubric>
+    <rubric>
+      <primary_trait>The program is totally awesome.</primary_trait>
+      <no_credit_criteria>Not awesome at all</no_credit_criteria>
+      <no_credit_points>0</no_credit_points>
+      <part_credit_criteria>Just kinda awesome</part_credit_criteria>
+      <part_credit_points>3</part_credit_points>
+      <full_credit_criteria>Really is awesome</full_credit_criteria>
+      <full_credit_points>5</full_credit_points>
+      <rubric_grade>
+        <no_credit_awarded>false</no_credit_awarded>
+        <partial_credit_awarded>false</partial_credit_awarded>
+        <full_credit_awarded>true</full_credit_awarded>
+        <comments>Way to GO!</comments>
+      </rubric_grade>
+    </rubric>
+  </rubrics>
+</assignment_feedback>
+	" %>	
+	<% for line in segment.split("\n") %><% 0.upto(line.size-1) do |i| %><% if line[i...i+1].eql?(" ") %>&nbsp;<% else %><%=h  line[i...i+1] %><% end %><% end %><br/><% end %>	
+</div>
+
+
+
+
+<br/><div class="SectionHeader"><div class="Full">
+<h2><a name="CourseWiki">Course Wiki - View Page</a></h2>
+</div></div>
+<p>To access Wiki pages, make an HTTP GET call to <br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<tt><%= url_for( :only_path => false, :controller => "/wiki", :course => 'COURSE_ID', :action => 'page', :id => 'PAGE_NAME' ) %></tt><br/>
+The first Wiki page is always named <tt>Home</tt>.   From there, you should look for items enclosed in <tt>[PageName]</tt> to determine which pages this page links to.   As a convenience, a link processed version is also provided in the output.</p>
+<p><b><%= link_to_function "#{image_tag 'page_code.png', :align => 'absmiddle'} View Sample Response", visual_effect(:toggle_slide, 'Sample_CourseWiki' ) %></b></p>	
+<div class="code" id="Sample_CourseWiki" style="display: none;">
+	<% segment =  "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
+<wiki_page>
+  <page_name>Home</page_name>
+  <content>
+    <![CDATA[Wiki is [Awesome]
+    ]]>
+  </content>
+  <content_html>
+    <![CDATA[<p>Wiki is <a href=\"http://localhost:3000/course/17/wiki/page/Awesome\">Awesome</a></p>]]>
+  </content_html>
+  <revision>2</revision>
+  <last_author>Michael (Mike) T. Helmick</last_author>
+  <updated_at>Wed, 01 Oct 2008 01:52:15 GMT</updated_at>
+</wiki_page>
+	" %>	
+	<% for line in segment.split("\n") %><% 0.upto(line.size-1) do |i| %><% if line[i...i+1].eql?(" ") %>&nbsp;<% else %><%=h  line[i...i+1] %><% end %><% end %><br/><% end %>	
+</div>
+
+
+
+<br/><div class="SectionHeader"><div class="Full">
+<h2><a name="CourseWiki_ListPages">Course Wiki - List All Pages</a></h2>
+</div></div>
+<p>To access Wiki pages, make an HTTP GET call to <br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<tt><%= url_for( :only_path => false, :controller => "/wiki", :course => 'COURSE_ID', :action => 'wikidex' ) %></tt><br/>
+</p>
+<p><b><%= link_to_function "#{image_tag 'page_code.png', :align => 'absmiddle'} View Sample Response", visual_effect(:toggle_slide, 'Sample_CourseWiki_ListPages' ) %></b></p>	
+<div class="code" id="Sample_CourseWiki_ListPages" style="display: none;">
+	<% segment =  "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
+<wiki_index>
+  <page>
+    <page_name>Awesome</page_name>
+    <revision>2</revision>
+    <last_author>Michael (Mike) T. Helmick</last_author>
+    <updated_at>Wed, 01 Oct 2008 01:52:34 GMT</updated_at>
+  </page>
+  <page>
+    <page_name>Home</page_name>
+    <revision>2</revision>
+    <last_author>Michael (Mike) T. Helmick</last_author>
+    <updated_at>Wed, 01 Oct 2008 01:52:15 GMT</updated_at>
+  </page>
+</wiki_index>
+	" %>	
+	<% for line in segment.split("\n") %><% 0.upto(line.size-1) do |i| %><% if line[i...i+1].eql?(" ") %>&nbsp;<% else %><%=h  line[i...i+1] %><% end %><% end %><br/><% end %>	
+</div>
+
+
+<br/><div class="SectionHeader"><div class="Full">
+<h2><a name="CourseWiki_PageHistory">Course Wiki - Page History</a></h2>
+</div></div>
+<p>To access Wiki pages, make an HTTP GET call to <br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<tt><%= url_for( :only_path => false, :controller => "/wiki", :course => 'COURSE_ID', :action => 'history', :id => 'PAGE_NAME' ) %></tt><br/>
+</p>
+<p><b><%= link_to_function "#{image_tag 'page_code.png', :align => 'absmiddle'} View Sample Response", visual_effect(:toggle_slide, 'Sample_CourseWiki_PageHistory' ) %></b></p>	
+<div class="code" id="Sample_CourseWiki_PageHistory" style="display: none;">
+	<% segment =  "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
+<page_history>
+  <page>
+    <page_name>Home</page_name>
+    <revision>2</revision>
+    <last_author>Michael (Mike) T. Helmick</last_author>
+    <updated_at>Wed, 01 Oct 2008 01:52:15 GMT</updated_at>
+    <content>
+      <![CDATA[Wiki is [Awesome]
+	]]>
+    </content>
+    <content_html>
+      <![CDATA[<p>Wiki is <a href=\"http://localhost:3000/course/17/wiki/page/Awesome\">Awesome</a></p>]]>
+    </content_html>
+  </page>
+  <page>
+    <page_name>Home</page_name>
+    <revision>1</revision>
+    <last_author>Michael (Mike) T. Helmick</last_author>
+    <updated_at>Wed, 01 Oct 2008 01:51:58 GMT</updated_at>
+    <content>
+      <![CDATA[This is a new Wiki page named 'Home'.]]>
+    </content>
+    <content_html>
+      <![CDATA[<p>This is a new Wiki page named &#8216;Home&#8217;.</p>]]>
+    </content_html>
+  </page>
+</page_history>
+	" %>	
+	<% for line in segment.split("\n") %><% 0.upto(line.size-1) do |i| %><% if line[i...i+1].eql?(" ") %>&nbsp;<% else %><%=h  line[i...i+1] %><% end %><% end %><br/><% end %>	
+</div>

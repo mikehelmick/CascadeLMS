@@ -13,6 +13,11 @@ class OverviewController < ApplicationController
     @recent_activity = FreshItems.fresh( @course, @app['recent_items'].to_i )
     
     set_title
+    
+    respond_to do |format|
+      format.html
+      format.xml { render :layout => false }
+    end
   end
   
   def calendar

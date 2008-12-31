@@ -9,14 +9,21 @@ class DocumentsController < ApplicationController
     return unless load_course( params[:course] )
     return unless allowed_to_see_course( @course, @user )
     return unless load_folder( params[:id].to_i )
-  
-    @page = params[:page].to_i
-    @page = 1 if @page.nil? || @page == 0
-    @document_pages = Paginator.new self, Document.count(:conditions => ["course_id = ? and published = ? and document_parent = ?", @course.id, true, @folder_id]), 25, @page
-    @documents = Document.find(:all, :conditions => ['course_id = ? and published = ? and document_parent = ?', @course.id, true, @folder_id], :order => 'position', :limit => 25, :offset => @document_pages.current.offset)  
-  
+    
+    respond_to do |format|
+      format.html {
+        @page = params[:page].to_i
+        @page = 1 if @page.nil? || @page == 0
+        @document_pages = Paginator.new self, Document.count(:conditions => ["course_id = ? and published = ? and document_parent = ?", @course.id, true, @folder_id]), 25, @page
+        @documents = Document.find(:all, :conditions => ['course_id = ? and published = ? and document_parent = ?', @course.id, true, @folder_id], :order => 'position', :limit => 25, :offset => @document_pages.current.offset)  
 
-    set_title
+        set_title        
+      }
+      format.xml { 
+        @documents = Document.find(:all, :conditions => ['course_id = ? and published = ? and document_parent = ?', @course.id, true, @folder_id], :order => 'position') 
+        render :layout => false
+      }
+    end
   end
   
   def podcast_download

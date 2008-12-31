@@ -3,7 +3,7 @@ require 'LdapAuthentication'
 
 class IndexController < ApplicationController
   
-  before_filter :check_login, :except => [ :logout, :credits ]
+  before_filter :check_login, :except => [ :logout, :credits, :api ]
   before_filter :set_title
   
   def index
@@ -18,6 +18,12 @@ class IndexController < ApplicationController
   def credits
   end
   
+  def api
+    @title = "CSCW - REST API"
+    
+    render :layout => 'noright'
+  end
+  
   def login
     @user = User.new( params[:user] )
     
@@ -27,10 +33,7 @@ class IndexController < ApplicationController
       return
     end
     
-    authenticate( @user )
-    
-    
-    
+    authenticate( @user )   
   end
   
   def expired

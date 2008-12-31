@@ -25,6 +25,11 @@ class WikiController < ApplicationController
     @page.content_html = wiki_links( @page.content_html, @course )
     
     wiki_title   
+    
+    respond_to do |format|
+      format.html
+      format.xml { render :layout => false }
+    end
   end
   
   
@@ -96,6 +101,11 @@ class WikiController < ApplicationController
       
     end
     wiki_title
+    
+    respond_to do |format|
+      format.html
+      format.xml { render :layout => false }
+    end
   end
   
   def restore
@@ -146,6 +156,11 @@ class WikiController < ApplicationController
     
     @pages.sort! { |a,b| a.page.downcase <=> b.page.downcase }
     wiki_title
+    
+    respond_to do |format|
+      format.html
+      format.xml { render :layout => false }
+    end
   end
   
   private 

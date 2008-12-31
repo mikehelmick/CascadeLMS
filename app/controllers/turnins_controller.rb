@@ -531,7 +531,11 @@ class TurninsController < ApplicationController
     @now = Time.now
     set_title
     
-    render :layout => 'noright'
+    
+    respond_to do |format|
+      format.html { render :layout => 'noright' }
+      format.xml { render :layout => false }
+    end
   end
   
   ## Similar to feedback, but line by line difs
