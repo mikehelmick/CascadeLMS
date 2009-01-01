@@ -32,14 +32,11 @@ p { margin: 0 }
 <% for key, val in @params -%>
 <p><b><%= key %></b></p>
 <p><%= val.to_yaml.to_a.join("</p>\n<p>    ") %></p>
-<% end if params -%>
+<% end -%>
 
 <h3>Session</h3>
 <hr/>
-<% for key, val in @session -%>
-<p><b><%= key %></b></p>
-<p><%= val.to_yaml.to_a.join("</p>\n<p>    ") %></p>
-<% end if session -%>
+<p><%= @session.inspect %></p>
 
 <h3>Environment</h3>
 <hr/>
@@ -54,5 +51,5 @@ p { margin: 0 }
     <small><%= val %></small>
   </td>
 </tr>
-<% end if env -%>
+<% end %>
 </table>

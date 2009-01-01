@@ -178,7 +178,7 @@ class Instructor::AttendanceController < Instructor::InstructorBase
       
       @forStudent = Array.new
       @periods.each do |period|
-        if @att_map[student.id][period.id].nil? || @att_map[student.id][period.id] == false
+        if @att_map[student.id].nil? || @att_map[student.id][period.id].nil? || @att_map[student.id][period.id] == false
           @forStudent << 0
         else
           @forStudent << 1
