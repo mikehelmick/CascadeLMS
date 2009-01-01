@@ -263,6 +263,53 @@ class TurninsController < ApplicationController
       ut.make_dir( @app['external_dir'], @team )
       ut.user_turnin_files << utf
       ut.save
+      utf.save
+      
+      ## copy any auto include files
+      @assignment.assignment_documents.each do |asgn_doc|
+        if asgn_doc.add_to_all_turnins 
+          ## create a user_turnin_file for this
+          # create the new file (but don't save yet)
+          auto_file = UserTurninFile.new
+          auto_file.user_turnin = ut
+          auto_file.directory_entry = false
+          auto_file.directory_parent = utf.id
+          auto_file.filename = asgn_doc.filename
+          auto_file.extension = asgn_doc.extension
+          auto_file.user = @user
+          auto_file.auto_added = true
+          # save to get an id
+          ut.user_turnin_files << auto_file
+          ut.save
+          auto_file.save
+          
+          # copy the bits from the old file to the new file
+          from_filename = asgn_doc.resolve_file_name(@app['external_dir'])
+          
+          # get the file and download it :)
+          directory = ut.get_dir( @app['external_dir'] )
+          directory = ut.get_team_dir( @app['external_dir'], @team ) unless @team.nil?
+
+          # resolve file name
+          relative_name = auto_file.filename
+          walker = auto_file
+          while walker.directory_parent > 0 
+            walker = UserTurninFile.find( walker.directory_parent )
+            relative_name = "#{walker.filename}/#{relative_name}"
+          end
+          to_filename = "#{directory}#{relative_name}"
+          
+          # actually to the filesystem copy
+          `cp #{from_filename} #{to_filename}`
+          
+          # perform the checks (see if this is a main file)
+          auto_file.check_file( "#{directory}/" )
+          auto_file.save
+          
+        end
+      end
+      
+      
       @current_turnin.save unless @current_turnin.nil?
     end
     

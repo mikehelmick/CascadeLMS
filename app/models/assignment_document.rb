@@ -35,7 +35,7 @@ class AssignmentDocument < ActiveRecord::Base
   
   def set_file_props( file_field ) 
     self.filename = FileManager.base_part_of( file_field.original_filename )
-    self.content_type = file_field.content_type.chomp
+    self.content_type = file_field.content_type.chomp rescue self.content_type = 'text'
     self.extension = self.filename.split('.').last.downcase
     self.size = file_field.size
   end

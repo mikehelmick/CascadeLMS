@@ -93,7 +93,9 @@
 		  
 		  <ul>
 	      <% for asgn_doc in @assignment.assignment_documents %>
-		    <li><%= link_to "#{image_tag asgn_doc.icon_file, :align => 'absmiddle'} #{h asgn_doc.filename}", :action => 'download', :id => @assignment, :course => @course, :document => asgn_doc.id, :file => asgn_doc.without_extension, :extension => asgn_doc.extension %> (Size: <%=h asgn_doc.size_text %>)</li>
+		    <li><%= link_to "#{image_tag asgn_doc.icon_file, :align => 'absmiddle'} #{h asgn_doc.filename}", :action => 'download', :id => @assignment, :course => @course, :document => asgn_doc.id, :file => asgn_doc.without_extension, :extension => asgn_doc.extension %> (Size: <%=h asgn_doc.size_text %>)
+			<% if @assignment.enable_upload  && asgn_doc.add_to_all_turnins %><i>Will be automatically added to turnins</i><% end %> 
+			</li>
 		  <% end %>
 		  </ul>
 		

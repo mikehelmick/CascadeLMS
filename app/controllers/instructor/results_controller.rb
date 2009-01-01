@@ -7,7 +7,7 @@ class Instructor::ResultsController < Instructor::InstructorBase
   
   def compare
     return unless load_course( params[:course] )
-    return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_assignments' )
+    return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_view_survey_results' )
     return unless quiz_enabled( @course )
     return unless course_open( @course, :action => 'index' )
     
@@ -37,7 +37,7 @@ class Instructor::ResultsController < Instructor::InstructorBase
 
   def survey
     return unless load_course( params[:course] )
-    return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_assignments' )
+    return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_view_survey_results' )
     return unless quiz_enabled( @course )
     return unless course_open( @course, :action => 'index' )
     return unless load_assignment( params[:assignment] )
@@ -62,7 +62,7 @@ class Instructor::ResultsController < Instructor::InstructorBase
   
   def survey_question
     return unless load_course( params[:course] )
-    return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_assignments' )
+    return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_view_survey_results' )
     return unless quiz_enabled( @course )
     return unless course_open( @course, :action => 'index' )
     return unless load_assignment( params[:assignment] )
@@ -115,7 +115,7 @@ class Instructor::ResultsController < Instructor::InstructorBase
 
   def quiz
     return unless load_course( params[:course] )
-    return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_assignments' )
+    return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_view_quiz_results' )
     return unless quiz_enabled( @course )
     return unless course_open( @course, :action => 'index' )
     return unless load_assignment( params[:assignment] )
@@ -148,7 +148,6 @@ class Instructor::ResultsController < Instructor::InstructorBase
   
   def for_student
     return unless load_course( params[:course] )
-    return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_assignments' )
     return unless quiz_enabled( @course )
     return unless course_open( @course, :action => 'index' )
     return unless load_assignment( params[:assignment] )
@@ -159,6 +158,12 @@ class Instructor::ResultsController < Instructor::InstructorBase
     if @quiz.anonymous 
       flash[:badnotice] = "This is an anonymous survey, expanded results are not available."
       redirect_to :action => 'survey', :course => @course, :assignment => @assignment
+    end
+    
+    if @quiz.survey
+      return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_view_survey_results' )
+    else
+      return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_view_quiz_results' )
     end
     
     # make sure the student exists

@@ -4,7 +4,9 @@
  <p><i>There are no assignments in this course.</i></p>
 <% else %>
 
-<p><%= link_to "#{image_tag 'arrow_switch.png'} Reorder Assignments", :action => 'reorder', :course => @course %></p>
+<% if @user.instructor_in_course?(@course.id) || (@user.assistant_in_course?(@course.id) && @course.course_setting.ta_course_assignments) %>
+  <p><%= link_to "#{image_tag 'arrow_switch.png'} Reorder Assignments", :action => 'reorder', :course => @course %></p>
+<% end %>
 
  <table class="fancy" id="asignment_table"> 
    <tr class="header"> 
@@ -58,26 +60,52 @@
 	         &nbsp;
 	      <% else %>
 	        <% if assignment.rubrics.size > 0 %>
-	           <%= link_to "#{image_tag 'pencil.png', :align => 'absmiddle'} Edit", :controller => '/instructor/rubrics', :course => @course, :assignment => assignment %>
+	          <% if @user.instructor_in_course?(@course.id) || (@user.assistant_in_course?(@course.id) && @course.course_setting.ta_course_assignments) %>    
+	             <%= link_to "#{image_tag 'pencil.png', :align => 'absmiddle'} Edit", :controller => '/instructor/rubrics', :course => @course, :assignment => assignment %>
+	          <% else %>
+	             <s><%= image_tag 'pencil.png' %> Edit</s>
+	          <% end %>
 	        <% else %>
-	           <%= link_to "#{image_tag 'add.png', :align => 'absmiddle'} Define", :controller => '/instructor/rubrics', :course => @course, :assignment => assignment %>
+	          <% if @user.instructor_in_course?(@course.id) || (@user.assistant_in_course?(@course.id) && @course.course_setting.ta_course_assignments) %>
+	             <%= link_to "#{image_tag 'add.png', :align => 'absmiddle'} Define", :controller => '/instructor/rubrics', :course => @course, :assignment => assignment %>
+	          <% else %>
+	             <s><%= image_tag 'add.png' %> Define</s>
+	          <% end %>
 	        <% end %>
 	      <% end %>
 	    </td>
 	    <td>
 	       <%if assignment.auto_grade %>
-	           <%= link_to "#{image_tag 'pencil.png', :align => 'absmiddle'} Edit", :action => 'autograde', :course => @course, :id => assignment.id %> 
+	           <% if @user.instructor_in_course?(@course.id) || (@user.assistant_in_course?(@course.id) && @course.course_setting.ta_course_assignments) %>
+	             <%= link_to "#{image_tag 'pencil.png', :align => 'absmiddle'} Edit", :action => 'autograde', :course => @course, :id => assignment.id %> 
+	           <% end %>
 		   <% else %>
 		       &nbsp;
 		   <% end %>
 	    </td>
 	    <td nowrap="nowrap">
 	      <% if assignment.quiz.nil? %>
-	      	 <%= link_to 'Turn-ins', :controller => '/instructor/turnins', :course => @course, :assignment => assignment %> 
+	         <% if assignment.released && !@user.instructor_in_course?(@course.id) && (@user.assistant_in_course?(@course.id) && !@course.course_setting.ta_view_already_graded_assignments) %>
+	           <s>Turn-ins</s>         
+	         <% elsif !assignment.released && @user.instructor_in_course?(@course.id) || (@user.assistant_in_course?(@course.id) && @course.course_setting.ta_grade_individual) %>
+	           <%= link_to 'Turn-ins', :controller => '/instructor/turnins', :course => @course, :assignment => assignment %> 
+	         <% elsif @user.instructor_in_course?(@course.id) %>
+	           <%= link_to 'Turn-ins', :controller => '/instructor/turnins', :course => @course, :assignment => assignment %>
+	         <% else %>
+	           <s>Turn-ins</s>
+	         <% end %>
+	
 	      <% elsif assignment.quiz.survey %>
-	         <%= link_to 'Results', :controller => '/instructor/results', :action => 'survey', :course => @course, :assignment => assignment %>
+	         <% if @user.instructor_in_course?(@course.id) || (@user.assistant_in_course?(@course.id) && @course.course_setting.ta_view_survey_results ) %> 
+	           <%= link_to 'Results', :controller => '/instructor/results', :action => 'survey', :course => @course, :assignment => assignment %>
+	         <% else %><s>Results</s>
+	         <% end %>
 	      <% else %>
-         	 <%= link_to 'Submissions', :controller => '/instructor/results', :action => 'quiz', :course => @course, :assignment => assignment %>
+	         <% if @user.instructor_in_course?(@course.id) || (@user.assistant_in_course?(@course.id) && @course.course_setting.ta_view_quiz_results ) %> 
+         	   <%= link_to 'Submissions', :controller => '/instructor/results', :action => 'quiz', :course => @course, :assignment => assignment %>
+             <% else %>
+               <s>Submissions</s>
+             <% end %>
 	      <% end %>
 	    </td>
 	

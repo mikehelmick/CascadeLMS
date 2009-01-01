@@ -66,7 +66,7 @@ class UserTurninFile < ActiveRecord::Base
     FileManager.is_text_file( self.extension )
   end
   
-  def check_file( path, banned = Array )
+  def check_file( path, banned = Array.new )
     file_name = "#{path}#{self.filename}"
     if FileManager.java?( file_name )
       self.main_candidate = FileManager.java_main?( file_name )

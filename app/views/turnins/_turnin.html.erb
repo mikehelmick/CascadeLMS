@@ -30,6 +30,7 @@ Last Updated: <%= @display_turnin.updated_at.to_formatted_s(:friendly_date) %><b
   <tr class="header">
     <th>File</th>
 	<th>Date</th>
+	<th>Auto Added?</th>
 	<% if @assignment.programming %>
 	  <th>Main?</th>
 	  <% if any_java %>
@@ -72,6 +73,7 @@ Last Updated: <%= @display_turnin.updated_at.to_formatted_s(:friendly_date) %><b
       <%=h @tif.filename %> 
     </td>
     <td> <i><%= @tif.created_at.to_formatted_s(:short) %></i> </td>
+    <td><% if @tif.auto_added %><%= image_tag 'accept.png' %><% end %></td>
     <% if @assignment.programming %>
       <td>
 	    <% if @tif.main %>

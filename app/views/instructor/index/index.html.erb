@@ -2,136 +2,162 @@
 <h2><%= @course.title %> <%= @course.short_description %></h2>
 </div></div>
 
-<table class="FadeTable" cellspacing="0">
+<table class="FadeTable" cellspacing="1">
   <tr class="header">
-    <th class="full" colspan="2"><b>Instructor Controls for <%= @user.display_name %></b></th>
+	<th class="full" colspan="3">
+		<b>
+		<% if @user.instructor_in_course?( @course.id ) %>
+		  Instructor
+		<% else %>
+		  Assistant
+		<% end %>Controls for <%= @user.display_name %></b>
+	</th>
+  </tr>	
+
+  <tr>
+	<td width="20%"><b>General:</b></td>
+	<td width="40%">
+	  	<% if @user.instructor_in_course?( @course.id ) || @course.course_setting.ta_course_information %>
+		  <%= link_to "#{image_tag 'information.png', :align => 'absmiddle'} Course Information", :controller => '/instructor/course_info', :course => @course %>
+		<% else %>
+		  <%= image_tag 'information.png', :align => 'absmiddle' %> <s>Course Information</s>
+		<% end %>
+	</td>
+	<td width="40%">
+	  	<% if  @user.instructor_in_course?( @course.id ) || @course.course_setting.ta_course_settings %>
+		  <%= link_to "#{image_tag 'brick_edit.png', :align => 'absmiddle'} Course Settings", :controller => '/instructor/course_setting', :course => @course %>
+		<% else %>
+		  <%= image_tag 'brick_edit.png', :align => 'absmiddle' %> <s>Course Settings</s>
+		<% end %>
+	</td>
+  </tr>	
+  <tr>
+	<td></td>
+	<td>
+		<% if @user.instructor_in_course?( @course.id ) || @course.course_setting.ta_course_users %>
+	  	  <%= link_to "#{image_tag 'user_female.png', :align => 'absmiddle'} Course Users", :controller => '/instructor/course_users', :course => @course %>
+	    <% else %>
+	      <%= image_tag 'user_female.png', :align => 'absmiddle' %> <s>Course Users</s>
+	    <% end %>
+	</td>
+	<td>
   </tr>
+  <tr><td colspan="3"><hr/></td></tr>
+
+  <tr>
+	<td><b>Assessment:</b></td>
+	<td>
+	  	<% if @user.instructor_in_course?( @course.id ) || (@course.course_setting.ta_course_assignments || @course.course_setting.ta_view_student_files || @course.course_setting.ta_view_student_files || @course.course_setting.ta_view_quiz_results || @course.course_setting.ta_view_survey_results ) %>
+		  <%= link_to "#{image_tag 'keyboard.png', :align => 'absmiddle'} Assignments #{'and Quizzes' if @course.course_setting.enable_quizzes}", :controller => '/instructor/course_assignments', :course => @course %> 
+		<% else %>
+		  <%= image_tag 'keyboard.png', :align => 'absmiddle' %><s>Assignments <%='and Quizzes' if @course.course_setting.enable_quizzes %></s>
+		<% end %>	
+	</td>
+	<td>
+	  <% if @course.course_setting.enable_outcomes %>
+	    <% if @user.instructor_in_course?( @course.id ) || @course.course_setting.ta_edit_outcomes %>
+		  <%= link_to "#{image_tag 'chart_organisation.png', :align => 'absmiddle'} Course Outcomes", :controller => '/instructor/outcomes', :course => @course %>
+		<% else %>
+		  <%= image_tag 'chart_organisation.png' %> <s>Course Outcomes</s>
+		<% end %>
+	  <% else %>
+	    <acronym title="You can enable course outcomes from the 'course settings' screen."><s><%= image_tag 'lock.png', :align => 'absmiddle' %> Course Outcomes</s></acronym>
+	  <% end %>
+	</td>
+  </tr>
+  <tr>
+	<td></td>
+	<td>
+	  <% if @course.course_setting.enable_gradebook %>
+	    <% if @user.instructor_in_course?(@course.id) || @course.course_setting.ta_course_gradebook %>
+	      <%= link_to "#{image_tag 'report.png', :align => 'absmiddle'} Full Gradebook", :controller => '/instructor/course_gradebook', :course => @course %>
+	    <% else %>
+	      <%= image_tag 'report.png' %> <s>Full Gradebook</s>
+	    <% end %>
+	  <% else %>
+	    <acronym title="You can enable the gradebook from the 'course settings' screen."><s><%= image_tag 'lock.png', :align => 'absmiddle' %> Full Gradebook</s></acronym>
+	  <% end %>	
+	</td>
+	<td>
+	  <% if @course.course_setting.enable_gradebook %>
+	    <% if @user.instructor_in_course?(@course.id) || @course.course_setting.ta_course_gradebook %>
+	      <%= link_to "#{image_tag 'report_user.png', :align => 'absmiddle'} Grades by Student", :controller => '/instructor/course_gradebook', :course => @course, :action => 'students' %>
+	    <% else %>
+	      <%= image_tag 'report_user.png' %> <s>Grades by Student</s>
+	    <% end %>
+	  <% else %>
+	    <acronym title="You can enable the gradebook from the 'course settings' screen."><s><%= image_tag 'lock.png', :align => 'absmiddle' %> Full Gradebook</s></acronym>
+	  <% end %>		
+	</td>
+  </tr>
+  <tr>
+	<td></td>
+	<td>
+	  <% if @course.course_setting.enable_project_teams && @user.instructor_in_course?(@course.id)%>
+		<%= link_to "#{image_tag 'group_gear.png', :align => 'absmiddle'} Project Teams", :controller => '/instructor/teams', :course => @course %>
+	  <% elsif  @course.course_setting.enable_project_teams  # but not instructor %>
+	    <%= image_tag 'group_gear.png', :align => 'absmiddle' %> <s>Project Teams</s>
+	  <% else %>
+	    <acronym title="You can enable project teams from the 'course settings' screen."><s><%= image_tag 'lock.png', :align => 'absmiddle' %> Project Teams</s></acronym>
+	  <% end %>
+	</td>
+	<td>
+	  <% if @course.course_setting.enable_attendance %>	
+	    <% if @user.instructor_in_course?(@course.id) || @course.course_setting.ta_manage_attendance %>
+	      <%= link_to "#{image_tag 'calendar.png', :align => 'absmiddle'} Attendance", :controller => '/instructor/attendance', :course => @course %>
+	    <% else %>
+	      <%= image_tag 'calendar.png', :align => 'absmiddle' %> <s>Attendance</s>
+	    <% end %>
+	  <% else %>
+	    <acronym title="You can enable attendance tracking from the 'course settings' screen."><s><%= image_tag 'lock.png', :align => 'absmiddle' %> Attendance</s></acronym>
+	  <% end %>	
+		
+		
+	</td>
+  </tr>
+  <tr><td colspan="3"><hr/></td></tr>
+
+  <tr>
+	<td><b>Communication:</b></td>
+	<td>
+	  <% if @user.instructor_in_course?(@course.id) || @course.course_setting.ta_course_blog_post %>
+	    <%= link_to "#{image_tag 'newspaper.png', :align => 'absmiddle'} Course Blog", :controller => '/instructor/blog', :course => @course %>
+	  <% else %>
+	    <%= image_tag 'newspaper.png', :align => 'absmiddle' %> <s>Course Blog</s>
+	  <% end %>
+	</td>
+	<td>
+	  <% if @user.instructor_in_course?(@course.id) || @course.course_setting.ta_send_email %>
+	    <%= link_to "#{image_tag 'email.png', :align => 'absmiddle'} Send Email", :controller => '/instructor/email', :course => @course %>
+	  <% else %>
+	    <%= image_tag 'email.png', :align => 'absmiddle' %> <s>Send Email</s>
+	  <% end %>	
+	</td>
+  </tr>
+  <tr>
+	<td></td>
+	<td>
+	  <% if @user.instructor_in_course?(@course.id) || @course.course_setting.ta_course_documents %>
+	    <%= link_to "#{image_tag 'folder_page.png', :align => 'absmiddle'} Documents", :controller => '/instructor/course_docs', :course => @course %>
+	  <% else %>
+	    <%= image_tag 'folder_page.png', :align => 'absmiddle' %> <s>Documents</s>
+	  <% end %>	
+	</td>
+	<td></td>
+  </tr>
+  <tr><td colspan="3"><hr/></td></tr>
 
   <% if @user.instructor_in_course?( @course.id ) %>
   <tr>
-	<td><%= link_to "#{image_tag 'cog.png', :align => 'absmiddle'} Course Information", :controller => '/instructor/course_info', :course => @course %></td>
-	<td><%= link_to "#{image_tag 'cog.png', :align => 'absmiddle'} Course Users", :controller => '/instructor/course_users', :course => @course %></td>
+	<td><b>Application Consoles:</b></td>
+	<td><%= link_to "#{image_tag 'application_cascade.png', :align => 'absmiddle'} AutoGrade Queue", :controller => '/instructor/monitor', :action => 'agqueue', :course => @course %></td>
+	<td><%= link_to "#{image_tag 'application_error.png', :align => 'absmiddle'} AutoGrade Failures", :controller => '/instructor/monitor', :action => 'agfailed', :course => @course %></td>
   </tr>
-  <tr>
-	<td><%= link_to "#{image_tag 'cog.png', :align => 'absmiddle'} Course Documents", :controller => '/instructor/course_docs', :course => @course %></td>
-	<td><%= link_to "#{image_tag 'cog.png', :align => 'absmiddle'} Send Email", :controller => '/instructor/email', :course => @course %></td>
-  </tr>
-  <tr>
-	<td><%= link_to "#{image_tag 'cog.png', :align => 'absmiddle'} Assignments #{'and Quizzes' if @course.course_setting.enable_quizzes}", :controller => '/instructor/course_assignments', :course => @course %></td>
-	<td><%= link_to "#{image_tag 'cog.png', :align => 'absmiddle'} Course Blog", :controller => '/instructor/blog', :course => @course %></td>
-  </tr>
-  <tr> 
-    <td>
-	<% if @course.course_setting.enable_gradebook %>
-	  <%= link_to "#{image_tag 'cog.png', :align => 'absmiddle'} Gradebook", :controller => '/instructor/course_gradebook', :course => @course %> /
-	  <%= link_to "By Student", :controller => '/instructor/course_gradebook', :action => 'students', :course => @course %>
-	<% end %>
-	</td>
-	<td><%= link_to "#{image_tag 'cog.png', :align => 'absmiddle'} Settings", :controller => '/instructor/course_setting', :course => @course %></td>
-  </tr>
-
-
-  <% else ## TA SETTINGS %>
-  <tr>
-	<td>
-		<% if @course.course_setting.ta_course_information %>
-		  <%= link_to "#{image_tag 'cog.png', :align => 'absmiddle'} Course Information", :controller => '/instructor/course_info', :course => @course %>
-		<% else %>
-		  <%= image_tag 'cancel', :align => 'absmiddle' %><s>Course Information</s>
-		<% end %>
-	</td>
-	<td>
-		<% if @course.course_setting.ta_course_users %>
-	  	  <%= link_to "#{image_tag 'cog.png', :align => 'absmiddle'} Course Users", :controller => '/instructor/course_users', :course => @course %>
-	    <% else %>
-	      <%= image_tag 'cancel', :align => 'absmiddle' %><s>Course Users</s>
-	    <% end %>
-	</td>
-  </tr>
-  <tr>
-	<td>
-		<% if @course.course_setting.ta_course_documents %>
-		  <%= link_to "#{image_tag 'cog.png', :align => 'absmiddle'} Course Documents", :controller => '/instructor/course_docs', :course => @course %>
-		<% else %>
-		  <%= image_tag 'cancel', :align => 'absmiddle' %><s>Course Documents</s>
-		<% end %>
-	</td>
-	<td>
-		<% if @course.course_setting.ta_send_email %>
-		  <%= link_to "#{image_tag 'cog.png', :align => 'absmiddle'} Send Email", :controller => '/instructor/email', :course => @course %>
-		<% else %>
-		  <%= image_tag 'cancel', :align => 'absmiddle' %><s>Send Email</s>
-		<% end %>
-	</td>
-  </tr>
-  <tr>
-	<td>
-		<% if @course.course_setting.ta_course_assignments || @course.course_setting.ta_view_student_files || @course.course_setting.ta_course_assignments %>
-		  <%= link_to "#{image_tag 'cog.png', :align => 'absmiddle'} Assignments #{'and Quizzes' if @course.course_setting.enable_quizzes}", :controller => '/instructor/course_assignments', :course => @course %> 
-		<% else %>
-		  <%= image_tag 'cancel', :align => 'absmiddle' %><s>Assignments <%='and Quizzes' if @course.course_setting.enable_quizzes %></s>
-		<% end %>
-	</td>
-	<td>
-		<% if @course.course_setting.ta_course_blog_post %>
-		  <%= link_to "#{image_tag 'cog.png', :align => 'absmiddle'} Course Blog", :controller => '/instructor/blog', :course => @course %>
-		<% else %>
-		  <%= image_tag 'cancel', :align => 'absmiddle' %><s>Course Blog</s>
-		<% end %>
-	</td>
-  </tr>
-  <tr> 
-    <td>
-	    <% if @course.course_setting.ta_course_gradebook %>
-	      <%= link_to "#{image_tag 'cog.png', :align => 'absmiddle'} Gradebook", :controller => '/instructor/course_gradebook', :course => @course %> / <%= link_to "By Student", :controller => '/instructor/course_gradebook', :action => 'students', :course => @course %>
-	    <% else %>
-	      <%= image_tag 'cancel', :align => 'absmiddle' %><s>Gradebook</s>
-	    <% end %>
-	</td>
-    <td>
-	  	<% if @course.course_setting.ta_course_settings %>
-		  <%= link_to "#{image_tag 'cog.png', :align => 'absmiddle'} Settings", :controller => '/instructor/course_setting', :course => @course %>
-		<% else %>
-		  <%= image_tag 'cancel', :align => 'absmiddle' %><s>Settings</s>
-		<% end %>
-    </td>
-  </tr>
-  <% end %>
-
-  <% if @course.course_setting.enable_project_teams && @user.instructor_in_course?(@course.id)%>
-  <tr>
-	<td><%= link_to "#{image_tag 'cog.png', :align => 'absmiddle'} Project Teams", :controller => '/instructor/teams', :course => @course %></td>
-    <td>&nbsp;</td>
-  </tr>
-  <% end %>
-
-  <% if @course.course_setting.enable_attendance %>
-  <tr>
-    <td><%= link_to "#{image_tag 'cog.png', :align => 'absmiddle'} Attendance", :controller => '/instructor/attendance', :course => @course %></td>
-    <td>&nbsp;</td>
-  </tr>
-  <% end %>
-
-  <% if @course.course_setting.enable_outcomes && @user.instructor_in_course?( @course.id ) %>
-  <tr>
-    <td><%= link_to "#{image_tag 'cog.png', :align => 'absmiddle'} Course Outcomes", :controller => '/instructor/outcomes', :course => @course %></td>
-    <td>&nbsp;</td>
-  </tr>
-  <% end %>
-
-
-  <% if @user.instructor_in_course?( @course.id ) %>
-  <tr class="header">
-    <th class="full" colspan="2"><b>Instructor Application Consoles</b></th>
-  </tr>
-  <tr>
-	<td><%= link_to "#{image_tag 'cog.png', :align => 'absmiddle'} AutoGrade Queue", :controller => '/instructor/monitor', :action => 'agqueue', :course => @course %></td>
-	<td><%= link_to "#{image_tag 'cog.png', :align => 'absmiddle'} AutoGrade Failures", :controller => '/instructor/monitor', :action => 'agfailed', :course => @course %></td>
-  </tr>
-  <% end %>
-
-
+  <tr><td colspan="3"><hr/></td></tr>
+  <% end %>	
+		
 </table>
+
 
 <% if @user.instructor_in_course?(@course.id) %>
 <table class="FadeTable" cellspacing="0">

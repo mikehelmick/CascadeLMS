@@ -87,10 +87,14 @@
 <% if edit_mode %>
 <div class="block">
 <div class="sub_form">
-<p>Files attached to this assignment:</p>
+<p>Files attached to this assignment.   You can select one or more files to be automatically added to a student turnin.   This allows common test code to be automatically includes for all students (helpful for programming assignments).</p>
 <table class="fancy">
   <tr class="header">
-    <th align="left">#</th><th align="left">Filename</th><th align="left">Size</th><th align="left">Controls</th>
+    <th align="left" valign="bottom">#</th>
+    <th align="left" valign="bottom">Filename</th>
+    <th align="left" valign="bottom">Automatically Add<br/>To Student Turnins</th>
+    <th align="left" valign="bottom">Size</th>
+    <th align="left" valign="bottom">Controls</th>
   </tr>
   <% count = 0 %>
   <% for asgn_doc in @assignment.assignment_documents %>
@@ -101,6 +105,13 @@
 	  <tr class="<%=odd%> hover" id="assignment_document_<%=asgn_doc.id%>">
 	    <td><%=h asgn_doc.position %></td>
 	    <td><%= link_to "#{image_tag asgn_doc.icon_file, :align => 'absmiddle'} #{h asgn_doc.filename}", :action => 'download', :id => @assignment, :course => @course, :document => asgn_doc.id, :file => asgn_doc.without_extension, :extension => asgn_doc.extension %></td>
+	    <td>
+	    	<% if asgn_doc.add_to_all_turnins %>
+	           <b>Yes</b> (<%= link_to 'Remove', :action => 'toggle_auto_add', :id => @assignment, :course => @course, :document => asgn_doc.id %>)
+	        <% else %>
+	           <b>No<b/> (<%= link_to 'Add', :action => 'toggle_auto_add', :id => @assignment, :course => @course, :document => asgn_doc.id %>)
+	        <% end %>
+	    </td> 
 	    <td><%=h asgn_doc.size_text %></td>
 	    <td><%= link_to 'Move Up', :action => 'file_move_up', :id => @assignment, :course => @course, :document => asgn_doc.id %> | 
 	        <%= link_to 'Move Down', :action => 'file_move_down', :id => @assignment, :course => @course, :document => asgn_doc.id %> |  

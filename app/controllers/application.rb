@@ -29,7 +29,7 @@ require 'MyString'
 # Likewise, all the methods added will be available for all controllers.
 class ApplicationController < ActionController::Base
   ## CSCW Application version
-  @@VERSION = '1.0.1 (To The Light) 20081230'
+  @@VERSION = '1.0.2 (To The Light) 20090101'
   
   ## Supress password logging
   filter_parameter_logging :password
@@ -204,7 +204,7 @@ class ApplicationController < ActionController::Base
   end
   
   def course_open( course, redirect_info = {} )
-    unless course.open
+    unless course.open?
       flash[:badnotice] = "The requested action can not be performed, since the course is in archive status."
       redirect_to redirect_info
       return false

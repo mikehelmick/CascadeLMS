@@ -1,7 +1,7 @@
 :backgroundrb:
     :port: 11006
     :ip: 127.0.0.1
-    :environment: production
+    :environment: development
     :log: foreground
     :debug_log: true
     :persistent_disabled: true

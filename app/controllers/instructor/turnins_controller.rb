@@ -19,6 +19,10 @@ class Instructor::TurninsController < Instructor::InstructorBase
     @assignment = Assignment.find( params[:assignment] )
     return unless assignment_in_course( @course, @assignment )
     
+    if @assignment.released
+      return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_view_already_graded_assignments' )
+    end
+    
     # load the students
     @students = @course.students
     
