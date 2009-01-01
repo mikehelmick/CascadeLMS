@@ -120,6 +120,12 @@ class TurninsController < ApplicationController
     
     @utf = UserTurninFile.find( params[:id] )  
     return unless turnin_file_downloadable( @utf )
+    if @utf.hidden 
+      flash[:badnotice] = "The requested file is not available for download."
+      return redirect_to :action => 'index'
+    end
+    
+    
     @turnin = @utf.user_turnin 
     return unless load_team( @course, @assignment, @user )
     return unless user_owns_turnin( @user, @turnin, @team )
@@ -266,6 +272,7 @@ class TurninsController < ApplicationController
       utf.save
       
       ## copy any auto include files
+      has_main = false
       @assignment.assignment_documents.each do |asgn_doc|
         if asgn_doc.add_to_all_turnins 
           ## create a user_turnin_file for this
@@ -278,6 +285,7 @@ class TurninsController < ApplicationController
           auto_file.extension = asgn_doc.extension
           auto_file.user = @user
           auto_file.auto_added = true
+          auto_file.hidden = asgn_doc.keep_hidden
           # save to get an id
           ut.user_turnin_files << auto_file
           ut.save
@@ -304,6 +312,12 @@ class TurninsController < ApplicationController
           
           # perform the checks (see if this is a main file)
           auto_file.check_file( "#{directory}/" )
+          
+          if auto_file.main_candidate && !has_main
+            auto_file.main = true
+            has_main = true
+          end
+          
           auto_file.save
           
         end

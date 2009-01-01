@@ -76,13 +76,18 @@ class AssignmentsController < ApplicationController
     
     @document = AssignmentDocument.find(params[:document]) rescue @document = AssignmentDocument.new
     return unless document_in_assignment( @document, @assignment )
-       
+    
+    if @document.keep_hidden
+      flash[:badnotice] = 'The requested document cannot be downloaded at this time.'
+      redirect_to :action => 'view', :id => @assignment, :course => @course
+      return
+    end   
        
     begin  
       send_file @document.resolve_file_name(@app['external_dir']), :filename => @document.filename, :type => "#{@document.content_type}", :disposition => 'inline'  
     rescue
       flash[:badnotice] = "Sorry - the requested document has been deleted or is corrupt.  Please notify your instructor of the problem and mention 'assignment document id #{@document.id}'."
-      redirect_to :action => 'view', :assignment => @assignment, :course => @course
+      redirect_to :action => 'view', :id => @assignment, :course => @course
     end 
   end
 

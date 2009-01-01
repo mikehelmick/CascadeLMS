@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20090101195316) do
+ActiveRecord::Schema.define(:version => 20090101213805) do
 
   create_table "announcements", :force => true do |t|
     t.string   "headline"
@@ -29,6 +29,7 @@ ActiveRecord::Schema.define(:version => 20090101195316) do
     t.string   "extension"
     t.string   "size"
     t.boolean  "add_to_all_turnins", :default => false, :null => false
+    t.boolean  "keep_hidden",        :default => false, :null => false
   end
 
   create_table "assignment_pmd_settings", :force => true do |t|
@@ -726,6 +727,7 @@ ActiveRecord::Schema.define(:version => 20090101195316) do
     t.boolean  "gradable_override", :default => false, :null => false
     t.integer  "user_id"
     t.boolean  "auto_added",        :default => false, :null => false
+    t.boolean  "hidden",            :default => false, :null => false
   end
 
   add_index "user_turnin_files", ["user_turnin_id", "filename", "directory_parent"], :name => "unique_filename_idx", :unique => true

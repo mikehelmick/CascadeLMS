@@ -93,6 +93,7 @@
     <th align="left" valign="bottom">#</th>
     <th align="left" valign="bottom">Filename</th>
     <th align="left" valign="bottom">Automatically Add<br/>To Student Turnins</th>
+    <th align="left" valign="bottom">Hidden</th>
     <th align="left" valign="bottom">Size</th>
     <th align="left" valign="bottom">Controls</th>
   </tr>
@@ -112,6 +113,13 @@
 	           <b>No<b/> (<%= link_to 'Add', :action => 'toggle_auto_add', :id => @assignment, :course => @course, :document => asgn_doc.id %>)
 	        <% end %>
 	    </td> 
+	    <td>
+		  <% if asgn_doc.keep_hidden %>
+	           <b>Yes</b> (<%= link_to 'Unhide', :action => 'toggle_hidden', :id => @assignment, :course => @course, :document => asgn_doc.id %>)
+	        <% else %>
+	           <b>No<b/> (<%= link_to 'Hide', :action => 'toggle_hidden', :id => @assignment, :course => @course, :document => asgn_doc.id %>)
+		  <% end %>
+		</td>
 	    <td><%=h asgn_doc.size_text %></td>
 	    <td><%= link_to 'Move Up', :action => 'file_move_up', :id => @assignment, :course => @course, :document => asgn_doc.id %> | 
 	        <%= link_to 'Move Down', :action => 'file_move_down', :id => @assignment, :course => @course, :document => asgn_doc.id %> |  

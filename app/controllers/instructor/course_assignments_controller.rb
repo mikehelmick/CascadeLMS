@@ -338,6 +338,24 @@ class Instructor::CourseAssignmentsController < Instructor::InstructorBase
     redirect_to :action => 'pmd_settings', :course => @course, :id => @assignment
   end
   
+  def toggle_hidden
+    return unless load_course( params[:course] )
+    return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_assignments' )
+    return unless course_open( @course, :action => 'index' )
+    
+    @assignment = Assignment.find params[:id] rescue @assignment = Assignment.new
+    return unless assignment_in_course( @course, @assignment )
+    
+    @document = AssignmentDocument.find( params[:document] ) rescue @document = AssignmentDocument.new
+    return unless document_in_assignment( @document, @assignment )
+    
+    @document.keep_hidden = !@document.keep_hidden
+    @document.save
+    
+    set_highlight "assignment_document_#{@document.id}"
+  	redirect_to :action => 'edit', :course => @course, :id => @assignment    
+  end
+  
   def toggle_auto_add
     return unless load_course( params[:course] )
     return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_assignments' )
