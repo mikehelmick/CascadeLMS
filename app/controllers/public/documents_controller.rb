@@ -40,8 +40,12 @@ class Public::DocumentsController < ApplicationController
         @documents = Document.find(:all, :conditions => ['course_id = ? and published = ? and document_parent = ?', @course.id, true, @folder_id], :order => 'created_at desc' )  
               
         @fresh_date = @documents[0].created_at rescue @fresh_date = Time.now
-              
+        
         headers["Content-Type"] = "application/rss+xml"
+        params[:format] = 'xml'
+        respond_to do |format| 
+           format.xml 
+        end    
       end
     end
   end
