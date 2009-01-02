@@ -92,7 +92,7 @@
 </div>
 <% end %>
 
-<% if @assignment.auto_grade && !@assignment.closed? && @assignment.enable_upload && !@current_turnin.sealed%>
+<% if @assignment.auto_grade && !@assignment.closed? && @assignment.enable_upload && !@current_turnin.sealed  (@extension.nil? || @extension.past?) %>
 <div id="form_area">
   <% form_tag( { :action => "finalize" }, :onsubmit => "new Element.toggle('finalize_button');new Element.toggle( 'finalize_spinner');" ) do %>
   <p class="blockintro">Finalize</p>
