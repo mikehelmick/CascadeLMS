@@ -43,7 +43,7 @@
 <% if flash[:notice] %><div id="GoodMessage"><%= flash[:notice] %></div><% end %>
 <% if flash[:badnotice] %><div class="errorExplanation"><%= flash[:badnotice] %></div><% end %>
 
-<% if @course && !@course.open %>
+<% if @course && !@course.open? %>
 <div class="errorExplanation" align="center"><b>This course is now in archive mode, no changes may be made.</b></div>
 <% end  %>
 
