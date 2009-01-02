@@ -10,8 +10,8 @@
 
 <p>You are now taking a <%= item_type %>.  You should remain on this page until you are completely finished.    The timer on the right side of the page will tell you how long you have been working (but there is no time limit).   You should save your answers periodically, this will ensure that no work is lost.</p>
 
-<% if @quiz.anonymous %>
-<div class="GoodMessage">This survey is anonymous.  You instructor will know who submitted these responses.</div>
+<% if @quiz.survey && @quiz.anonymous %>
+<div class="GoodMessage">This survey is anonymous.  You instructor will not know who submitted these responses.</div>
 <% end %>
 
 <% if request.path_parameters['action'].eql?('take') and @quiz.random_questions %>
