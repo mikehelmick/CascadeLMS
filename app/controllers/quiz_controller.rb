@@ -159,16 +159,16 @@ class QuizController < ApplicationController
             end
           end
           
-          puts "MAX CORRECT: #{max_correct}"
-          puts "MULTI_CORRECT: #{multi_correct}"
-          puts "MULTI_INCORRECT: #{multi_incorrect}"
+          #puts "MAX CORRECT: #{max_correct}"
+          #puts "MULTI_CORRECT: #{multi_correct}"
+          #puts "MULTI_INCORRECT: #{multi_incorrect}"
           
           # someone forgot to select a correct answer!
           unless max_correct == 0 
             add_here = multi_correct/max_correct.to_f - multi_incorrect/max_correct.to_f
             add_here = 0 if add_here < 0
             
-            puts "ADD FOR THIS MULTI Q: #{add_here}"
+            #puts "ADD FOR THIS MULTI Q: #{add_here}"
             
             correct_count = correct_count + add_here
           end
