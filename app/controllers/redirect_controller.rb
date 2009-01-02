@@ -9,7 +9,12 @@ class RedirectController < ApplicationController
     begin
       if ( type.eql?('Assignment') )
         assignment = Assignment.find(id)
-        redirect_to :controller => '/assignments', :course => assignment.course, :action => 'view', :id => assignment
+        if assignment.quiz.nil?      
+          redirect_to :controller => '/assignments', :course => assignment.course, :action => 'view', :id => assignment
+        else
+          flash[:notice] = "To start the quiz '#{assignment.title}', click the name of the quiz below."
+          redirect_to :controller => '/assignments', :course => assignment.course, :action => nil, :id => nil
+        end
       elsif ( type.eql?('Post' ) )
         post = Post.find(id)
         redirect_to :controller => '/blog', :course => post.course, :action => 'post', :id => post
