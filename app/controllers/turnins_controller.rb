@@ -165,7 +165,11 @@ class TurninsController < ApplicationController
     return unless assignment_in_course( @assignment, @course )
     return unless assignment_available( @assignment )
     
-    return unless assignment_open( @assignment )
+    # check extension - we won't check open date if extension is allowd
+    @extension = @assignment.extension_for_user( @user )
+    if @extension.nil? || (@extension.nil? && !extension.past?)
+      return unless assignment_open( @assignment )
+    end
     
     return unless load_team( @course, @assignment, @user )
     
