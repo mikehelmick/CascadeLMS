@@ -45,11 +45,8 @@ class Instructor::OutcomesController < Instructor::InstructorBase
     return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_edit_outcomes' )
     
     @program = Program.find(params[:program]) rescue @program = nil
-    
-    course_program = CoursesPrograms.find(:all, :conditions => ["course_id = ? and program_id = ?", @course.id, @program.id])
-    course_program.each do |i|
-      i.destroy
-    end
+   
+    CoursesPrograms.delete_all(["course_id = ? and program_id = ?", @course.id, @program.id])
     
     render :nothing => true    
   end
