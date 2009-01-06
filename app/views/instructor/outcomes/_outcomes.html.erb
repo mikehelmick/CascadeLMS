@@ -16,7 +16,13 @@
     <% # build options list
        options = ""
        @course.programs.each do |program|
-	     program.course_templates.each do |course_template|
+	     course_templates = program.course_templates
+	     course_templates.sort! do |a,b| 
+		   res = a.title <=> b.title
+	       res = a.start_date <=> b.start_date if res == 0
+	       res
+		 end
+	     course_templates.each do |course_template|
 		   options = "#{options}\n    <option value=\"#{course_template.id}\">(#{program.title}) #{course_template.title} :: #{course_template.start_date}</option>"
 		 end
 	   end
