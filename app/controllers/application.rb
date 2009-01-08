@@ -29,7 +29,7 @@ require 'MyString'
 # Likewise, all the methods added will be available for all controllers.
 class ApplicationController < ActionController::Base
   ## CSCW Application version
-  @@VERSION = '1.0.9 (To The Light) 20090107'
+  @@VERSION = '1.0.10 (To The Light) 20090107'
   
   ## Supress password logging
   filter_parameter_logging :password

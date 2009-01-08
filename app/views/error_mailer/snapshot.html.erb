@@ -36,6 +36,7 @@ p { margin: 0 }
 
 <h3>Session</h3>
 <hr/>
+<p>User: <%= @session.data[:user].inspect rescue "<b>CAN'T GET USER</b>"%></p>
 <p><%= @session.inspect %></p>
 
 <h3>Environment</h3>
