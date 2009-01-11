@@ -11,7 +11,7 @@
 <p><b>You have <%= distance_of_time_in_words( nowT, @post.created_at + (1200) ) %> to complete this edit.</b></p>
 
 <div id="form_area">
-<% form_tag( :action => 'submit_post', :topic => @topic.id, :id => @post.id ) %>
+<% form_tag( :action => 'submit_post', :topic => @topic.id, :id => @post.id ) do %>
   <%= render :partial => 'post_form' %>
 <div class="submit">
   <%= submit_tag "Submit Post" %>
