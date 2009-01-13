@@ -214,7 +214,7 @@ class Instructor::QuizController < Instructor::InstructorBase
       
       # build answers
       answers = build_answers( params, @quiz_question )
-      answers.each { |i| question.quiz_question_answers << i }
+      answers.each { |i| @quiz_question.quiz_question_answers << i }
       question.save
       
       unless @quiz.survey
