@@ -4,6 +4,9 @@ class QuizController < ApplicationController
   before_filter :set_tab
   
   layout 'quiz'
+  
+  verify :method => :post, :only => [ :take ],
+         :redirect_to => { :controller => '/home', :course => nil, :action => nil, :id => nil }
 
   def index
     return unless load_course( params[:course] )
