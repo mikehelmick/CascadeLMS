@@ -202,6 +202,7 @@ class Instructor::QuizController < Instructor::InstructorBase
     return unless assignment_is_quiz( @assignment )
     
     @quiz = @assignment.quiz
+    do_redirect = true
     begin
      QuizQuestion.transaction do
       # build question
@@ -225,20 +226,20 @@ class Instructor::QuizController < Instructor::InstructorBase
         if correct_count != 1 && @quiz_question.multiple_choice 
           flash[:badnotice] = 'For a multiple choice question type, there must be only exactly 1 correct answer.'
           render :action => 'new_question'
-          raise SaveError
+          raise "retry"
         elsif correct_count == 0 && @quiz_question.checkbox
           flash[:badnotice] = 'There must be at least one correct answer for this question type.'
           render :action => 'new_question'
-	  raise SaveError
+	  raise "retry"
         end
         
       end
      end    
-    rescue SaveError => error
-      # OK
+    rescue 
+	do_redirect = false
     end
     
-    redirect_to :action => 'questions', :course => @course, :id => @assignment    
+    redirect_to( :action => 'questions', :course => @course, :id => @assignment) if do_redirect
   end
   
   def edit_question
