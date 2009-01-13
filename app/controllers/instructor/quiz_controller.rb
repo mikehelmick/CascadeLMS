@@ -202,7 +202,8 @@ class Instructor::QuizController < Instructor::InstructorBase
     return unless assignment_is_quiz( @assignment )
     
     @quiz = @assignment.quiz
-    QuizQuestion.transaction do
+    begin
+     QuizQuestion.transaction do
       # build question
       @quiz_question = QuizQuestion.new( params[:quiz_question])
       @quiz_question.text_response = params[:question_type].eql?('text_response')
@@ -224,15 +225,17 @@ class Instructor::QuizController < Instructor::InstructorBase
         if correct_count != 1 && @quiz_question.multiple_choice 
           flash[:badnotice] = 'For a multiple choice question type, there must be only exactly 1 correct answer.'
           render :action => 'new_question'
-          return
+          raise SaveError
         elsif correct_count == 0 && @quiz_question.checkbox
           flash[:badnotice] = 'There must be at least one correct answer for this question type.'
           render :action => 'new_question'
-          return
+	  raise SaveError
         end
         
       end
-      
+     end    
+    rescue SaveError => error
+      # OK
     end
     
     redirect_to :action => 'questions', :course => @course, :id => @assignment    
