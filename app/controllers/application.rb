@@ -29,7 +29,7 @@ require 'MyString'
 # Likewise, all the methods added will be available for all controllers.
 class ApplicationController < ActionController::Base
   ## CSCW Application version
-  @@VERSION = '1.0.14 (To The Light) 20090112'
+  @@VERSION = '1.0.16 (To The Light) 20090113'
   
   ## Supress password logging
   filter_parameter_logging :password
@@ -253,6 +253,7 @@ class ApplicationController < ActionController::Base
     unless course.public
       flash[:badnotice] = "The selected course is not available to the public."
       redirect_to :controller => '/public'
+      return false
     end
     return true
   end

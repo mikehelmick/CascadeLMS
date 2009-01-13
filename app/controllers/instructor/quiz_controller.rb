@@ -204,16 +204,16 @@ class Instructor::QuizController < Instructor::InstructorBase
     @quiz = @assignment.quiz
     QuizQuestion.transaction do
       # build question
-      question = QuizQuestion.new( params[:quiz_question])
-      question.text_response = params[:question_type].eql?('text_response')
-      question.multiple_choice = params[:question_type].eql?('multiple_choice')
-      question.checkbox = params[:question_type].eql?('checkbox')
-      question.quiz = @quiz
-      @quiz.quiz_questions << question
+      @quiz_question = QuizQuestion.new( params[:quiz_question])
+      @quiz_question.text_response = params[:question_type].eql?('text_response')
+      @quiz_question.multiple_choice = params[:question_type].eql?('multiple_choice')
+      @quiz_question.checkbox = params[:question_type].eql?('checkbox')
+      @quiz_question.quiz = @quiz
+      @quiz.quiz_questions << @quiz_question
       @quiz.save
       
       # build answers
-      answers = build_answers( params, question )
+      answers = build_answers( params, @quiz_question )
       answers.each { |i| question.quiz_question_answers << i }
       question.save
       
@@ -474,6 +474,29 @@ class Instructor::QuizController < Instructor::InstructorBase
         answers << answer
       end
     end
+
+    # in case the question creation failes...
+    @answer_1 = answers[0] 
+    @answer_1 = QuizQuestionAnswer.new if @answer_1.nil?
+    @answer_2 = answers[1]  
+    @answer_2 = QuizQuestionAnswer.new if @answer_2.nil?
+    @answer_3 = answers[2]  
+    @answer_3 = QuizQuestionAnswer.new if @answer_3.nil?
+    @answer_4 = answers[3]  
+    @answer_4 = QuizQuestionAnswer.new if @answer_4.nil?
+    @answer_5 = answers[4]  
+    @answer_5 = QuizQuestionAnswer.new if @answer_5.nil?
+    @answer_6 = answers[5]  
+    @answer_6 = QuizQuestionAnswer.new if @answer_6.nil?
+    @answer_7 = answers[6]  
+    @answer_7 = QuizQuestionAnswer.new if @answer_7.nil?
+    @answer_8 = answers[7]  
+    @answer_8 = QuizQuestionAnswer.new if @answer_8.nil?
+    @answer_9 = answers[8]  
+    @answer_9 = QuizQuestionAnswer.new if @answer_9.nil?
+    @answer_10 = answers[9]  
+    @answer_10 = QuizQuestionAnswer.new if @answer_10.nil?
+
     
     return answers 
   end
