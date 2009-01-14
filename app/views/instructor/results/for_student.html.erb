@@ -16,6 +16,10 @@
 </div></div>
 
 <p>&nbsp;</p>
+<% if @attempt.nil? %>
+<div class="errorExplanation">This student has not submitted any quiz attempts.</div>
+<% end %>
+
 
 <!-- begin grade area -->
 <% unless @assignment.quiz.survey %>

@@ -57,6 +57,13 @@ class Instructor::ResultsController < Instructor::InstructorBase
     @column2 = Array.new
     (size+1).upto(@students.length-1) { |i| @column2 << @students[i] }
       
+    # if anonymous, run through all attempts
+    if @quiz.anonymous
+      attempts = QuizAttempt.find(:all, :conditions => ["quiz_id = ?", @quiz.id])
+      @student_map = Hash.new
+      attempts.each { |attempt| @student_map[attempt.user_id] = true }  
+    end  
+      
     aggregate_survey_responses( @quiz )  
   end
   
@@ -180,6 +187,7 @@ class Instructor::ResultsController < Instructor::InstructorBase
         
     @attempt = QuizAttempt.find(:first, :conditions => ["quiz_id = ? and user_id = ?", @quiz.id, @student.id], :order => "created_at desc")    
     @answer_map = map_existing_quiz_attempt( @attempt ) unless @attempt.nil?
+    @answer_map = Hash.new if @answer_map.nil?  
       
     @questions = @quiz.quiz_questions  
        

@@ -9,7 +9,7 @@
 <% else %>
 
 <% if @quiz.anonymous %>
-<div class="GoodMessage">This survey is anonymous, by student responses are not available.</div>
+<div class="GoodMessage">This survey is anonymous, individual student responses are not available.</div>
 <% end %>
 
 
@@ -78,12 +78,20 @@
 
 <% end # if there are questions %>
 
-
-<% if ! @quiz.anonymous %>
 <p>&nbsp;</p>
+<% if @quiz.anonymous && @student_map.size < 5 %>
+<div class="errorExplanation">You can not retrieve a list of who has submitted a response because there are not enough respondents yet.</div>
+<% end %>
 
+<% if ! @quiz.anonymous || (@quiz.anonymous && @student_map.size >= 5) %>
 <div class="SectionHeader"><div class="Full">
-<h2>View Results By Student</h2>
+<h2>
+  <% if @quiz.anonymous %>
+    View Respondent List
+  <% else %>
+    View Results By Student    
+  <% end %>
+</h2>
 </div></div>
 <p>&nbsp;</p>
 <div class="Section">
@@ -93,10 +101,25 @@
 	 odd = "even" if i.even?
 	  %>
   <tr class="<%=odd%> hover">
-	<td width="50%"><%= link_to "#{@column1[i].display_name} (#{@column1[i].uniqueid})", :id => @column1[i].id, :action => 'for_student', :course => @course, :assignment => @assignment %></td>
-	<td width="50%"><%= link_to( "#{@column2[i].display_name} (#{@column2[i].uniqueid})", :id => @column2[i].id, :action => 'for_student', :course => @course, :assignment => @assignment) rescue "&nbsp;" %></td>
+	<td width="50%">
+	  <% if @quiz.anonymous %>
+	    <%= @column1[i].display_name %> 
+	    <% if @student_map[@column1[i].id] %><%= image_tag 'accept.png' %><% else %><%= image_tag 'cancel.png' %><% end %>
+	  <% else %>
+  	    <%= link_to "#{@column1[i].display_name} (#{@column1[i].uniqueid})", :id => @column1[i].id, :action => 'for_student', :course => @course, :assignment => @assignment %>
+      <% end %>
+    </td>
+	<td width="50%">
+      <% if @quiz.anonymous %>
+	    <%= @column2[i].display_name rescue "&nbsp;" %> 
+	  <% else %>
+	    <%= link_to( "#{@column2[i].display_name} (#{@column2[i].uniqueid})", :id => @column2[i].id, :action => 'for_student', :course => @course, :assignment => @assignment) rescue "&nbsp;" %>
+	  <% end %>
+	</td>
   </tr>
 <% end %>
 </table>
 </div>
+<p>&nbsp;</p>
 <% end %>
+
