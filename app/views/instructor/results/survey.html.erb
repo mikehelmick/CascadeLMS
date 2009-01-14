@@ -110,8 +110,11 @@
       <% end %>
     </td>
 	<td width="50%">
-      <% if @quiz.anonymous %>
+          <% if @quiz.anonymous %>
 	    <%= @column2[i].display_name rescue "&nbsp;" %> 
+            <% if ! @column2[i].nil? %>
+              <% if @student_map[@column2[i].id] %><%= image_tag 'accept.png' %><% else %><%= image_tag 'cancel.png' %><% end %>
+            <% end %>
 	  <% else %>
 	    <%= link_to( "#{@column2[i].display_name} (#{@column2[i].uniqueid})", :id => @column2[i].id, :action => 'for_student', :course => @course, :assignment => @assignment) rescue "&nbsp;" %>
 	  <% end %>
