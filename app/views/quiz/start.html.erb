@@ -8,6 +8,12 @@
   <%= item_type %> <%= @assignment.title %></h2>
 </div></div>
 
+<% unless @assignment.description.nil? %>
+ <div class="standout">
+  <%= @assignment.description_html %>
+ </div>
+<% end %>
+
 <p>You are now taking a <%= item_type %>.  You should remain on this page until you are completely finished.    The timer on the right side of the page will tell you how long you have been working (but there is no time limit).   <i>You should save your answers periodically, this will ensure that no work is lost</i>. <b>You MUST save your answers 30 minutes, or your session may expire and your answers could be lost.</b></p>
 
 <% if @quiz.survey && @quiz.anonymous %>
