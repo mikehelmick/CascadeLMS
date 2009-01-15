@@ -48,13 +48,13 @@
 		   <% if (@assignment.use_subversion && @assignment.programming) && @assignment.enable_upload %> Subversion or Upload to this site.
 		   <% elsif @assignment.use_subversion && @assignment.programming %> Subversion only.
 		   <% elsif @assignment.enable_upload %> 
-		     <%= link_to 'Upload to this site.', :controller => '/turnins', :course => @course, :assignment => @assignment, :action => 'index', :id => nil  %> 
+		     <%= link_to "#{image_tag 'folder_table.png'} Upload / Manage Submitted Files #{"and AutoGrade" if @assignment.auto_grade}", :controller => '/turnins', :course => @course, :assignment => @assignment, :action => 'index', :id => nil  %> 
 		   <% else %> Printout. 
 		   <% end %>
 		  </td>
 	  </tr>
 	  
-	  <% if  @assignment.use_subversion ||  @assignment.enable_upload %>
+	  <% if  @assignment.use_subversion && !@assignment.enable_upload %>
 	  <tr><td class="label" width="15%" nowrap="nowrap" valign="top">&nbsp;</td>
 	      <td valign="top">
 	        <%= link_to "#{image_tag 'folder_table.png'} Manage Submitted Files #{"and AutoGrade" if @assignment.auto_grade}", :controller => '/turnins', :course => @course, :assignment => @assignment, :action => 'index'  %>
