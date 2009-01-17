@@ -186,6 +186,16 @@ class Instructor::OutcomesController < Instructor::InstructorBase
     render :nothing => true
   end
   
+  def delete_all
+    return unless load_course( params[:course] )
+    return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_edit_outcomes' )
+    
+    CourseOutcome.delete_all( ["course_id = ?", @course.id] )
+    
+    flash[:notice] = "All outcomes have been deleted."
+    redirect_to :action => 'index', :course => @course
+  end
+  
   def destroy
     return unless load_course( params[:course] )
     return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_edit_outcomes' )

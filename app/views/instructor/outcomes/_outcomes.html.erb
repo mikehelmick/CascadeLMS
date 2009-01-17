@@ -75,7 +75,7 @@
 <table class="fancy" width="99%">
   <tr class="header">
 	  <th width="90%">Course Outcome</th>
-	  <th>Controls</th>
+	  <th>Controls - <%= link_to "#{image_tag 'chart_organisation_delete.png', :align => 'absmiddle'} Delete All", {:course => @course, :action => 'delete_all'}, :confirm => "Are you sure you want to delete all the outcomes from this course? This action can not be undone." %></th>
 	</tr>
 
    <% row_count = 0 
