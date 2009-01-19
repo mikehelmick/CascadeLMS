@@ -23,6 +23,13 @@ class AssignmentsController < ApplicationController
     return unless allowed_to_see_course( @course, @user )
     
     @assignment = Assignment.find(params[:id]) rescue @assignment = Assignment.new
+
+    if ! @assignment.quiz.nil?
+      flash[:notice] = "The selected assignment is a quiz, there are no details to view."
+      redirect_to :action => 'index', :course => @course, :assignment => nil, :id => nil
+      return
+    end
+
     return unless assignment_in_course( @assignment, @course )
     return unless assignment_available( @assignment )
     
