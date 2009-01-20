@@ -65,7 +65,7 @@
 		              %>
 		         <% elsif quiz_answer.correct %>
 		             <% possible_correct = possible_correct + 1 %>
-	  	         <% elsif quiz_answer.id == answer_id %>
+	  	         <% elsif answer_ids[quiz_answer.id] %>
 	                 <b><font color="red">Incorrect <%= image_tag 'cancel.png' %></font></b>
 	             <% end %>
 	             <%=h quiz_answer.answer_text %>
