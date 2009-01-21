@@ -32,7 +32,7 @@
 		<% else %>
 	      <ul><b>Test Output Views:</b>
 		 <li><b>Side-by-side Diff View</b></li>
-		 <li><%= link_to 'Line by line view', :action => 'view_io_tests', :course => @course, :assignment => @assignment, :format => 1, :student => @student %></li>
+		 <li><%= link_to 'Line by line view', :action => 'view_io_tests', :course => @course, :assignment => @assignment, :line => 1, :student => @student %></li>
 	      <ul>
 		<% end %>
 	 </td>

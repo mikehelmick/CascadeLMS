@@ -891,7 +891,7 @@ class Instructor::TurninsController < Instructor::InstructorBase
     
     # turnins
     @line_format = false 
-    @line_format = true if params[:format].to_i == 1 rescue @line_format = false
+    @line_format = true if params[:line].to_i == 1 rescue @line_format = false
     
     @student_io_check = Hash.new
     @student_io_check_lines = Hash.new

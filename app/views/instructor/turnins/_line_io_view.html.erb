@@ -11,8 +11,8 @@
 		</th>
 	 </tr>
 	
-	 <% max = @student_io_check_lines[check.id][:EXPECTED].size
-	    max = @student_io_check_lines[check.id][:STUDENT].size if @student_io_check_lines[check.id][:STUDENT].size > max
+	 <% max = @student_io_check_lines[check.id][:EXPECTED].size rescue max = 0
+	    max = @student_io_check_lines[check.id][:STUDENT].size if @student_io_check_lines[check.id][:STUDENT].size > max rescue max = 0
 	    count = 0
 	  %>
 	 <% 0.upto(max-1) do |i| %>
