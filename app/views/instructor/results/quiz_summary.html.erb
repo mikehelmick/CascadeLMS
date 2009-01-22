@@ -1,0 +1,108 @@
+<p><%= link_to 'Back to All Assignments', :controller => '/instructor/course_assignments', :course => @course, :action => nil, :id => nil, :assignment => nil %></p>
+
+<div class="SectionHeader"><div class="Full">
+<h2>Quiz Response Summary<br/><b>'<%= @assignment.title %>'</b></h2>
+</div></div>
+
+<% if @quiz.quiz_questions.length == 0 %>
+  <p><i>There are no questions for this quiz.</i></p>
+<% else %>
+
+
+  <p>Here are the aggregate survey responses for all students.  You can also view the by-student responses for a question or view the entire survey for a given student.</p>
+ 
+  <table class="fancy" width="99%">
+  <tr class="header">
+	  <th align="center">#</th>
+	  <th align="center" width="98%">Question</th>
+	</tr>
+
+   <% row_count = 0 %>
+   <% for question in @quiz.quiz_questions %>
+	 <% row_count = row_count.next 
+	    odd = "odd"
+        odd = "even" if row_count.even? %>
+     <tr class="<%=odd%> hover" id="quiz_question_<%=question.id%>">
+	   <td valign="top"><%= row_count %></td>
+	   <td valign="top"><%=h question.question %></td>
+	 </tr>
+	 <tr class="<%=odd%> hover" id="quiz_question_<%=question.id%>_answers">
+	   <td>&nbsp;</td>
+	   <td colspan="1">
+		  
+		  <% if question.text_response %>
+		    <ul>
+			  <% for response in @text_responses[question.id] %>
+			    <li><%=h response %></li>
+			  <% end %>
+			</ul>
+		
+		  <% else %>
+		  <table class="fancy">
+		    <tr><th align="center">Answer</th>
+			    <th align="right">Raw Count</th>
+			    <th align="right">Percentage</th>
+			</tr>
+			
+			<% for answer in question.quiz_question_answers %>
+			<tr>
+			  <td valign="top" align="left">
+			    <% if answer.correct %><%= image_tag 'accept.png' %>
+			    <% else %><%= image_tag 'cancel.png' %><% end %>
+			    <%=h answer.answer_text %>
+			  </td>
+			  <td valign="top" align="right" nowrap="nowrap"><%= @answer_count_map[answer.id] %></td>
+			  <td valign="top" align="right" nowrap="nowrap">
+			    <% if @question_answer_total[question.id].to_i > 0 %>
+			        <%= sprintf("%.3f", @answer_count_map[answer.id]/@question_answer_total[question.id].to_f * 100 ) %>% 
+			    <% else %>
+			        0.000%
+			    <% end %>
+			  </td>
+			</tr>
+			<% end %>
+			
+			<tr><td align="right" class="summaryCell"><b>TOTALS:</b></td>
+			    <td align="right" class="summaryCell" nowrap="nowrap"><%= @question_answer_total[question.id] %></td>
+			    <td align="right" class="summaryCell" nowrap="nowrap">100.000%</td>
+			</tr>
+			
+		  </table>
+		  <% end %>
+	   </td>
+     </tr>
+   <% end %> 
+  </table>
+
+<% end # if there are questions %>
+
+<p>&nbsp;</p>
+<% if @quiz.anonymous && @student_map.size < 5 %>
+<div class="errorExplanation">You can not retrieve a list of who has submitted a response because there are not enough respondents yet.</div>
+<% end %>
+
+<div class="SectionHeader"><div class="Full">
+<h2>
+  View Results By Student    
+</h2>
+</div></div>
+<p>&nbsp;</p>
+<div class="Section">
+<table class="fancy">
+<% 0.upto( @column1.length-1) do |i| %>
+  <% odd = "odd"
+	 odd = "even" if i.even?
+	  %>
+  <tr class="<%=odd%> hover">
+	<td width="50%">
+	  <%= link_to "#{@column1[i].display_name} (#{@column1[i].uniqueid})", :id => @column1[i].id, :action => 'for_student', :course => @course, :assignment => @assignment, :controller => 'instructor/results' %>
+    </td>
+	<td width="50%">
+      <%= link_to( "#{@column2[i].display_name} (#{@column2[i].uniqueid})", :id => @column2[i].id, :action => 'for_student', :course => @course, :assignment => @assignment, :controller => 'instructor/results') rescue "&nbsp;" %>
+	</td>
+  </tr>
+<% end %>
+</table>
+</div>
+<p>&nbsp;</p>
+

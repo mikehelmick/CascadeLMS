@@ -35,6 +35,64 @@ class Instructor::ResultsController < Instructor::InstructorBase
        
   end
 
+  def quiz_summary
+    return unless load_course( params[:course] )
+    return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_view_survey_results' )
+    return unless quiz_enabled( @course )
+    return unless course_open( @course, :action => 'index' )
+    return unless load_assignment( params[:assignment] )
+    return unless assignment_in_course( @course, @assignment )
+    return unless assignment_is_quiz( @assignment )
+    @quiz = @assignment.quiz
+    
+    if @assignment.quiz.survey 
+      redirect_to :action => 'survey', :course => @course, :assignment => @assignment
+    end
+        
+    # map students to 2 columns
+    @students = @course.students
+    size = @students.length / 2
+    @column1 = Array.new
+    0.upto(size) { |i| @column1 << @students[i] }
+    @column2 = Array.new
+    (size+1).upto(@students.length-1) { |i| @column2 << @students[i] }
+      
+    # find the correct attempt for each student
+    @quiz_attempts = Array.new
+    @students.each do |student|
+      quiz_attempt = QuizAttempt.find(:first, :conditions => ["quiz_id=? and user_id=?",@quiz.id,student.id], :order => "created_at desc")  
+      @quiz_attempts << quiz_attempt.id unless quiz_attempt.nil?
+    end  
+      
+    # need to do complicated aggregation here
+    # we can make some assumptions since 
+    @answer_count_map = Hash.new
+    @question_answer_total = Hash.new
+    @text_responses = Hash.new
+    
+    @quiz.quiz_questions.each do |question|
+       
+      if question.text_response
+        @text_responses[question.id] = Array.new
+        responses = QuizAttemptAnswer.find(:all,:conditions => ["quiz_question_id = ? and quiz_attempt_id in (?)", question.id, @quiz_attempts.join(',')])
+        responses.each do |response|
+          @text_responses[question.id] << response.text_answer
+        end
+      
+      else
+        total_responses = 0
+        question.quiz_question_answers.each do |answer|
+          responses  = QuizAttemptAnswer.count(:conditions => ["quiz_question_answer_id = ? and quiz_attempt_id in (?)", answer.id, @quiz_attempts.join(',')])
+          @answer_count_map[answer.id] = responses
+          total_responses = total_responses + responses
+        end
+        @question_answer_total[question.id] = total_responses
+        
+      end
+    end
+         
+  end
+
   def survey
     return unless load_course( params[:course] )
     return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_view_survey_results' )
@@ -190,8 +248,50 @@ class Instructor::ResultsController < Instructor::InstructorBase
     @answer_map = Hash.new if @answer_map.nil?  
       
     @questions = @quiz.quiz_questions  
-       
-       
+  end
+  
+  def rescore
+    return unless load_course( params[:course] )
+    return unless quiz_enabled( @course )
+    return unless course_open( @course, :action => 'index' )
+    return unless load_assignment( params[:assignment] )
+    return unless assignment_in_course( @course, @assignment )
+    return unless assignment_is_quiz( @assignment )
+    @quiz = @assignment.quiz
+    
+    if @quiz.survey
+      flash[:notice] = "You can no rescore a survey."
+      redirect_to :action => 'survey', :course => @course, :assignment => @assignment
+    end
+    
+    Quiz.transaction do
+      # for each student
+      @course.students.each do |student|
+        # find the most recent submission for the student
+        quiz_attempt = QuizAttempt.find(:first, :conditions => ["quiz_id=? and user_id=?", @quiz.id, student.id], :order => "created_at desc" )
+        if quiz_attempt.nil?
+          # no quiz attempt for this student, update, or create grade_item to zero
+          unless @assignment.grade_item.nil?
+            grade_entry = GradeEntry.find(:first, :conditions => ["grade_item_id=? and user_id=?", @assignment.grade_item.id, student.id])
+            grade_entry = GradeEntry.new if grade_entry.nil?
+            grade_entry.user = student
+            grade_entry.course = @course
+            grade_entry.grade_item = @assignment.grade_item
+            grade_entry.points = 0
+            grade_entry.save
+          end
+          
+        else
+          # regrade quiz attempt
+          @quiz.score( quiz_attempt, student, @course )
+
+        end
+
+      end
+    end
+    
+    flash[:notice] = "All scores have been recalculated."
+    redirect_to :controller => 'instructor/results', :action => 'quiz', :course => @course, :assignment => @assignment
   end
 
 

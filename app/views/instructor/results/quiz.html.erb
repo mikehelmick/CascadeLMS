@@ -24,6 +24,8 @@
       <li><b>The free-form text response questions can not be automatically graded.</b></li>
     <% else %>
       <li><b>This quiz is automatically graded when students submit responses.</b></li>
+      <li><%= link_to 'Regrade All Submissions', :controller => 'instructor/results', :action => 'rescore', :course => @course, :assignment => @assignment  %> - <i>This will override any adjustment you have made, and text responses must still be manually graded.</i>  This is useful if you have changed the point value of the quiz since students started taking it.</li>
+      <li><%= link_to 'View quiz statistics', :controller => 'instructor/results', :action => 'quiz_summary', :course => @course, :assignment => @assignment %></li>
     <% end %>
   </ul>
 <% end %>
