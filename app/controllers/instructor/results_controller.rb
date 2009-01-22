@@ -61,7 +61,7 @@ class Instructor::ResultsController < Instructor::InstructorBase
     @quiz_attempts = Array.new
     @students.each do |student|
       quiz_attempt = QuizAttempt.find(:first, :conditions => ["quiz_id=? and user_id=?",@quiz.id,student.id], :order => "created_at desc")  
-      @quiz_attempts << quiz_attempt.id unless quiz_attempt.nil?
+      @quiz_attempts << quiz_attempt unless quiz_attempt.nil?
     end  
       
     # need to do complicated aggregation here
@@ -74,7 +74,7 @@ class Instructor::ResultsController < Instructor::InstructorBase
        
       if question.text_response
         @text_responses[question.id] = Array.new
-        responses = QuizAttemptAnswer.find(:all,:conditions => ["quiz_question_id = ? and quiz_attempt_id in (?)", question.id, @quiz_attempts.join(',')])
+        responses = QuizAttemptAnswer.find(:all,:conditions => ["quiz_question_id = ? and quiz_attempt_id in (?)", question.id, @quiz_attempts.collect(&:id)])
         responses.each do |response|
           @text_responses[question.id] << response.text_answer
         end
@@ -82,7 +82,7 @@ class Instructor::ResultsController < Instructor::InstructorBase
       else
         total_responses = 0
         question.quiz_question_answers.each do |answer|
-          responses  = QuizAttemptAnswer.count(:conditions => ["quiz_question_answer_id = ? and quiz_attempt_id in (?)", answer.id, @quiz_attempts.join(',')])
+          responses  = QuizAttemptAnswer.count(:conditions => ["quiz_question_answer_id = ? and quiz_attempt_id in (?)", answer.id, @quiz_attempts.collect(&:id)])
           @answer_count_map[answer.id] = responses
           total_responses = total_responses + responses
         end
