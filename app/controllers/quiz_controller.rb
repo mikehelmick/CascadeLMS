@@ -120,7 +120,7 @@ class QuizController < ApplicationController
     # else  - first entry is incomplete
     QuizAttempt.transaction do 
       @attempts[0].destroy
-      score( @quiz, @attempts[1] )
+      @quiz.score( @attempts[1], @user, @course )
     end
     
     flash[:notice] = "Quiz attempt aborted - here is your current attempt."
