@@ -12,6 +12,12 @@ xml.home do
     end
   end
   
+  xml.notifications do
+    @notifications.each do |i|
+      xml.notification = i.notification
+    end
+  end
+  
   xml.current_courses do
     @courses.each do |cuser|
       xml.course do

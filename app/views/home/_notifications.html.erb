@@ -1,0 +1,11 @@
+<% for notification in @notifications %>
+  <div id="notification_<%= notification.id %>" class="GoodMessage">
+ 	<% if notification.link %>
+      <a href="<%= notification.link %>"><%= notification.notification %></a>
+    <% else %>
+      <%= notification.notification %>
+    <% end %>
+  
+    <%= link_to_remote( "#{image_tag 'cog_add.png'} Dismiss", :url => { :action => 'acknowledge', :id => notification }, :complete => "new Effect.Puff( 'notification_#{notification.id}' )" ) %>
+  </div>
+<% end %>

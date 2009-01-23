@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20090101213805) do
+ActiveRecord::Schema.define(:version => 20090123032747) do
 
   create_table "announcements", :force => true do |t|
     t.string   "headline"
@@ -218,10 +218,11 @@ ActiveRecord::Schema.define(:version => 20090101213805) do
   add_index "course_template_outcomes_program_outcomes", ["course_template_outcome_id", "program_outcome_id"], :name => "course_template_outcomes_program_outcomes_unique", :unique => true
 
   create_table "course_templates", :force => true do |t|
-    t.string   "title",      :default => "", :null => false
+    t.string   "title",      :default => "",   :null => false
     t.string   "start_date"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "approved",   :default => true, :null => false
   end
 
   create_table "course_templates_programs", :id => false, :force => true do |t|
@@ -246,7 +247,7 @@ ActiveRecord::Schema.define(:version => 20090101213805) do
 
   add_index "courses_crns", ["course_id", "crn_id"], :name => "courses_crns_course_id_index", :unique => true
 
-  create_table "courses_programs", :force => true do |t|
+  create_table "courses_programs", :id => false, :force => true do |t|
     t.integer  "course_id",  :default => 0, :null => false
     t.integer  "program_id", :default => 0, :null => false
     t.datetime "created_at"
@@ -485,6 +486,20 @@ ActiveRecord::Schema.define(:version => 20090101213805) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  create_table "notifications", :force => true do |t|
+    t.integer  "user_id",      :default => 0,     :null => false
+    t.text     "notification",                    :null => false
+    t.text     "link"
+    t.boolean  "emailed",      :default => false, :null => false
+    t.boolean  "acknowledged", :default => false, :null => false
+    t.integer  "view_count",   :default => 0,     :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "notifications", ["user_id", "emailed"], :name => "index_notifications_on_user_id_and_emailed"
+  add_index "notifications", ["user_id"], :name => "index_notifications_on_user_id"
 
   create_table "posts", :force => true do |t|
     t.integer  "course_id",       :default => 0,     :null => false

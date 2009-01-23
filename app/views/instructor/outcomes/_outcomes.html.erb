@@ -23,7 +23,7 @@
 	       res
 		 end
 	     course_templates.each do |course_template|
-		   options = "#{options}\n    <option value=\"#{course_template.id}\">(#{program.title}) #{course_template.title} :: #{course_template.start_date}</option>"
+		   options = "#{options}\n    <option value=\"#{course_template.id}\">(#{program.title}) #{course_template.title} :: #{course_template.start_date}</option>" if course_template.approved
 		 end
 	   end
      %>

@@ -14,6 +14,7 @@
  <table class="fancy" width="99%">
   <tr class="header">
 	  <th width="80%">Course Template</th>
+	  <th>Approval</th>
 	  <th width="15%">Start Date</th>
 	  <th>Controls</th>
 	</tr>
@@ -25,6 +26,11 @@
 	       odd = "even" if count.even? %>
 	    <tr class="<%=odd%> hover" id="course_template_<%=course_template.id%>">
 	      <td><%=h course_template.title %></td>
+	      <td nowrap="nowrap">
+		    <% if !course_template.approved %>
+		      <%= link_to "#{image_tag 'cart_add.png'} Approve", {:controller => '/program', :action => 'approve', :id => @program, :template => course_template}, :confirm => 'Are you sure you want to approve this course template?  This will make it available for importing into courses.', :method => :post %>
+		    <% end %>
+		  </td>
 	      <td nowrap="nowrap"><%=h course_template.start_date %></td>
 	      <td nowrap="nowrap">
 		    <%= link_to 'Edit Template', :action => 'edit_template', :id => @program, :template => course_template %> |

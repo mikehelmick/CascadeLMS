@@ -24,10 +24,32 @@ class HomeController < ApplicationController
     @other_courses.sort! { |x,y| y.term.term <=> x.term.term }
     @other_courses.delete_if { |x| x.term.id == @term.id }
     
+    @notifications = Notification.find(:all, :conditions => ["user_id = ? and acknowledged = ? and view_count < ?", @user, false, 5] )
+    begin
+      @notifications.each do |notification|
+        notification.view_count = notification.view_count + 1
+        notification.save
+      end
+    rescue
+    end
+    
     respond_to do |format|
       format.html
       format.xml { render :layout => false }
     end
+  end
+  
+  def acknowledge
+    notification = Notification.find( params[:id] )
+    unless notification.nil?
+      if notification.user_id == @user.id
+        notification.acknowledged = true
+        notification.save
+      end
+    end
+    
+    
+    render :nothing => true
   end
   
   def courses

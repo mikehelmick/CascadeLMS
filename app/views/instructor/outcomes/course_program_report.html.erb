@@ -1,0 +1,75 @@
+<p><%= link_to 'Back', :controller => '/instructor/outcomes', :action => nil, :course => @course %></p>
+
+<div class="SectionHeader"><div class="Full">
+<h2>Course Outcomes to Program Outcomes report '<%=h @course.title%>' </h2>
+</div></div>
+
+<br/>
+
+<% all_outcomes = @course.ordered_outcomes %>
+
+<table class="fancy">
+  <tr class="header">	
+	<th align="right">Mapped Programs:</th>
+	<% for program in @course.programs %>
+	  <th align="center" colspan="<%=program.program_outcomes.size%>" style="border-right: 1px solid #FF0000;">
+		<%= program.title %>
+	  </th>
+	<% end %>
+  </tr>	
+	
+  <tr class="header">
+	<th>Course Outcomes \ Program Outcomes</th>
+	<% for program in @course.programs %>
+	  <% for po in program.program_outcomes%>
+	    <th align="center" width="2%">
+	      <u><acronym title="<%=h po.outcome %>"><%= program[0..1] %><%= po.position %></acronym></u>
+	    </th>
+	  <% end %>
+	<% end %>
+  </tr>
+
+
+
+ <% row_count = 0 
+    parent_stack = [-1]
+	count_stack = [0] %>
+ <% for outcome in @course.ordered_outcomes %>
+  	 <% row_count = row_count.next 
+	    odd = "odd"
+        odd = "even" if row_count.even? %> 
+    <tr class="<%=odd%> hover" id="assignment_<%=outcome.id%>">
+	  <td>
+		<% space_count = @numbers[outcome.id].split(".").size - 1 %>
+		<% 1.upto(space_count) do %>
+		   &nbsp;&nbsp;
+		<% end %>
+		
+	    <%= @numbers[outcome.id] %>) <%=h outcome.outcome %>
+	  </td>
+	  <% for program in @course.programs %>
+	    <% for po in program.program_outcomes%>
+	      <th align="center">
+	        <% if outcome.mapped_to_program_outcome?(po.id) %>
+	          <acronym title="<%=h po.outcome %>"><%= image_tag 'accept.png' %></acronym>
+	        <% end %>
+	      </th>
+	    <% end %>
+	 <% end %>	  
+	</tr>
+  <% end %>
+</table>
+
+<p><b>Program Outcomes</b></p>
+
+<ul>	
+  <% for program in @course.programs %>
+    <li><%= program.title %></li>
+    <ul>
+    <% for po in program.program_outcomes%>
+      <li><%= program[0..1] %><%= po.position %>) <%= po.outcome %></li>
+    <% end %>
+    </ul>
+  <% end %>	
+</ul>
+

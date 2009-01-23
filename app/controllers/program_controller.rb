@@ -466,6 +466,23 @@ class ProgramController < ApplicationController
     redirect_to :action => 'templates', :id => @program
   end
   
+  def approve
+    return unless load_program( params[:id] )
+    return unless allowed_to_manage_program( @program, @user )
+    return unless load_template( params[:template] )
+    return unless template_in_program( @course_template, @program )
+    
+    @course_template.approved = true
+    
+    if @course_template.save
+      flash[:notice] = "Course template was approved."
+      redirect_to :action => 'templates', :id => @program
+    else
+      flash[:badnotice] = "There was an error approving the course template."
+      redirect_to :action => 'templates', :id => @program     
+    end    
+  end
+  
   def delete_template
     return unless load_program( params[:id] )
     return unless allowed_to_manage_program( @program, @user )

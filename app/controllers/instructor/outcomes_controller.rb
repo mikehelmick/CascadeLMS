@@ -289,6 +289,7 @@ class Instructor::OutcomesController < Instructor::InstructorBase
       @new_template = CourseTemplate.new
       @new_template.title = "EXPORT #{@course.title} - #{@course.short_description}"
       @new_template.start_date = "#{@course.term.semester}"
+      @new_template.approved = false
       @new_template.save
       
       # map to programs
@@ -319,6 +320,12 @@ class Instructor::OutcomesController < Instructor::InstructorBase
       end
       @new_template.save
       
+      @course.programs.each do |program|
+        message = "A new course template '#{@new_template.title}' has been exported by #{@user.display_name} and requires your approval."
+        link = url_for :controller => 'program', :action => 'template', :id => program.id, :course => nil rescue link = nil      
+        Notification.create( message, program.users, link_text )        
+      end
+      
       flash[:notice] = 'Course outcomes export to template succeeded.'
       success = true
     end
@@ -328,6 +335,15 @@ class Instructor::OutcomesController < Instructor::InstructorBase
   end
   
   def assignments
+    return unless load_course( params[:course] )
+    return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_edit_outcomes' )
+    
+    @numbers = load_outcome_numbers( @course )
+    
+    render :layout => 'noright'
+  end
+  
+  def course_program_report
     return unless load_course( params[:course] )
     return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_edit_outcomes' )
     

@@ -15,6 +15,8 @@
 		</li>
 	  <% end %>
 	</ul>
+	<br/>
+	<%= link_to "#{image_tag('report_link.png', :align => 'absmiddle')} View course outcomes to program outcomes report.", :controller => 'instructor/outcomes', :course => @course, :action => 'course_program_report' %>
 	</p>
 <% end %>
 

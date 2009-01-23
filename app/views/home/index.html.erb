@@ -1,8 +1,11 @@
+<%= render :partial => 'notifications' %>
+
 <%= render :partial => 'announcements' %>
 
 <% if @user.auditor %>
 <%= render :partial => 'auditor' %>
 <% end %>
+
 
 <%= render :partial => 'courses' %>
 
