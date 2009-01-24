@@ -11,6 +11,18 @@ class Instructor::MonitorController < Instructor::InstructorBase
     redirect_to :controller => '/instructor/index', :course => @course
   end
   
+  def restart
+    return unless load_course( params[:course] )
+    return unless ensure_course_instructor( @course, @user )
+    
+    pwd = `pwd`.chomp
+    `#{@app['ruby']} #{pwd}/script/backgroundrb stop`
+    `#{@app['ruby']} #{pwd}/script/backgroundrb start`
+    
+    flash[:notice] = 'The AutoGrade server has been restarted.'
+    redirect_to :controller => '/instructor/monitor', :course => @course, :action => 'agqueue'
+  end
+  
   def agqueue
     return unless load_course( params[:course] )
     return unless ensure_course_instructor( @course, @user )

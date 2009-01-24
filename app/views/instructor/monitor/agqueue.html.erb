@@ -2,7 +2,12 @@
 <h2>AutoGrade Queue - Monitor Console</h2>
 </div></div>
 <p><%= link_to 'View Queue', :course => @course, :controller => '/instructor/monitor', :action => 'agqueue' %> | 
-   <%= link_to 'View Failures', :course => @course, :controller => '/instructor/monitor', :action => 'agfailed' %></p>
+   <%= link_to 'View Failures', :course => @course, :controller => '/instructor/monitor', :action => 'agfailed' %> | 
+   <%= link_to "#{image_tag 'control_repeat_blue.png'} Restart AutoGrader", {:course => @course, :controller => '/instructor/monitor', :action => 'restart'}, :confirm => 'Are you sure you want to restart the AutoGrader?  You should only do this if you believe assignments are stuck in the queue.'%>
+   
+</p>
+
+
 
 <% if @items.size == 0 %>
 <p>There are no unprocessed items in the AutoGrader queue.</p>
