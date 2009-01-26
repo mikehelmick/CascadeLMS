@@ -31,7 +31,7 @@ class AutoGradeMonitorWorker < BackgrounDRb::MetaWorker
 
     in_service = GradeQueue.count(:all, :conditions => ["serviced = ? and (acknowledged = ? or queued = ? )", false, true, true] ) rescue in_service = 0
 
-      if item.size > 0 && in_service < 2
+      if item.size > 0 && in_service < 3
 
         schedule_me = item[0]
 
@@ -54,13 +54,13 @@ class AutoGradeMonitorWorker < BackgrounDRb::MetaWorker
               extra = "<br/><b>You have been waiting for over two minutes - if your place in line has not improved, please close this window and come back later today to check your submission status.</b>"
             end
             
-            this_req.message = "<p>There are #{item.size - 1} assignemtns waiting to be graded.<br/>Your position in line is <b>#{count}</b>#{extra}</p>"
+            this_req.message = "<p>There are #{item.size - 1} assignments waiting to be graded.<br/>Your position in line is <b>#{count}</b>#{extra}</p>"
             this_req.save
           end
           count = count.next
         end
 
-      elsif item.size > 0 && in_service >= 2
+      elsif item.size > 0 && in_service >= 3
         ## update the queue positions
         count = 1
         item.each do |i| 
