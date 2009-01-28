@@ -106,12 +106,13 @@ Last Updated: <%= @display_turnin.updated_at.to_formatted_s(:friendly_date) %><b
     <td nowrap="nowrap"> <i><%= @tif.created_at.to_formatted_s(:short) %></i> </td>
     <% if @assignment.programming %>
       <td>
-      	<% if @tif.main %>
-	      <%= image_tag 'accept.png' %> <b>Current</b>
+		<% if @tif.main %>
+	      <acronym title="This is the class that will be run when graded."><%= image_tag 'accept.png' %> <b>Current</b></acronym>
 	    <% elsif @tif.main_candidate && ! (@display_turnin.sealed || @display_turnin.finalized) %>
-	      <%= image_tag 'add.png' %> <b>Candidate</b>
+	      <acronym title="Make this the main class when grading.">
+	        <%= link_to "#{image_tag 'add.png'} Select", :action => 'change_main', :course => @course, :assignment => @assignment, :id => @student, :tif => @tif %>
 	         </acronym>
-	    <% end %>
+	    <% end %>	
 	  </td>
 	
 	   <% if any_java %>

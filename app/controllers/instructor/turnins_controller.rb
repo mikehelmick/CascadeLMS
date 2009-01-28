@@ -959,6 +959,50 @@ class Instructor::TurninsController < Instructor::InstructorBase
     redirect_to :controller => '/wait', :action => 'for_all', :course => @course, :assignment => @assignment, :student => nil, :id => batch
   end
   
+  def change_main
+    return unless load_course( params[:course] )
+    return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_view_student_files', 'ta_grade_individual' )
+    
+    @assignment = Assignment.find( params[:assignment] )
+    return unless assignment_in_course( @course, @assignment )
+    
+    # make sure the student exists
+    @student = User.find(params[:id])
+    if ! @student.student_in_course?( @course.id )
+      flash[:badnotice] = "Invalid student record requested."
+      redirect_to :action => 'index'
+    end
+    
+    utf = UserTurninFile.find( params[:tif] ) 
+    unless utf.main_candidate
+      flash[:badnotice] = "The selected file '#{utf.filename}' does not contain a main function."
+      return  
+    end 
+    
+    if utf.user_turnin.assignment_id == @assignment.id
+      UserTurnin.transaction do
+         
+         utf.user_turnin.user_turnin_files.each do |this_file|
+           if this_file.id == utf.id
+             this_file.main = true
+           else
+             this_file.main = false 
+           end
+           this_file.save
+         end
+      end
+      
+      flash[:notice] = "'#{utf.filename}' will be the main file for grading."
+      
+    else
+      flash[:badnotice] = "Selected file is not in the current turnin set."
+    end
+    
+    redirect_to :controller => 'instructor/turnins', :action => 'view_student', :course => @course, :assignment => @assignment, :id => @student
+  end  
+  
+  
+  
   def io_retest
     return unless load_course( params[:course] )
     return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_view_student_files', 'ta_grade_individual' )
