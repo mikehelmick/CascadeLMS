@@ -328,6 +328,18 @@ class AutoGradeWorker < BackgrounDRb::MetaWorker
       else
         logger.info("Request #{args.to_i} already acknowledged")
       end
+
+    rescue ActiveRecord::StatementInvalid
+        @logger.error "MySQL is gone.."
+        GradeQueue.connection.reconnect!
+      unless queue.nil?
+        queue.acknowledged = false
+        queue.serviced=false
+        queue.failed=false
+        queue.message = "There was an error processing this submission. It is being retried."
+        queue.save
+      end
+
     
     rescue => doh
       logger.error("Request failed #{doh.message}")

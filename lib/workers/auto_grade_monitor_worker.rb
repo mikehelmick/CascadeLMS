@@ -9,15 +9,18 @@ class AutoGradeMonitorWorker < BackgrounDRb::MetaWorker
   def create(args = nil)
       logger.debug("Initialied auto_grade_monitor_worker")
       add_periodic_timer(15) { check_queue }
+      add_periodic_timer(20) { free_in_service }
   end
 
-  def free_in_service( args )
+  def free_in_service( args = nil )
     ## Free the in_service count
     to_free = GradeQueue.find(:all, :conditions => ["serviced = ? and (acknowledged = ? or queued = ? )", false, true, true] )
     to_free.each do |item|
-      item.acknowledged = false;
-      item.queued = false;
-      item.save
+      if Time.now - item.created_at > 300
+        item.acknowledged = false;
+        item.queued = false;
+        item.save
+      end
     end
     
   end
@@ -70,7 +73,7 @@ class AutoGradeMonitorWorker < BackgrounDRb::MetaWorker
         end
 
       else
-        logger.info("no grade requests at #{Time.now.to_formatted_s(:rfc822)}.")
+        puts("no grade requests at #{Time.now.to_formatted_s(:rfc822)}.")
       end
     
     #end 
