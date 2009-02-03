@@ -96,6 +96,8 @@ xml.assignment do
           xml.part_credit_points "#{rubric.part_credit_points}"
           xml.full_credit_criteria "#{rubric.full_credit_criteria}"
           xml.full_credit_points "#{rubric.full_credit_points}"
+          xml.above_credit_criteria "#{rubric.above_credit_criteria}"
+          xml.above_credit_points "#{rubric.above_credit_points}"
           
           if rubric.course_outcomes.size > 0
             xml.course_outcomes do

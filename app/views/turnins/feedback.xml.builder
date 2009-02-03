@@ -26,12 +26,17 @@ xml.assignment_feedback do
             xml.part_credit_points "#{rubric.part_credit_points}"
             xml.full_credit_criteria "#{rubric.full_credit_criteria}"
             xml.full_credit_points "#{rubric.full_credit_points}"
+            unless rubric.above_credit_criteria.nil?
+              xml.above_credit_criteria "#{rubric.above_credit_criteria}"
+              xml.above_credit_points "#{rubric.above_credit_points}"
+            end
 
             xml.rubric_grade do
               if !@rubric_entry_map[rubric.id].nil?
                 xml.no_credit_awarded "#{@rubric_entry_map[rubric.id].no_credit}"
                 xml.partial_credit_awarded "#{@rubric_entry_map[rubric.id].partial_credit}"
                 xml.full_credit_awarded "#{@rubric_entry_map[rubric.id].full_credit}"
+                xml.above_credit_awarded "#{@rubric_entry_map[rubric.id].above_credit}"
               end
               xml.comments "#{@rubric_entry_map[rubric.id].comments}"
             end

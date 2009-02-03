@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20090123032747) do
+ActiveRecord::Schema.define(:version => 20090203053712) do
 
   create_table "announcements", :force => true do |t|
     t.string   "headline"
@@ -625,6 +625,7 @@ ActiveRecord::Schema.define(:version => 20090123032747) do
     t.text     "comments"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "above_credit",   :default => false, :null => false
   end
 
   add_index "rubric_entries", ["assignment_id"], :name => "index_rubric_entries_on_assignment_id"
@@ -645,6 +646,8 @@ ActiveRecord::Schema.define(:version => 20090123032747) do
     t.integer  "position"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.text     "above_credit_criteria"
+    t.integer  "above_credit_points",          :default => 0,    :null => false
   end
 
   add_index "rubrics", ["assignment_id"], :name => "index_rubrics_on_assignment_id"

@@ -20,14 +20,21 @@
 <!-- @rubric_entry_map -->
 
 <!-- RUBRICS FEEDBACK -->
+<% show_above = false 
+   @assignment.rubrics.each do |rubric|
+     show_above = show_above || !rubric.above_credit_criteria.nil?
+   end
+ %>
 	<table class="fancy" width="99%" style="background: #FFFFFF;">
 	  <tr class="header">
 		<th width="22%">Rubric</th>
 		<th width="22%">No Credit</th>
 		<th width="22%">Partial Credit</th>
 		<th width="22%">Full Credit</th>
+		<% if show_above %>
+		  <th width="22%">Above and Beyond</th>
+		<% end %>
 	  </tr>
-
 	  <% row_count = 0 %>
 	  <% for rubric in @assignment.rubrics %>
 	    <% if rubric.visible_before_grade_release || (@assignment.released && rubric.visible_after_grade_release) %>
@@ -58,10 +65,27 @@
 		      <i><%=h rubric.full_credit_criteria %> (<%= rubric.full_credit_points %> points)</i>
 		    <% end %>	
 		  </td>
+		  <% if show_above %>
+		    <td>
+			  <% if rubric.above_credit_criteria.nil? %>
+			    &nbsp;
+			  <% else %>
+			    <% if !@rubric_entry_map[rubric.id].nil? && @rubric_entry_map[rubric.id].above_credit %>
+			      <b><%= image_tag "accept.png", :align => 'absmiddle' %><%=h rubric.above_credit_criteria %> (<i><%= rubric.above_credit_points %> points</i>)</b>
+			    <% else %>
+			      <i><%=h rubric.above_credit_criteria %> (<%= rubric.above_credit_points %> points)</i>
+			    <% end %>
+			  <% end %>
+		    </td>
+	      <% end %>
 		</tr>
 		<tr class="<%=odd%> hover" id="rubric_<%=rubric.id%>_comments">
 		  <td align="right" valign="top" colspan="1"><i>Instructor comments:</i></td>
-		  <td align="left" valign="top" colspan="3">
+		
+		<% colspan = 3 
+		   colspan = 4 if show_above %>
+		
+		  <td align="left" valign="top" colspan="<%= colspan %>">
 			<p><b><% unless @rubric_entry_map[rubric.id].nil? %> 
 				    <%=h @rubric_entry_map[rubric.id].comments %>
 				  <% end %></b></p>

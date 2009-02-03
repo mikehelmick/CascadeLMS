@@ -492,6 +492,7 @@ class Instructor::TurninsController < Instructor::InstructorBase
              end
              
              # update the full/partial/no credit selector
+             rubric_entry.above_credit   = params["rubric_#{rubric.id}"].eql?("above")
              rubric_entry.full_credit    = params["rubric_#{rubric.id}"].eql?("full")
              rubric_entry.partial_credit = params["rubric_#{rubric.id}"].eql?("partial")
              rubric_entry.no_credit      = params["rubric_#{rubric.id}"].eql?("no")

@@ -10,7 +10,18 @@ class FreshItems
     
     recent_activity = Array.new
     blog_entries.each { |x| recent_activity << x }
-    documents.each { |x| recent_activity << x }
+    documents.each do |x| 
+      ## X is not hidden
+      published = true
+      parent = x.parent_document
+      
+      while parent != nil
+        published = published && parent.published
+        parent = parent.parent_document
+      end
+      
+      recent_activity << x if published
+    end
     assignments.each { |x| recent_activity << x }
     
     if include_comments

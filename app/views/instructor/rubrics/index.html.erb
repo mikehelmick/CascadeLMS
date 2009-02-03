@@ -50,10 +50,11 @@
 <table class="fancy" width="99%">
   <tr class="header">
 	<th>#</td>
-    <th width="22%">Rubric</th>
-	<th width="22%">No Credit</th>
-	<th width="22%">Partial Credit</th>
-	<th width="22%">Full Credit</th>
+    <th width="18%">Rubric</th>
+	<th width="18%">No Credit</th>
+	<th width="18%">Partial Credit</th>
+	<th width="18%">Full Credit</th>
+	<th width="18%">Above and Beyond</th>
 	<th>Controls</th>
   </tr>
 
@@ -68,6 +69,13 @@
 	  <td align="left" valign="top"><%=h rubric.no_credit_criteria %> (<i><%= rubric.no_credit_points %> points</i>)</td>
 	  <td align="left" valign="top"><%=h rubric.part_credit_criteria %> (<i><%= rubric.part_credit_points %> points</i>)</td>
 	  <td align="left" valign="top"><%=h rubric.full_credit_criteria %> (<i><%= rubric.full_credit_points %> points</i>)</td>
+      <td align="left" valign="top">
+         <% if rubric.above_credit_criteria.nil? %>
+           <i>N.A.</i>
+         <% else %>
+           <%= rubric.above_credit_criteria %> (<i><%= rubric.above_credit_points %></i>)
+         <% end %>
+	</td>
 	  <td align="left" valign="top" nowrap="nowrap">
 		<%= link_to "#{image_tag 'pencil.png'} Edit", :controller => '/instructor/rubrics', :action => 'edit', :course => @course, :assignment => @assignment, :id => rubric %><br/>
 		<%= link_to "#{image_tag 'delete.png'} Delete", {:controller => '/instructor/rubrics', :action => 'destroy', :course => @course, :assignment => @assignment, :id => rubric}, :confirm => "Are you sure you want to delete the rubric '#{rubric.primary_trait}' and all of it's associated data? This action can not be undone." %>
