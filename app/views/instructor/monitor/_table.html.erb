@@ -27,10 +27,9 @@
 		<td align="right"><b>Class:</b></td><td><%= queue.assignment.course.title rescue 'unknown' %></td>
 		<td align="right"><b>Assignment:</b></td><td><%= queue.assignment.title rescue 'unknown' %></td>
 		<td><div id="area_<%=queue.id%>"><%= link_to_remote( 'Requeue', :update => "area_#{queue.id}", :url => { :action => 'reset_ag_item', :course => @course, :id => queue.id }, :success => visual_effect(:highlight, "area_#{queue.id}" ) ) %> 
- <% if queue.course_id == @course.id || queue.course_id < 0 %>
+ <% if queue.course_id == @course.id || queue.course_id < 0 %><% end %>
 			| <%= link_to_remote( 'Remove', :update => "area_#{queue.id}", :url => { :action => 'mark_ag_finished', :course => @course, :id => queue.id }, :confirm => 'Are you sure you want to permanently remove this item from the grading queue?', :success => visual_effect(:highlight, "area_#{queue.id}" ) ) %>
- <% end %>
-			</div></td>
+ 			</div></td>
 	  </tr>
     <% end %>
 </table>
