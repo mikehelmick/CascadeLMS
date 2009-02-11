@@ -242,6 +242,38 @@ class Instructor::QuizController < Instructor::InstructorBase
     redirect_to( :action => 'questions', :course => @course, :id => @assignment) if do_redirect
   end
   
+  def gen_quiz_time_question
+    return unless load_course( params[:course] )
+    return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_assignments' )
+    return unless quiz_enabled( @course )
+    return unless course_open( @course, :action => 'index' )
+    return unless load_assignment( params[:id] )
+    return unless assignment_in_course( @course, @assignment )
+    return unless assignment_is_quiz( @assignment )
+    
+    @quiz = @assignment.quiz
+    do_redirect = true
+    begin
+     QuizQuestion.transaction do
+      # build question
+      @quiz_question = QuizQuestion.new
+      @quiz_question.question = "How long did it take you to answer all the questions on this quiz? (in minutes)"
+      @quiz_question.text_response = true
+      @quiz_question.multiple_choice = false
+      @quiz_question.checkbox = false
+      @quiz_question.quiz = @quiz
+      @quiz_question.score_question = false
+      @quiz.quiz_questions << @quiz_question
+      @quiz.save  
+    
+     end    
+    rescue 
+	do_redirect = false
+    end
+    
+    redirect_to( :action => 'questions', :course => @course, :id => @assignment) if do_redirect
+  end
+  
   def edit_question
     return unless load_course( params[:course] )
     return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_assignments' )

@@ -18,6 +18,11 @@ class Quiz < ActiveRecord::Base
   def score( quiz_attempt, user, course )
     # if it has a grade item, create a grade entry
     unless self.assignment.grade_item.nil?
+      questions_to_score = 0
+      self.quiz_questions.each do |question|
+        questions_to_score = questions_to_score + 1 if question.score_question
+      end
+      
       
       correct_count = 0
       self.quiz_questions.each do |question|
@@ -26,7 +31,7 @@ class Quiz < ActiveRecord::Base
           # one correct answer
           quiz_attempt.quiz_attempt_answers.each do |answer|
             if answer.quiz_question_id == question.id && answer.correct
-              correct_count = correct_count + 1
+              correct_count = correct_count + 1 if question.score_question
             end
           end
           
@@ -34,16 +39,16 @@ class Quiz < ActiveRecord::Base
           
           max_correct = 0
           question.quiz_question_answers.each do |qqa|
-            max_correct = max_correct + 1 if qqa.correct
+            max_correct = max_correct + 1 if qqa.correct && question.score_question
           end
           
           multi_correct = 0
           multi_incorrect = 0
           quiz_attempt.quiz_attempt_answers.each do |answer|
             if answer.quiz_question_id == question.id && answer.correct
-              multi_correct = multi_correct + 1
+              multi_correct = multi_correct + 1 if question.score_question
             elsif answer.quiz_question_id == question.id && !answer.correct
-              multi_incorrect = multi_incorrect + 1
+              multi_incorrect = multi_incorrect + 1 if question.score_question
             end
           end
           
@@ -69,7 +74,7 @@ class Quiz < ActiveRecord::Base
       entry.grade_item = self.assignment.grade_item
       entry.user = user
       entry.course = course
-      entry.points = self.assignment.grade_item.points/self.quiz_questions.length.to_f * correct_count
+      entry.points = self.assignment.grade_item.points/questions_to_score.to_f * correct_count
       entry.save 
     end   
     # end assessment of answers

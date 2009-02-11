@@ -24,6 +24,10 @@
 	   <i>Free form text response is discouraged for quizzes.  It prevents your quiz from being automatically assessed and limits a student's ability to know if they should attempt the quiz again.</i><br/>
 	   </p>
 	
+	<p><label for="quiz_question_score_question" class="required">Automatically Score (mutliple choice questions only):</label><br/>
+		
+		<p><%= radio_button 'quiz_question', 'score_question', true %> Yes
+	       <%= radio_button 'quiz_question', 'score_question', false %> No</p>
 </div>
 
 <% style = "" 

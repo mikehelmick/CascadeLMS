@@ -205,8 +205,9 @@ class Instructor::ResultsController < Instructor::InstructorBase
     end
     
     @attempts = Hash.new
-    @quiz.quiz_attempts.each do |attempt|
-      @attempts[attempt.user_id] = true
+    all_attempts = @quiz.quiz_attempts.sort { |a,b| a.created_at <=> b.created_at } 
+    all_attempts.each do |attempt|
+      @attempts[attempt.user_id] = attempt
     end
     
   end

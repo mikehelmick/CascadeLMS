@@ -13,7 +13,10 @@
 
 <% if @assignment.upcoming? %>
   <p><%= link_to "#{image_tag 'add.png', :align => 'absmiddle'} New Question", :action => 'new_question', :course => @course, :id => @assignment %> |
- 	 <%= link_to "#{image_tag 'application_edit.png', :align => 'absmiddle'} Edit Quiz Details", :action => 'edit', :course => @course, :id => @assignment %>
+ 	 <%= link_to "#{image_tag 'application_edit.png', :align => 'absmiddle'} Edit Quiz Details", :action => 'edit', :course => @course, :id => @assignment %> 
+     <% if !@quiz.show_elapsed %> |
+        <%= link_to "Generate Self-reported Quiz Time", {:action => 'gen_quiz_time_question', :course => @course, :id => @assignment }, :method => :post %>
+     <% end %>
   </p>
 <% else %>
   <p class="errorExplanation">You cannot edit or create questions for this quiz since it is already available to students.</p>
@@ -32,6 +35,7 @@
   <tr class="header">
 	  <th align="center">#</th>
 	  <th align="center">Type</th>
+	  <th align="center">Auto Score?</th>
 	  <th align="center" width="90%">Question</th>
 	  <th align="center">Controls</th>
 	</tr>
@@ -47,6 +51,9 @@
 	      <%= 'Text' if question.text_response %>
 		  <%= 'Multiple Choice' if question.multiple_choice %>
 		  <%= 'Choose Many' if question.checkbox %>
+	   </td>
+	   <td valign="top">
+	     <% if question.score_question %>Yes<% else %>No<% end %>
 	   </td>
 	   <td valign="top"><%=h question.question %>
 	     <% if question.multiple_choice || question.checkbox %>

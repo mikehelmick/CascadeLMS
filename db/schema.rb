@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20090203053712) do
+ActiveRecord::Schema.define(:version => 20090211044418) do
 
   create_table "announcements", :force => true do |t|
     t.string   "headline"
@@ -597,6 +597,7 @@ ActiveRecord::Schema.define(:version => 20090203053712) do
     t.boolean  "checkbox",        :default => false, :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "score_question",  :default => true,  :null => false
   end
 
   create_table "quizzes", :force => true do |t|
@@ -610,6 +611,7 @@ ActiveRecord::Schema.define(:version => 20090203053712) do
     t.boolean "anonymous",             :default => false, :null => false
     t.boolean "entry_exit",            :default => false, :null => false
     t.integer "course_id",             :default => 0,     :null => false
+    t.boolean "show_elapsed",          :default => true,  :null => false
   end
 
   add_index "quizzes", ["assignment_id"], :name => "index_quizzes_on_assignment_id", :unique => true

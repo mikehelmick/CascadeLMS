@@ -66,11 +66,12 @@
 	      <%= text_field 'quiz', 'attempt_maximum'  %></p>
 	</div>
 
-	<div class="blockintro">Randomizing a quiz allow you to display the questions to a student in random order, and also to display to them a random subset of the questions.   Individual questions can be weighted to cause them to appear more frequently.</div>
+
+	<div class="blockintro">Should student's see the elapsed time while taking the quiz?  They will always be able to see how long it has been since they saved their answers.</div>
 	<div class="block">
-		<p><label for="quiz[random_questions]" class="required">Randomize Questions:</label>
-	       <%= radio_button 'quiz', 'random_questions', true %> Yes
-		   <%= radio_button 'quiz', 'random_questions', false %> No</p>
+		<p><label for="quiz[show_elapsed]" class="required">Show elapsed time?:</label>
+	       <%= radio_button 'quiz', 'show_elapsed', true %> Yes
+		   <%= radio_button 'quiz', 'show_elapsed', false %> No</p>
 	</div>
 
 	<% if @new_quiz && !edit_mode %>

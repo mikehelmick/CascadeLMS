@@ -37,6 +37,7 @@
     <th valign="bottom">UniqueID</th>
     <th valign="bottom">Student</th>
     <th valign="bottom">Has Attempted?</th>
+    <th valign="bottom">Time</th>
     <% if @assignment.grade_item %>
       <th valign="bottom" colspan="2" align="center">Score<br/><%= @assignment.grade_item.points %> points</th>
     <% end %>
@@ -57,9 +58,15 @@
      <tr class="<%=odd%> hover" id="student_<%=student.id%>">
 	   <td><%=h student.uniqueid %></td>
        <td><%=h student.display_name %></td>
-       <td><% if @attempts[student.id] %>Yes
+       <td><% if !@attempts[student.id].nil? %>Yes
 	       <% else %>No<% end %>
        </td>
+       <td><% if @attempts[student.id] %>
+	          <%= distance_of_time_in_words( @attempts[student.id].created_at, @attempts[student.id].updated_at ) %>
+	       <% else %>
+	          <i>--</i>
+           <% end %>
+	   </td>
        <% if @assignment.grade_item %>
 	     <td align="right">
 	       <% if @grades[student.id] %>

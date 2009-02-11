@@ -13,10 +13,12 @@
 
 <b><%= item_type %> in progress: <%= image_tag 'spinner.gif' %></b>
 <ul>
+<% if @quiz.show_elapsed %>	
   <li><b>Start Time:</b> <%= @quiz_attempt.created_at.to_formatted_s(:long) %></li>
   <ul>
 	<li><b>Which is:</b> <%= distance_of_time_in_words_to_now( @quiz_attempt.created_at, true )%> ago</li>
   </ul>
+<% end %>
   <li><b>Last Save Time:</b>
     <% if @quiz_attempt.created_at.eql?(@quiz_attempt.updated_at) %>
       <i>Answers have not been saved.</i></li>

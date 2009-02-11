@@ -68,6 +68,15 @@
 
 
 <div id="form_area">
+  <p class="blockintro"><b>Quiz Metrics:<b/></p>	
+  <div class="block">
+    <p><b>Start time: </b> <%= @attempt.created_at.to_formatted_s(:long) %><br/>	
+	   <b>End time: </b> <%= @attempt.updated_at.to_formatted_s(:long) %><br/>
+	   <b>Elapsed Time: </b> <%= distance_of_time_in_words( @attempt.created_at, @attempt.updated_at ) %>
+	
+  </div>
+
+	
   <% count = 0 %>
   <% for question in @questions do %>  
     <% count = count.next %>
