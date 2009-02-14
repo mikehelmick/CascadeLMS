@@ -26,10 +26,14 @@ class TurninsController < ApplicationController
     
     unless @current_turnin.nil?
       @directories = Array.new
+      @has_files = false
       @current_turnin.user_turnin_files.each do |utf|
         @directories << utf if utf.directory_entry?
+        @has_files = @has_files || !utf.directory_entry?
       end
       @directory = ""
+      
+      
       
     else
       

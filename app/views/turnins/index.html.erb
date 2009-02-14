@@ -97,7 +97,13 @@
   <% form_tag( { :action => "finalize" }, :onsubmit => "new Element.toggle('finalize_button');new Element.toggle( 'finalize_spinner');" ) do %>
   <p class="blockintro">Finalize</p>
   <div class="block">
-	  <div id="finalize_button"><%= submit_tag "Finalize This Turn-In Set" %>
+	  <div id="finalize_button">
+	     <% if @has_files %>
+	       <%= submit_tag "Finalize This Turn-In Set", :confirm => "Are you sure you want to submit these files for grading?" %>
+	     <% else %>
+	       <div class="errorExplanation">This turnin set doesn't contain any files, so it cannot be finalized yet.</div>
+	     <% end %>
+	 
 		<% if @assignment.auto_grade %>
 		 <% unless @assignment.auto_grade_setting.nil? %>
 		  <% if @assignment.auto_grade_setting.student_style || @assignment.auto_grade_setting.student_io_check || @assignment.auto_grade_setting.student_autograde %>
