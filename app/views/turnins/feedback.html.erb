@@ -220,7 +220,7 @@
  </div></div>
  <ul>
  <% for utf in @current_turnin.user_turnin_files %>
-  <% unless utf.directory_entry? %>
+  <% unless utf.directory_entry? || utf.auto_added? %>
     <% if FileManager.is_text_file( utf.extension ) %>
       <li><a href="#file_<%=utf.id%>"> <%= image_tag utf.icon %> <%= utf.full_filename( @directories ) %></a></li>
     <% else %>
@@ -231,6 +231,7 @@
  </ul>
 
   <% for utf in @current_turnin.user_turnin_files %>
+   <% if !utf.auto_added? %> 
    <% if FileManager.is_text_file( utf.extension ) %>
     <div class="SectionHeader"><div class="Full">
     <%= image_tag utf.icon %>
@@ -287,6 +288,7 @@
 	   </div>
 	<% end %>
    <% end ## if text file %>
+   <% end ## if not auto added %>
   <% end ## for loop %>
 
 <% else %>
