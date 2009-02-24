@@ -42,7 +42,7 @@
     <div class="block">
 	   <p><label for="" class="required">
 	     <% if !question.score_question %><i>This question does not count against your score.</i><br/><hr/><% end %>
-	     <%= question.question %></label><br/>
+	     <%= question.question_html %></label><br/>
 	
 	   <% if question.text_response %>
 	      <% answer = ""
@@ -54,7 +54,7 @@
 	      <ul>
 	        <% for quiz_answer in question.quiz_question_answers %>      
 	          <li><%= radio_button_tag( "answer_#{question.id}", quiz_answer.id, answer_id == quiz_answer.id )  %>
-		          <%=h quiz_answer.answer_text %>
+		          <%= quiz_answer.answer_text_html %>
 		      </li>
 	        <% end %>
 	

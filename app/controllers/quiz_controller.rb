@@ -270,6 +270,14 @@ class QuizController < ApplicationController
       end
     end
     
+    ## Upgrade quiz DS on disk
+    @questions.each do |question|
+      question.save if question.question_html.nil?
+      question.quiz_question_answers.each do |ans|
+        ans.save if ans.answer_text_html.nil?
+      end
+    end
+    
   end
   
   def map_new_quiz_attempt

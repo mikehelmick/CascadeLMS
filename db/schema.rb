@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20090211044418) do
+ActiveRecord::Schema.define(:version => 20090224014417) do
 
   create_table "announcements", :force => true do |t|
     t.string   "headline"
@@ -586,6 +586,7 @@ ActiveRecord::Schema.define(:version => 20090211044418) do
     t.boolean  "correct",          :default => false, :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.text     "answer_text_html"
   end
 
   create_table "quiz_questions", :force => true do |t|
@@ -598,6 +599,7 @@ ActiveRecord::Schema.define(:version => 20090211044418) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.boolean  "score_question",  :default => true,  :null => false
+    t.text     "question_html"
   end
 
   create_table "quizzes", :force => true do |t|

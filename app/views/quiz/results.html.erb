@@ -26,7 +26,7 @@
 
     <p class="blockintro"><b>Question #<%=count %> of <%= @questions.length %></b></p>
     <div class="block">
-	   <p><label for="" class="required"><%= question.question %></label><br/>
+	   <p><label for="" class="required"><%= question.question_html %></label><br/>
 	
 	   <% if question.text_response %>
 		  <% answer = ""
@@ -43,7 +43,7 @@
 	  	          <% elsif quiz_answer.id == answer_id %>
 	                 <b><font color="red">Incorrect <%= image_tag 'cancel.png' %></font></b>
 	              <% end %>
-	              <%=h quiz_answer.answer_text %>
+	              <%= quiz_answer.answer_text %>
 		      </li>
 	        <% end %>
 	
@@ -68,12 +68,12 @@
 	  	         <% elsif answer_ids[quiz_answer.id] %>
 	                 <b><font color="red">Incorrect <%= image_tag 'cancel.png' %></font></b>
 	             <% end %>
-	             <%=h quiz_answer.answer_text %>
+	             <%= quiz_answer.answer_text %>
 		     </li>
 	       <% end %>
 	     </ul>
 	     <% if total_correct != possible_correct %>
-	       <p><i>There are <%= possible_correct - total_correct %> more correct answers to this question.</i></p>
+	       <p><font color="red">Incorrect <%= image_tag 'cancel.png' %>: <i>There are <%= possible_correct - total_correct %> more correct answers to this question.</i></font></p>
 	     <% end %>
 	   
 	

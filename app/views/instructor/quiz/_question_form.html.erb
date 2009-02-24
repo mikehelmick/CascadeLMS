@@ -9,9 +9,16 @@
 <%= error_messages_for 'answer_08' %> 
 <%= error_messages_for 'answer_09' %>
 <%= error_messages_for 'answer_10' %>
+<%= error_messages_for 'answer_11' %>
+<%= error_messages_for 'answer_12' %>
+<%= error_messages_for 'answer_13' %>
+<%= error_messages_for 'answer_14' %>
+<%= error_messages_for 'answer_15' %>
 
 <p class="blockintro">Create question text and question type.  There are 3 types of questions, free form text response, multiple choice and multiple checkbox.   If a quiz contains no free form text responses, it will be automatically graded.</p>
 <div class="block">
+	
+	<%= render :partial => '/forums/formatting'%>
 	<p><label for="quiz_question_question" class="required">Question:</label>
 	   <%= text_area 'quiz_question', 'question', "cols" => 80, "rows" => 5  %></p>
 	
@@ -34,7 +41,7 @@
    style = "display:none" if @quiz_question.text_response %>
 
 <div id="answers_area" style="<%= style %>">
- <p class="blockintro">Define answers that will be valid for this quiz/survey.   You can enter as few as 1 answer, and as many as 10.</p>
+ <p class="blockintro">Define answers that will be valid for this quiz/survey.   You can enter as few as 1 answer, and as many as 15.  Question answers may be formatted with the below guidelines. <%= render :partial => '/forums/formatting'%></p>
  <div class="block">
   <%= render :partial => 'answer_form', :locals => { :answer => @answer_1, :obj_name => 'answer_1', :number => 1 } %><hr/>
   <%= render :partial => 'answer_form', :locals => { :answer => @answer_2, :obj_name => 'answer_2', :number => 2 } %><hr/>
@@ -45,6 +52,11 @@
   <%= render :partial => 'answer_form', :locals => { :answer => @answer_7, :obj_name => 'answer_7', :number => 7 } %><hr/> 
   <%= render :partial => 'answer_form', :locals => { :answer => @answer_8, :obj_name => 'answer_8', :number => 8 } %><hr/>
   <%= render :partial => 'answer_form', :locals => { :answer => @answer_9, :obj_name => 'answer_9', :number => 9 } %><hr/>
-  <%= render :partial => 'answer_form', :locals => { :answer => @answer_10, :obj_name => 'answer_10', :number => 10 } %>
+  <%= render :partial => 'answer_form', :locals => { :answer => @answer_10, :obj_name => 'answer_10', :number => 10 } %><hr/>
+  <%= render :partial => 'answer_form', :locals => { :answer => @answer_11, :obj_name => 'answer_11', :number => 11 } %><hr/>
+  <%= render :partial => 'answer_form', :locals => { :answer => @answer_12, :obj_name => 'answer_12', :number => 12 } %><hr/>
+  <%= render :partial => 'answer_form', :locals => { :answer => @answer_13, :obj_name => 'answer_13', :number => 13 } %><hr/>
+  <%= render :partial => 'answer_form', :locals => { :answer => @answer_14, :obj_name => 'answer_14', :number => 14 } %><hr/>
+  <%= render :partial => 'answer_form', :locals => { :answer => @answer_15, :obj_name => 'answer_15', :number => 15 } %>
  </div>
 </div>

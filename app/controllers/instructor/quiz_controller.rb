@@ -235,7 +235,8 @@ class Instructor::QuizController < Instructor::InstructorBase
         
       end
      end    
-    rescue 
+    rescue  => e
+      puts "e -> #{e}"
 	do_redirect = false
     end
     
@@ -306,6 +307,11 @@ class Instructor::QuizController < Instructor::InstructorBase
     @answer_8 = answers[7] unless answers[7].nil?
     @answer_9 = answers[8] unless answers[8].nil?
     @answer_10 = answers[9] unless answers[9].nil?
+    @answer_11 = answers[10] unless answers[10].nil?
+    @answer_12 = answers[11] unless answers[11].nil?
+    @answer_13 = answers[12] unless answers[12].nil?
+    @answer_14 = answers[13] unless answers[13].nil?
+    @answer_15 = answers[14] unless answers[14].nil?
   end
   
   def update_question
@@ -334,7 +340,7 @@ class Instructor::QuizController < Instructor::InstructorBase
         @quiz_question.update_attributes( params[:quiz_question] )
 
         answers = @quiz_question.quiz_question_answers
-        1.upto(10) do |i|       
+        1.upto(15) do |i|       
           if params["answer_#{i}"]['answer_text'].eql?('')
             # if the answer text is blank
             if !answers[i-1].nil?
@@ -512,12 +518,17 @@ class Instructor::QuizController < Instructor::InstructorBase
     @answer_8 = QuizQuestionAnswer.new
     @answer_9 = QuizQuestionAnswer.new
     @answer_10 = QuizQuestionAnswer.new
+    @answer_11 = QuizQuestionAnswer.new
+    @answer_12 = QuizQuestionAnswer.new
+    @answer_13 = QuizQuestionAnswer.new
+    @answer_14 = QuizQuestionAnswer.new
+    @answer_15 = QuizQuestionAnswer.new
   end
   
   def build_answers( params, question )
     answers = Array.new
     
-    1.upto(10) do |i|
+    1.upto(15) do |i|
       unless params["answer_#{i}"]['answer_text'].eql?('')
         answer = QuizQuestionAnswer.new( params["answer_#{i}"] )
         answer.position = answers.length + 1
@@ -548,7 +559,16 @@ class Instructor::QuizController < Instructor::InstructorBase
     @answer_9 = QuizQuestionAnswer.new if @answer_9.nil?
     @answer_10 = answers[9]  
     @answer_10 = QuizQuestionAnswer.new if @answer_10.nil?
-
+    @answer_11 = answers[10]  
+    @answer_11 = QuizQuestionAnswer.new if @answer_11.nil?
+    @answer_12 = answers[11]  
+    @answer_12 = QuizQuestionAnswer.new if @answer_12.nil?
+    @answer_13 = answers[12]  
+    @answer_13 = QuizQuestionAnswer.new if @answer_13.nil?
+    @answer_14 = answers[13]  
+    @answer_14 = QuizQuestionAnswer.new if @answer_14.nil?
+    @answer_15 = answers[14]  
+    @answer_15 = QuizQuestionAnswer.new if @answer_15.nil?
     
     return answers 
   end
