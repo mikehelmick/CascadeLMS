@@ -179,7 +179,7 @@ class Instructor::QuizController < Instructor::InstructorBase
     @quiz = @assignment.quiz
     
     ## Upgrade quiz DS on disk
-    @questions.each do |question|
+    @quiz.quiz_questions.each do |question|
       question.save if question.question_html.nil?
       question.quiz_question_answers.each do |ans|
         ans.save if ans.answer_text_html.nil?
