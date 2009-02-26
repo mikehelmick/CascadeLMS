@@ -32,6 +32,8 @@ class Instructor::RubricsController< Instructor::InstructorBase
    @rubric.course = @course
   
    Rubric.transaction do 
+     @rubric.above_credit_points = 0 if @rubric.above_credit_criteria.nil? || @rubric.above_credit_criteria.eql?("")
+ 
      if @rubric.save
        @course.course_outcomes.each do |course_outcome|
           @rubric.course_outcomes << course_outcome unless params["course_outcome_#{course_outcome.id}"].nil? 
