@@ -255,12 +255,15 @@ class AutoGradeWorker < BackgrounDRb::MetaWorker
   def execute( args = 0 )  
     puts "RUNNING WITH #{args}"
     
-    begin
-      queue = GradeQueue.find(args.to_i)  
-    rescue
-      queue = nil
-      logger.error("AutoGrade worker initialized with no ID.")
-      return
+    queue = nil
+    while queue.nil?
+      begin
+        queue = GradeQueue.find(args.to_i)  
+      rescue ActiveRecord::StatementInvalid
+         @logger.warn "MySQL is gone.."
+         GradeQueue.connection.reconnect!  
+         logger.error("AutoGrade worker initialized with no ID.")
+      end
     end
     
     puts "Background grader started for request #{args.to_i}"
