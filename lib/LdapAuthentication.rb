@@ -105,17 +105,17 @@ class LdapAuthentication
       user.affiliation = "unknown" 
     else 
       user.affiliation = page[0][@settings['ldap_field_affiliation']].join(', ') 
-    end
 
-    inst_affiliations = @settings['instructor_affiliation'].split(',')
-
-    page[0][@settings['ldap_field_affiliation']].each do |x|
-      inst_affiliations.each do |instructor_affiliation|
-        if x.downcase.eql?( instructor_affiliation.downcase ) 
-          user.instructor = true
+      inst_affiliations = @settings['instructor_affiliation'].split(',')
+      page[0][@settings['ldap_field_affiliation']].each do |x|
+        inst_affiliations.each do |instructor_affiliation|
+          if x.downcase.eql?( instructor_affiliation.downcase )
+            user.instructor = true
+          end
         end
       end
     end
+
     user.personal_title = page[0][@settings['ldap_field_personaltitle']][0] unless page[0][@settings['ldap_field_personaltitle']].nil?
     user.office_hours = page[0][@settings['ldap_field_officehours']][0] unless page[0][@settings['ldap_field_officehours']].nil?
     user.phone_number = page[0][@settings['ldap_field_phone']][0] unless page[0][@settings['ldap_field_phone']].nil?
