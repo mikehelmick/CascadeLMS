@@ -101,7 +101,11 @@ class LdapAuthentication
     user.last_name = page[0][@settings['ldap_field_lastname']][0]
     user.instructor = false
     user.activated = true
-    user.affiliation = page[0][@settings['ldap_field_affiliation']].join(', ')
+    if page[0][@settings['ldap_field_affiliation']].nil?
+      user.affiliation = "unknown" 
+    else 
+      user.affiliation = page[0][@settings['ldap_field_affiliation']].join(', ') 
+    end
 
     inst_affiliations = @settings['instructor_affiliation'].split(',')
 
