@@ -1,0 +1,40 @@
+<p><%= link_to 'Back to turnins', :course => @course, :assignment => @assignment, :controller => '/instructor/turnins', :action => nil %></p>
+
+<div class="SectionHeader"><div class="Full">
+<h2>'<%= @assignment.title %>' rubrics report</h2>
+</div></div>
+
+<br/>
+
+<p>This table shows the number of students, and percentage, earning these marks on each rubric.</p>
+	
+<table class="fancy">
+  <tr class="header">	
+	<th align="left">Rubrics</th>
+	<th align="center" colspan="2">Above &amp;<br/>Beyond</th>
+	<th align="center" colspan="2">Full Credit</th>
+	<th align="center" colspan="2">Partial Credit</th>
+	<th align="center" colspan="2">No Credit</th>
+  </tr>
+
+  <% row_count = 0 %>
+  <% for rubric in @assignment.rubrics %>
+  	 <% row_count = row_count.next 
+	    odd = "odd"
+        odd = "even" if row_count.even? %> 
+     <tr class="<%=odd%> hover" id="rubric_<%=rubric.id%>">
+	  <td align="left"><%= rubric.primary_trait %></td>
+	  <td align="right"><%= @rubrics_sum[rubric.id][0] %></td>
+	  <td align="right"><%= sprintf("%.2f",@rubrics_avg[rubric.id][0]) %>%</td>
+	  <td align="right"><%= @rubrics_sum[rubric.id][1] %></td>
+	  <td align="right"><%= sprintf("%.2f",@rubrics_avg[rubric.id][1]) %>%</td>
+	  <td align="right"><%= @rubrics_sum[rubric.id][2] %></td>
+	  <td align="right"><%= sprintf("%.2f",@rubrics_avg[rubric.id][2]) %>%</td>
+	  <td align="right"><%= @rubrics_sum[rubric.id][3] %></td>
+	  <td align="right"><%= sprintf("%.2f",@rubrics_avg[rubric.id][3]) %>%</td>
+	 </tr>
+	
+
+  <% end %>
+
+</table>
