@@ -88,6 +88,43 @@ class Instructor::TurninsController < Instructor::InstructorBase
     @title = "Turnins for #{@assignment.title}"
   end
   
+  def rubrics
+    return unless load_course( params[:course] )
+    return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_grade_individual', 'ta_view_student_files', 'ta_grade_individual' )
+    @assignment = Assignment.find( params[:assignment] )
+    return unless assignment_in_course( @course, @assignment )
+    
+    if @assignment.rubrics.size == 0 
+      flash[:badnotice] = 'This assignment has no rubrics to report on.'
+      return redirect_to :course => @course, :action => 'index', :id => nil
+    end
+    
+    @rubrics_sum = Hash.new
+    @rubrics_avg = Hash.new
+    @assignment.rubrics.each do |rubric|
+      @rubrics_sum[rubric.id] = [0,0,0,0]
+      @rubrics_avg[rubric.id] = [0,0,0,0]
+      thisArr = @rubrics_sum[rubric.id]
+      
+      entries = RubricEntry.find(:all, :conditions => ['rubric_id = ?', rubric.id])
+      entries.each do |re|
+        thisArr[0] = thisArr[0]+1 if re.above_credit
+        thisArr[1] = thisArr[1]+1 if re.full_credit
+        thisArr[2] = thisArr[2]+1 if re.partial_credit
+        thisArr[3] = thisArr[3]+1 if re.no_credit
+      end
+      
+      @rubrics_sum[rubric.id] = thisArr
+      
+      sum = thisArr[0] + thisArr[1] + thisArr[2] + thisArr[3]
+      if sum > 0
+        0.upto(3) { |i| @rubrics_avg[rubric.id][i] = thisArr[i]/sum.to_f*100 }
+      end    
+      
+    end
+    
+  end
+  
   ## From the index / turnins page, we allow forall grades to be changed at once
   def save_all_grades
     return unless load_course( params[:course] )

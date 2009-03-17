@@ -381,16 +381,18 @@ class Instructor::QuizController < Instructor::InstructorBase
           pos = pos.next
         end
 
-        correct_count = 0
-        answers.each { |i| correct_count = correct_count + 1 if i.correct }
-        if correct_count != 1 && @quiz_question.multiple_choice 
-            flash[:badnotice] = 'For a multiple choice question type, there must be only exactly 1 correct answer.'
-            render :action => 'new_question'
-            raise "retry"
-        elsif correct_count == 0 && @quiz_question.checkbox
-            flash[:badnotice] = 'There must be at least one correct answer for this question type.'
-            render :action => 'new_question'
-    	      raise "retry"
+        if !@assignment.quiz.survey
+          correct_count = 0
+          answers.each { |i| correct_count = correct_count + 1 if i.correct }
+          if correct_count != 1 && @quiz_question.multiple_choice 
+              flash[:badnotice] = 'For a multiple choice question type, there must be only exactly 1 correct answer.'
+              render :action => 'new_question'
+              raise "retry"
+          elsif correct_count == 0 && @quiz_question.checkbox
+              flash[:badnotice] = 'There must be at least one correct answer for this question type.'
+              render :action => 'new_question'
+      	      raise "retry"
+          end
         end
 
         flash[:notice] = "Question was successfully updated."
@@ -401,8 +403,10 @@ class Instructor::QuizController < Instructor::InstructorBase
   	  do_redirect = false
     end  
     
-    flash[:badnotice] = "There was an error updating this question."
-    redirect_to :action => 'edit_question', :course => @course, :id => @assignment, :question => @question
+    if do_redirect
+      flash[:badnotice] = "There was an error updating this question."
+      redirect_to :action => 'edit_question', :course => @course, :id => @assignment, :question => @question
+    end
   end
   
   def reorder

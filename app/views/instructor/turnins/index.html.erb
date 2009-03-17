@@ -30,6 +30,10 @@
 	<% end %>
 	</li>
 <% end %>
+<% if @assignment.rubrics.size > 0 %>
+  <li><%= image_tag 'layout_content.png', :align => 'absmiddle' %> <%= link_to 'Rubrics Report', :action => 'rubrics', :course => @course, :assignment => @assignment %></li>
+<% end %>
+
 </ul>
 
 <% form_tag( :controller => '/instructor/turnins', :action => 'save_all_grades', :course => @course, :assignment => @assignment, :id => nil ) do %>
