@@ -351,6 +351,81 @@ class Instructor::OutcomesController < Instructor::InstructorBase
     
     render :layout => 'noright'
   end
+  
+  def rubrics_report
+    return unless load_course( params[:course] )
+    return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_edit_outcomes' )
+    set_title
+
+    # for each outcome - array of all rubrics
+    @outcome_to_rubrics = Hash.new
+    # each entry in this hash has a key of rubric ID, array of 3 values
+    @rubrics_sums = Hash.new
+    @rubrics_avgs = Hash.new
+    
+    @outcome_sums = Hash.new
+    @outcome_avgs = Hash.new
+    # precalculate outcome numbers
+    @outcome_position = Hash.new
+    
+    parent_stack = [-1]
+    count_stack = [0]
+
+    @course.ordered_outcomes.each do |outcome|
+      if outcome.parent == parent_stack[-1] ## Same level 
+        count_stack.push( count_stack.pop + 1 ) 
+      elsif parent_stack.index( outcome.parent ).nil?  ## New level 
+        parent_stack.push outcome.parent 
+        count_stack.push 1 
+      else ## need to pop back to correct level 
+        while (parent_stack[-1] != outcome.parent) 
+          parent_stack.pop
+          count_stack.pop
+        end 
+        count_stack.push( count_stack.pop + 1 )
+      end 
+      @outcome_position[outcome.id] = "#{count_stack.join('.')})"
+     
+      @outcome_sums[outcome.id] = [0,0,0] if @outcome_sums[outcome.id].nil?
+     
+      # for each rubric
+      rubrics = outcome.rubrics.sort do |a,b| 
+                  result = a.assignment.position <=> b.assignment.position
+                  result = a.position <=> b.position if result == 0
+                  result
+                end
+      @outcome_to_rubrics[outcome.id] = Array.new if @outcome_to_rubrics[outcome.id].nil?                
+      rubrics.each do |rubric|
+        @outcome_to_rubrics[outcome.id] << rubric
+        
+        @rubrics_sums[rubric.id] = [0,0,0]
+        @rubrics_avgs[rubric.id] = [0,0,0]
+        
+        entries = RubricEntry.find(:all, :conditions => ['rubric_id = ?', rubric.id])
+        entries.each do |re|
+          @rubrics_sums[rubric.id][0] = @rubrics_sums[rubric.id][0]+1 if re.above_credit || re.full_credit
+          @rubrics_sums[rubric.id][1] = @rubrics_sums[rubric.id][1]+1 if re.partial_credit
+          @rubrics_sums[rubric.id][2] = @rubrics_sums[rubric.id][2]+1 if re.no_credit
+        end
+        
+        0.upto(2) { |i| @outcome_sums[outcome.id][i] = @outcome_sums[outcome.id][i] + @rubrics_sums[rubric.id][i] }
+        
+        # local average
+        sum = @rubrics_sums[rubric.id][0] + @rubrics_sums[rubric.id][1] + @rubrics_sums[rubric.id][2]
+        if sum > 0
+          0.upto(2) { |i| @rubrics_avgs[rubric.id][i] = @rubrics_sums[rubric.id][i] / sum.to_f * 100 }
+        end
+      end 
+      
+      # need to calculate average for the outcome
+      sum = @outcome_sums[outcome.id][0] + @outcome_sums[outcome.id][1] + @outcome_sums[outcome.id][2]
+      @outcome_avgs[outcome.id] = [0,0,0]
+      0.upto(2) { |i| @outcome_avgs[outcome.id][i] = @outcome_sums[outcome.id][i] / sum.to_f * 100 }
+      
+    end
+    
+    render :layout => 'noright'
+  end
 
 private
   def set_title

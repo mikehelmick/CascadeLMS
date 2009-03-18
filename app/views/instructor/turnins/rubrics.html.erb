@@ -11,7 +11,6 @@
 <table class="fancy">
   <tr class="header">	
 	<th align="left">Rubrics</th>
-	<th align="center" colspan="2">Above &amp;<br/>Beyond</th>
 	<th align="center" colspan="2">Full Credit</th>
 	<th align="center" colspan="2">Partial Credit</th>
 	<th align="center" colspan="2">No Credit</th>
@@ -30,11 +29,18 @@
 	  <td align="right"><%= sprintf("%.2f",@rubrics_avg[rubric.id][1]) %>%</td>
 	  <td align="right"><%= @rubrics_sum[rubric.id][2] %></td>
 	  <td align="right"><%= sprintf("%.2f",@rubrics_avg[rubric.id][2]) %>%</td>
-	  <td align="right"><%= @rubrics_sum[rubric.id][3] %></td>
-	  <td align="right"><%= sprintf("%.2f",@rubrics_avg[rubric.id][3]) %>%</td>
-	 </tr>
-	
-
+	 </tr>	
   <% end %>
+  
+  <tr>
+	<td align="right" class="summaryCell"><b>Total:</b></td>
+	<td align="right" class="summaryCell"><%= @total_sum[0] %></td>
+	<td align="right" class="summaryCell"><%= sprintf("%.2f",@total_avg[0]) %>%</td>
+	<td align="right" class="summaryCell"><%= @total_sum[1] %></td>
+	<td align="right" class="summaryCell"><%= sprintf("%.2f",@total_avg[1]) %>%</td>
+	<td align="right" class="summaryCell"><%= @total_sum[2] %></td>
+	<td align="right" class="summaryCell"><%= sprintf("%.2f",@total_avg[2]) %>%</td>
+  </tr>	
+	
 
 </table>

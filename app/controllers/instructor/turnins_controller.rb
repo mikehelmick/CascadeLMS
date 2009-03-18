@@ -99,28 +99,36 @@ class Instructor::TurninsController < Instructor::InstructorBase
       return redirect_to :course => @course, :action => 'index', :id => nil
     end
     
+    @total_sum = [0,0,0]
+    @total_avg = [0,0,0]
+    
     @rubrics_sum = Hash.new
     @rubrics_avg = Hash.new
     @assignment.rubrics.each do |rubric|
-      @rubrics_sum[rubric.id] = [0,0,0,0]
-      @rubrics_avg[rubric.id] = [0,0,0,0]
+      @rubrics_sum[rubric.id] = [0,0,0]
+      @rubrics_avg[rubric.id] = [0,0,0]
       thisArr = @rubrics_sum[rubric.id]
       
       entries = RubricEntry.find(:all, :conditions => ['rubric_id = ?', rubric.id])
       entries.each do |re|
-        thisArr[0] = thisArr[0]+1 if re.above_credit
-        thisArr[1] = thisArr[1]+1 if re.full_credit
-        thisArr[2] = thisArr[2]+1 if re.partial_credit
-        thisArr[3] = thisArr[3]+1 if re.no_credit
+        thisArr[0] = thisArr[0]+1 if re.above_credit || re.full_credit
+        thisArr[1] = thisArr[1]+1 if re.partial_credit
+        thisArr[2] = thisArr[2]+1 if re.no_credit
       end
       
       @rubrics_sum[rubric.id] = thisArr
       
-      sum = thisArr[0] + thisArr[1] + thisArr[2] + thisArr[3]
+      sum = thisArr[0] + thisArr[1] + thisArr[2]
       if sum > 0
-        0.upto(3) { |i| @rubrics_avg[rubric.id][i] = thisArr[i]/sum.to_f*100 }
+        0.upto(2) { |i| @rubrics_avg[rubric.id][i] = thisArr[i]/sum.to_f*100 }
       end    
       
+      0.upto(2) { |i| @total_sum[i] = @total_sum[i] + @rubrics_sum[rubric.id][i] }
+    end
+    
+    sum = @total_sum[0]+@total_sum[1]+@total_sum[2]
+    if sum > 0
+      0.upto(2) { |i| @total_avg[i] = @total_sum[i] / sum.to_f*100 }
     end
     
   end
