@@ -4,26 +4,26 @@
    <%= text_area 'rubric', 'primary_trait', "cols" => 80, "rows" => 5  %></p>
 </div>
 
-<p class="blockintro">Rubric scoring: Rubrics are scored on a 3 tiered basis, <b>full credit</b>, <b>partial credit</b> and <b>no credit</b>.  You should define the criteria that lead to each category being selected and assign a point value to each.   The point values are not absolute, for instance if you assign partial credit as being 3 points, you can award an individual student 4 points if they exceed the partial credit requirement but don't achieve the full credit requirement.</p>
+<p class="blockintro">Rubric scoring: Rubrics are scored on a 4 tiered basis, <b>excellent</b>, <b>proficient</b>, <b>apprentice</b> and <b>novice</b>.  You should define the criteria that lead to each category being selected and assign a point value to each.   The point values are not absolute, for instance if you assign apprentice as being 3 points, you can award an individual student 4 points if they exceed the partial credit requirement but don't achieve the proficient requirement.</p>
 <div class="block">
-<p><label for="rubric_above_credit_criteria" class="required">Above and Beyond credit criteria: (optional)</label>
+<p><label for="rubric_above_credit_criteria" class="required">Excellent: (optional)</label>
    <%= text_area 'rubric', 'above_credit_criteria', "cols" => 80, "rows" => 5  %></p>
-<p><label for="rubric_above_credit_points" class="required">Above and Beyond credit points:</label>
+<p><label for="rubric_above_credit_points" class="required">Excellent:</label>
    <%= text_field 'rubric', 'above_credit_points'  %></p>	
 	
-<p><label for="rubric_full_credit_criteria" class="required">Full credit criteria:</label>
+<p><label for="rubric_full_credit_criteria" class="required">Proficient:</label>
    <%= text_area 'rubric', 'full_credit_criteria', "cols" => 80, "rows" => 5  %></p>
-<p><label for="rubric_full_credit_points" class="required">Full credit points:</label>
+<p><label for="rubric_full_credit_points" class="required">Proficient:</label>
    <%= text_field 'rubric', 'full_credit_points'  %></p>
 
-<p><label for="rubric_part_credit_criteria" class="required">Partial credit criteria:</label>
+<p><label for="rubric_part_credit_criteria" class="required">Apprentice:</label>
    <%= text_area 'rubric', 'part_credit_criteria', "cols" => 80, "rows" => 5  %></p>
-<p><label for="rubric_part_credit_points" class="required">Partial credit points:</label>
+<p><label for="rubric_part_credit_points" class="required">Apprentice:</label>
    <%= text_field 'rubric', 'part_credit_points'  %></p>
 
-<p><label for="rubric_no_credit_criteria" class="required">No credit criteria:</label>
+<p><label for="rubric_no_credit_criteria" class="required">Novice:</label>
    <%= text_area 'rubric', 'no_credit_criteria', "cols" => 80, "rows" => 5  %></p>
-<p><label for="rubric_no_credit_points" class="required">No credit points:</label>
+<p><label for="rubric_no_credit_points" class="required">Novice:</label>
    <%= text_field 'rubric', 'no_credit_points'  %></p>
 </div>
 
