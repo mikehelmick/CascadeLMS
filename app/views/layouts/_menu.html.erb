@@ -39,11 +39,25 @@
 		      <li><%= link_to 'Home', { :controller => '/home', :course => nil, :assignment => nil }, { :id => 'current' } %></li>
 		    <% end %>
 		
+		    <% if (@tab.nil? || !@tab.eql?('portfolio_generate')) && @portfolio_area %>
+		      <li style="padding-left: 25px"><%= link_to 'Auto Portfolio', {:controller => '/portfolio', :course => nil, :action => 'generate', :id => nil}, { :id => 'current' }  %><li>
+		    <% elsif @portfolio_area  %>
+		      <li style="padding-left: 25px"><%= link_to 'Auto Portfolio', :controller => '/portfolio', :course => nil, :action => 'generate', :id => nil %><li>
+		    <% end %>
+		
+		    <% if @app['enable_public_portfolios'].eql?('true') %>
+		       <% if (@tab.nil? || !@tab.eql?('portfolio_manage')) && @portfolio_area %>
+		         <li style="padding-left: 4px"><%= link_to 'Manage Portfolio', :controller => '/portfolio', :course => nil, :assignment => nil, :action => 'manage', :id => nil %></li>
+		       <% elsif @portfolio_area %>
+		         <li style="padding-left: 4px"><%= link_to 'Manage Portfolio', {:controller => '/portfolio', :course => nil, :assignment => nil, :action => 'manage', :id => nil}, { :id => 'current' } %></li>
+		       <% end %>
+		    <% end %>
+		
 		  <% else %>
 		
 		    <li><%= link_to 'Home', :controller => '/home', :course => nil, :assignment => nil %></li>     
 		    <% if @tab.nil? || !@tab.eql?('course_overview') %>
-		          <li><%= link_to 'Overview', :controller => '/overview', :course => @course, :assignment => nil %></a></li> 
+		          <li><%= link_to 'Overview', :controller => '/overview', :course => @course, :assignment => nil %></li> 
 		    <% else %>
                   <li><%= link_to 'Overview', { :controller => '/overview', :course => @course, :assignment => nil }, { :id => 'current' } %></li>		
 		    <% end %> 

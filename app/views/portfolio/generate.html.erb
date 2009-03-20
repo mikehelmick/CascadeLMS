@@ -1,0 +1,170 @@
+<div class="SectionHeader"><div class="Full">
+<h2>Automatic Portfolio for <%= @user.display_name %></h2>
+</div></div>
+<br/>
+
+<p>Your automatic portfolio is a place where you can get an automatic overview of the course you've taken and the programs that those course participate in.</p>
+
+<% if @app['enable_public_portfolios'].eql?('true') %>
+<p>This page can help you select courses and assignments that you want to highlight in your public profile.</p>
+<% end %>
+
+<div class="SectionHeader"><div class="Full">
+<h2>Programs that you have taken courses in</h2>
+</div></div>
+<br/>
+
+<p>This section gives you a report of what marks you have earned on rubrics that contribute to a specific program outcome, and those numbers rolled up to the entire program.</p>
+
+<% for program in @programs %>
+  <h3><%= program.title %> program outcomes:</h3>
+  <ul>
+    <% for po in program.program_outcomes %>
+      <li><%= po.position %>) <%= po.outcome %></li>
+      <ul>
+	    <li>Expert / Proficient: <%= @program_outcome_counts[po.id][0] %> |
+		    Apprentice: <%= @program_outcome_counts[po.id][1] %> | 
+		    Novice: <%= @program_outcome_counts[po.id][2] %></li>
+	  </ul>
+    <% end %>
+  </ul>
+
+  <table class="fancy">
+	<tr><td align="right">Expert / Proficient</td>
+		<td><%= @program_totals[program.id][0] %></td>
+		<td><% 1.upto(@program_totals_images[program.id][0].to_i) do %>
+		       <%= image_tag 'medal_gold_2.png' %>
+		    <% end %></td></tr>
+	<tr><td align="right">Apprentice</td>
+		<td><%= @program_totals[program.id][1] %></td>
+		<td><% 1.upto(@program_totals_images[program.id][1].to_i) do %>
+		       <%= image_tag 'medal_silver_1.png' %>
+		    <% end %></td></tr>
+	<tr><td align="right">Novice</td>
+		<td><%= @program_totals[program.id][2] %></td>
+		<td><% 1.upto(@program_totals_images[program.id][2].to_i) do %>
+		       <%= image_tag 'medal_bronze_3.png' %>
+		    <% end %></td></tr>					
+  </table>
+<% end %>
+
+<div class="SectionHeader"><div class="Full">
+<h2>Your courses</h2>
+</div></div>
+<br/>
+
+<table class="fancy" width="99%">
+  <tr class="header">
+	  <th width="10%" nowrap="nowrap">Course / Term</th>
+	  <th>Details</th>
+	</tr>
+   <% row_count = 0 %>
+   <% for course in @courses %>
+     <% # this is used several places
+        mapped_program_outcomes = course.transative_program_outcomes
+      %>
+
+	 <% row_count = row_count.next 
+	    odd = "odd"
+        odd = "even" if row_count.even? %>
+	 <tr class="<%=odd%> hover" id="course_<%=course.id%>">
+       <td width="10%" nowrap="nowrap" valign="top" align="left"><%= course.title %><br/><i><%= course.term.semester %></i></td>
+       <td valign="top" align="left">
+             	
+          <table width="100%" border="0">
+	        <tr><td>
+		      <ul>
+			    <li>There are <%= course.assignments.size %> assignments.</li>
+			    <li><% if course.programs.size == 0 %><i>This course is not configured in any programs.</i>
+				    <% elsif  course.programs.size == 1 %>This course is in the <i><%= course.programs[0].title %></i> program.
+				    <% else %>This course is in the programs: <i><%= @program_titles.join(', ') %></i>
+				    <% end %></li>
+				<li><% if course.course_outcomes.size == 0 %><i>There are no course outcomes defined.</i>
+					<% else %>There are <%= course.course_outcomes.size %> course outcomes for this course.
+					<% end %></li>
+				<li><% if mapped_program_outcomes.size == 0 %><i>This course is not mapped to any program outcomes.</i>
+					<% else %>This course contributes to <%= mapped_program_outcomes.size %> program outcomes.
+					<% end %></li>
+				<li><%= link_to_function( "#{image_tag('zoom.png', :align => 'absmiddle' )} View extended details for <i>#{course.title}</i>.", "blindToggle( 'course_#{course.id}_details' )" ) %></li>
+			  </ul>
+		    </td></tr>
+		    <tr><td>			  
+              <div id="course_<%=course.id%>_details" style="display: none;">
+	            <div class="sub_form">
+	            <p>Assignments</p>
+	            <table border="0">
+	              <% for assignment in course.assignments %>
+	                <% if !assignment.quiz %>
+		            <tr><td align="left" valign="top"><b><%= assignment.title %></b><br/> (<i>Category: <%= assignment.grade_category.category %>)</td>
+			            <td align="left" valign="top">
+				          <% if assignment.released %>
+				             <%= link_to 'View my grade and instructor feedback.', :controller => '/turnins', :action => 'feedback', :course => course, :assignment => assignment  %>
+				          <% elsif assignment.enable_upload || assignment.use_subversion %>
+				             <%= link_to 'View my submission for this assignment.', :controller => '/turnins', :course => course, :assignment => assignment  %>
+				          <% else %>
+				             <%= link_to 'View assignment.', :controller => '/assignments', :action => 'view', :course => course, :id => assignment %>
+				          <% end %>
+				        </td>
+			          </tr>			         
+			        <% end %>
+		          <% end %>
+		        </table>
+		        </div>
+		
+		        <div class="sub_form">
+		        <p>Outcomes / Rubrics Report</p>
+	
+				<table class="fancy">
+				  <tr class="header">
+					<th align="left">Assignment</th>	
+					<th align="left">Outcome(s)</th>
+					<th align="left">Rubric</th>
+				    <th align="center" valign="bottom">Excellent /<br/>Proficient</th>
+				    <th align="center" valign="bottom">Apprentice</th>
+				    <th align="center" valign="bottom">Novice</th>
+				  </tr>
+				
+				  <% used_outcomes_hash = Hash.new %>
+				  <% for assignment in course.assignments %>
+				    <% if assignment.rubrics.size > 0 %>
+				      <% show = true %>
+				      <% for rubric in assignment.rubrics %>
+				       <tr>
+				        <td><%= assignment.title if show %></td>
+				        <td><% 0.upto(rubric.course_outcomes.size-1) do |i| %>
+					          <%= @outcome_numbers[course.id][rubric.course_outcomes[i].id] %><%= ", " if i < rubric.course_outcomes.size-1 %>
+					          <% used_outcomes_hash[rubric.course_outcomes[i].id] = rubric.course_outcomes[i] %>
+					        <% end %>
+					    </td> 
+				        <td><%= rubric.primary_trait %></td>
+				        <% if @rubric_map[rubric.id].nil? %>
+                          <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>
+                        <% else %>
+				          <td><%= image_tag 'accept.png' if @rubric_map[rubric.id].full_credit || @rubric_map[rubric.id].above_credit %></td>
+				          <td><%= image_tag 'accept.png' if @rubric_map[rubric.id].partial_credit %></td>
+				          <td><%= image_tag 'accept.png' if @rubric_map[rubric.id].no_credit %></td>
+				       <% end %>
+				       </tr>
+				       <% show = false %>
+				      <% end %>
+				    <% end %>
+				  <% end %>
+				</table>
+				
+				<% used_outcomes = used_outcomes_hash.values.sort { |x,y| @outcome_numbers[course.id][x.id].to_f <=> @outcome_numbers[course.id][y.id].to_f }%>
+				<ul>
+				  <% for outcome in used_outcomes %>
+		            <li><%= @outcome_numbers[course.id][outcome.id] %>)
+			            <%= outcome.outcome %></li>
+		          <% end %>
+		        </ul>
+		        </div> 
+		
+	          </div>
+            </td></tr>
+          </table>
+       </td>
+     </tr> 
+   <% end %>
+</table>
+

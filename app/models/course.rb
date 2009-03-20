@@ -169,6 +169,16 @@ class Course < ActiveRecord::Base
     return ordered
   end
   
+  def transative_program_outcomes
+    pout_hash = Hash.new
+    self.course_outcomes.each do |co|
+      co.program_outcomes.each do |po|
+        pout_hash[po.id] = po 
+      end
+    end
+    return pout_hash
+  end
+  
   def add_outcomes_at_level( rtnArr, outcomes, parent ) 
     #puts "ADD parent: #{parent} \n    -----> #{rtnArr.inspect}\n"
     
