@@ -1,0 +1,18 @@
+<h2>Duplicate Quiz/Survey for <%= @course.title %></h2>
+
+<div id="form_area">
+
+<% form_tag( { :action => 'clone' }, :multipart => true, :onsubmit => "new Element.toggle('button'); new Element.toggle( 'spinner');" ) do %>
+
+  <%= render :partial => 'form', :locals => { :edit_mode => false, :clone => true } %>
+
+
+<div class="submit">
+  <div id="button"><%= submit_tag "Clone Selected Quiz/Survey" %></div>
+  <div id="spinner" style="display: none;"><%= image_tag 'spinner.gif' %></div>
+</div>
+<% end %>
+
+<p><%= link_to 'Cancel', :controller => '/instructor/course_assignments', :action => 'index', :course => @course, :id => nil, :assignment => nil %></p>
+
+</div>

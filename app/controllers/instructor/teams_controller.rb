@@ -9,6 +9,7 @@ class Instructor::TeamsController < Instructor::InstructorBase
     return unless ensure_course_instructor( @course, @user )
     
     @teams = @course.project_teams
+    @title = "Teams for #{@course.title}"
   end
   
   def new
@@ -18,6 +19,7 @@ class Instructor::TeamsController < Instructor::InstructorBase
     return unless course_open( @course, :action => 'index' )    
     
     @team = ProjectTeam.new
+    @title = "Create new team for #{@course.title}"
   end
   
   def create
@@ -43,6 +45,8 @@ class Instructor::TeamsController < Instructor::InstructorBase
     return unless course_open( @course, :action => 'index' )
     
     @team = ProjectTeam.find(params[:id])
+    
+    @title = "Edit team #{@team.name}, course #{@course.title}"
   end
   
   def update
@@ -77,6 +81,8 @@ class Instructor::TeamsController < Instructor::InstructorBase
     student_teams.each do |st|
       @student_team[st.user_id] = st
     end  
+    
+    @title = "Edit team members for '#{@team.name}'"
   end
   
   def update_team_members

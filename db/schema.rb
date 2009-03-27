@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20090320025431) do
+ActiveRecord::Schema.define(:version => 20090327025938) do
 
   create_table "announcements", :force => true do |t|
     t.string   "headline"
@@ -162,39 +162,44 @@ ActiveRecord::Schema.define(:version => 20090320025431) do
 
   create_table "course_settings", :id => false, :force => true do |t|
     t.integer "course_id"
-    t.boolean "enable_blog",                        :default => true,  :null => false
-    t.boolean "blog_comments",                      :default => true,  :null => false
-    t.boolean "enable_gradebook",                   :default => true,  :null => false
-    t.boolean "enable_documents",                   :default => true,  :null => false
-    t.boolean "enable_prog_assignments",            :default => true,  :null => false
-    t.boolean "enable_svn",                         :default => false, :null => false
+    t.boolean "enable_blog",                           :default => true,  :null => false
+    t.boolean "blog_comments",                         :default => true,  :null => false
+    t.boolean "enable_gradebook",                      :default => true,  :null => false
+    t.boolean "enable_documents",                      :default => true,  :null => false
+    t.boolean "enable_prog_assignments",               :default => true,  :null => false
+    t.boolean "enable_svn",                            :default => false, :null => false
     t.text    "svn_server"
-    t.boolean "enable_rss",                         :default => true,  :null => false
-    t.boolean "ta_course_information",              :default => false, :null => false
-    t.boolean "ta_course_documents",                :default => false, :null => false
-    t.boolean "ta_course_assignments",              :default => false, :null => false
-    t.boolean "ta_course_gradebook",                :default => false, :null => false
-    t.boolean "ta_course_users",                    :default => false, :null => false
-    t.boolean "ta_course_blog_post",                :default => false, :null => false
-    t.boolean "ta_course_blog_edit",                :default => false, :null => false
-    t.boolean "ta_course_settings",                 :default => false, :null => false
-    t.boolean "ta_view_student_files",              :default => true,  :null => false
-    t.boolean "ta_grade_individual",                :default => true,  :null => false
-    t.boolean "ta_send_email",                      :default => false, :null => false
-    t.boolean "enable_forum",                       :default => true,  :null => false
-    t.boolean "enable_forum_topic_create",          :default => false, :null => false
-    t.boolean "enable_attendance",                  :default => false, :null => false
-    t.boolean "enable_project_teams",               :default => false, :null => false
-    t.boolean "enable_quizzes",                     :default => true,  :null => false
-    t.boolean "ta_create_quizzes",                  :default => false, :null => false
-    t.boolean "enable_wiki",                        :default => false, :null => false
-    t.text    "email_signature",                                       :null => false
-    t.boolean "enable_outcomes",                    :default => false, :null => false
-    t.boolean "ta_edit_outcomes",                   :default => false, :null => false
-    t.boolean "ta_view_quiz_results",               :default => false, :null => false
-    t.boolean "ta_view_survey_results",             :default => false, :null => false
-    t.boolean "ta_view_already_graded_assignments", :default => false, :null => false
-    t.boolean "ta_manage_attendance",               :default => false, :null => false
+    t.boolean "enable_rss",                            :default => true,  :null => false
+    t.boolean "ta_course_information",                 :default => false, :null => false
+    t.boolean "ta_course_documents",                   :default => false, :null => false
+    t.boolean "ta_course_assignments",                 :default => false, :null => false
+    t.boolean "ta_course_gradebook",                   :default => false, :null => false
+    t.boolean "ta_course_users",                       :default => false, :null => false
+    t.boolean "ta_course_blog_post",                   :default => false, :null => false
+    t.boolean "ta_course_blog_edit",                   :default => false, :null => false
+    t.boolean "ta_course_settings",                    :default => false, :null => false
+    t.boolean "ta_view_student_files",                 :default => true,  :null => false
+    t.boolean "ta_grade_individual",                   :default => true,  :null => false
+    t.boolean "ta_send_email",                         :default => false, :null => false
+    t.boolean "enable_forum",                          :default => true,  :null => false
+    t.boolean "enable_forum_topic_create",             :default => false, :null => false
+    t.boolean "enable_attendance",                     :default => false, :null => false
+    t.boolean "enable_project_teams",                  :default => false, :null => false
+    t.boolean "enable_quizzes",                        :default => true,  :null => false
+    t.boolean "ta_create_quizzes",                     :default => false, :null => false
+    t.boolean "enable_wiki",                           :default => false, :null => false
+    t.text    "email_signature",                                          :null => false
+    t.boolean "enable_outcomes",                       :default => false, :null => false
+    t.boolean "ta_edit_outcomes",                      :default => false, :null => false
+    t.boolean "ta_view_quiz_results",                  :default => false, :null => false
+    t.boolean "ta_view_survey_results",                :default => false, :null => false
+    t.boolean "ta_view_already_graded_assignments",    :default => false, :null => false
+    t.boolean "ta_manage_attendance",                  :default => false, :null => false
+    t.boolean "team_enable_wiki",                      :default => true,  :null => false
+    t.boolean "team_enable_email",                     :default => true,  :null => false
+    t.boolean "team_enable_documents",                 :default => true,  :null => false
+    t.boolean "team_documents_instructor_upload_only", :default => true,  :null => false
+    t.boolean "team_show_members",                     :default => true,  :null => false
   end
 
   add_index "course_settings", ["course_id"], :name => "course_settings_course_id_index", :unique => true

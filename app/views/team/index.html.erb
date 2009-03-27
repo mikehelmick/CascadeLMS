@@ -3,21 +3,30 @@
   <p><i>You are not assigned to a team.</i></p>	
 	
 <% else%>
-  <p>You are a member of team '<%= @team.name %>' (<%= @team.team_id %>)</p>
-
-  <p><b>Team Members</b></p>
-  <ul>
-  <% for member in @team.team_members %>
-    <li><%= member.user.display_name %> - <%= member.user.email %></li>
+  <% if @course.course_setting.team_show_members %>
+    <p>You are a member of team '<%= @team.name %>' (<%= @team.team_id %>)</p>
+    <p><b>Team Members</b></p>
+    <ul>
+      <% for member in @team.team_members %>
+        <li><%= member.user.display_name %> - <%= member.user.email %></li>
+      <% end %>
+    </ul>
+  <% else %>
+    <p><i>Your Team Center</i></p>
   <% end %>
-  </ul>
 
   <p><b>Team Actions</b></p>
 
   <ul>
-	<li><%= image_tag 'layout_content.png', :align => 'middle' %><%= link_to 'Team Wiki', :action => 'wiki', :id => @team.id, :page => 'Home' %></li>
-	<li><%= image_tag 'folder.png', :align => 'middle' %><%= link_to 'Team Files', :action => 'files', :id => @team.id %></li>
-	<li><%= image_tag 'email.png', :align => 'middle' %><%= link_to 'Team Email', :action => 'email', :id => @team.id %></li>
+	<% if @course.course_setting.team_enable_wiki %>
+	  <li><%= image_tag 'layout_content.png', :align => 'middle' %><%= link_to 'Team Wiki', :action => 'wiki', :id => @team.id, :page => 'Home' %></li>
+	<% end %>
+	<% if @course.course_setting.team_enable_documents %>
+  	  <li><%= image_tag 'folder.png', :align => 'middle' %><%= link_to 'Team Files', :action => 'files', :id => @team.id %></li>
+    <% end %>
+    <% if  @course.course_setting.team_enable_email %>
+  	  <li><%= image_tag 'email.png', :align => 'middle' %><%= link_to 'Team Email', :action => 'email', :id => @team.id %></li>
+    <% end %>
   </ul>
 
 <% end%>
@@ -31,9 +40,9 @@
 	<% for team in @all_teams %>
 	  <li><%= team.name %> (<%= team.team_id %>)</li>
 	  <ul>
-		<li><%= image_tag 'layout_content.png', :align => 'middle' %><%= link_to 'Team Wiki', :action => 'wiki', :id => team.id, :page => 'Home' %> |
-		    <%= image_tag 'folder.png', :align => 'middle' %><%= link_to 'Team Files', :action => 'files', :id => team.id %> |
-		    <%= image_tag 'email.png', :align => 'middle' %><%= link_to 'Team Email', :action => 'email', :id => team.id %></li>
+		<li><% if @course.course_setting.team_enable_wiki %><%= image_tag 'layout_content.png', :align => 'middle' %><%= link_to 'Team Wiki', :action => 'wiki', :id => team.id, :page => 'Home' %> |<% end %> 
+		    <% if @course.course_setting.team_enable_documents %><%= image_tag 'folder.png', :align => 'middle' %><%= link_to 'Team Files', :action => 'files', :id => team.id %> |<% end %> 
+		    <% if  @course.course_setting.team_enable_email %><%= image_tag 'email.png', :align => 'middle' %><%= link_to 'Team Email', :action => 'email', :id => team.id %><% end %></li>
 		<% for tm in team.team_members %>
 		  <li><%= tm.user.display_name %></li>
 		<% end %>

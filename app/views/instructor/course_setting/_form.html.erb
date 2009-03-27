@@ -51,6 +51,31 @@
 		<%= radio_button 'course_settings', 'enable_project_teams', false %> No</p>	
 </div>
 
+<p class="blockintro">When project teams are enabled, the following settings may take effect.   You can use these to enable/disable certain parts of the project "team center."   If you want to hide team membership for experimental purposes, then you should disable the team wiki and email and set the documents to only allow instructor document uploads.</p>
+<div class="block">
+	<p><label for="course_settings_team_enable_wiki" class="required">Enable team wiki:</label>
+		<%= radio_button 'course_settings', 'team_enable_wiki', true %> Yes
+		<%= radio_button 'course_settings', 'team_enable_wiki', false %> No</p>	
+	<p><label for="course_settings_team_enable_email" class="required">Enable team email:</label>
+		<%= radio_button 'course_settings', 'team_enable_email', true %> Yes
+		<%= radio_button 'course_settings', 'team_enable_email', false %> No</p>	
+	<p><label for="course_settings_team_enable_documents" class="required">Enable team documents:</label>
+		<%= radio_button 'course_settings', 'team_enable_documents', true %> Yes
+		<%= radio_button 'course_settings', 'team_enable_documents', false %> No</p>	
+	<p><label for="course_settings_team_documents_instructor_upload_only" class="required">Only let instructor upload documents:</label>
+		<%= radio_button 'course_settings', 'team_documents_instructor_upload_only', true %> Yes
+		<%= radio_button 'course_settings', 'team_documents_instructor_upload_only', false %> No</p>	
+	<p><label for="course_settings_team_show_members" class="required">Show team membership:</label>
+		<%= radio_button 'course_settings', 'team_show_members', true %> Yes
+		<%= radio_button 'course_settings', 'team_show_members', false %> No</p>	
+</div>
+
+remove_column( :course_settings, :team_enable_email )
+remove_column( :course_settings, :team_enable_documents )
+remove_column( :course_settings, :team_documents_instructor_upload_only )
+remove_column( :course_settings, :team_show_members )
+
+
 <p class="blockintro">The attendance feature is suited for classes that take place in a computer lab or a room where each student has access to a terminal during the class.</p>
 <div class="block">
 <p><label for="course_Settings_enable_attendance" class="required">Enable Attendance</label>

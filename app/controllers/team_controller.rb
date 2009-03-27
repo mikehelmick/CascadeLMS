@@ -28,6 +28,7 @@ class TeamController < ApplicationController
     
     @team = ProjectTeam.find( params[:id] )
     return unless on_team_or_instructor( @course, @team, @user )
+    return unless team_enable_wiki( @course )
     return unless valid_wiki_page_name( @team, params['page'] )
     
     @page = TeamWikiPage.find_or_create( @team, @user, params['page'] ) 
@@ -44,6 +45,7 @@ class TeamController < ApplicationController
     
     @team = ProjectTeam.find( params[:id] )
     return unless on_team_or_instructor( @course, @team, @user )
+    return unless team_enable_wiki( @course )
     
     pages = TeamWikiPage.find(:all, :conditions => ["project_team_id = ?", @team.id], :order => "page asc, revision DESC" ) 
     @pages = Array.new
@@ -67,6 +69,7 @@ class TeamController < ApplicationController
     
     @team = ProjectTeam.find( params[:id] )
     return unless on_team_or_instructor( @course, @team, @user )
+    return unless team_enable_wiki( @course )
     return unless valid_wiki_page_name( @team, params['page'] )
     
     @pages = TeamWikiPage.find(:all, :conditions => ["project_team_id = ? and page = ?", @team.id, params['page'] ], :order => "revision DESC") rescue @pages = Array.new
@@ -93,6 +96,7 @@ class TeamController < ApplicationController
     
     @team = ProjectTeam.find( params[:id] )
     return unless on_team_or_instructor( @course, @team, @user )
+    return unless team_enable_wiki( @course )
     return unless valid_wiki_page_name( @team, params['page'] )
     
     @page = TeamWikiPage.find(:first, :conditions => ["project_team_id = ? and page = ?", @team.id, params['page'] ], :order => "revision DESC") rescue @page = nil
@@ -111,6 +115,7 @@ class TeamController < ApplicationController
     
     @team = ProjectTeam.find( params[:id] )
     return unless on_team_or_instructor( @course, @team, @user )
+    return unless team_enable_wiki( @course )
     return unless valid_wiki_page_name( @team, params['page'] )
     
     @previous = TeamWikiPage.find(:first, :conditions => ["project_team_id = ? and page = ?", @team.id, params['page'] ], :order => "revision DESC") rescue @page = nil
@@ -144,6 +149,7 @@ class TeamController < ApplicationController
     
     @team = ProjectTeam.find( params[:id] )
     return unless on_team_or_instructor( @course, @team, @user )
+    return unless team_enable_wiki( @course )
     return unless valid_wiki_page_name( @team, params['page'] )
     
     @cur_page = TeamWikiPage.find(:first, :conditions => ["project_team_id = ? and page = ?", @team.id, params['page'] ], :order => "revision DESC") rescue @cur_page = nil
@@ -176,6 +182,7 @@ class TeamController < ApplicationController
     return unless teams_enabled( @course )  
     @team = ProjectTeam.find( params[:id] )
     return unless on_team_or_instructor( @course, @team, @user )  
+    return unless team_enable_email( @course )
    
     @page = params[:page].to_i
     @page = 1 if @page.nil? || @page == 0
@@ -191,6 +198,7 @@ class TeamController < ApplicationController
     return unless teams_enabled( @course )  
     @team = ProjectTeam.find( params[:id] )
     return unless on_team_or_instructor( @course, @team, @user )
+    return unless team_enable_email( @course )
     
     @email = TeamEmail.find(:first, :conditions => ["project_team_id = ? and id = ?", @team.id, params['email'].to_i ] ) rescue @email = nil
     
@@ -208,6 +216,7 @@ class TeamController < ApplicationController
     return unless teams_enabled( @course )  
     @team = ProjectTeam.find( params[:id] )
     return unless on_team_or_instructor( @course, @team, @user )
+    return unless team_enable_email( @course )
     
     @email = TeamEmail.new  
   end
@@ -218,6 +227,7 @@ class TeamController < ApplicationController
     return unless teams_enabled( @course )  
     @team = ProjectTeam.find( params[:id] )
     return unless on_team_or_instructor( @course, @team, @user )
+    return unless team_enable_email( @course )
     
     send_users = Array.new
     @team.team_members do |tm|
@@ -248,6 +258,7 @@ class TeamController < ApplicationController
     return unless teams_enabled( @course )  
     @team = ProjectTeam.find( params[:id] )
     return unless on_team_or_instructor( @course, @team, @user )
+    return unless team_enable_documents( @course )
       
     @documents = TeamDocument.find(:all, :conditions => ["project_team_id = ?", @team.id], :order => "created_at DESC")  
   end
@@ -258,6 +269,8 @@ class TeamController < ApplicationController
     return unless teams_enabled( @course )  
     @team = ProjectTeam.find( params[:id] )
     return unless on_team_or_instructor( @course, @team, @user )
+    return unless team_enable_documents( @course )    
+    return unless instructor_documents_filter( @course, @user )
     
     @document = TeamDocument.new  
   end
@@ -268,6 +281,9 @@ class TeamController < ApplicationController
     return unless teams_enabled( @course )  
     @team = ProjectTeam.find( params[:id] )
     return unless on_team_or_instructor( @course, @team, @user )
+    return unless team_enable_documents( @course )    
+    return unless instructor_documents_filter( @course, @user )
+    
     
     @document = TeamDocument.new
     @document.project_team = @team
@@ -290,6 +306,9 @@ class TeamController < ApplicationController
     return unless teams_enabled( @course )  
     @team = ProjectTeam.find( params[:id] )
     return unless on_team_or_instructor( @course, @team, @user )
+    return unless team_enable_documents( @course )    
+    return unless instructor_documents_filter( @course, @user )
+    
     
     @document = TeamDocument.find(:first, :conditions => ["project_team_id = ? and id = ?", @team.id, params['document'].to_i ] ) rescue @document = nil
     
@@ -352,9 +371,54 @@ class TeamController < ApplicationController
     return true
   end
   
+  def instructor_documents_filter( course, user )
+    if course.course_setting.team_documents_instructor_upload_only && ! user.instructor_in_course?( course.id ) 
+      flash[:notice] = "Only the instructor may upload documents."
+      redirect_to :action => 'index', :id => nil
+      return false
+    end
+    return true
+  end
+  
   def on_team_or_instructor( course, team, user )
     unless user.instructor_in_course?( course.id ) || team.on_team?( user )
       flash[:notice] = "Invalid project team requested."
+      redirect_to :action => 'index', :id => nil
+      return false
+    end
+    return true
+  end
+  
+  def team_enable_wiki( course )
+    unless course.course_setting.team_enable_wiki
+      flash[:badnotice] = "Team wikis are not enabled."
+      redirect_to :action => 'index', :id => nil
+      return false
+    end
+    return true
+  end
+  
+  def team_enable_email( course )
+    unless course.course_setting.team_enable_email
+      flash[:badnotice] = "Team email is not enabled."
+      redirect_to :action => 'index', :id => nil
+      return false
+    end
+    return true
+  end  
+  
+  def team_enable_documents( course )
+    unless course.course_setting.team_enable_documents
+      flash[:badnotice] = "Team documents are not enabled."
+      redirect_to :action => 'index', :id => nil
+      return false
+    end
+    return true
+  end
+  
+  def team_documents_instructor_upload_only( course )
+    unless course.course_setting.team_documents_instructor_upload_only
+      flash[:badnotice] = "Team documents uploads are not enabled."
       redirect_to :action => 'index', :id => nil
       return false
     end

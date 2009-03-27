@@ -6,7 +6,7 @@
 
 <% form_tag( { :action => 'update', :course => @course, :id => @assignment }, :multipart => true, :onsubmit => "new Element.toggle('button'); new Element.toggle( 'spinner');" ) do %>
 
-  <%= render :partial => 'form', :locals => { :edit_mode => true } %>
+  <%= render :partial => 'form', :locals => { :edit_mode => true, :clone => false } %>
 
 <div class="submit">
   <div id="button"><%= submit_tag "Save Changes" %></div>

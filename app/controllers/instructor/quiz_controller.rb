@@ -12,6 +12,140 @@ class Instructor::QuizController < Instructor::InstructorBase
     redirect_to :controller => '/instructor/course_assignments', :action => nil, :id => params[:id], :course => params[:course]
   end
   
+  def duplicate
+    return unless load_course( params[:course] )
+    return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_assignments' )
+    return unless quiz_enabled( @course )
+    return unless course_open( @course, :action => 'index' )
+    
+    @quizzes = Array.new
+    @course.assignments.each do |asgn|
+      @quizzes << asgn if asgn.quiz
+    end
+    
+    ## setup some basics 
+    @assignment = Assignment.new
+    @assignment.default_dates
+    @quiz = Quiz.new
+    @quiz.attempt_maximum = -1
+    @quiz.anonymous = true
+    
+    @categories = GradeCategory.for_course( @course )
+    
+    @new_quiz = true
+        
+    @title = "Duplicate Quiz/Survey - #{@course.title}"    
+  end
+  
+  def clone
+    return unless load_course( params[:course] )
+    return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_assignments' )
+    return unless quiz_enabled( @course )
+    return unless course_open( @course, :action => 'index' )
+  
+    # pre-fetch error data
+    @quizzes = Array.new
+    @course.assignments.each do |asgn|
+      @quizzes << asgn if asgn.quiz
+    end
+    @categories = GradeCategory.for_course( @course )
+    
+    @clone_from = Assignment.find(:first, :conditions => ["id = ? and course_id = ?", params['copy_from_id'].to_i, @course.id])
+    if @clone_from.nil? 
+      ## setup some basics 
+      @assignment = Assignment.new( params[:assignment] )
+      @quiz = Quiz.new( params[:quiz] )
+      
+      flash[:badnotice] = "Invalid quiz to clone from."
+      render :action => 'duplicate'
+      return
+    end
+    
+    @points = params['point_value']
+    
+    ## actually create the assignment, make it a quiz, and setup the quiz
+    @assignment = Assignment.new( params[:assignment] )
+    @assignment.course = @course
+    @assignment.grade_category_id = params[:grade_category_id].to_i
+    @assignment.make_quiz
+    
+    @quiz = Quiz.new( params[:quiz] )
+    @quiz.assignment = @assignment
+    @quiz.anonymous = false if !@quiz.survey
+    @quiz.linear_score = !@quiz.survey && (@points.nil? || (@points.class.to_s.eql?('String') && @points.eql?('')))
+    @assignment.quiz = @quiz
+    
+    @gradeItem = nil
+    if !@quiz.survey && !@points.nil? && @points.to_i > 0
+      @gradeItem = GradeItem.new
+      @gradeItem.name = @assignment.title
+      @gradeItem.date = @assignment.due_date.to_date
+      @gradeItem.points = @points.to_f
+      @gradeItem.display_type = "s"
+      @gradeItem.visible = false
+      @gradeItem.grade_category_id = @assignment.grade_category_id
+      @gradeItem.course_id = @course.id
+    end
+    
+    success = true
+    begin
+      Assignment.transaction do 
+        success = @assignment.save
+        raise 'error' unless success
+        success = @quiz.save
+        raise 'error' unless success
+        @gradeItem.assignment = @assignment unless @gradeItem.nil?
+        success = @gradeItem.save unless @gradeItem.nil?
+        raise 'error' unless success
+        
+        @clone_from.quiz.quiz_questions.each do |c_question|
+            # create question
+            question = QuizQuestion.new
+            question.quiz = @quiz
+            question.position = c_question.position
+            question.question = c_question.question
+            question.score_question = c_question.score_question
+            question.text_response = c_question.text_response
+            question.multiple_choice = c_question.multiple_choice
+            question.checkbox = c_question.checkbox
+            @quiz.quiz_questions << question
+            @quiz.save
+            
+            # create answers
+            c_question.quiz_question_answers do |c_answer|          
+              answer = QuizQuestionAnswer.new
+              answer.position = c_answer.position
+              answer.quiz_question = question
+              answer.answer_text = c_answer.answer_text
+              answer.correct = c_answer.correct
+              question.quiz_question_answers << answer
+              question.save
+            end  
+        end
+          
+        # save everything down
+        @quiz.save
+        
+        flash[:notice] = "Quiz '#{@assignment.title}' has been created successfully."
+      end  
+      sucess = true
+    rescue Exception => doh
+      @new_quiz = true
+      flash[:badnotice] = "#{doh} There was an error creating the quiz."
+      success = false
+    end
+    
+    
+    ## if everything is successful --- go to quiz listing
+    if success
+      redirect_to :controller => '/instructor/quiz', :action => 'questions', :course => @course, :id => @assignment.id
+      
+    else
+      @categories = GradeCategory.for_course( @course )
+      render :action => 'duplicate'
+    end    
+  end
+  
   def new
     return unless load_course( params[:course] )
     return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_assignments' )
@@ -122,7 +256,7 @@ class Instructor::QuizController < Instructor::InstructorBase
     if success
       redirect_to :controller => '/instructor/quiz', :action => 'questions', :course => @course, :id => @assignment.id
       
-    else
+    else      
       @categories = GradeCategory.for_course( @course )
       render :action => 'new'
     end

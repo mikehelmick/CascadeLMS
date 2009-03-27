@@ -1,8 +1,8 @@
 <p>
   <%= image_tag 'group.png', :align => 'middle' %> <%= link_to 'Team Center', :controller => '/team', :id => nil, :course => @course %> |
-  <%= image_tag 'layout_content.png', :align => 'middle' %> <%= link_to 'Wiki Home', :controller => '/team', :id => @team, :course => @course, :action => 'wiki', :page => 'Home' %> |
-  <%= image_tag 'folder.png', :align => 'middle' %> <%= link_to 'Files Home', :controller => '/team', :id => @team, :course => @course, :action => 'files' %> |
-  <%= image_tag 'email.png', :align => 'middle' %> <%= link_to 'Email Home', :controller => '/team', :id => @team, :course => @course, :action => 'email' %> <br/>
+  <% if @course.course_setting.team_enable_wiki %><%= image_tag 'layout_content.png', :align => 'middle' %> <%= link_to 'Wiki Home', :controller => '/team', :id => @team, :course => @course, :action => 'wiki', :page => 'Home' %> |<% end %>
+  <% if @course.course_setting.team_enable_documents %><%= image_tag 'folder.png', :align => 'middle' %> <%= link_to 'Files Home', :controller => '/team', :id => @team, :course => @course, :action => 'files' %> | <% end %>
+  <% if  @course.course_setting.team_enable_email %><%= image_tag 'email.png', :align => 'middle' %> <%= link_to 'Email Home', :controller => '/team', :id => @team, :course => @course, :action => 'email' %> <% end %> <br/>
 
   <div class="menuout">
   <% unless @page.nil? %>

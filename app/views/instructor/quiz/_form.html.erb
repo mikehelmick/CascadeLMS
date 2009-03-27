@@ -1,7 +1,17 @@
 <%= error_messages_for 'assignment' %>
 <%= error_messages_for 'quiz' %>
 
-<div class="blockintro">Create a new quiz for this course.</div>
+
+<% if clone %>
+ <div class="blockintro">Duplicate the questions from a previous quiz/survey.</div>
+ <div class="block">
+ <p><label for="term" class="required">Quiz to copy:</label> <%= select_tag 'copy_from_id', options_from_collection_for_select(@quizzes, "id", "title" ) %></p>
+ </div>
+
+ <div class="blockintro">Details for cloned version of quiz.</div>
+<% else %>
+ <div class="blockintro">Create a new quiz for this course.</div>
+<% end %>
 
 <div class="block">
 <p><label for="assignment[title]" class="required">Quiz name:</label>
@@ -40,6 +50,7 @@
 	 survey_style = t
    end
 %>
+
 
 <div class="blockintro">A quiz can be a traditional kind of online quiz, or can be a survey.  Surveys are not assigned a point value by default, although an instructor can do this manually.</div>
 <div class="block">
@@ -95,9 +106,11 @@
         <p><%= radio_button 'quiz', 'anonymous', true %> Yes
 	       <%= radio_button 'quiz', 'anonymous', false %> No</p>
 
+     <% unless clone %>
      <% if request.path_parameters['action'].eql?('new') %>
       <label for="generate_survey">Automatically Generate Entry/Exit survey:</label>
         <p><%= check_box_tag "generate_survey", 1, false %></p>		
+     <% end %>
      <% end %>
     </div>
 
