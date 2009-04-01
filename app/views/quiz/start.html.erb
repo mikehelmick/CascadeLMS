@@ -68,7 +68,7 @@
 	     <ul>
 	       <% for quiz_answer in question.quiz_question_answers %>
 	         <li><%= check_box_tag( "answer_#{question.id}_#{quiz_answer.id}", quiz_answer.id, !answer_ids[quiz_answer.id].nil? ) %>
-		         <%=h quiz_answer.answer_text %>
+		         <%= quiz_answer.answer_text_html %>
 		     </li>
 	       <% end %>
 	     </ul>
