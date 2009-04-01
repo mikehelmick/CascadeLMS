@@ -43,7 +43,7 @@
 	  	          <% elsif quiz_answer.id == answer_id %>
 	                 <b><font color="red">Incorrect <%= image_tag 'cancel.png' %></font></b>
 	              <% end %>
-	              <%= quiz_answer.answer_text %>
+	              <%= quiz_answer.answer_text_html %>
 		      </li>
 	        <% end %>
 	
@@ -68,7 +68,7 @@
 	  	         <% elsif answer_ids[quiz_answer.id] %>
 	                 <b><font color="red">Incorrect <%= image_tag 'cancel.png' %></font></b>
 	             <% end %>
-	             <%= quiz_answer.answer_text %>
+	             <%= quiz_answer.answer_text_html %>
 		     </li>
 	       <% end %>
 	     </ul>
