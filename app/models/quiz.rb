@@ -5,6 +5,35 @@ class Quiz < ActiveRecord::Base
   has_many :quiz_questions, :order => "position", :dependent => :destroy
   has_many :quiz_attempts, :dependent => :destroy
   
+  # Clone - possibly to a different course
+  def clone_questions( new_quiz_obj )
+    self.quiz_questions.each do |c_question|
+      # create question
+      question = QuizQuestion.new
+      question.quiz = new_quiz_obj
+      question.position = c_question.position
+      question.question = c_question.question
+      question.score_question = c_question.score_question
+      question.text_response = c_question.text_response
+      question.multiple_choice = c_question.multiple_choice
+      question.checkbox = c_question.checkbox
+      new_quiz_obj.quiz_questions << question
+      new_quiz_obj.save
+        
+      # create answers
+      c_question.quiz_question_answers do |c_answer|          
+        answer = QuizQuestionAnswer.new
+        answer.position = c_answer.position
+        answer.quiz_question = question
+        answer.answer_text = c_answer.answer_text
+        answer.correct = c_answer.correct
+        question.quiz_question_answers << answer
+        question.save
+      end  
+    end
+    new_quiz_obj.save
+  end
+  
   def user_has_completed_attempt?( user )
     attempt = QuizAttempt.find(:first, :conditions => ["quiz_id=? and user_id=?", self.id, user.id], :order => "created_at desc" )
     return false if attempt.nil?

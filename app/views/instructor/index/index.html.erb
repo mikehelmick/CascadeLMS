@@ -149,6 +149,13 @@
 
   <% if @user.instructor_in_course?( @course.id ) %>
   <tr>
+	<td><b>Import:</b></td>
+	<td><%= link_to "#{image_tag 'application_side_expand.png', :align => 'absmiddle'} Import Content From Other Courses", :controller => '/instructor/import', :action => nil, :id => nil, :course => @course %></td>
+	<td>&nbsp;</td>
+  </tr>
+  <tr><td colspan="3"><hr/></td></tr>
+
+  <tr>
 	<td><b>Application Consoles:</b></td>
 	<td><%= link_to "#{image_tag 'application_cascade.png', :align => 'absmiddle'} AutoGrade Queue", :controller => '/instructor/monitor', :action => 'agqueue', :course => @course %></td>
 	<td><%= link_to "#{image_tag 'application_error.png', :align => 'absmiddle'} AutoGrade Failures", :controller => '/instructor/monitor', :action => 'agfailed', :course => @course %></td>

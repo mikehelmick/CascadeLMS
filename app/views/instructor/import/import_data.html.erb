@@ -1,0 +1,52 @@
+<p><%= link_to 'Back', :controller => '/instructor', :action => nil, :course => @course %></p>
+
+<div class="SectionHeader"><div class="Full">
+<h2>Import Results for '<%=h @course.title%>' </h2>
+</div></div>
+
+<ul>
+  <li>Imported <%= pluralize( @imported_posts.size, 'blog post' ) %></li>
+  <li>Imported <%= pluralize( @imported_documents.size, 'document' ) %></li>
+  <li>Imported <%= pluralize( @imported_assignments.size, 'assignment' ) %></li>
+</ul>
+
+<% if @imported_posts.size > 0 %>
+<div class="SectionHeader"><div class="Full">
+<h2>Imported blog posts</h2>
+</div></div>
+
+<ul>
+ <% for post in @imported_posts %>
+   <li><%= post.title %></li>
+   <ul>
+	 <li><b>Post Date:</b> <%= post.created_at.to_formatted_s(:long) %></li>
+	 <li><b>Published:</b> <%= post.published %></li>
+	 <li><b>Content:</b> <%= post.body_html %></li>
+   </ul>
+ <% end %>
+</ul>
+<% end %>
+
+<% if @imported_documents.size > 0 %>
+<div class="SectionHeader"><div class="Full">
+<h2>Imported Documents</h2>
+</div></div>
+
+<ul>	
+ <% for document in @imported_documents %>
+   <li><%= image_tag( document.icon_file ) %> <%= document.title %> (<i><%= document.filename %></i>)</li>
+ <% end %>
+</ul>
+<% end %>
+
+<% if @imported_assignments.size > 0 %>
+<div class="SectionHeader"><div class="Full">
+<h2>Imported Assignments</h2>
+</div></div>
+
+<ul>	
+ <% for assignment in @imported_assignments %>
+   <li><%= assignment.title %></li>
+ <% end %>
+</ul>	
+<% end %>

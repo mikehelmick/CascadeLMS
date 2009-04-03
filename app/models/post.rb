@@ -7,6 +7,20 @@ class Post < ActiveRecord::Base
   
   before_save :transform_markup
   
+  def clone_to_course( course_id, user_id, time_offset )
+    dup = Post.new
+    dup.course_id = course_id
+    dup.user_id = user_id
+    dup.featured = self.featured
+    dup.title = self.title
+    dup.body = self.body
+    dup.body_html = self.body_html
+    dup.enable_comments = self.enable_comments
+    dup.created_at = Time.at( self.created_at + time_offset )
+    dup.published = self.published
+    return dup
+  end
+  
   def summary_date
     created_at.to_date.to_formatted_s(:short)
   end

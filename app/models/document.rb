@@ -9,6 +9,24 @@ class Document < ActiveRecord::Base
   
   before_save :transform_markup
   
+  def clone_to_course( course_id, user_id, time_offset )
+    dup = Document.new
+    dup.course_id = course_id
+    dup.position = self.position
+    dup.title = self.title
+    dup.filename = self.filename
+    dup.content_type = self.content_type
+    dup.comments = self.comments
+    dup.comments_html = self.comments_html
+    dup.extension = self.extension
+    dup.size = self.size
+    dup.published = self.published
+    dup.folder = self.folder
+    dup.created_at = Time.at( self.created_at + time_offset )
+    dup.podcast_folder = self.podcast_folder
+    return dup
+  end
+  
   def validate
     errors.add_to_base("No file was given") if self.filename.nil? || self.filename.size == 0
     
@@ -86,6 +104,13 @@ class Document < ActiveRecord::Base
   end
   
   ##   term/:term_id/course/:course_id/documents/doc_:id.extension
+  
+  def ensure_directory_exists( path )
+    path = "#{path}/" unless path[-1] == '/'
+    
+    full_path = "#{path}term/#{self.course.term.id}/course/#{self.course.id}/documents"
+    FileUtils.mkdir_p full_path
+  end
   
   def create_file( file_field, path )
     path = "#{path}/" unless path[-1] == '/'

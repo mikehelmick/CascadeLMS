@@ -33,6 +33,93 @@ class Assignment < ActiveRecord::Base
   
   before_save :transform_markup
   
+  def clone_to_course( course_id, user_id, time_offset, external_dir )
+    dup = Assignment.new
+    dup.course_id = course_id
+    dup.position = self.position
+    dup.title = self.title
+    dup.open_date = Time.at( self.open_date + time_offset )
+    dup.due_date = Time.at( self.due_date + time_offset )
+    dup.close_date = Time.at( self.close_date + time_offset )
+    dup.description = self.description
+    dup.description_html = self.description_html
+    dup.file_uploads = self.file_uploads
+    dup.enable_upload = self.enable_upload
+    dup.enable_journal = self.enable_journal
+    dup.programming = self.programming
+    dup.use_subversion = self.use_subversion
+    dup.subversion_development_path = self.subversion_development_path
+    dup.subversion_release_path = self.subversion_release_path
+    dup.auto_grade = self.auto_grade
+    dup.grade_category_id = self.grade_category_id
+    dup.released = false
+    dup.team_project = self.team_project
+    dup.quiz_assignment = self.quiz_assignment
+    dup.save
+    
+    ## if grade item
+    if self.grade_item
+      new_gi = self.grade_item.clone
+      new_gi.course_id = course_id
+      new_gi.assignment_id = dup.id
+      new_gi.date = Time.at( new_gi.date.to_time + time_offset ).to_date
+      dup.grade_item = new_gi
+      dup.save
+    end
+    
+    ## if it is a quiz
+    if self.quiz
+      new_quiz = Quiz.new
+      new_quiz.assignment = dup
+      new_quiz.attempt_maximum = self.quiz.attempt_maximum
+      new_quiz.random_questions = self.quiz.random_questions
+      new_quiz.number_of_questions = self.quiz.number_of_questions
+      new_quiz.linear_score = self.quiz.linear_score
+      new_quiz.survey = self.quiz.survey
+      new_quiz.available_to_auditors = self.quiz.available_to_auditors
+      new_quiz.anonymous = self.quiz.anonymous
+      new_quiz.entry_exit = self.quiz.entry_exit
+      new_quiz.course_id = course_id
+      new_quiz.show_elapsed = self.quiz.show_elapsed
+      dup.quiz = new_quiz
+      dup.save
+      
+      # clone questions
+      self.quiz.clone_questions( new_quiz )
+      new_quiz.save
+    end
+    
+    if self.assignment_documents.size > 0
+      # have docs - need to copy them
+      external_dir = "#{external_dir}/" unless external_dir[-1] == '/'
+
+      full_path = "#{external_dir}term/#{dup.course.term.id}/course/#{dup.course.id}/assignments"
+      FileUtils.mkdir_p full_path
+      
+      self.assignment_documents.each do |asgn_doc|
+        new_doc = AssignmentDocument.new
+        new_doc.assignment = dup
+        new_doc.position = asgn_doc.position
+        new_doc.filename = asgn_doc.filename
+        new_doc.content_type = asgn_doc.content_type
+        new_doc.created_at = Time.at( asgn_doc.created_at + time_offset )
+        new_doc.extension = asgn_doc.extension
+        new_doc.size = asgn_doc.size
+        new_doc.add_to_all_turnins = asgn_doc.add_to_all_turnins
+        new_doc.keep_hidden = asgn_doc.keep_hidden      
+        new_doc.save
+        
+        # actually copy the file
+        from_file_name = asgn_doc.resolve_file_name( external_dir )
+        to_file_name = new_doc.resolve_file_name( external_dir )
+        `cp #{from_file_name} #{to_file_name}`
+      end
+      
+    end
+    
+    return dup
+  end
+  
   def default_dates
     self.open_date = Time.now
     self.due_date = self.open_date + 1.day

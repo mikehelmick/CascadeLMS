@@ -30,4 +30,16 @@ class GradeItem < ActiveRecord::Base
       return 's'
     end
   
+  def clone
+    dup = GradeItem.new
+    dup.name = self.name
+    dup.date = self.date
+    dup.points = self.points
+    dup.display_type = self.display_type
+    dup.visible = self.visible
+    dup.grade_category_id = self.grade_category_id
+    dup.course_id = self.course_id
+    return dup
+  end
+  
 end
