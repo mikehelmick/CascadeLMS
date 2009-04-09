@@ -444,6 +444,46 @@ class Instructor::CourseAssignmentsController < Instructor::InstructorBase
   end
   
   
+  def team_filter
+    return unless load_course( params[:course] )
+    return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_assignments' )
+    return unless course_open( @course, :action => 'index' )
+    
+    @assignment = Assignment.find( params['id'] )
+    return unless assignment_in_course( @course, @assignment )  
+    @title = "Team Filter - #{@assignment.title}"
+  end
+  
+  def update_team_filter
+    return unless load_course( params[:course] )
+    return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_assignments' )
+    return unless course_open( @course, :action => 'index' )
+    
+    @assignment = Assignment.find( params['id'] )
+    return unless assignment_in_course( @course, @assignment )
+   
+    #begin 
+      Assignment.transaction do 
+       @assignment.team_filters.each { |i| i.destroy }
+       
+       @course.project_teams.each do |team|
+         if !params["project_team_#{team.id}"].nil? &&  params["project_team_#{team.id}"].to_i == team.id
+           filter = TeamFilter.new
+           filter.assignment = @assignment
+           filter.project_team = team
+           filter.save
+         end
+       end
+       
+     end
+     
+      flash[:notice] = "Team filter settings have been saved."
+    #rescue
+    #  flash[:badnotice] = "Team filter changes could not be saved."
+    #end  
+      
+    redirect_to :action => 'team_filter', :id => @assignment
+  end
   
   
   

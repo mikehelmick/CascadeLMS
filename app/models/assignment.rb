@@ -22,6 +22,8 @@ class Assignment < ActiveRecord::Base
   
   has_many :extensions, :dependent => :destroy
   
+  has_many :team_filters, :dependent => :destroy
+  
   has_many :rubrics, :order => "position", :dependent => :destroy
   
   
@@ -135,6 +137,29 @@ class Assignment < ActiveRecord::Base
     self.programming = false
     self.use_subversion = false
     self.auto_grade = false
+  end
+  
+  def enabled_for_students_team?( user_id )
+    team = self.course.team_for_user( user_id )
+    team_id = team.id rescue team_id = 0
+    enabled_for_team?( team_id )
+  end
+  
+  def enabled_for_team?( team_id )
+    return true if self.team_filters.size == 0
+    allowed = false
+    self.team_filters.each do |team|
+      allowed = true if team.project_team_id == team_id
+    end
+    allowed
+  end
+  
+  def team_filter_set?( team_id )
+    filter_set = false
+    self.team_filters.each do |team|
+      filter_set = true if team.project_team_id == team_id
+    end
+    filter_set
   end
   
   def ensure_style_defaults

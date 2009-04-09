@@ -440,9 +440,10 @@ class Instructor::TurninsController < Instructor::InstructorBase
       # if there isn't a rubric entry for this, we'll create one now
       if this_rubric_entry.nil?
         this_rubric_entry = create_rubric_entry( @assignment, @student, rubric )
+        this_rubric_entry.above_credit = false
         this_rubric_entry.full_credit = false
         this_rubric_entry.partial_credit = false
-        this_rubric_entry.no_credit = true
+        this_rubric_entry.no_credit = false
         # this save may not work -- but it should, if it fails, it is for a duplicate key issue, race condition
         this_rubric_entry.save rescue true == true
       end      

@@ -29,7 +29,7 @@ require 'MyString'
 # Likewise, all the methods added will be available for all controllers.
 class ApplicationController < ActionController::Base
   ## CSCW Application version
-  @@VERSION = '1.2.5 (Om) 20090402'
+  @@VERSION = '1.2.6 (Om) 20090407'
   
   ## Supress password logging
   filter_parameter_logging :password
@@ -256,6 +256,17 @@ class ApplicationController < ActionController::Base
       return false
     end
     return true
+  end
+  
+  def assignment_available_for_students_team( course, assignment, user_id )
+    if course.course_setting.enable_project_teams
+      unless assignment.enabled_for_students_team?( user_id )
+        flash[:notice] = "The selected assignment is not available."
+        redirect_to :action => nil, :controller => '/assignments', :course => course, :assignment => nil, :id => nil
+        return false    
+      end
+    end
+    true
   end
   
   def allowed_to_manage_program( program, user, redirect = true )

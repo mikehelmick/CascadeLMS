@@ -1,6 +1,6 @@
 xml.instruct!
 xml.assignments do
-  @course.assignments.each do |assignment|
+  @assignments.each do |assignment|
     xml.assignment do
       xml.id "#{assignment.id}"
       xml.title "#{assignment.title}"

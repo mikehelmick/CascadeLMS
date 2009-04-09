@@ -12,6 +12,8 @@ class AssignmentsController < ApplicationController
 
     set_title
     
+    @assignments = @course.assignments_for_user( @user.id )
+    
     respond_to do |format|
       format.html
       format.xml { render :layout => false }
@@ -32,9 +34,10 @@ class AssignmentsController < ApplicationController
 
     return unless assignment_in_course( @assignment, @course )
     return unless assignment_available( @assignment )
-    
+    return unless assignment_available_for_students_team( @course, @assignment, @user.id )
     return unless load_team( @course, @assignment, @user )
     
+      
     if @assignment.use_subversion && @assignment.auto_grade
       count_todays_turnins( @app["turnin_limit"].to_i )
     end
@@ -80,6 +83,7 @@ class AssignmentsController < ApplicationController
     @assignment = Assignment.find(params[:id]) rescue @assignment = Assignment.new
     return unless assignment_in_course( @assignment, @course )
     return unless assignment_available( @assignment )
+    return unless assignment_available_for_students_team( @course, @assignment, @user.id )
     
     @document = AssignmentDocument.find(params[:document]) rescue @document = AssignmentDocument.new
     return unless document_in_assignment( @document, @assignment )

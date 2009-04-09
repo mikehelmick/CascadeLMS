@@ -10,17 +10,20 @@
 
  <table class="fancy" id="asignment_table"> 
    <tr class="header"> 
-    <th>#</th>
-    <th>Title</th>
-    <th>Rubrics</th>
-    <th>AutoGrade</th>
-    <th>Turn-ins</th>
-    <th>Graded</th>
-    <th>Category</th>
-    <th>Available</th>
-    <th>Due</th>
+	<th align="left" valign="bottom">#</th>
+    <th align="left" valign="bottom">Title</th>
+    <th align="left" valign="bottom">Rubrics</th>
+    <% if @course.course_setting.enable_project_teams %>
+      <th align="left" valign="bottom">Team<br/>Specific</th>
+    <% end %>
+    <th align="left" valign="bottom">AutoGrade</th>
+    <th align="left" valign="bottom">Turn-ins</th>
+    <th align="left" valign="bottom">Graded</th>
+    <th align="left" valign="bottom">Category</th>
+    <th align="left" valign="bottom">Available</th>
+    <th align="left" valign="bottom">Due</th>
     <% if @user.instructor_in_course?(@course.id) || (@user.assistant_in_course?(@course.id) && @course.course_setting.ta_course_assignments) %>
-      <th>Controls</th>
+      <th align="left" valign="bottom">Controls</th>
     <% end %>
    </tr>
 
@@ -31,15 +34,15 @@
 	   odd = "even" if count.even?
   	  %>
 	  <tr class="<%=odd%> hover" id="assignment_<%=assignment.id%>">
-	    <td align="right">
+	    <td align="right" nowrap="nowrap">
 	      <% if @user.instructor_in_course?(@course.id) || (@user.assistant_in_course?(@course.id) && @course.course_setting.ta_course_assignments) %>
 	         <% if assignment.is_quiz? %>       
-	             <%= link_to "#{h assignment.position}", :controller => '/instructor/quiz', :action => 'questions', :id => assignment, :assignment => nil %>
+	             <%= link_to "#{h count}", :controller => '/instructor/quiz', :action => 'questions', :id => assignment, :assignment => nil %>
   	         <% else %>
-                 <%= link_to "#{h assignment.position}", :action => 'edit', :id => assignment %>
+                 <%= link_to "#{h count}", :action => 'edit', :id => assignment %>
              <% end %>
 	      <% else %>
-	        <%= h assignment.position %>
+	        <%= h count %>
 	      <% end %>
 	    </td>
 	    <td nowrap="nowrap">
@@ -74,6 +77,15 @@
 	        <% end %>
 	      <% end %>
 	    </td>
+	    <% if @course.course_setting.enable_project_teams %>
+	     <td>
+	       <% if assignment.team_filters.size == 0 %>
+	         <%= link_to "#{image_tag 'group_delete.png', :align => 'absmiddle'} Create", :controller => '/instructor/course_assignments', :action => 'team_filter', :id => assignment %>
+	       <% else %>
+	         <%= link_to "#{image_tag 'group_add.png', :align => 'absmiddle'} Edit", :controller => '/instructor/course_assignments', :action => 'team_filter', :id => assignment %>
+	       <% end %>
+	     </td>
+	    <% end %>
 	    <td>
 	       <%if assignment.auto_grade %>
 	           <% if @user.instructor_in_course?(@course.id) || (@user.assistant_in_course?(@course.id) && @course.course_setting.ta_course_assignments) %>

@@ -10,7 +10,7 @@ class OverviewController < ApplicationController
     return unless load_course( params[:course] )
     return unless allowed_to_see_course( @course, @user )
     
-    @recent_activity = FreshItems.fresh( @course, @app['recent_items'].to_i )
+    @recent_activity = FreshItems.fresh( @course, @app['recent_items'].to_i, true, @user.id )
     
     set_title
     

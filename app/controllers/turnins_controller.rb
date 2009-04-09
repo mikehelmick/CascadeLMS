@@ -15,6 +15,7 @@ class TurninsController < ApplicationController
     @assignment = Assignment.find(params[:assignment]) rescue @assignment = Assignment.new
     return unless assignment_in_course( @assignment, @course )
     return unless assignment_available( @assignment )
+    return unless assignment_available_for_students_team( @course, @assignment, @user.id )
     
     return unless load_team( @course, @assignment, @user )
     load_turnins
@@ -58,6 +59,7 @@ class TurninsController < ApplicationController
     @assignment = Assignment.find(params[:assignment]) rescue @assignment = Assignment.new
     return unless assignment_in_course( @assignment, @course )
     return unless assignment_available( @assignment )
+    return unless assignment_available_for_students_team( @course, @assignment, @user.id )
     
     @display_turnin = UserTurnin.find( params[:id] ) rescue @display_turnin = UserTurnin.new
     return unless load_team( @course, @assignment, @user )
@@ -80,6 +82,7 @@ class TurninsController < ApplicationController
     @assignment = Assignment.find(params[:assignment]) rescue @assignment = Assignment.new
     return unless assignment_in_course( @assignment, @course )
     return unless assignment_available( @assignment )
+    return unless assignment_available_for_students_team( @course, @assignment, @user.id )
   
     @turnin = UserTurnin.find( params[:id] ) rescue @turnin = UserTurnin.new
     return unless load_team( @course, @assignment, @user )
@@ -121,6 +124,7 @@ class TurninsController < ApplicationController
     @assignment = Assignment.find(params[:assignment]) rescue @assignment = Assignment.new
     return unless assignment_in_course( @assignment, @course )
     return unless assignment_available( @assignment )
+    return unless assignment_available_for_students_team( @course, @assignment, @user.id )
     
     @utf = UserTurninFile.find( params[:id] )  
     return unless turnin_file_downloadable( @utf )
@@ -168,6 +172,7 @@ class TurninsController < ApplicationController
     @assignment = Assignment.find(params[:assignment]) rescue @assignment = Assignment.new
     return unless assignment_in_course( @assignment, @course )
     return unless assignment_available( @assignment )
+    return unless assignment_available_for_students_team( @course, @assignment, @user.id )
     
     # check extension - we won't check open date if extension is allowd
     @extension = @assignment.extension_for_user( @user )
@@ -216,6 +221,7 @@ class TurninsController < ApplicationController
     @assignment = Assignment.find(params[:assignment]) rescue @assignment = Assignment.new
     return unless assignment_in_course( @assignment, @course )
     return unless assignment_available( @assignment )
+    return unless assignment_available_for_students_team( @course, @assignment, @user.id )
     
     # check extension - we won't check open date if extension is allowd
     @extension = @assignment.extension_for_user( @user )
@@ -346,6 +352,7 @@ class TurninsController < ApplicationController
     @assignment = Assignment.find(params[:assignment]) rescue @assignment = Assignment.new
     return unless assignment_in_course( @assignment, @course )
     return unless assignment_available( @assignment )
+    return unless assignment_available_for_students_team( @course, @assignment, @user.id )
     
     # check extension - we won't check open date if extension is allowd
     @extension = @assignment.extension_for_user( @user )
@@ -413,6 +420,7 @@ class TurninsController < ApplicationController
     @assignment = Assignment.find(params[:assignment]) rescue @assignment = Assignment.new
     return unless assignment_in_course( @assignment, @course )
     return unless assignment_available( @assignment )
+    return unless assignment_available_for_students_team( @course, @assignment, @user.id )
     
     return unless assignment_open( @assignment ) 
     
@@ -464,6 +472,7 @@ class TurninsController < ApplicationController
     @assignment = Assignment.find(params[:assignment]) rescue @assignment = Assignment.new
     return unless assignment_in_course( @assignment, @course )
     return unless assignment_available( @assignment )
+    return unless assignment_available_for_students_team( @course, @assignment, @user.id )
     
     # check extension - we won't check open date if extension is allowd
     @extension = @assignment.extension_for_user( @user )
@@ -553,6 +562,7 @@ class TurninsController < ApplicationController
     @assignment = Assignment.find(params[:assignment]) rescue @assignment = Assignment.new
     return unless assignment_in_course( @assignment, @course )
     return unless assignment_available( @assignment )
+    return unless assignment_available_for_students_team( @course, @assignment, @user.id )
     #return unless comments_released( @assignment )
     
     return unless load_team( @course, @assignment, @user )
@@ -615,6 +625,7 @@ class TurninsController < ApplicationController
     @assignment = Assignment.find(params[:assignment]) rescue @assignment = Assignment.new
     return unless assignment_in_course( @assignment, @course )
     return unless assignment_available( @assignment )
+    return unless assignment_available_for_students_team( @course, @assignment, @user.id )
     #return unless comments_released( @assignment )
     
     return unless load_team( @course, @assignment, @user )

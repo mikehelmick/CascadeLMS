@@ -14,7 +14,7 @@ class GradesController < ApplicationController
     
     @grade_map = Hash.new
     grades.each do |x| 
-      if x.grade_item.visible
+      if x.grade_item.visible 
         @grade_map[x.grade_item_id] = x.points 
         @total_points += x.points
       end

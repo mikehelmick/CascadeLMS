@@ -23,6 +23,7 @@ class QuizController < ApplicationController
     return unless assignment_in_course( @assignment, @course )
     return unless assignment_is_quiz( @assignment )
     return unless quiz_open( @assignment )
+    return unless assignment_available_for_students_team( @course, @assignment, @user.id )
     @quiz = @assignment.quiz
     
     load_quiz_dependencies()
@@ -46,6 +47,7 @@ class QuizController < ApplicationController
     return unless assignment_in_course( @assignment, @course )
     return unless assignment_is_quiz( @assignment )
     return unless quiz_open( @assignment )
+    return unless assignment_available_for_students_team( @course, @assignment, @user.id )
     @quiz = @assignment.quiz    
     
     @quiz_attempt = QuizAttempt.find( params[:qa] )
@@ -74,6 +76,7 @@ class QuizController < ApplicationController
     return unless assignment_in_course( @assignment, @course )
     return unless assignment_is_quiz( @assignment )
     return unless quiz_available( @assignment )
+    return unless assignment_available_for_students_team( @course, @assignment, @user.id )
     @quiz = @assignment.quiz
     
     if @quiz.survey
@@ -109,6 +112,7 @@ class QuizController < ApplicationController
     return unless assignment_in_course( @assignment, @course )
     return unless assignment_is_quiz( @assignment )
     return unless quiz_open( @assignment )
+    return unless assignment_available_for_students_team( @course, @assignment, @user.id )
     @quiz = @assignment.quiz
     
     @attempts = @quiz.all_attempts_for_user( @user )

@@ -1,0 +1,49 @@
+<div class="SectionHeader"><div class="Full">
+<h2>Team Filter '<%=h @assignment.title%>' </h2>
+</div></div>
+
+<p>The <i>team filter</i> allows you to set up an assignment that is only shown to students on specific teams.   These filters should be configured before the assignment is available for students.</p>
+
+<% if @assignment.team_filters.size == 0 %>
+  <div class="GoodMessage">This assignment is currently available to all students</div>
+<% end %>
+
+<% if @course.project_teams.size == 0 %>
+  <div class="errorExplaination">There are no teams in this course.  Please create teams if you want to enable this functionality.</div>
+<% else %>
+
+<div id="form_area">
+
+
+<% form_tag( { :action => 'update_team_filter', :id => @assignment }, :multipart => true, :onsubmit => "new Element.toggle('button'); new Element.toggle( 'spinner');" ) do %>
+
+<div class="blockintro">Select the teams that should see this assignment.</div>
+<div class="block">
+  <ul>
+    <% for team in @course.project_teams %>
+      <li><%= check_box_tag "project_team_#{team.id}", team.id, @assignment.team_filter_set?(team.id) %> <%= team.name %> (<%= team.team_id %>)</li>
+	  <ul>
+		<% if team.team_members.size == 0 %>
+		  <li><i>This team has no members...</i></li>
+		<% else %>
+		  <% for member in team.team_members %>
+		    <li><%= member.user.display_name %></li>
+		  <% end %>
+		<% end %>
+	  </ul>
+    <% end %>
+  </ul>
+</div>
+
+<div class="submit">
+  <div id="button"><%= submit_tag "Update Team Filter" %></div>
+  <div id="spinner" style="display: none;"><%= image_tag 'spinner.gif' %></div>
+</div>
+
+<% end %>
+
+<p><%= link_to 'Back', :action => 'index' %></p>
+
+</div>
+
+<% end %>

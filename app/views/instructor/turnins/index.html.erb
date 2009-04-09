@@ -36,6 +36,12 @@
 
 </ul>
 
+<% if @course.course_setting.enable_project_teams %>
+ <% if @assignment.team_filters.size > 0 %>
+   <div class="errorExplanation">This assignment uses team filters, so not all students have it available.</div>
+ <% end %>
+<% end %>
+
 <% form_tag( :controller => '/instructor/turnins', :action => 'save_all_grades', :course => @course, :assignment => @assignment, :id => nil ) do %>
 
 <% if @grade_item %>
@@ -85,9 +91,27 @@
 	   odd = "odd"
 	   odd = "even" if count.even?
   	%>
+
+    <% block = false 
+       if @course.course_setting.enable_project_teams && @assignment.team_filters.size
+	     unless @assignment.enabled_for_students_team?( student.id )
+		   block = true
+		 end
+	   end
+    %>
+
 	<tr class="<%=odd%> hover" id="student_<%=student.id%>">
       <td><%=h student.uniqueid %></td>
       <td><%=h student.display_name %></td>
+
+      <% if block 
+         colspan = 2
+	     colspan = colspan + 1 if (@assignment.use_subversion && @assignment.programming) || @assignment.enable_upload 
+	     colspan = colspan + 1 if @assignment.enable_journal 
+         colspan = colspan + 2 if @grade_item 
+        %>
+         <td colspan="<%= colspan %>" align="center">not available for student's team.</td>
+      <% else %>
 
 	  <% if @assignment.team_project %>
 	    <td>
@@ -156,6 +180,7 @@
 	      <%= link_to 'Revoke', :action => 'revoke', :assignment => @assignment, :course => @course, :id => student.id %> 
 	    <% end %>
 	  </td>
+	  <% end %>
     </tr>
 	
 	<tr id="<%="agsummary_#{student.id}"%>"> 

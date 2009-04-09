@@ -30,6 +30,12 @@
   </ul>
 <% end %>
 
+<% if @course.course_setting.enable_project_teams %>
+ <% if @assignment.team_filters.size > 0 %>
+   <div class="errorExplanation">This assignment uses team filters, so not all students have it available.</div>
+ <% end %>
+<% end %>
+
 <% form_tag( :controller => '/instructor/turnins', :action => 'save_all_grades', :course => @course, :assignment => @assignment, :id => nil ) do %>
 
 <table class="fancy" width="99%">
@@ -55,9 +61,26 @@
 	 <% row_count = row_count.next 
 	    odd = "odd"
         odd = "even" if row_count.even? %>
+
+	    <% block = false 
+	       if @course.course_setting.enable_project_teams && @assignment.team_filters.size
+		     unless @assignment.enabled_for_students_team?( student.id )
+			   block = true
+			 end
+		   end
+	    %>
+
+
      <tr class="<%=odd%> hover" id="student_<%=student.id%>">
 	   <td><%=h student.uniqueid %></td>
        <td><%=h student.display_name %></td>
+ 
+       <% if block 
+          colspan = 4
+          colspan = colspan + 2 if @assignment.grade_item %>
+          <td colspan="<%= colspan %>" align="center">Quiz not available for this student's team.</td>
+       <% else %>
+ 
        <td><% if !@attempts[student.id].nil? %>Yes
 	       <% else %>No<% end %>
        </td>
@@ -98,6 +121,7 @@
 	    <% end %>
 	  </td>
 
+       <% end %>
      </tr> 
   <% end %>
 

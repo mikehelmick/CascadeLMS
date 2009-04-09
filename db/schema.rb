@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20090327025938) do
+ActiveRecord::Schema.define(:version => 20090405172532) do
 
   create_table "announcements", :force => true do |t|
     t.string   "headline"
@@ -704,6 +704,15 @@ ActiveRecord::Schema.define(:version => 20090327025938) do
     t.text     "message",                         :null => false
     t.datetime "created_at",                      :null => false
   end
+
+  create_table "team_filters", :force => true do |t|
+    t.integer  "assignment_id",   :default => 0, :null => false
+    t.integer  "project_team_id", :default => 0, :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "team_filters", ["assignment_id", "project_team_id"], :name => "index_team_filters_on_assignment_id_and_project_team_id", :unique => true
 
   create_table "team_members", :force => true do |t|
     t.integer "project_team_id", :default => 0, :null => false

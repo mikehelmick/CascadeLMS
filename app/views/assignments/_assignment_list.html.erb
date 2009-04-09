@@ -1,12 +1,12 @@
 <h2>Assignments for <%= @course.title %></h2>
 
-<% if @course.assignments.size == 0 %>
+<% if @assignments.size == 0 %>
   <p><i>There are no assignments at this time, please check back later.</i></p>
 <% else %>
 
   <table class="fancy">
     <tr class="header">
-      <th>#</th>
+      <!-- <th>#</th> -->
       <th>Title</th>
       <th>Category</th>
       <% if !public %><th colspan="2">Graded?</td><% end %>
@@ -15,25 +15,29 @@
      </tr>
 
     <% count = 0 %>
-    <% for assignment in @course.assignments %>
+    <% for assignment in @assignments %>
       <% count = count.next 
 	     odd = "odd"
 	     odd = "even" if count.even?
 	   %>
 	  <tr class="<%=odd%> hover" id="assignment_<%=assignment.id%>">
-	    <td align="right" valign="top">
-          <% user_completed_quiz = false %>
-	      <% if assignment.quiz %>
-	        <% user_completed_quiz = assignment.quiz.user_has_completed_attempt?(@user) %>
+		 <% user_completed_quiz = false 
+	        if assignment.quiz 
+	          user_completed_quiz = assignment.quiz.user_has_completed_attempt?(@user) 
+            end %>
+	<!--
+	   <td align="right" valign="top">
+          <% if assignment.quiz %>
 	        <% if user_completed_quiz %>
-	          <%= link_to "#{h assignment.position}", {:controller => '/quiz', :action => 'start', :course => @course, :id => assignment}, :confirm => "You have already completed this quiz, are you sure you want to take it again?" %>
+	          <%= link_to "#{h count}", {:controller => '/quiz', :action => 'start', :course => @course, :id => assignment}, :confirm => "You have already completed this quiz, are you sure you want to take it again?" %>
 	        <% else %>
-	          <%= link_to "#{h assignment.position}", :controller => '/quiz', :action => 'start', :course => @course, :id => assignment %>
+	          <%= link_to "#{h count}", :controller => '/quiz', :action => 'start', :course => @course, :id => assignment %>
 	        <% end %>
 		  <% else %>
-		    <%= link_to "#{h assignment.position}", :action => 'view', :id => assignment %>
+		    <%= link_to "#{h count}", :action => 'view', :id => assignment %>
 		  <% end %>
 		</td>
+	-->
 	    <td valign="top" align="left" nowrap="nowrap">
 	      <% if assignment.quiz %>
 	        <% if user_completed_quiz %>

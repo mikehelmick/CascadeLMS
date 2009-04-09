@@ -231,7 +231,8 @@ Last Updated: <%= @display_turnin.updated_at.to_formatted_s(:friendly_date) %><b
   <ul><% for rubric in @assignment.rubrics %>
     <li><b><%=h rubric.primary_trait %></b></li>
 
-<% pointValue = rubric.no_credit_points
+<% pointValue = 0
+   pointValue = rubric.no_credit_points if @rubric_entry_map[rubric.id].no_credit
    pointValue = rubric.part_credit_points if @rubric_entry_map[rubric.id].partial_credit
    pointValue = rubric.full_credit_points if @rubric_entry_map[rubric.id].full_credit
    pointValue = rubric.above_credit_points if @rubric_entry_map[rubric.id].above_credit
@@ -254,14 +255,14 @@ function update_rubric_<%=rubric.id%>_to( newValue ) {
 
     <ul>
 	  <% unless rubric.above_credit_criteria.nil? %>
-	    <li><%= radio_button_tag( "rubric_#{rubric.id}", 'above', @rubric_entry_map[rubric.id].above_credit, :onclick => "update_rubric_#{rubric.id}_to( #{rubric.above_credit_points} )" )%>  
+	    <li><%= radio_button_tag( "rubric_#{rubric.id}", 'above', @rubric_entry_map[rubric.id].above_credit, :onclick => "update_rubric_#{rubric.id}_to( #{rubric.above_credit_points} )" )%><b>Expert:</b> 
 			  <%=h rubric.above_credit_criteria %> (<%=h rubric.above_credit_points%> points)
 	  <% end %>	
-	  <li><%= radio_button_tag( "rubric_#{rubric.id}", 'full', @rubric_entry_map[rubric.id].full_credit, :onclick => "update_rubric_#{rubric.id}_to( #{rubric.full_credit_points} )" )%>  
+	  <li><%= radio_button_tag( "rubric_#{rubric.id}", 'full', @rubric_entry_map[rubric.id].full_credit, :onclick => "update_rubric_#{rubric.id}_to( #{rubric.full_credit_points} )" )%><b>Proficient:</b>
 		  <%=h rubric.full_credit_criteria %> (<%=h rubric.full_credit_points%> points)</li>
-	  <li><%= radio_button_tag( "rubric_#{rubric.id}", 'partial', @rubric_entry_map[rubric.id].partial_credit, :onclick => "update_rubric_#{rubric.id}_to( #{rubric.part_credit_points} )" )%>
+	  <li><%= radio_button_tag( "rubric_#{rubric.id}", 'partial', @rubric_entry_map[rubric.id].partial_credit, :onclick => "update_rubric_#{rubric.id}_to( #{rubric.part_credit_points} )" )%><b>Apprentice:</b>
 	      <%=h rubric.part_credit_criteria %> (<%=h rubric.part_credit_points%> points)</li>
-	  <li><%= radio_button_tag( "rubric_#{rubric.id}", 'no', @rubric_entry_map[rubric.id].no_credit, :onclick => "update_rubric_#{rubric.id}_to( #{rubric.no_credit_points} )" )%>
+	  <li><%= radio_button_tag( "rubric_#{rubric.id}", 'no', @rubric_entry_map[rubric.id].no_credit, :onclick => "update_rubric_#{rubric.id}_to( #{rubric.no_credit_points} )" )%><b>Novice:</b>
 	      <%=h rubric.no_credit_criteria %> (<%=h rubric.no_credit_points%> points)</li>
 	  <li>Comments:<br/>
 		 <%= text_area_tag("rubric_#{rubric.id}_comments", @rubric_entry_map[rubric.id].comments, { "cols" => 80, "rows" => 7 } ) %>
