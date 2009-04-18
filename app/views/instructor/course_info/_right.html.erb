@@ -27,7 +27,7 @@
 	  CRN(s): <%= course.crns.join(', ') %><br />
 	  Instructor(s): <%= course.instructors.join(', ') %><br />
 	  Students: <%= course.students.size %> | TAs: <%= course.assistants.size %> | Guests: <%= course.guests.size %> <br/>
-	  <%= link_to "#{image_tag 'arrow_join.png'} Merge into #{@course.title}", { :action => 'merge', :course => @course.id, :id => course.id }, :confirm => "Are you sure you want to merge these courses?  There is no way to undo this action, and it make take up to 1 minute to complete. \n\n The settings and information for #{@course.title} will persist after the merge. \n\n The user lists for both courses will be merged." %>
+	  <%= link_to "#{image_tag 'arrow_join.png'} Merge into #{@course.title}", { :action => 'merge', :course => @course.id, :id => course.id }, :confirm => "Are you sure you want to merge these courses?  There is no way to undo this action, and it make take up to 1 minute to complete. \n\n The settings and information for #{@course.title} will persist after the merge. \n\n The user lists for both courses will be merged.  All assignments, documents, blog posts from this course will be lost during the merge.  " %>
 	</td>	
   </tr>
   <% end %>

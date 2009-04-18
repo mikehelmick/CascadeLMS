@@ -84,7 +84,7 @@ class Course < ActiveRecord::Base
       
       other.courses_users.clear
       other.save
-      other.destroy
+      #other.destroy
       
       self.save
     end
