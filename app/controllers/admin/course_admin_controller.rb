@@ -112,7 +112,7 @@ class Admin::CourseAdminController < ApplicationController
     other = Course.find(params[:course])
     
     begin
-      course.merge(other)
+      course.merge(other, @app['external_dir'])
       
       flash[:notice] = "Courses have been merged successfully."
       redirect_to :action => 'edit', :id => course

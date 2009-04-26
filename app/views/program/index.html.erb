@@ -19,6 +19,11 @@
       <td><%=h program.program.title %></td>
       <td nowrap="nowrap">
 	    <% if program.program_manager %>
+          <% if program.program.enable_api %>
+            <%= link_to "Public API Enabled", {:controller => '/program', :action => 'toggle_api_flag', :id => program.program}, :confirm => 'Are you sure you want to disable API access for this program.', :method => :post %>
+          <% else %>
+            <%= link_to "Public API Disabled", {:controller => '/program', :action => 'toggle_api_flag', :id => program.program}, :confirm => 'Are you sure you want to enable API access for this program.', :method => :post %>
+          <% end %> |
 	      <%= link_to 'Edit Program Outcomes', :action => 'outcomes', :id => program.program.id %> |
 	      <%= link_to 'Course Outcome Templates', :action => 'templates', :id => program.program.id %> |
 	      <%= link_to 'Program Managers/Auditors', :action => 'users', :id => program.program.id %>
@@ -27,6 +32,12 @@
 	</tr>
 	<tr class="<%=odd%> hover" style="padding-left: 1px;">
 	  <td colspan="2>">
+		<% if program.program.enable_api %>
+		  <ul>
+			<li><b>Public API url:</b> <%= url_for( :only_path => false, :controller => '/public/api', :action => 'program', :id => program.program ) %></li>
+			<li><b>For Templates:</b> <%= url_for( :only_path => false, :controller => '/public/api', :action => 'course_template', :id => 'TEMPLATE_ID' ) %></li>
+		  </ul>
+		<% end %>
 		<ul>
 		  <% if program.program.program_outcomes.length == 0 %>	
 		    <li>No program outcomes defined.</li>

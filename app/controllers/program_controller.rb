@@ -498,6 +498,17 @@ class ProgramController < ApplicationController
     end
   end
   
+  def toggle_api_flag
+    return unless load_program( params[:id] )
+    return unless allowed_to_manage_program( @program, @user )
+    
+    @program.enable_api = ! @program.enable_api
+    @program.save
+    
+    flash[:notice] = "Public API setting changed for #{@program.title}"
+    redirect_to :controller => '/program', :action => nil, :id => nil
+  end
+  
   
 private
   

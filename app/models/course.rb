@@ -31,7 +31,7 @@ class Course < ActiveRecord::Base
   
   before_create :solidify
   
-  def merge( other )
+  def merge( other, externalDir )
     Course.transaction do
       #puts "in a transaction?"
       
@@ -82,9 +82,50 @@ class Course < ActiveRecord::Base
         otheruser.destroy
       end
       
+      # Import Content - Blog posts first
+      other.posts.each do |post|
+        new_post = post.clone_to_course( self.id, post.user.id, 0 )
+        self.posts << new_post
+        self.save
+      end
+      # Import documents
+      dir_created = false
+      parent_map = Hash.new
+      parent_map[0] = 0
+      import_stack = Document.find(:all, :conditions => ["course_id = ? and document_parent = ?", other.id, 0], :order => "position DESC")
+      # Process these as a stack
+      while import_stack.size > 0
+        copy_from = import_stack.pop
+        new_doc = copy_from.clone_to_course( self.id, 0, 0 )
+        new_doc.document_parent = parent_map[copy_from.document_parent]
+        new_doc.save
+        parent_map[copy_from.id] = new_doc.id
+        
+        # create dir
+        new_doc.ensure_directory_exists(externalDir) unless dir_created
+        dir_created = true
+        
+        ## If copy_from is a folder, load contents into stack
+        if copy_from.folder
+          contents = Document.find(:all, :conditions => ["course_id = ? and document_parent = ?", other.id, copy_from.id], :order => "position DESC")
+          contents.each { |i| import_stack.push(i) }
+        else
+          ## Need to actually copy the file
+          from_file_name = copy_from.resolve_file_name(externalDir)
+          to_file_name = new_doc.resolve_file_name(externalDir)
+          ## shell out to copy file
+          `cp #{from_file_name} #{to_file_name}`
+        end
+      end
+      # Import assignments
+      other.assignments.each do |cp_asgn|
+        new_asgn = cp_asgn.clone_to_course( self.id, 0, 0, externalDir )
+        new_asgn.save
+      end
+      
       other.courses_users.clear
       other.save
-      #other.destroy
+      other.destroy
       
       self.save
     end

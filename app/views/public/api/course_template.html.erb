@@ -1,0 +1,74 @@
+<div class="SectionHeader"><div class="Full">
+<h2>Course Outcomes for : <%= @course_template.title %> (<%= @course_template.start_date %>)</h2>
+</div></div>
+
+<% if @course_template.course_template_outcomes.length == 0 %>
+	<p><i>There are no outcomes defined for this course template.</i></p>
+<% else %>
+
+
+<table class="fancy" width="99%">
+  <tr class="header">
+	  <th width="100%">Course Outcome</th>
+	</tr>
+
+   <% row_count = 0 
+      parent_stack = [-1]
+	  count_stack = [0] %>
+   <% for outcome in @course_template.ordered_outcomes %>
+	 <% row_count = row_count.next 
+	    odd = "odd"
+        odd = "even" if row_count.even? %> 
+	
+	 <tr class="<%=odd%> hover" id="course_template_outcome_<%=outcome.id%>">
+       <td>
+          <% if outcome.parent == parent_stack[-1] ## Same level %>
+             <% count_stack.push( count_stack.pop + 1 ) %>
+	      <% elsif parent_stack.index( outcome.parent ).nil?  ## New level %>
+	         <% parent_stack.push outcome.parent 
+	            count_stack.push 1 %>
+          <% else ## need to pop back to correct level %>
+             <% while (parent_stack[-1] != outcome.parent) 
+                  parent_stack.pop
+                  count_stack.pop
+                end 
+                count_stack.push( count_stack.pop + 1 )
+              %>
+	      <% end %>
+	
+	      <% parent_stack[0..-2].each { |i| %>&nbsp;&nbsp;<%  } %>
+          <%=h count_stack.join('.') %>)
+          <%=h outcome.outcome %>
+	
+	      <% if outcome.program_outcomes.size > 0 %>
+	        &nbsp;(<%= link_to_function( "#{image_tag('application_side_expand.png', :align => 'absmiddle' )} mappings", "blindToggle( 'outcome_details_#{outcome.id}' )" ) %>)
+	      <% end%>
+	
+	      <br/>
+	      <div id="outcome_details_<%=outcome.id%>" style="display: none; padding-left: 25px">
+		    <ul>
+		      <% for program in @course_template.programs %>
+		        <li>Program: <b><%=program.title%></b></li>
+		        <% count = 0 %>
+		        <ul>
+			      <% added = false %>
+			      <% for prog_outcome in program.program_outcomes %>
+			        <% count = count.next %>
+			        <% if outcome.mapped_to_program_outcome?(prog_outcome.id) 
+				        added = true %>
+			            <li><%= count %>) <%= prog_outcome.outcome %></li>
+			        <% end %>
+			      <% end %>
+			      <% unless added %>
+			        <li><i>Not mapped to any program outcomes for this program.</i></li>
+			      <% end %>
+			    </ul>
+		      <% end %>
+		    </ul>
+		  </div>
+	   </td>
+   <% end %>
+
+</table>
+
+<% end %>

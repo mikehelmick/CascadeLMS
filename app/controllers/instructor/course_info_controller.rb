@@ -42,15 +42,15 @@ class Instructor::CourseInfoController < Instructor::InstructorBase
    
     other = Course.find(params[:id])
     
-    begin
-      @course.merge(other)
+    #begin
+      @course.merge(other,@app['external_dir'])
       
       flash[:notice] = "Courses have been merged successfully."
       redirect_to :action => 'index', :id => @course
-    rescue
-      flash[:badnotice] = "There was an error merging the courses"
-      redirect_to :action => 'index', :id => @course
-    end
+    #rescue
+    #  flash[:badnotice] = "There was an error merging the courses"
+    #  redirect_to :action => 'index', :id => @course
+    #end
   end
   
   

@@ -1,0 +1,27 @@
+<div class="SectionHeader"><div class="Full">
+<h2>Program Outcomes for : <%= @program.title %></h2>
+</div></div>
+
+<ul>
+<% if @program.program_outcomes.length == 0 %>	
+  <li>No program outcomes defined.</li>
+<% end %>
+	
+<% count = 0 %>
+<% for outcome in @program.program_outcomes %>
+  <% count = count.next %>
+  <li><%= count %>) <%= outcome.outcome %></li>
+<% end %>
+</ul>
+
+<div class="SectionHeader"><div class="Full">
+<h2>Course Templates : <%= @program.title %></h2>
+</div></div>
+
+<ul>
+<% for course_template in @program.course_templates.sort { |a,b| a.title <=> b.title } %>
+  <% if course_template.approved %>
+    <li><%= link_to "#{course_template.title}", :controller => '/public/api', :id => course_template, :action => 'course_template' %> (Starting <%= course_template.start_date %>)</li>
+  <% end %>
+<% end %>
+</ul>

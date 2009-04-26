@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20090405172532) do
+ActiveRecord::Schema.define(:version => 20090425233823) do
 
   create_table "announcements", :force => true do |t|
     t.string   "headline"
@@ -536,9 +536,10 @@ ActiveRecord::Schema.define(:version => 20090405172532) do
   end
 
   create_table "programs", :force => true do |t|
-    t.string   "title",      :default => "", :null => false
+    t.string   "title",      :default => "",    :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "enable_api", :default => false, :null => false
   end
 
   create_table "programs_users", :force => true do |t|

@@ -40,6 +40,12 @@ This will allow your response to be returned as XML.  Otherwise you will be retu
 	  <li><a href="#CourseWiki_PageHistory">Wiki - Page History</a></li>	
 	</ol>	
   </li>
+  <li>Public Information API
+	<ol>
+		<li><a href="#Public_ProgramOutcomes">Program Outcomes</a></li>
+		<li><a href="#Public_CourseTemplate">Course Template</a></li>
+	</ol>
+  </li>
 </ol>
 
 <br/><div class="SectionHeader"><div class="Full">
@@ -50,7 +56,7 @@ This will allow your response to be returned as XML.  Otherwise you will be retu
 
 <p><b>SAMPLE REQUEST</b>
 <ul>
-  <li><tt><%= url_for( :only_path => false, :controller => '/index', :action => @login ) %>?user[uniqueid]=<b>YOURUSERNAME</b>&user[password]=<b>YOURPASSWORD</b></tt></li>
+  <li><tt><%= url_for( :only_path => false, :controller => '/index', :action => 'login' ) %>?user[uniqueid]=<b>YOURUSERNAME</b>&user[password]=<b>YOURPASSWORD</b></tt></li>
   <li>If successful, there will be an HTTP 302 redirect to <tt><%= url_for( :only_path => false, :controller => '/home' ) %></tt></li>
   <li>If unsuccessful, there will be a redirect to a different page.</li>
 </ul>
@@ -710,3 +716,64 @@ The first Wiki page is always named <tt>Home</tt>.   From there, you should look
 	" %>	
 	<% for line in segment.split("\n") %><% 0.upto(line.size-1) do |i| %><% if line[i...i+1].eql?(" ") %>&nbsp;<% else %><%=h  line[i...i+1] %><% end %><% end %><br/><% end %>	
 </div>
+
+<br/><div class="SectionHeader"><div class="Full">
+<h2><a name="Public_ProgramOutcomes">Program Outcomes</a></h2>
+</div></div>
+<p>To access public program outcomes, issue a GET request to the URL <br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<tt><%= url_for( :only_path => false, :controller => "/public/api", :action => 'program', :id => 'PROGRAM_ID' ) %></tt><br/>
+</p>
+<p><b><%= link_to_function "#{image_tag 'page_code.png', :align => 'absmiddle'} View Sample Response", visual_effect(:toggle_slide, 'Sample_Public_ProgramOutcomes' ) %></b></p>	
+<div class="code" id="Sample_Public_ProgramOutcomes" style="display: none;">
+	<% segment = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
+	<program>
+	  <title>Computer Science</title>
+	  <program_outcomes>
+	    <outcome>Explain and apply the key facts, concepts, principles, and theories of computer science.</outcome>
+	    <!-- Additional outcomes -->
+	  </program_outcomes>
+	  <courses>
+	    <course>
+	      <title>CSA 467 Computer and Network Security</title>
+	      <link>http://servername/public/api/course_templates/324</link>
+	    </course>
+	    <!-- Additional courses, links are valid API calls as well --> 
+	  </courses>
+	</program>" %>	
+	<% for line in segment.split("\n") %><% 0.upto(line.size-1) do |i| %><% if line[i...i+1].eql?(" ") %>&nbsp;<% else %><%=h  line[i...i+1] %><% end %><% end %><br/><% end %>
+</div>
+
+<br/><div class="SectionHeader"><div class="Full">
+<h2><a name="Public_CourseTemplate">Course Template</a></h2>
+</div></div>
+<p>To access public course template (and course outcomes w/ mappings to program outcomes), issue a GET request to the URL <br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<tt><%= url_for( :only_path => false, :controller => "/public/api", :action => 'course_template', :id => 'COURSE_TEMPLATE_ID' ) %></tt><br/>
+</p>
+<p><b><%= link_to_function "#{image_tag 'page_code.png', :align => 'absmiddle'} View Sample Response", visual_effect(:toggle_slide, 'Sample_Public_CourseTemplate' ) %></b></p>	
+<div class="code" id="Sample_Public_CourseTemplate" style="display: none;">
+  <% segment = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
+<course_template>
+  <title>CSA 174 Fundamentals of Programming &amp; Problem Solving</title>
+  <start_date>Fall 2008</start_date>
+  <outcomes>
+    <outcome>
+      <number>1</number>
+      <title>To describe and use a contemporary programming language and programming environment
+</title>
+      <mappings>
+        <program>
+          <title>Computer Science</title>
+          <program_outcomes>
+            <program_outcome>3) Effectively use current techniques, skills, and tools necessary for computing practice</program_outcome>
+          </program_outcomes>
+        </program>
+        <!-- A course may be mapped to multiple programs -->
+      </mappings>
+    </outcome>
+    <!-- Additional outcome elements -->
+  </outcomes>
+</course_template>"
+    %>
+  <% for line in segment.split("\n") %><% 0.upto(line.size-1) do |i| %><% if line[i...i+1].eql?(" ") %>&nbsp;<% else %><%=h  line[i...i+1] %><% end %><% end %><br/><% end %>
+</div>
+
