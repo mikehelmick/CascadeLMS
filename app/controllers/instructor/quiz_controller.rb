@@ -112,7 +112,7 @@ class Instructor::QuizController < Instructor::InstructorBase
             @quiz.save
             
             # create answers
-            c_question.quiz_question_answers do |c_answer|          
+            c_question.quiz_question_answers.each do |c_answer|          
               answer = QuizQuestionAnswer.new
               answer.position = c_answer.position
               answer.quiz_question = question
