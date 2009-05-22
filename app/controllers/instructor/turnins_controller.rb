@@ -938,6 +938,7 @@ class Instructor::TurninsController < Instructor::InstructorBase
     if @current_turnin.nil?
       flash[:badnotice] = "This student did not submit any files, so there are no IO test results to view."
       redirect_to :action => 'view_student', :course => @course, :assignment => @assignment, :id => @student
+      return
     end
     
     return unless turnin_for_assignment( @current_turnin, @assignment )   
