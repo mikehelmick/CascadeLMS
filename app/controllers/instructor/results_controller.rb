@@ -93,36 +93,19 @@ class Instructor::ResultsController < Instructor::InstructorBase
          
   end
 
+
+  def survey_export
+    survey_results_common( params )
+    
+    response.headers['Content-Type'] = 'text/csv; charset=iso-8859-1; header=present'
+    response.headers['Content-Disposition'] = "inline; filename=survey_results_#{@assignment.id}.csv"
+    
+    render :layout => false
+  end
+
   def survey
-    return unless load_course( params[:course] )
-    return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_view_survey_results' )
-    return unless quiz_enabled( @course )
-    return unless course_open( @course, :action => 'index' )
-    return unless load_assignment( params[:assignment] )
-    return unless assignment_in_course( @course, @assignment )
-    return unless assignment_is_quiz( @assignment )
-    @quiz = @assignment.quiz
-    
-    if ( ! @assignment.quiz.survey ) 
-      redirect_to :action => 'quiz', :course => @course, :assignment => @assignment
-    end
-    
-    # map students to 2 columns
-    @students = @course.students
-    size = @students.length / 2
-    @column1 = Array.new
-    0.upto(size) { |i| @column1 << @students[i] }
-    @column2 = Array.new
-    (size+1).upto(@students.length-1) { |i| @column2 << @students[i] }
-      
-    # if anonymous, run through all attempts
-    if @quiz.anonymous
-      attempts = QuizAttempt.find(:all, :conditions => ["quiz_id = ?", @quiz.id])
-      @student_map = Hash.new
-      attempts.each { |attempt| @student_map[attempt.user_id] = true }  
-    end  
-      
-    aggregate_survey_responses( @quiz )  
+    survey_results_common( params )
+    @title = "Survey Results - #{@assignment.title}"
   end
   
   def survey_question
@@ -148,7 +131,7 @@ class Instructor::ResultsController < Instructor::InstructorBase
     @question = QuizQuestion.find(:first, :conditions => ["id =? and quiz_id = ?", params[:id].to_i, @quiz.id] )
     if @question.nil?
       flash[:badnotice] = "The selected question could not be found."
-      return redirect_to :action => 'survey', :course => @course, :assignment => @assignment 
+      return redirect_to( :action => 'survey', :course => @course, :assignment => @assignment )
     end
     
     
@@ -271,6 +254,7 @@ class Instructor::ResultsController < Instructor::InstructorBase
         # find the most recent submission for the student
         quiz_attempt = QuizAttempt.find(:first, :conditions => ["quiz_id=? and user_id=?", @quiz.id, student.id], :order => "created_at desc" )
         if quiz_attempt.nil?
+                  
           # no quiz attempt for this student, update, or create grade_item to zero
           unless @assignment.grade_item.nil?
             grade_entry = GradeEntry.find(:first, :conditions => ["grade_item_id=? and user_id=?", @assignment.grade_item.id, student.id])
@@ -283,7 +267,7 @@ class Instructor::ResultsController < Instructor::InstructorBase
           end
           
         else
-          # regrade quiz attempt
+          # regrade quiz attempt          
           @quiz.score( quiz_attempt, student, @course )
 
         end
@@ -355,5 +339,38 @@ private
   def set_title
      @title = "Quiz - #{@course.title}"
   end
+  
+  def survey_results_common( params )
+    return unless load_course( params[:course] )
+    return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_view_survey_results' )
+    return unless quiz_enabled( @course )
+    return unless course_open( @course, :action => 'index' )
+    return unless load_assignment( params[:assignment] )
+    return unless assignment_in_course( @course, @assignment )
+    return unless assignment_is_quiz( @assignment )
+    @quiz = @assignment.quiz
+    
+    if ( ! @assignment.quiz.survey ) 
+      redirect_to :action => 'quiz', :course => @course, :assignment => @assignment
+    end
+    
+    # map students to 2 columns
+    @students = @course.students
+    size = @students.length / 2
+    @column1 = Array.new
+    0.upto(size) { |i| @column1 << @students[i] }
+    @column2 = Array.new
+    (size+1).upto(@students.length-1) { |i| @column2 << @students[i] }
+      
+    # if anonymous, run through all attempts
+    if @quiz.anonymous
+      attempts = QuizAttempt.find(:all, :conditions => ["quiz_id = ?", @quiz.id])
+      @student_map = Hash.new
+      attempts.each { |attempt| @student_map[attempt.user_id] = true }  
+    end  
+      
+    aggregate_survey_responses( @quiz )
+  end
+  
 
 end

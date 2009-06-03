@@ -15,6 +15,10 @@
 
   <p>Here are the aggregate survey responses for all students.  You can also view the by-student responses for a question or view the entire survey for a given student.</p>
  
+  <ul>
+	<li><%= image_tag 'page_excel.png', :align => 'absmiddle' %> <%= link_to 'Export survey results to Excel', :controller => '/instructor/results', :action => 'survey_export', :course => @course, :assignment => @assignment %></li>
+  </ul> 
+
   <table class="fancy" width="99%">
   <tr class="header">
 	  <th align="center">#</th>

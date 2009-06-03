@@ -319,6 +319,8 @@ class Instructor::QuizController < Instructor::InstructorBase
         ans.save if ans.answer_text_html.nil?
       end
     end
+    
+    @title = "Edit Quiz Questions : '#{@assignment.title}'"
   end
   
   def new_question

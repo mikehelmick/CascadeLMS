@@ -1,0 +1,7 @@
+Survey Results: <%= @assignment.title %>
+Exported at:, <%= Time.now.to_formatted_s(:long) %>
+<% for q in @assignment.quiz.quiz_questions %><%= q.question %>
+<% if q.multiple_choice || q.checkbox %><% for qqa in q.quiz_question_answers %>,<%= qqa.answer_text %>,<%= @answer_count_map[qqa.id] %>,<% if @question_answer_total[q.id].to_i > 0 %><%= sprintf("%.3f", @answer_count_map[qqa.id]/@question_answer_total[q.id].to_f * 100 ) %><% else %>0.000<% end %>
+<% end %>,TOTAL:,<%= @question_answer_total[q.id] %>,100.0
+<% else %><% for response in @text_responses[q.id] %>,<%= response %>
+<% end %><% end %><% end %>

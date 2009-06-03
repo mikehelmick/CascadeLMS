@@ -60,6 +60,10 @@ class DocumentsController < ApplicationController
       unless @course.nil?
           if allowed_to_see_course( @course, @user )       
             if load_folder( params[:id].to_i )
+              if @folder.nil?
+                redirect_to :controller => "/home", :action => nil, :course => nil
+              end
+              
               params[:format] = 'xml'
               respond_to do |format| 
                 format.xml {

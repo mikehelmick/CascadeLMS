@@ -50,12 +50,15 @@ class PortfolioController < ApplicationController
     rubric_entries.each do |re|
       re.rubric.course_outcomes.each do |co|
         co.program_outcomes.each do |po|
+          idx = -1
           idx = 2 if re.no_credit
           idx = 0 if re.above_credit || re.full_credit
           idx = 1 if re.partial_credit
-          
-          @program_totals[po.program.id][idx] = @program_totals[po.program.id][idx].next
-          @program_outcome_counts[po.id][idx] = @program_outcome_counts[po.id][idx].next
+
+          if idx >= 0
+            @program_totals[po.program.id][idx] = @program_totals[po.program.id][idx].next 
+            @program_outcome_counts[po.id][idx] = @program_outcome_counts[po.id][idx].next 
+          end
         end
       end
     end

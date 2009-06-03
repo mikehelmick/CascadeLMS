@@ -98,7 +98,6 @@ class Admin::CourseAdminController < ApplicationController
         
       end
       
-      
       flash[:notice] = "Course #{@course.title} (#{@term.semester}) has been updated."
       redirect_to :action => 'edit', :id => @course
     else
@@ -115,10 +114,10 @@ class Admin::CourseAdminController < ApplicationController
       course.merge(other, @app['external_dir'])
       
       flash[:notice] = "Courses have been merged successfully."
-      redirect_to :action => 'edit', :id => course
+      redirect_to :action => 'edit', :id => course, :course => nil
     rescue
       flash[:badnotice] = "There was an error merging the courses"
-      redirect_to :action => 'edit', :id => course
+      redirect_to :action => 'edit', :id => course, :course => nil
     end
   end
   
