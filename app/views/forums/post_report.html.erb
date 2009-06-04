@@ -11,7 +11,7 @@
         
         <% counter = 0 %>
 		<% for student in @course.students %>
-          data.setValue( <%= counter %>, 0, '<%= student.display_name %>' );
+          data.setValue( <%= counter %>, 0, "<%= student.display_name %>" );
           data.setValue( <%= counter %>, 1, <%= @count_map[student.id] %> );
 
 		  <% counter = counter + 1 %>
