@@ -1,8 +1,33 @@
 
+<script type="text/javascript">
+  google.load("visualization", "1", {packages:["piechart"]});
+  google.setOnLoadCallback(drawChart);
+  
+  function drawChart() {
+        var data = new google.visualization.DataTable();
+        data.addColumn('string', 'Student');
+        data.addColumn('number', 'Forum Posts');
+        data.addRows( <%= @course.students.size %> );
+        
+        <% counter = 0 %>
+		<% for student in @course.students %>
+          data.setValue( <%= counter %>, 0, '<%= student.display_name %>' );
+          data.setValue( <%= counter %>, 1, <%= @count_map[student.id] %> );
+
+		  <% counter = counter + 1 %>
+		<% end %>		
+
+        var chart = new google.visualization.PieChart(document.getElementById('chart_div'));
+        chart.draw(data, {width: 800, height: 480, is3D: true, title: 'Posts by Students'});
+  }
+</script>
+
 <h2>Course: <%= @course.title %></h2>
 <h3>Forum Post Report</h3>
 
 <% count = 0 %>
+
+<div id="chart_div"></div>
 
 <table class="fancy">
   <tr class="header">
