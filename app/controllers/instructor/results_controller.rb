@@ -232,6 +232,49 @@ class Instructor::ResultsController < Instructor::InstructorBase
     @answer_map = Hash.new if @answer_map.nil?  
       
     @questions = @quiz.quiz_questions  
+    @title = "Results for #{@student.display_name} - '#{@assignment.title}'"
+  end
+  
+  def remove_attempt
+    return unless load_course( params[:course] )
+    return unless quiz_enabled( @course )
+    return unless course_open( @course, :action => 'index' )
+    return unless load_assignment( params[:assignment] )
+    return unless assignment_in_course( @course, @assignment )
+    return unless assignment_is_quiz( @assignment )
+    @quiz = @assignment.quiz
+    
+    if @quiz.anonymous 
+      flash[:badnotice] = "This is an anonymous survey, expanded results are not available."
+      redirect_to :action => 'survey', :course => @course, :assignment => @assignment
+    end
+    
+    if @quiz.survey
+      return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_view_survey_results' )
+    else
+      return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_view_quiz_results' )
+    end
+    
+    # make sure the student exists
+    @student = User.find(params[:id])
+    if ! @student.student_in_course?( @course.id )
+      flash[:badnotice] = "Invalid student record requested."
+      redirect_to :action => 'quiz', :course => @course, :assignment => @assignment, :id => nil
+    end
+    
+    unless @assignment.grade_item.nil?
+      @grade_entry = GradeEntry.find(:first, :conditions => ["grade_item_id=? and user_id=?", @assignment.grade_item.id, @student.id ] )
+      @grade_entry = GradeEntry.new if @grade_entry.nil?
+    end
+        
+    @attempt = QuizAttempt.find(:first, :conditions => ["quiz_id = ? and user_id = ?", @quiz.id, @student.id], :order => "created_at desc")    
+    
+    unless @attempt.nil? 
+      @attempt.destroy
+      flash[:notice] = "Attempt removed, the student may now retake the quiz."
+    end
+    
+    redirect_to :action => 'for_student', :course => @course, :assignment => @assignment, :id => @student
   end
   
   def rescore

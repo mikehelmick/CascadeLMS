@@ -15,6 +15,14 @@
 	'<%= @assignment.title %>'</h2>
 </div></div>
 
+<% if @quiz.attempt_maximum >= 1 %>
+<p>This quiz allows a maximum of only <%= @quiz.attempt_maximum %> attempts.  
+	You can give this student another attempt (by deleting this one).  
+	<%= link_to "Delete this attempt, and allow #{@student.display_name} to retake the quiz again.  This action cannot be undone and the students answers (but not current grate) will be lost.", 
+	            {:controller => '/instructor/results', :action => 'remove_attempt', :course => @course, :assignment => @assignment, :id => @student},
+	            :confirm => "Are you sure you want to delete this quiz attempt? This action cannot be undone.", :post => true %>
+<% end %>
+
 <p>&nbsp;</p>
 <% if @attempt.nil? %>
 <div class="errorExplanation">This student has not submitted any quiz attempts.</div>
@@ -67,6 +75,10 @@
 </div></div>
 
 
+<% if @attempt.nil? %>
+  <p><b>Student has not attempted this quiz.</b></p>
+<% else %>
+
 <div id="form_area">
   <p class="blockintro"><b>Quiz Metrics:<b/></p>	
   <div class="block">
@@ -93,7 +105,7 @@
 	   <% elsif question.multiple_choice %>
 	      <% answer_id = 0
 	         answer_id = @answer_map[question.id].quiz_question_answer_id unless @answer_map[question.id].nil? %>
-	      <ul>
+	      <ul style="list-style-type: upper-latin;">
 	        <% for quiz_answer in question.quiz_question_answers %>      
 	          <li>
 	            <% if @quiz.survey %>
@@ -120,7 +132,7 @@
             possible_correct = 0
             total_correct = 0
           %>
-	     <ul>
+	     <ul style="list-style-type: upper-latin;">
 	       <% for quiz_answer in question.quiz_question_answers %>
 	         <li>
 		      <% if @quiz.survey %>
@@ -156,5 +168,5 @@
 
   <% end %>
 
-
 </div>
+<% end %>

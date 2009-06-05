@@ -57,7 +57,7 @@
 	   </td>
 	   <td valign="top"><%= question.question_html %>
 	     <% if question.multiple_choice || question.checkbox %>
-	       <ul>
+	       <ul style="list-style-type: upper-latin;">
 		     <% for answer in question.quiz_question_answers %>
 		       <li><% if answer.correct %>
 			         <b><font color="green">Correct</font>
