@@ -1,41 +1,47 @@
-**** Computer Science CourseWare Developer Instructions *****
+**** CascadeLMS Develop Instructions *****
 by Mike Helmick - mike.helmick@gmail.com
 
-           **** SOFTWARE LICENSE - MIT LICENSE ****
-# Copyright (c) 2006-2007 Mike Helmick - mike.helmick@muohio.edu
-# 
-# Permission is hereby granted, free of charge, to any person obtaining a copy
-# of this software and associated documentation files (the "Software"), to deal
-# in the Software without restriction, including without limitation the rights
-# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-# copies of the Software, and to permit persons to whom the Software is
-# furnished to do so, subject to the following conditions:
-# 
-# The above copyright notice and this permission notice shall be included in
-# all copies or substantial portions of the Software.
-# 
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-# THE SOFTWARE.
-#
+           **** SOFTWARE LICENSE - New BSD License ****
+Copyright (c) 2006-2009, Mike Helmick - mike.helmick@gmail.com
+All rights reserved.
 
-These instructions are for setting up a developer workstation for CSCW.
+Redistribution and use in source and binary forms, with or without modification, 
+are permitted provided that the following conditions are met:
+
+ - Redistributions of source code must retain the above copyright notice, 
+   this list of conditions and the following disclaimer.
+ - Redistributions in binary form must reproduce the above copyright notice, 
+   this list of conditions and the following disclaimer in the documentation 
+   and/or other materials provided with the distribution.
+ - Neither the name of the Mike Helmick, Miami University nor the names of its
+   contributors may be used to endorse or promote products derived from this 
+   software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
+ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. 
+IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
+INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, 
+BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, 
+OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
+WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
+ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
+POSSIBILITY OF SUCH DAMAGE.
+
+These instructions are for setting up a developer workstation for CascadeLMS.
 It is best to develop on Mac OS X or Linux (even if it is in a virtual machine, or if Cygwin is used).
 
-0) Install the Subversion client
-  http://subversion.tigris.org/
+0) Install the Git client
+   http://git-scm.com/download
 
 1) Install Ruby, Gems, and Rails
 It is best to follow the instructions for your platform as described here -> http://rubyonrails.org/down
 
-2) Install OpenLDAP -> http://www.openldap.org/
+2) Install OpenLDAP -> http://www.openldap.org/   -- If you want to use LDAP
 (For windows, it is easier to get a binary distro http://download.bergmans.us/openldap/openldap-2.2.29/)
   
-3) Install MySql -> http://www.mysql.com
+3) Install MySql -> http://www.mysql.com 
+   Latest version 5.x
 
 4) Install the necessary Ruby Gems (add sudo before each command if on a unix(-like) platform )
   sudo gem install daemons slave  
@@ -43,17 +49,8 @@ It is best to follow the instructions for your platform as described here -> htt
   sudo gem install mysql
   sudo gem install RedCloth
   sudo gem install diff-lcs
-  sudo gem install rail_stat_generator
 
-5) Patch rails - You must patch the Rails source by hand
-The comment on line 75 and the if statement on lines 76-78 to read
-
-# This is an uploaded file. 
-if value.respond_to?(:original_filename) && !value.original_filename.blank?
-
-This allows users with the Safari 3 browser to use the site
-
-6) Install the Ruby LDAP library 
+5) Install the Ruby LDAP library 
 ** OpenSSL and LDAP development libraries must be installed already
 
 cd ~/src
@@ -64,12 +61,8 @@ ruby extconf.rb
 make
 sudo make install
 
-7) Grab the source and begin to configure the application (This assumes a dev path of ~/src/cscw/ )
-
-mkdir -p ~/src/cscw
-cd ~/src/cscw
-mkdir storage
-svn co https://svn.csi.muohio.edu/cscourseware/trunk cscourseware
+7) Grab the source and begin to configure the application
+   The repository is here -> http://github.com/mikehelmick/CascadeLMS/tree/master
 
 8) Create mysql database and grant access to your user (fill in database username as appropriate)
 * also, you may want to omit the identified by... part so that your DB doesn't need a password
@@ -83,7 +76,7 @@ grant all on cscourseware_production.* to DATABASEUSER@localhost identified by '
 cd ~/src/cscw/cscourseware/config
 cp database.yml.todo database.yml
 
-Edit the database.yml file and configure the development database appropriatley
+Edit the database.yml file and configure the development database appropriately
 
 10) Load the database 
 
