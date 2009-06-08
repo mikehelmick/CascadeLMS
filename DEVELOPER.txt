@@ -94,10 +94,10 @@ Log in to CSCW using the
  username: admin
  password: password
 
-Immeadiatly click on "admin admin" in the upper right hand corner to change your password and assign 
+Immediately click on "admin admin" in the upper right hand corner to change your password and assign 
 a valid email address to the admin user
 
-Click on "Adminstration -> Settings"
+Click on "Administration -> Settings"
 * This will let you configure display options, title, organization, email addresses, etc...
 ******** Please configure an appropriate error reporting email address
 
@@ -105,12 +105,10 @@ Also be sure to configure the appropriate location of your Java compiler and JVM
 well as the Ruby interpreter that can be called externally.
 
 There is also a configuration option for external storage - be sure to 
-configure this and make it a secure location, we suggest
-  /srv/www/rails/cscourseware/storage
-
+configure this and make it a secure location, we use
+  /srv/www/rails/CascadeLMS/storage
 
 You can now create users and courses from the administration tab
 
-
-13) Please see the application's Web site - www.cscourseware.org
+13) Please see the application's Web site - www.CascadeLMS.org
    for information on submitting patches
