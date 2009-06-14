@@ -22,7 +22,7 @@ ActionController::Routing::Routes.draw do |map|
       :controller => 'assignment/index', :action => 'index', :id => nil
 
   map.connect '/course/:course/:controller/:action/:id/:file.:extension',
-      :controller => 'documents', :action => 'podcast_download', :course => nil, :id => nil  
+      :action => 'podcast_download', :id => nil  
   
   map.connect '/course/:course/:controller/:action/:id',
     :controller => 'overview', :action => 'index', :course => nil, :id => nil
@@ -35,7 +35,6 @@ ActionController::Routing::Routes.draw do |map|
   
   map.connect '/admin/course_admin/:action/:id/course/:course',
     :controller => 'admin/course_admin', :action => 'index'
-
 
   map.connect '/admin', :controller => 'admin/index'
 
