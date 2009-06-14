@@ -16,7 +16,6 @@ instructor:
   id: 2
   uniqueid: instructor
   password: instructor
-  preferred_name: Teach
   first_name: Im
   middle_name: A.
   last_name: Teacher

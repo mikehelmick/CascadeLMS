@@ -27,4 +27,20 @@ class UserTest < Test::Unit::TestCase
     assert !user.valid?
     assert !user.errors.invalid?(:email)    
   end
+  
+  def test_display_name
+    user = User.find(1)
+    assert user.display_name.eql?("Test (T.U.) A. User")
+    
+    user2 = User.find(2)
+    assert user2.display_name.eql?("Im A. Teacher")
+  end
+  
+  def test_update_password
+    user = User.find(1)
+    user.update_password("Password1")
+    assert user.save
+    
+    assert User.find(1).valid_password?("Password1")
+  end
 end
