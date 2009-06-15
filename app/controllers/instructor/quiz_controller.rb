@@ -380,8 +380,7 @@ class Instructor::QuizController < Instructor::InstructorBase
       end
      end    
     rescue  => e
-      puts "e -> #{e}"
-	do_redirect = false
+      do_redirect = false
     end
     
     redirect_to( :action => 'questions', :course => @course, :id => @assignment) if do_redirect
