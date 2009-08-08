@@ -10,6 +10,8 @@ class DocumentsController < ApplicationController
     return unless allowed_to_see_course( @course, @user )
     return unless load_folder( params[:id].to_i )
     
+    @instructor = @user.instructor_in_course?(@course.id)
+    
     respond_to do |format|
       format.html {
         @page = params[:page].to_i

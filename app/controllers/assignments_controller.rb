@@ -11,6 +11,8 @@ class AssignmentsController < ApplicationController
     return unless allowed_to_see_course( @course, @user )
 
     set_title
+
+    @instructor = @user.instructor_in_course?(@course.id)
     
     @assignments = @course.assignments_for_user( @user.id )
     
@@ -23,6 +25,8 @@ class AssignmentsController < ApplicationController
   def view
     return unless load_course( params[:course] )
     return unless allowed_to_see_course( @course, @user )
+    
+    @instructor = @user.instructor_in_course?(@course.id)
     
     @assignment = Assignment.find(params[:id]) rescue @assignment = Assignment.new
 

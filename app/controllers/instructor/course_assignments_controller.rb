@@ -62,6 +62,7 @@ class Instructor::CourseAssignmentsController < Instructor::InstructorBase
     end
     
     set_title
+    @title = "New Assignment"
   end
   
   def create
@@ -196,6 +197,7 @@ class Instructor::CourseAssignmentsController < Instructor::InstructorBase
     @journal_field = @assignment.journal_field
     @journal_field = JournalField.new if @assignment.journal_field.nil?
     @categories = GradeCategory.for_course( @course ) 
+    @title = "Edit #{@assignment.title} (#{@course.title})"
   end
   
   def update

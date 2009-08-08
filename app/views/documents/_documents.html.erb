@@ -48,13 +48,21 @@ This folder is a podcast: <%= link_to "#{image_tag 'ipod_cast.png'} Subscribe", 
 	  <tr class="<%=odd%> hover" id="documet_<%=document.id%>">
 	    <% unless public %>
 		  <td>
-		    <% if document.folder %>   
+		    <% if document.folder %>   		      
 		      <%= link_to "#{image_tag document.icon_file, :align=> 'absmiddle'} #{document.title}", :action => 'index', :course => @course.id, :id => document %> 
 		      <% if document.podcast_folder %>
 		        <%= link_to "#{image_tag 'ipod_cast.png'} Subscribe", :action => 'subscribe', :course => @course.id, :id => document %>
 		      <% end %>
+		
+		      <% if @instructor %>
+			    &nbsp;&nbsp;(<%= link_to "#{image_tag 'page_edit.png', :align=>'absmiddle'} Edit", :controller => '/instructor/course_docs', :action => 'edit', :course => @course, :id => document %>)
+			  <% end %>
 		    <% else %>
 		      <%= link_to "#{image_tag document.icon_file, :align=> 'absmiddle'} #{document.title}", :action => 'download', :course => @course.id, :id => document, :file => document.without_extension, :extension => document.extension %>
+		
+		      <% if @instructor %>
+			    &nbsp;&nbsp;(<%= link_to "#{image_tag 'page_edit.png', :align=>'absmiddle'} Edit", :controller => '/instructor/course_docs', :action => 'edit_folder', :course => @course, :id => document %>)
+			  <% end %>
 		    <% end %>
 		  </td>
 		  <td><% unless document.folder %><%= link_to "#{document.filename}", :action => 'download', :course => @course.id, :id => document, :file => document.without_extension, :extension => document.extension %><% end %> &nbsp;</td>

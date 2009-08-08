@@ -900,3 +900,19 @@ a img {
 	border-bottom: 2px solid #F0BA02;
 	margin-bottom: 3px;
 }
+
+.badge {
+  background-color: #FF9201;
+  font-weight: bold;
+  width: 38px;
+  display: block;
+  float: left;
+  padding: 2px;
+  text-align: center;
+  margin-right: 10px;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  -o-border-radius: 2px;
+  border-radius: 2px;
+  margin-top: -1px;
+}

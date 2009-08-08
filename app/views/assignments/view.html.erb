@@ -1,6 +1,10 @@
 <%= render :partial => 'due' %>
 
-<h2><%= @assignment.title %> ( <%= @assignment.grade_category.category %>)</h2>
+<h2><%= @assignment.title %> ( <%= @assignment.grade_category.category %>)
+<% if @instructor %>
+  | <%= link_to "#{image_tag 'page_edit.png', :align=>'absmiddle'} Edit", :course => @course, :id => @assignment, :controller => '/instructor/course_assignments', :action => 'edit' %>
+<% end %>	
+</h2>
 
 <p><%= link_to 'Back', :action => 'index' %></p>
 

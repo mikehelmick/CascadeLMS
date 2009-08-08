@@ -6,6 +6,8 @@
 
   <table class="fancy">
     <tr class="header">
+	  <% if @instructor %><th>&nbsp;</th><% end %>
+	 
       <!-- <th>#</th> -->
       <th>Title</th>
       <th>Category</th>
@@ -21,6 +23,10 @@
 	     odd = "even" if count.even?
 	   %>
 	  <tr class="<%=odd%> hover" id="assignment_<%=assignment.id%>">
+		<% if @instructor %>
+		  <td nowrap="nowrap"><%= link_to "#{image_tag 'page_edit.png', :align=>'absmiddle'}", :course => @course, :id => assignment, :controller => '/instructor/course_assignments', :action => 'edit' %></td>	
+		<% end %>
+		
 		 <% user_completed_quiz = false 
 	        if assignment.quiz 
 	          user_completed_quiz = assignment.quiz.user_has_completed_attempt?(@user) 
