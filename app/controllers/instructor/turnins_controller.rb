@@ -914,6 +914,45 @@ class Instructor::TurninsController < Instructor::InstructorBase
     render :layout => false
   end
   
+  def autograde_output
+    return unless load_course( params[:course] )
+    return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_view_student_files', 'ta_grade_individual' )
+    
+    @assignment = Assignment.find( params[:assignment] )
+    return unless assignment_in_course( @course, @assignment )
+    
+    @student = User.find( params[:student] )
+    return unless student_in_course( @course, @student )
+    
+    # get turn-in sets
+    if @assignment.team_project
+      @team = @course.team_for_user( @student.id )
+      @turnins = UserTurnin.find(:all, :conditions => ["project_team_id=? and assignment_id=?", @team.id, @assignment.id ], :order => "position DESC" )
+    else
+      @turnins = UserTurnin.find(:all, :conditions => ["user_id=? and assignment_id=?", @student.id, @assignment.id ], :order => "position DESC" )
+    end
+    
+    @current_turnin = @turnins[0] rescue @current_turnin = nil
+    @display_turnin = @current_turnin
+    
+    if @current_turnin.nil?
+      flash[:badnotice] = "This student did not submit any files, so there are no IO test results to view."
+      redirect_to :action => 'view_student', :course => @course, :assignment => @assignment, :id => @student
+      return
+    end
+    
+    return unless turnin_for_assignment( @current_turnin, @assignment ) 
+    
+    tag = "#{@course.id},#{@assignment.id},#{@student.id},#{@current_turnin.id}"
+    @job = Bj.table.job.find(:first, :conditions => ["tag = ?", tag], :order => "submitted_at desc")
+    if @job.nil?
+      @job = Bj.table.job_archive.find(:first, :conditions => ["tag = ?", tag], :order => "submitted_at desc")
+    end
+    
+    @title = "AutoGrade Output: #{@course.title}, #{@assignment.title}, #{@student.display_name}"
+    render :layout => 'noright'
+  end
+  
   def view_io_tests
     return unless load_course( params[:course] )
     return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_view_student_files', 'ta_grade_individual' )
@@ -961,6 +1000,7 @@ class Instructor::TurninsController < Instructor::InstructorBase
        end
     end
     
+    @title = "AutoGrade Results: #{@course.title}, #{@assignment.title}, #{@student.display_name}"
     render :layout => 'noright'
   end
   
@@ -989,6 +1029,7 @@ class Instructor::TurninsController < Instructor::InstructorBase
           queue.user_turnin = @current_turnin
           queue.batch = batch
           queue.save
+          AutoGradeHelper.schedule_job( queue.id )
         end
       end
     
@@ -1004,6 +1045,7 @@ class Instructor::TurninsController < Instructor::InstructorBase
           queue.user_turnin = @current_turnin
           queue.batch = batch
           queue.save
+          AutoGradeHelper.schedule_job( queue.id )
         end
       end
     end
@@ -1083,7 +1125,7 @@ class Instructor::TurninsController < Instructor::InstructorBase
     queue.assignment = @assignment
     queue.user_turnin = @current_turnin
     if queue.save
-        
+      AutoGradeHelper.schedule_job( queue.id )
       ## need to do a different rediect
       redirect_to :controller => '/wait', :action => 'grade', :id => queue.id, :course => nil, :assignment => nil, :student => nil
       return

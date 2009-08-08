@@ -243,7 +243,7 @@ var cur_rubric<%=rubric.id%>_value = <%= pointValue %>;
 
 function update_rubric_<%=rubric.id%>_to( newValue ) {
   var oldValue = cur_rubric<%=rubric.id%>_value;
-  var curTotalValue = parseInt( document.getElementById("grade_entry_points").value )
+  var curTotalValue = parseFloat( document.getElementById("grade_entry_points").value )
   if (isNaN( curTotalValue )) {
     document.getElementById("grade_entry_points").value = newValue;
   } else {
@@ -413,6 +413,4 @@ function update_rubric_<%=rubric.id%>_to( newValue ) {
   </tr>
 <% end %>
 </table>
-</div>
-
 </div>

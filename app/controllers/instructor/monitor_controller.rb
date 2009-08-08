@@ -11,27 +11,14 @@ class Instructor::MonitorController < Instructor::InstructorBase
     redirect_to :controller => '/instructor/index', :course => @course
   end
   
-  def restart
-    return unless load_course( params[:course] )
-    return unless ensure_course_instructor( @course, @user )
-    
-    pwd = ApplicationController.root_dir
-    stop_command = "#{@app['ruby']} #{pwd}/script/backgroundrb stop"
-    start_command = "#{@app['ruby']} #{pwd}/script/backgroundrb start"
-
-    stop_result = `#{stop_command}`
-    start_result = `#{start_command}`
-    
-        
-    flash[:notice] = "The AutoGrade server has been restarted.<br/><B>STOP COMMAND:</B> #{stop_command}<br/><B>STOP RESULT:</B>#{stop_result}<br/><b>START COMMAND:</b> #{start_command}<br/><b>START RESULT:</b> #{start_result}"
-    redirect_to :controller => '/instructor/monitor', :course => @course, :action => 'agqueue'
-  end
   
   def agqueue
     return unless load_course( params[:course] )
     return unless ensure_course_instructor( @course, @user )
     
     @items = GradeQueue.find(:all, :conditions => ["serviced = ?", false], :order => 'created_at asc' )   
+    
+    @jobs = Bj.table.job.find(:all, :conditions => ["state != ?", "finished"], :order => 'priority asc, submitted_at asc')
     
     render :layout => 'noright'
   end
@@ -79,6 +66,7 @@ class Instructor::MonitorController < Instructor::InstructorBase
     @item.failed = false
     @item.message = "This record has been scheduled for reprocessing."
     @item.save
+    AutoGradeHelper.schedule_job( @item.id )
     
     render :layout => false
   end

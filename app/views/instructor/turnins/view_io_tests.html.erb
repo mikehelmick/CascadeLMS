@@ -40,7 +40,9 @@
 	</table>
 
 	<% if @display_turnin.safe_for_autograde? %>
-		<p><%= image_tag 'flag_green.png' %><%= link_to 'Re-run the I/O checks for this turn-in set.', :course => @course, :assignment => @assignment, :student => @student, :action => 'io_retest' %></p>
+		<p><%= image_tag 'flag_green.png' %><%= link_to 'Re-run the I/O checks for this turn-in set.', :course => @course, :assignment => @assignment, :student => @student, :action => 'io_retest' %>
+		| <%= link_to 'View AutoGrader run details', :course => @course, :assignment => @assignment, :student => @student, :ut => @current_turnin.id, :action => 'autograde_output' %>	
+	    </p>
     <% else %>
  	     <div class="errorExplanation">The AutoGrade I/O tests can not be run, one or more of the Java files contain unsafe statements.   You should manually review the code to determine if it is safe, and if not download the files, remove the unsafe statements and grade manually.</div>
     <% end %>

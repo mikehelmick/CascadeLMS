@@ -13,6 +13,14 @@ class HomeController < ApplicationController
     @title = "CS Courseware Home"
   end
   
+  # Some test code for background jobs
+  #def test
+  #  id = params[:id] 
+  #  id = 10 if id.nil?
+  #  Bj.submit "./jobs/test_job.rb #{id}"
+  #  redirect_to :controller => '/home', :action => nil, :id => nil
+  #end
+  
   def index
     set_tab
     

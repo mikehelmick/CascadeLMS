@@ -1,0 +1,38 @@
+<h2>'<%= @assignment.title %>' AutoGrade output for '<%= @student.display_name %>'</h2>
+<h3>Course: <%= @course.title %> (<%= @course.term.semester%>)</h3>
+
+<p><%= link_to "Back to turn-in for #{@student.display_name}", :controller => '/instructor/turnins', :course => @course, :assignment => @assignment, :student => nil, :id => @student, :action => 'view_student' %>
+ |<%= link_to 'Back to IO Tests', :course => @course, :assignment => @assignment, :student => @student, :action => 'view_io_tests' %>	
+	</p>
+
+<div class="SectionHeader"><div class="Full">
+  <h2>AutoGrade output</h2>
+</div></div>
+
+<% if @job.nil? %>
+  <div class="errorExplanation">The autograde run information is no longer available for this turnin.</div>
+<% else %>
+
+<div class="Section">
+	<ul>
+		<li>Submitted At: <%= @job.submitted_at.to_formatted_s(:long) %></li>
+		<li>Started At: <%= @job.started_at.to_formatted_s(:long) %></li>
+		<li>Finished At: <%= @job.finished_at.to_formatted_s(:long) %></li>
+		<li>Exit Status: <%= @job.exit_status %></li>
+	</ul>
+	
+	<table width="99%">
+	  <tr><td align="left" valign="top">Stdout:</td>
+		  <td class="diffReport" valign="top" align="left">
+	        <%= @job.stdout.to_html %>
+	      </td>
+	  </tr>
+	  <tr><td align="left" valign="top">Stderr:</td>
+		  <td class="diffReport" valign="top" align="left">
+	        <%=h @job.stderr.to_html %>
+	      </td>
+	  </tr>
+	</table>
+</div>
+
+<% end %>

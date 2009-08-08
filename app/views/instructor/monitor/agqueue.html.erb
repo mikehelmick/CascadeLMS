@@ -1,4 +1,18 @@
 <div class="SectionHeader"><div class="Full">
+<h2>Background Job Queue</h2>
+</div></div>
+
+<% if @jobs.size == 0 %>
+  <p>There are no background jobs scheduled</p>
+<% else %>
+<ul>
+ <% for job in @jobs %>
+   <li><%= job.bj_job_id %> <%= job.command %> <%= job.submitted_at %></li>
+ <% end %>
+</ul>
+<% end %>
+	
+<div class="SectionHeader"><div class="Full">
 <h2>AutoGrade Queue - Monitor Console</h2>
 </div></div>
 <p><%= link_to 'View Queue', :course => @course, :controller => '/instructor/monitor', :action => 'agqueue' %> | 
