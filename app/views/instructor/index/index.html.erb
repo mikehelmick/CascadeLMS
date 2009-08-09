@@ -117,6 +117,25 @@
   </tr>
   <tr><td colspan="3"><hr/></td></tr>
 
+  <tr> 
+	<td><b>Customization:</b></td>
+	<td>
+		<% if  @user.instructor_in_course?( @course.id ) || @course.course_setting.ta_course_settings %>
+		  <%= link_to "#{image_tag 'note_edit.png', :align => 'absmiddle'} Journal Settings", :controller => '/instructor/custom', :course => @course, :action => 'journals' %>
+		<% else %>
+		  <%= image_tag 'note_edit.png', :align => 'absmiddle' %> <s>Journal Settings</s>
+		<% end %>		
+	</td>
+	<td>
+		<% if  @user.instructor_in_course?( @course.id ) || @course.course_setting.ta_course_settings %>
+		  <%= link_to "#{image_tag 'chart_curve_edit.png', :align => 'absmiddle'} Rubric Settings", :controller => '/instructor/custom', :course => @course, :action => 'rubrics' %>
+		<% else %>
+		  <%= image_tag 'chart_curve_edit.png', :align => 'absmiddle' %> <s>Rubric Settings</s>
+		<% end %>				
+	</td>
+  </tr>
+  <tr><td colspan="3"><hr/></td></tr>
+
   <tr>
 	<td><b>Communication:</b></td>
 	<td>

@@ -1,0 +1,39 @@
+<div class="SectionHeader"><div class="Full">
+<h2>Journal Settings for <%= @course.title %></h2>
+</div></div>
+<p><%= link_to 'Back', :controller => '/instructor/index', :action => nil, :course => @course %></p>
+
+<p>You can edit the journal tasks and journal stop reasons that show up on student journals. 
+Journal entry tasks and stop reasons can be added and removed, as long as they are not already in use.</p>
+
+<div class="SectionHeader"><div class="Full">
+<h2>Journal Tasks</h2>
+</div></div>
+
+<div id="journal_tasks">
+	<%= render :partial => 'tasks' %>
+</div>
+
+<div id="add_form">
+	<% form_remote_tag( :update => 'journal_tasks', :url => { :action => 'add_task', :id => @course }, :complete => "new Effect.Highlight('journal_tasks');" ) do %>
+	<label for="id">New Journal Task:</label> 
+	<%= text_field_tag 'journal_task', '', :size => 60 %>
+	<%= submit_tag 'Add' %><br/>
+	<% end %>
+</div>
+
+<div class="SectionHeader"><div class="Full">
+<h2>Journal Stop Reasons</h2>
+</div></div>
+
+<div id="journal_stop_reasons">
+	<%= render :partial => 'stop_reasons' %>
+</div>
+
+<div id="add_form">
+	<% form_remote_tag( :update => 'journal_stop_reasons', :url => { :action => 'add_stop_reason', :id => @course }, :complete => "new Effect.Highlight('journal_stop_reasons');" ) do %>
+	<label for="id">New Journal Stop Reason:</label> 
+	<%= text_field_tag 'journal_stop_reason', '', :size => 60 %>
+	<%= submit_tag 'Add' %><br/>
+	<% end %>
+</div>

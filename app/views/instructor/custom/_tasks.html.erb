@@ -1,0 +1,15 @@
+
+<%= error_messages_for 'journal_task' %>
+
+<ul>
+  <% for jt in @journal_tasks %>
+    <li id="task_<%=jt.id%>">
+      <% unless @jt_in_use[jt.id] %>
+        <%= link_to_remote( image_tag('delete.png', :align => 'absmiddle' ), :url => { :action => 'del_task', :course => @course.id, :id => jt.id }, :confirm => "Delete the journal task '#{jt.task}'?", :success => "new Effect.Puff( 'task_#{jt.id}' )", :failure => "alert('There was an error deleting this task.');" ) %>
+        <%= jt.task %>
+      <% else %>
+        <%= image_tag 'flag_blue.png', :align => 'absmiddle' %> <%= jt.task %> -- (<i>In Use, cannot be deleted</i>)
+      <% end %>
+	 </li>
+  <% end %>
+<ul>
