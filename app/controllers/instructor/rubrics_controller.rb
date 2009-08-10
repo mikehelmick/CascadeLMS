@@ -16,6 +16,8 @@ class Instructor::RubricsController< Instructor::InstructorBase
      res = a.position <=> b.position if res == 0
      res 
    end
+   
+   @rubric_level = RubricLevel.for_course(@course)
  end
  
  def new

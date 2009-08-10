@@ -119,9 +119,9 @@
 					<th align="left">Assignment</th>	
 					<th align="left">Outcome(s)</th>
 					<th align="left">Rubric</th>
-				    <th align="center" valign="bottom">Excellent /<br/>Proficient</th>
-				    <th align="center" valign="bottom">Apprentice</th>
-				    <th align="center" valign="bottom">Novice</th>
+				    <th align="center" valign="bottom"><%= course.rubric_level.l1_name %> /<br/><%= course.rubric_level.l2_name %></th>
+				    <th align="center" valign="bottom"><%= course.rubric_level.l3_name %></th>
+				    <th align="center" valign="bottom"><%= course.rubric_level.l4_name %></th>
 				  </tr>
 				
 				  <% used_outcomes_hash = Hash.new %>

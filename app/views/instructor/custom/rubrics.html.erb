@@ -1,0 +1,38 @@
+<div class="SectionHeader"><div class="Full">
+<h2>Rubric Levels for <%= @course.title %></h2>
+</div></div>
+<p><%= link_to 'Back', :controller => '/instructor/index', :action => nil, :course => @course %></p>
+
+<p>Rubrics in CascadeLMS are 4 level rubrics, with the defaults of <b>Excellent</b>, <b>Proficient</b>, <b>Apprentice</b>, and <b>Novice</b>. 
+	On this screen, you can customize these levels.</p>
+
+<div class="SectionHeader"><div class="Full">
+<h2>Rubric Levels</h2>
+</div></div>
+
+<div id="form_area">
+  <%= error_messages_for 'rubric_level' %>	
+  <% form_tag( :action => 'save_rubric_levels', :course => @course ) do %>
+
+  <p class="blockintro">Define custom rubrics, highest scoring to lowest scoring.
+	Each course can have custom labels for the rubric levels.
+	</p>
+<div class="block">
+<p><label for="rubric_level_l1_name" class="required">Excellent (Level 1):</label>
+   <%= text_field 'rubric_level', 'l1_name', :size => 60  %></p>
+
+<p><label for="rubric_level_l2_name" class="required">Proficient (Level 2):</label>
+   <%= text_field 'rubric_level', 'l2_name', :size => 60  %></p>
+
+<p><label for="rubric_level_l3_name" class="required">Apprentice (Level 3):</label>
+   <%= text_field 'rubric_level', 'l3_name', :size => 60  %></p>
+
+<p><label for="rubric_level_l4_name" class="required">Novice  (Level 4):</label>
+   <%= text_field 'rubric_level', 'l4_name', :size => 60  %></p>
+</div>
+ 
+  <div class="submit">
+	<%= submit_tag "Update Rubric Levels" %>
+  </div>
+  <% end %>	
+</div>

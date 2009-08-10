@@ -16,6 +16,8 @@ class AssignmentsController < ApplicationController
     
     @assignments = @course.assignments_for_user( @user.id )
     
+    RubricLevel.for_course(@course)
+    
     respond_to do |format|
       format.html
       format.xml { render :layout => false }

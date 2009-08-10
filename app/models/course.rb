@@ -7,6 +7,7 @@ class Course < ActiveRecord::Base
   has_one :course_setting, :dependent => :destroy
   has_one :course_information, :dependent => :destroy
   has_one :gradebook, :dependent => :destroy
+  has_one :rubric_level, :dependent => :destroy
   has_many :grade_items, :order => "date", :dependent => :destroy
   
   has_many :documents, :order => "position", :dependent => :destroy

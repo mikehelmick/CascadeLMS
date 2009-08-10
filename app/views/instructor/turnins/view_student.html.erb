@@ -254,15 +254,13 @@ function update_rubric_<%=rubric.id%>_to( newValue ) {
 <% end %>
 
     <ul>
-	  <% unless rubric.above_credit_criteria.nil? %>
-	    <li><%= radio_button_tag( "rubric_#{rubric.id}", 'above', @rubric_entry_map[rubric.id].above_credit, :onclick => "update_rubric_#{rubric.id}_to( #{rubric.above_credit_points} )" )%><b>Expert:</b> 
+	  <li><%= radio_button_tag( "rubric_#{rubric.id}", 'above', @rubric_entry_map[rubric.id].above_credit, :onclick => "update_rubric_#{rubric.id}_to( #{rubric.above_credit_points} )" )%><b><%= @course.rubric_level.l1_name %>:</b> 
 			  <%=h rubric.above_credit_criteria %> (<%=h rubric.above_credit_points%> points)
-	  <% end %>	
-	  <li><%= radio_button_tag( "rubric_#{rubric.id}", 'full', @rubric_entry_map[rubric.id].full_credit, :onclick => "update_rubric_#{rubric.id}_to( #{rubric.full_credit_points} )" )%><b>Proficient:</b>
+	  <li><%= radio_button_tag( "rubric_#{rubric.id}", 'full', @rubric_entry_map[rubric.id].full_credit, :onclick => "update_rubric_#{rubric.id}_to( #{rubric.full_credit_points} )" )%><b><%= @course.rubric_level.l2_name %>:</b>
 		  <%=h rubric.full_credit_criteria %> (<%=h rubric.full_credit_points%> points)</li>
-	  <li><%= radio_button_tag( "rubric_#{rubric.id}", 'partial', @rubric_entry_map[rubric.id].partial_credit, :onclick => "update_rubric_#{rubric.id}_to( #{rubric.part_credit_points} )" )%><b>Apprentice:</b>
+	  <li><%= radio_button_tag( "rubric_#{rubric.id}", 'partial', @rubric_entry_map[rubric.id].partial_credit, :onclick => "update_rubric_#{rubric.id}_to( #{rubric.part_credit_points} )" )%><b><%= @course.rubric_level.l3_name %>:</b>
 	      <%=h rubric.part_credit_criteria %> (<%=h rubric.part_credit_points%> points)</li>
-	  <li><%= radio_button_tag( "rubric_#{rubric.id}", 'no', @rubric_entry_map[rubric.id].no_credit, :onclick => "update_rubric_#{rubric.id}_to( #{rubric.no_credit_points} )" )%><b>Novice:</b>
+	  <li><%= radio_button_tag( "rubric_#{rubric.id}", 'no', @rubric_entry_map[rubric.id].no_credit, :onclick => "update_rubric_#{rubric.id}_to( #{rubric.no_credit_points} )" )%><b><%= @course.rubric_level.l4_name %>:</b>
 	      <%=h rubric.no_credit_criteria %> (<%=h rubric.no_credit_points%> points)</li>
 	  <li>Comments:<br/>
 		 <%= text_area_tag("rubric_#{rubric.id}_comments", @rubric_entry_map[rubric.id].comments, { "cols" => 80, "rows" => 7 } ) %>

@@ -10,6 +10,9 @@ class Instructor::CourseAssignmentsController < Instructor::InstructorBase
     return unless load_course( params[:course] )
     return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_assignments', 'ta_grade_individual', 'ta_view_student_files' )
   
+    # make sure rubrics are loaded
+    RubricLevel.for_course( @course )
+  
     set_title
     
     render :layout => 'noright'

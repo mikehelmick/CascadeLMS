@@ -13,6 +13,29 @@ class Instructor::CustomController < Instructor::InstructorBase
     redirect_to :controller => '/instructor/index', :course => @course, :action => nil, :id => nil
   end
   
+  def rubrics
+    return unless load_course( params[:course] )
+    return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_settings' )    
+    
+    @rubric_level = RubricLevel.for_course(@course)
+    
+    @title = "Customize Rubric Levels for '#{@course.title}'"
+  end
+  
+  def save_rubric_levels
+    return unless load_course( params[:course] )
+    return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_settings' )
+    
+    @rubric_level = @course.rubric_level
+    if @rubric_level.update_attributes(params[:rubric_level])
+      flash[:notice] = "Rubric levels have been updated."
+      redirect_to :controller => '/instructor/custom', :action => 'rubrics', :course => @course, :id => nil
+    else
+      render :action => 'rubrics'
+    end
+    
+  end
+  
   def journals
     return unless load_course( params[:course] )
     return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_settings' )    

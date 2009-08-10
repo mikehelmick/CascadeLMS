@@ -20,20 +20,15 @@
 <!-- @rubric_entry_map -->
 
 <!-- RUBRICS FEEDBACK -->
-<% show_above = false 
-   @assignment.rubrics.each do |rubric|
-     show_above = show_above || !rubric.above_credit_criteria.nil?
-   end
- %>
+
 	<table class="fancy" width="99%" style="background: #FFFFFF;">
 	  <tr class="header">
 		<th width="22%">Rubric</th>
-		<th width="22%">Novice</th>
-		<th width="22%">Apprentice</th>
-		<th width="22%">Proficient</th>
-		<% if show_above %>
-		  <th width="22%">Excellent</th>
-		<% end %>
+		<th width="22%"><%= @course.rubric_level.l4_name %></th>
+		<th width="22%"><%= @course.rubric_level.l3_name %></th>
+		<th width="22%"><%= @course.rubric_level.l2_name %></th>
+	    <th width="22%"><%= @course.rubric_level.l1_name %></th>
+
 	  </tr>
 	  <% row_count = 0 %>
 	  <% for rubric in @assignment.rubrics %>
@@ -65,27 +60,18 @@
 		      <i><%=h rubric.full_credit_criteria %> (<%= rubric.full_credit_points %> points)</i>
 		    <% end %>	
 		  </td>
-		  <% if show_above %>
-		    <td>
-			  <% if rubric.above_credit_criteria.nil? %>
-			    &nbsp;
+		  <td>
+			  <% if !@rubric_entry_map[rubric.id].nil? && @rubric_entry_map[rubric.id].above_credit %>
+			     <b><%= image_tag "accept.png", :align => 'absmiddle' %><%=h rubric.above_credit_criteria %> (<i><%= rubric.above_credit_points %> points</i>)</b>
 			  <% else %>
-			    <% if !@rubric_entry_map[rubric.id].nil? && @rubric_entry_map[rubric.id].above_credit %>
-			      <b><%= image_tag "accept.png", :align => 'absmiddle' %><%=h rubric.above_credit_criteria %> (<i><%= rubric.above_credit_points %> points</i>)</b>
-			    <% else %>
-			      <i><%=h rubric.above_credit_criteria %> (<%= rubric.above_credit_points %> points)</i>
-			    <% end %>
+			     <i><%=h rubric.above_credit_criteria %> (<%= rubric.above_credit_points %> points)</i>
 			  <% end %>
-		    </td>
-	      <% end %>
+		  </td>
 		</tr>
 		<tr class="<%=odd%> hover" id="rubric_<%=rubric.id%>_comments">
 		  <td align="right" valign="top" colspan="1"><i>Instructor comments:</i></td>
 		
-		<% colspan = 3 
-		   colspan = 4 if show_above %>
-		
-		  <td align="left" valign="top" colspan="<%= colspan %>">
+		  <td align="left" valign="top" colspan="4">
 			<p><b><% unless @rubric_entry_map[rubric.id].nil? %> 
 				    <%=h @rubric_entry_map[rubric.id].comments %>
 				  <% end %></b></p>
