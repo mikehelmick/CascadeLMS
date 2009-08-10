@@ -188,6 +188,7 @@ class Instructor::QuizController < Instructor::InstructorBase
     @quiz.assignment = @assignment
     @quiz.anonymous = false if !@quiz.survey
     @quiz.linear_score = !@quiz.survey && (@points.nil? || (@points.class.to_s.eql?('String') && @points.eql?('')))
+    @quiz.course_id = @course.id
     @assignment.quiz = @quiz
     
     @gradeItem = nil
