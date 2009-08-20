@@ -168,6 +168,7 @@ class Instructor::QuizController < Instructor::InstructorBase
     @title = "New Quiz - #{@course.title}"
     
     @new_quiz = true
+    @auto_gen_checked = false
   end
   
   def create
@@ -247,7 +248,6 @@ class Instructor::QuizController < Instructor::InstructorBase
       end  
       sucess = true
     rescue Exception => doh
-      @new_quiz = true
       flash[:badnotice] = 'There was an error creating the quiz.'
       success = false
     end
@@ -259,6 +259,8 @@ class Instructor::QuizController < Instructor::InstructorBase
       
     else      
       @categories = GradeCategory.for_course( @course )
+      @new_quiz = true
+      @auto_gen_checked = ! params[:generate_survey].nil?
       render :action => 'new'
     end
     

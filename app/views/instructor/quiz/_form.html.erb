@@ -107,9 +107,9 @@
 	       <%= radio_button 'quiz', 'anonymous', false %> No</p>
 
      <% unless clone %>
-     <% if request.path_parameters['action'].eql?('new') %>
+     <% if @new_quiz %>
       <label for="generate_survey">Automatically Generate Entry/Exit survey:</label>
-        <p><%= check_box_tag "generate_survey", 1, false %></p>		
+        <p><%= check_box_tag "generate_survey", 1, @auto_gen_checked %></p>		
      <% end %>
      <% end %>
     </div>
