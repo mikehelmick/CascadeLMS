@@ -3,7 +3,7 @@
 <% else %>
 <table class="fancy">
   <tr class="header">
-    <th>CRN</th>
+    <th>CRN(s)</th>
     <th>Title</th>
     <th>Description
     <th>Open?</th>   
@@ -19,15 +19,15 @@
 %>
 
   <tr class="<%=odd%> hover" id="item_<%=course.id%>">
-    <td><%=h course.crns.join(', ')%></td>
-    <td><%=h course.title%></td>
-    <td><%=h course.short_description%></td>  
-    <td id="course_open_<%=course.id%>">
+    <td align="left" valign="top"><%= course.crns.join('<br/> ')%></td>
+    <td nowrap="nowrap" align="left" valign="top"><%=h course.title%></td>
+    <td nowrap="nowrap" align="left" valign="top"><%=h course.short_description%></td>  
+    <td id="course_open_<%=course.id%>" align="left" valign="top">
       <% @course = course %>
       <%= render :partial => 'courseopen' %>
     </td>
-    <td><%=h course.instructors.join(', ')%></td>
-    <td><%= link_to 'edit', :action => 'edit', :id => course %></td>
+    <td nowrap="nowrap" align="left" valign="top"><%= course.instructors.join(',<br/> ')%></td>
+    <td align="left" valign="top"><%= link_to 'edit', :action => 'edit', :id => course %></td>
   </tr>
 
 <% end %>
