@@ -28,16 +28,20 @@
 		<% end %>
 		
 		 <% user_completed_quiz = false 
-	        if assignment.quiz 
+	        if public.nil? && assignment.quiz 
 	          user_completed_quiz = assignment.quiz.user_has_completed_attempt?(@user) 
             end %>
 	<!--
 	   <td align="right" valign="top">
           <% if assignment.quiz %>
-	        <% if user_completed_quiz %>
-	          <%= link_to "#{h count}", {:controller => '/quiz', :action => 'start', :course => @course, :id => assignment}, :confirm => "You have already completed this quiz, are you sure you want to take it again?" %>
-	        <% else %>
-	          <%= link_to "#{h count}", :controller => '/quiz', :action => 'start', :course => @course, :id => assignment %>
+            <% if !public.nil? %>
+               <%= h count %>
+            <% else %>
+	          <% if user_completed_quiz %>
+	            <%= link_to "#{h count}", {:controller => '/quiz', :action => 'start', :course => @course, :id => assignment}, :confirm => "You have already completed this quiz, are you sure you want to take it again?" %>
+	          <% else %>
+	            <%= link_to "#{h count}", :controller => '/quiz', :action => 'start', :course => @course, :id => assignment %>
+	          <% end %>
 	        <% end %>
 		  <% else %>
 		    <%= link_to "#{h count}", :action => 'view', :id => assignment %>
@@ -46,12 +50,16 @@
 	-->
 	    <td valign="top" align="left" nowrap="nowrap">
 	      <% if assignment.quiz %>
-	        <% if user_completed_quiz %>
-	          <%= link_to "#{h assignment.title}", {:controller => '/quiz', :action => 'start', :course => @course, :id => assignment}, :confirm => "You have already completed this quiz, are you sure you want to take it again?" %>
+	        <% if !public.nil? %>
+	          <%= h assignment.title %>
 	        <% else %>
-	          <%= link_to "#{h assignment.title}", :controller => '/quiz', :action => 'start', :course => @course, :id => assignment %>
-	        <% end %><br/>
-            <% if assignment.quiz.survey %><i>online survey</i><% else %><i>online quiz</i><% end %>
+	          <% if user_completed_quiz %>
+	            <%= link_to "#{h assignment.title}", {:controller => '/quiz', :action => 'start', :course => @course, :id => assignment}, :confirm => "You have already completed this quiz, are you sure you want to take it again?" %>
+	          <% else %>
+	            <%= link_to "#{h assignment.title}", :controller => '/quiz', :action => 'start', :course => @course, :id => assignment %>
+	          <% end %><br/>
+              <% if assignment.quiz.survey %><i>online survey</i><% else %><i>online quiz</i><% end %>
+            <% end %>
 	      <% else %>
 	        <%= link_to "#{h assignment.title}", :action => 'view', :id => assignment %>
   		    <% if assignment.team_project %><%= image_tag 'group.png' %><% end %>
@@ -108,7 +116,8 @@
 	        (<b><%= distance_of_time_in_words_to_now( assignment.due_date, true )%> ago</b>)
 	      <% end %>
 	
-	      <% extension = assignment.extension_for_user(@user) %>
+	      <% extension = nil
+	         extension = assignment.extension_for_user(@user) if public.nil? rescue extension = nil %>
 	      <% unless extension.nil? %>
 	        <br/><b>EXTENSION GRANTED:</b><br/>
 	        <% unless extension.past? %>

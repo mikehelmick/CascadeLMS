@@ -7,6 +7,8 @@ class Public::AssignmentsController < ApplicationController
     return unless load_course( params[:course] )
     return unless course_is_public( @course )
   
+    @assignments = @course.assignments_for_user( 0 )
+  
     set_title
   end
   
