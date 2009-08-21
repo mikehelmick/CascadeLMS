@@ -10,6 +10,7 @@ class Public::AssignmentsController < ApplicationController
     @assignments = @course.assignments_for_user( 0 )
   
     set_title
+    @public = true
   end
   
   def view

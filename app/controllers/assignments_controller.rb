@@ -17,6 +17,7 @@ class AssignmentsController < ApplicationController
     @assignments = @course.assignments_for_user( @user.id )
     
     RubricLevel.for_course(@course)
+    @public = false
     
     respond_to do |format|
       format.html
