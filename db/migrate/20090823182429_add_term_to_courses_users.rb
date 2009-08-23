@@ -4,8 +4,13 @@ class AddTermToCoursesUsers < ActiveRecord::Migration
     
     add_index(:courses_users, [:user_id, :term_id], :unique => false, :name => :user_term_idx)
     
-    ## Upgrade
-    execute "update courses_users set term_id=(select term_id from courses where id=course_id)"
+    ## Upgrade - wanted to do this in SQL, by puts a dependency on mysql 5...
+    CoursesUser.reset_column_information
+    all = CoursesUser.find(:all)
+    all.each do |cu|
+      cu.term_id = cu.course.term_id
+      cu.save
+    end
     
   end
 
