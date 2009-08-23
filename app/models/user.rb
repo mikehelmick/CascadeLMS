@@ -46,10 +46,7 @@ class User < ActiveRecord::Base
   end
   
   def courses_in_term( term )
-    cur = Array.new
-    courses_users.each do |cu|
-        cur << cu if cu.course.term_id == term.id && cu.course
-    end
+    cur = CoursesUser.find(:all, :conditions => ["user_id = ? and term_id =?", self.id, term.id])
     cur.sort! { |x,y| x.course.title <=> y.course.title }    
   end
 

@@ -90,6 +90,13 @@ class Admin::CourseAdminController < ApplicationController
     
     if @course.update_attributes(params[:course])
       if changing_term 
+        ## Need to update the enrollment
+        course_users = CoursesUser.find(:all, :conditions => ["course_id = ? and term_id = ?", @course.id, old_term_id])
+        course_users.each do |cu|
+          cu.term_id = @course.term.id
+          cu.save
+        end
+        
         # need to do a move of course information
         # make sure that term dir is created
         `mkdir -p #{@app['external_dir']}/term/#{@term.id}/course`

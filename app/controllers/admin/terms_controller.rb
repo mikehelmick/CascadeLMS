@@ -13,12 +13,14 @@ class Admin::TermsController < ApplicationController
 
   def list
     @terms = Term.find( :all, :order => ["term asc"] )
+    @title = "All Terms"
   end
 
   def new
     @term = Term.new
     setup_years
     @term.year = @start_year
+    @title = "Create new Term"
   end
   
   def current
@@ -50,12 +52,14 @@ class Admin::TermsController < ApplicationController
       redirect_to :action => 'list'
     else
       render :action => 'new'
+      @title = "Create term - error"
     end
   end
 
   def edit
     @term = Term.find(params[:id])
     setup_years
+    @title = "Edit Term - #{@term.semester}"
   end
 
   def update
