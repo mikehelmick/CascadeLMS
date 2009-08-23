@@ -13,10 +13,9 @@
      (<%= link_to "log out #{image_tag 'lock_go.png'}", :controller => '/index', :action => 'logout' %>) 
   
   <% unless @user.nil? %>
-   <% if @user.courses_in_term(session[:current_term]).size > 1 %><br/>
-    <% for cu in @user.courses_in_term(session[:current_term] ) %>
+    <br/>
+   <% for cu in @user.courses_in_term(session[:current_term] ) %>
       <%= image_tag 'bullet_go.png', :align => 'absmiddle' %><%= link_to "#{cu.course.title}", :controller => '/overview', :course => cu.course.id %> 
-    <% end %>
    <% end %>
   <% end %>
 <%else%>You are not logged in.

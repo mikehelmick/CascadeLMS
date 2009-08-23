@@ -12,19 +12,19 @@
 <p><label for="rubric_above_credit_points" class="required"><%= @course.rubric_level.l1_name %> points:</label>
    <%= text_field 'rubric', 'above_credit_points'  %></p>	
 	
-<p><label for="rubric_full_credit_criteria" class="required"><%= @course.rubric_level.l3_name %> trait:</label>
+<p><label for="rubric_full_credit_criteria" class="required"><%= @course.rubric_level.l2_name %> trait:</label>
    <%= text_area 'rubric', 'full_credit_criteria', "cols" => 80, "rows" => 5  %></p>
-<p><label for="rubric_full_credit_points" class="required"><%= @course.rubric_level.l3_name %> points:</label>
+<p><label for="rubric_full_credit_points" class="required"><%= @course.rubric_level.l2_name %> points:</label>
    <%= text_field 'rubric', 'full_credit_points'  %></p>
 
-<p><label for="rubric_part_credit_criteria" class="required"><%= @course.rubric_level.l2_name %> trait:</label>
+<p><label for="rubric_part_credit_criteria" class="required"><%= @course.rubric_level.l3_name %> trait:</label>
    <%= text_area 'rubric', 'part_credit_criteria', "cols" => 80, "rows" => 5  %></p>
-<p><label for="rubric_part_credit_points" class="required"><%= @course.rubric_level.l2_name %> points:</label>
+<p><label for="rubric_part_credit_points" class="required"><%= @course.rubric_level.l3_name %> points:</label>
    <%= text_field 'rubric', 'part_credit_points'  %></p>
 
-<p><label for="rubric_no_credit_criteria" class="required"><%= @course.rubric_level.l1_name %> trait:</label>
+<p><label for="rubric_no_credit_criteria" class="required"><%= @course.rubric_level.l4_name %> trait:</label>
    <%= text_area 'rubric', 'no_credit_criteria', "cols" => 80, "rows" => 5  %></p>
-<p><label for="rubric_no_credit_points" class="required"><%= @course.rubric_level.l1_name %> points:</label>
+<p><label for="rubric_no_credit_points" class="required"><%= @course.rubric_level.l4_name %> points:</label>
    <%= text_field 'rubric', 'no_credit_points'  %></p>
 </div>
 
