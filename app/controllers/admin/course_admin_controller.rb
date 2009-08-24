@@ -201,6 +201,7 @@ class Admin::CourseAdminController < ApplicationController
       c.course_instructor = true if @utype.eql?('instructor')
       c.course_assistant = true if @utype.eql?('assistant')
       c.course_guest = true if @utype.eql?('guest')  
+      c.term_id = @course.term_id
       @course.courses_users << c
       @course.save   
     end
