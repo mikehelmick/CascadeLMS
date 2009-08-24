@@ -36,6 +36,7 @@ class AutoEnrollment < CourseCreator
             courseuser.course = course
             courseuser.course_student = true
             courseuser.course_instructor = false
+            courseuser.term_id = course.term_id
         
             courseuser.save
             status = "#{status} You have been enrolled in the course: #{course.title} (#{crn.crn}, #{crn.name}).<br/>"

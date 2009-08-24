@@ -74,6 +74,7 @@ class Course < ActiveRecord::Base
           courseuser.course_instructor = otheruser.course_instructor
           courseuser.course_guest = otheruser.course_guest
           courseuser.course_assistant = otheruser.course_assistant
+          courseuser.term_id = self.term_id
           
           courseuser.save
           self.courses_users << courseuser

@@ -28,10 +28,6 @@ class HomeController < ApplicationController
     @announcements = Announcement.current_announcements
     @courses = @user.courses_in_term( @term )
     
-    @other_courses = @user.courses
-    @other_courses.sort! { |x,y| y.term.term <=> x.term.term }
-    @other_courses.delete_if { |x| x.term.id == @term.id }
-    
     @notifications = Notification.find(:all, :conditions => ["user_id = ? and acknowledged = ? and view_count < ?", @user, false, 5] )
     begin
       @notifications.each do |notification|
@@ -43,7 +39,13 @@ class HomeController < ApplicationController
     
     respond_to do |format|
       format.html
-      format.xml { render :layout => false }
+      format.xml { 
+        @other_courses = @user.courses
+        @other_courses.sort! { |x,y| y.term.term <=> x.term.term }
+        @other_courses.delete_if { |x| x.term.id == @term.id }
+        
+        render :layout => false 
+      }
     end
   end
   

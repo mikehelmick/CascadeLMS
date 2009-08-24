@@ -66,6 +66,7 @@ class CourseCreator
         courseuser.course = @course
         courseuser.course_student = false
         courseuser.course_instructor = true
+        courseuser.term_id = course.term_id
         
         course.courses_users << courseuser
         course.save

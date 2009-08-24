@@ -65,6 +65,7 @@ class Instructor::CourseUsersController < Instructor::InstructorBase
         u.course_instructor = true if @utype.eql?('instructor')
         u.course_assistant = true if @utype.eql?('assistant')
         u.course_guest = true if @utype.eql?('guest')
+        u.term_id = @course.term_id
         u.save
         @course.save
         added = true
@@ -81,6 +82,7 @@ class Instructor::CourseUsersController < Instructor::InstructorBase
       c.course_instructor = true if @utype.eql?('instructor')
       c.course_assistant = true if @utype.eql?('assistant')
       c.course_guest = true if @utype.eql?('guest')  
+      c.term_id = @course.term_id
       @course.courses_users << c
       @course.save   
     end

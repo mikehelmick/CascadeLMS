@@ -10,7 +10,7 @@
 
 <table class="FadeTable" cellspacing="0">
   <tr class="header">
-	<th colspan="3">
+	<th align="left" valign="top">
 	  <%= link_to "<b>#{course_user.course.title}</b> #{course_user.course.short_description} #{'(Archived)' unless course_user.course.open }", :controller => "/overview", :course => course_user.course %> 
 	  <br/>
 	  <b>Instructor: </b>
@@ -20,9 +20,9 @@
 	  <% else %>
 	    <%= inst.join(', ') %>
 	  <% end %>
-  </th>
-</tr>
-  
+	  <br/>
+   </th>
+ </tr>
 </table>
 
  <% end %>
@@ -30,36 +30,5 @@
 <% end %>
 
 
-<% if @other_courses.size > 0 %>
-<div class="SectionHeader"><div class="Full">
-<h2>Past Courses</h2>
-</div></div>
 
-<% prev_term = nil %>
-<% count = 0 %>
-<% for course in @other_courses %>
-  <% if count < 3 %>
-<table class="FadeTable" cellspacing="0">
-  <tr class="header">
-	<th colspan="3">
-	  <%= link_to "<b>#{course.title}</b> #{course.short_description}#{' (Archived)' unless course.open }", :controller => "/overview", :course => course %>  (<%= course.term.semester %>)
-	  <br/>
-	  <b>Instructor: </b>
-	  <% inst = course.instructors %>
-	  <% if inst.size == 0 %>
-	    <i>No instructor is currently assigned to this course.</i>
-	  <% else %>
-	    <%= inst.join(', ') %>
-	  <% end %>
-  </th>
-</tr>
-</table>
-  <% end %>
-  <% count = count + 1 %>
-<% end %>
-
-<% if count >= 3 %>
-   <p><b><%= link_to "View all of your past courses...", :controller => "home", :action => "courses", :id => nil%></b></p>
-<% end %>
-
-<% end %>
+<p><b><%= link_to "View courses from past semesters...", :controller => "home", :action => "courses", :id => nil%></b></p>
