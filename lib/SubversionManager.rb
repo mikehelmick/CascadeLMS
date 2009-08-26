@@ -1,5 +1,6 @@
 require 'rexml/document'
 
+
 # A class used for the list only
 class SvnListEntry
   attr_accessor :name, :kind, :revision, :author, :date  
@@ -26,6 +27,7 @@ class SubversionManager
   
   def logger=(logger) 
     @logger = logger
+    @logger = nil
   end
   
   def get_release_files( username, password, server, path, fs_path )
@@ -34,7 +36,7 @@ class SubversionManager
     # do the checkout
     slash = (server[-1..-1].to_s.eql?('/')) ? '' : '/' 
     command = "#{@subversion_command} checkout --username #{username} --password #{password} --non-interactive --ignore-externals #{server}#{slash}#{path} #{fs_path}"
-    @logger << "SVN: #{command}\n" if @logger
+    @logger.add(BufferedLogger::Severity.INFO, "SVN: #{command}\n" ) if @logger
     result = `#{command}`    
     raise "Error checking out files: #{result}" if result.index('Checked out revision').nil?
     
@@ -49,7 +51,7 @@ class SubversionManager
       slash = (server[-1..-1].to_s.eql?('/')) ? '' : '/' 
       info_command = "#{@subversion_command} info --username #{username} --password #{password} --non-interactive #{server}#{slash}"
     
-      @logger << "SVN: #{info_command}#{from_path}\n" if @logger
+      @logger.add(BufferedLogger::Severity.INFO, "SVN: #{info_command}#{from_path}\n") if @logger
       result = `#{info_command}#{from_path}`
       raise "Development directory `#{from_path}` could not be found." unless result.index('Not a valid URL').nil?
      
@@ -58,7 +60,7 @@ class SubversionManager
         rtn = "#{rtn}  Release directory exists, deleting." 
         
         del_command = "#{@subversion_command} delete --username #{username} --password #{password} --non-interactive -m \"AUTOMATIC DELETION OF PREVIOUS RELEASE DIRECTORY #{to_path}.\" #{server}#{slash}#{to_path}"
-        @logger << "SVN: #{del_command}\n" if @logger
+        @logger.add(BufferedLogger::Severity.INFO, "SVN: #{del_command}\n") if @logger
         result = `#{del_command}`
         raise "Error cleaning up old release directory." if result.index('Committed').nil?
         
@@ -66,7 +68,7 @@ class SubversionManager
       end
       
       copy_command = "#{@subversion_command} copy --username #{username} --password #{password} --non-interactive -m \"AUTOMATIC RELEASE COPY from #{from_path} to #{to_path}\" #{server}#{slash}#{from_path} #{server}#{slash}#{to_path}"
-      @logger << "SVN: #{copy_command}\n" if @logger
+      @logger.add(BufferedLogger::Severity.INFO, "SVN: #{copy_command}\n") if @logger
       result = `#{copy_command}`
       raise "Error creating release copy." if result.index('Committed').nil?
       rtn = "#{rtn}  Created release copy `#{result}`"
@@ -105,7 +107,7 @@ class SubversionManager
         command = "#{command_front}#{paths[index]} 2>&1"
 #puts "I: #{index} - #{paths[index]}"
 #puts "C: #{command}"
-        @logger << "SVN: #{command}\n" if @logger
+        @logger.add(BufferedLogger::Severity.INFO, "SVN: #{command}\n") if @logger
         result = `#{command}`
 #puts "R: #{result}"
         unless result.index('Not a valid URL').nil?
@@ -113,7 +115,7 @@ class SubversionManager
           index = index + 1
           if ( index >= paths.size ) 
             index = index - 1
-            @logger << "It seems that none of the directories in #{paths.inspect} exist, so I'm going to try and create them all."
+            @logger.add(BufferedLogger::Severity.INFO, "It seems that none of the directories in #{paths.inspect} exist, so I'm going to try and create them all." ) if @logger
             break
             #raise "Subversion root does not seem to exists"
           end
@@ -126,7 +128,7 @@ class SubversionManager
       while index >= 0
         command = "#{@subversion_command} mkdir --username #{username} --password #{password} --non-interactive -m \"AUTOMATIC DIRECTORY CREATION OF '#{paths[index]}'\" #{server}#{slash}#{paths[index]}"
 #puts "C: #{command}"
-        @logger << "SVN: #{command}\n" if @logger
+        @logger.add(BufferedLogger::Severity.INFO, "SVN: #{command}\n") if @logger
         result = `#{command} 2>&1`
 #puts "R: #{result}"
         if result.index('Committed revision').nil?
@@ -151,7 +153,7 @@ class SubversionManager
     begin
       slash = (server[-1..-1].to_s.eql?('/')) ? '' : '/' 
       command = "#{@subversion_command} list --username #{username} --password #{password} --non-interactive --xml -R #{server}#{slash}#{path}  2>&1"
-      @logger << "SVN: #{command}\n" if @logger
+      @logger.add(BufferedLogger::Severity.INFO,  "SVN: #{command}\n" ) if @logger
       result = `#{command}`
       
       xml = REXML::Document.new( result )
@@ -175,8 +177,9 @@ class SubversionManager
     
       return entries
     rescue Exception => ex
-      @logger.error( "SVN ERROR: " + ex.message ) if @logger
+      @logger.add( BufferedLogger::Severity.ERROR,  "SVN ERROR: " + ex.message ) if @logger
       #puts ex.message
+      raise "Subversion error" if result.nil?
       if !result.index('non-existent').nil?
         raise "#{path} non-existent in the current revision."
       elsif !result.index('authorization failed').nil?
