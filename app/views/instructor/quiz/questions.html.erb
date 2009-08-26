@@ -24,6 +24,17 @@
   <p><%= link_to "#{image_tag 'application_edit.png', :align => 'absmiddle'} Edit Quiz Details", :action => 'edit', :course => @course, :id => @assignment %></p>
 <% end %>
 
+<% if ! @quiz.survey %>
+  <% unless @quiz.assignment.grade_item.nil? %>
+    <p>This quiz is worth <i><%= @quiz.assignment.grade_item.points %></i> points.<br/>
+	<% if @quiz.linear_score %>
+	   Each question is worth <i><%= @quiz.number_of_questions %> points, and the total score will automatically adjust when you add or remove questions.
+	<% end %>
+	</p>
+  <% end %>
+<% end %>
+
+
 <% if @quiz.quiz_questions.length == 0 %>
   <p><i>There are no questions for this quiz.</i></p>
 <% else %>

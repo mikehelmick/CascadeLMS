@@ -88,8 +88,29 @@
 	<% if @new_quiz && !edit_mode %>
 	<div class="blockintro">If you enter a point value, a GradeBook item will be created and associated with this quiz.  All questions will be weighted equally.  Quizzes that do not have any free form text response questions will be automatically scored.</div>
 	<div class="block">
-	<p><label for="point_value" class="required">Points:</label>
-	  <%= text_field_tag 'point_value', @points  %></p>
+	<%= radio_button 'quiz', 'linear_score', false, :onclick => 'new Effect.Puff("scale_score");new Effect.SlideDown("total_score")' %> Overall Point Total
+	<%= radio_button 'quiz', 'linear_score', true, :onclick => 'new Effect.Puff("total_score");new Effect.SlideDown("scale_score")' %> Scale Points w/ Number of Questions	
+	
+	  <% total_score_style = 'display: block;' 
+	     scale_score_style = 'display: none;'
+	     if @quiz.linear_score 
+			total_score_style = 'display: none;'
+			scale_score_style = 'display: block;' 
+		 end %>
+		
+	  <div id="total_score" style="<%= total_score_style %>">			
+		<p><label for="point_value" class="required">Points:</label>
+	  		<%= text_field_tag 'point_value', @points  %></p>
+	  </div>
+	
+	  <div id="scale_score" style="<%= scale_score_style %>">
+		<p><label for="point_value" class="required">Points Per Question:</label>
+	  		<%= text_field 'quiz', 'number_of_questions'  %></p>
+	  </div>
+	
+	  
+		
+	
 	</div>
 	<% end %>
 </div>

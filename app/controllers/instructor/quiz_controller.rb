@@ -162,6 +162,8 @@ class Instructor::QuizController < Instructor::InstructorBase
     @quiz = Quiz.new
     @quiz.attempt_maximum = -1
     @quiz.anonymous = true
+    @quiz.number_of_questions = 0
+    @quiz.linear_score = false
     
     @categories = GradeCategory.for_course( @course )
     
@@ -188,12 +190,15 @@ class Instructor::QuizController < Instructor::InstructorBase
     @quiz = Quiz.new( params[:quiz] )
     @quiz.assignment = @assignment
     @quiz.anonymous = false if !@quiz.survey
-    @quiz.linear_score = !@quiz.survey && (@points.nil? || (@points.class.to_s.eql?('String') && @points.eql?('')))
+    @quiz.linear_score =  false if @quiz.survey 
     @quiz.course_id = @course.id
     @assignment.quiz = @quiz
     
+    @points = 0 if @quiz.linear_score
+    
+    
     @gradeItem = nil
-    if !@quiz.survey && !@points.nil? && @points.to_i > 0
+    if !@quiz.survey && !@points.nil? && (@points.to_i > 0 || @quiz.linear_score)
       @gradeItem = GradeItem.new
       @gradeItem.name = @assignment.title
       @gradeItem.date = @assignment.due_date.to_date
@@ -202,6 +207,7 @@ class Instructor::QuizController < Instructor::InstructorBase
       @gradeItem.visible = false
       @gradeItem.grade_category_id = @assignment.grade_category_id
       @gradeItem.course_id = @course.id
+      @gradeItem.assignment = @assignment
     end
     
     success = true
@@ -360,6 +366,9 @@ class Instructor::QuizController < Instructor::InstructorBase
       @quiz_question.quiz = @quiz
       @quiz.quiz_questions << @quiz_question
       @quiz.save
+      
+      # adjust linear score
+      adjust_linear_score( @quiz )
       
       # build answers
       answers = build_answers( params, @quiz_question )
@@ -645,10 +654,15 @@ class Instructor::QuizController < Instructor::InstructorBase
     if @question.nil?
       flash[:badnotice] = "The requested question could not be found."
     else  
-      if @question.destroy
-        flash[:notice] = "The requested question was deleted successfully."
-      else
-        flash[:badnotice] = "There was an error deleted the question."
+      
+      begin
+        QuizQuestion.transaction do
+          @assignment.quiz.quiz_questions.delete(@question)
+          adjust_linear_score( @assignment.quiz )
+          flash[:notice] = "The requested question was deleted successfully."
+        end
+      rescue
+        flash[:badnotice] = "There was an error deleting the question."
       end
     end
     
@@ -656,6 +670,15 @@ class Instructor::QuizController < Instructor::InstructorBase
   end
   
   private
+  
+  def adjust_linear_score( quiz )
+    if quiz.linear_score
+      unless quiz.assignment.grade_item.nil?
+        quiz.assignment.grade_item.points = quiz.quiz_questions.size * quiz.number_of_questions
+        quiz.assignment.grade_item.save
+      end
+    end
+  end
   
   def create_blank_answers
     @answer_1 = QuizQuestionAnswer.new
