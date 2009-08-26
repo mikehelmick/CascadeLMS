@@ -12,7 +12,7 @@
 <%= post.body_html %>
 </p>
 <p class="summary">
-  <% if post.enable_comments %>
+  <% if post.enable_comments && @course.course_setting.blog_comments %>
     <% if single %>
       <% count = post.number_of_comments %>
         <%= link_to_function( "Leave a comment #{image_tag 'comment_add.png'}", "blindToggle( 'leave_comment' )" ) %>

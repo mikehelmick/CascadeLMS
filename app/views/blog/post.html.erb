@@ -25,6 +25,7 @@
 
 </div>
 
+<% if @post.enable_comments && @course.course_setting.blog_comments %>
 <h2>Comments</h2>
 <% for comment in @post.comments %>
 <div class="Comment" id="comment_<%=comment.id%>">
@@ -37,6 +38,7 @@
 	<%= comment.body_html %>
   </p>
 </div>
+<% end %>
 <% end %>
 
 
