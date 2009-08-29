@@ -15,7 +15,7 @@ class AutoGradeHelper
       queue.user_turnin = current_turnin
       if queue.save
         AutoGradeHelper.schedule_job( queue.id )
-        
+        return queue
       else
         flash[:badnotice] = "There was an error scheduling your turn-in set for automatic evaluation, pleae inform your instructor or try again." unless flash.nil?
       end

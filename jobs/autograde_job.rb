@@ -1,7 +1,8 @@
-require 'application'
+require 'application_controller'
 require 'yaml'
 require 'erb'
 require 'text_diff'
+require 'redcloth'
 
 # Class that encapsualtes the autograding of a submission
 class AutogradeJob 
