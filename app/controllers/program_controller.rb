@@ -507,8 +507,44 @@ class ProgramController < ApplicationController
     redirect_to :controller => '/program', :action => nil, :id => nil
   end
   
+  def courses
+    return unless load_program( params[:id] )
+    return unless allowed_to_manage_program( @program, @user )
+    
+    @current_term = Term.find(params[:term]) rescue @current_term = Term.find_current
+    @terms = Term.find(:all, :order => 'term desc')
+    
+    @courses = Course.find_by_sql(["select * from courses left join (courses_programs) on (courses.id = courses_programs.course_id) where courses.term_id = ? and courses_programs.program_id = ? order by title asc;", @current_term.id, @program.id])
+    
+    render :layout => 'noright'
+  end
+  
+  def view_course_outcomes
+    return unless load_program( params[:id] )
+    return unless allowed_to_manage_program( @program, @user )
+    return unless load_course( params[:course] )
+    return unless course_in_program?( @course, @program )
+    
+    render :layout => 'noright'
+  end
+  
+  def view_course_to_program_outcomes
+  end
+  
+  def view_course_rubrics_report
+  end
   
 private
+
+  def course_in_program?( course, program )
+    if course.mapped_to_program?( program.id )
+      return true
+    end
+    
+    flash[:badnotice] = "Invalid course requested."
+    redirect_to :controller => 'program', :action => nil, :id => nil, :template => nil 
+    return false
+  end
   
   def set_tab
     @title = "Program Management - Accreditation Tracking"

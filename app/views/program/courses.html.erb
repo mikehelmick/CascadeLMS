@@ -1,0 +1,43 @@
+<%= link_to 'Back to Programs', :action => nil, :id => nil %>
+
+<div id="form_area">
+<% form_tag( {:action => :courses}, :method => 'get'  )do  %>
+<div id="block">
+<label for="id">Term:</label> <%= select_tag 'term', options_from_collection_for_select(@terms, "id", "semester", @current_term.id ) %> 
+<%= submit_tag( 'Change Term', :on_click => "new Effect.BlindUp('courses')" ) %><br/>
+</div>
+<% end %>
+</div>
+
+<div class="SectionHeader"><div class="Full">
+<h2>Courses for <%= @program.title %> in <%= @current_term.semester %></h2>
+</div></div>
+
+<br/>
+
+<table class="fancy" width="99%">
+  <tr class="header">
+	  <th width="80%">Course (mapped to program '<%= @program.title %>')</th>
+	  <th>Controls</th>
+	</tr>
+
+  <% count = 0 %>
+  <% for course in @courses %>	
+    <% count = count.next 
+       odd = "odd"
+       odd = "even" if count.even? %>
+    <tr class="<%=odd%> hover" id="course_<%=course.id%>">
+      <td><%=h course.short_description %>) <%=h course.title %></td>
+      <td nowrap="nowrap">
+	    <%= link_to 'View Outcomes', :action => 'view_course_outcomes', :id => @program, :course => course %>
+	    <%= link_to "#{image_tag 'report.png', :align => 'absmiddle'}", :action => 'view_course_outcomes', :id => @program, :course => course %> | 
+	    <%= link_to 'Course / Program Outcomes Report', :action => 'view_course_to_program_outcomes', :id => @program, :course => course %> 
+		<%= link_to "#{image_tag 'report.png', :align => 'absmiddle'}", :action => 'view_course_to_program_outcomes', :id => @program, :course => course %>
+	    <%= link_to "#{image_tag 'page_white_excel.png', :align => 'absmiddle'}", :action => 'view_course_to_program_outcomes', :id => @program, :course => course, :format => 'csv' %> | 
+	    <%= link_to 'Course Rubrics Report', :action => 'view_course_rubrics_report', :id => @program, :course => course %>
+		<%= link_to "#{image_tag 'report.png', :align => 'absmiddle'}", :action => 'view_course_rubrics_report', :id => @program, :course => course %>
+	    <%= link_to "#{image_tag 'page_white_excel.png', :align => 'absmiddle'}", :action => 'view_course_rubrics_report', :id => @program, :course => course, :format => 'csv' %> 
+	  </td>
+	</tr>
+  <% end %>	
+</table>

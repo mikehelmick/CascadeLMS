@@ -1,0 +1,89 @@
+<p>
+ <%= link_to "Back", :controller => '/program', :action => 'courses', :id => @program, :term => @course.term %>	
+</p>
+
+<div class="SectionHeader"><div class="Full">
+<h2>Programs for <%= @course.title %> (<%= @course.term.semester %>)</h2>
+</div></div>
+
+    <p>This course is part of the following programs:
+	<ul>
+	  <% for cprogram in @course.programs %>
+	    <li id="program_<%=cprogram.id%>"><%=h cprogram.title %></span></li>
+	  <% end %>
+	</ul>
+	<br/>
+	</p>
+	
+<div class="SectionHeader"><div class="Full">
+<h2>Course Outcomes for <%= @course.title %> (<%= @course.term.semester %>)</h2>
+</div></div>
+
+<table class="fancy" width="99%">
+  <tr class="header">
+	  <th width="90%">Course Outcome <br/>
+		<i>Course outcomes are mapped to program outcomes with a depth of coverage level, some (S), moderate (m), or extensive (e).</i>
+		</th>
+  </tr>
+
+   <% row_count = 0 
+      parent_stack = [-1]
+	  count_stack = [0] %>
+   <% for outcome in @course.ordered_outcomes %>
+	 <% row_count = row_count.next 
+	    odd = "odd"
+        odd = "even" if row_count.even? %> 
+	
+	 <tr class="<%=odd%> hover" id="outcome_<%=outcome.id%>">
+       <td>
+          <% if outcome.parent == parent_stack[-1] ## Same level %>
+             <% count_stack.push( count_stack.pop + 1 ) %>
+	      <% elsif parent_stack.index( outcome.parent ).nil?  ## New level %>
+	         <% parent_stack.push outcome.parent 
+	            count_stack.push 1 %>
+          <% else ## need to pop back to correct level %>
+             <% while (parent_stack[-1] != outcome.parent) 
+                  parent_stack.pop
+                  count_stack.pop
+                end 
+                count_stack.push( count_stack.pop + 1 )
+              %>
+	      <% end %>
+	
+	      <% parent_stack[0..-2].each { |i| %>&nbsp;&nbsp;<%  } %>
+          <%=h count_stack.join('.') %>)
+          <%=h outcome.outcome %>
+	
+	      <% if outcome.program_outcomes.size > 0 %>
+	        &nbsp;(<%= link_to_function( "#{image_tag('application_side_expand.png', :align => 'absmiddle' )} mappings", "blindToggle( 'outcome_details_#{outcome.id}' )" ) %>)
+	      <% end%>
+	
+	      <br/>
+	      <div id="outcome_details_<%=outcome.id%>" style="display: none; padding-left: 25px">
+		    <ul>
+		      <% for program in @course.programs %>
+		        <li>Program: <b><%=program.title%></b></li>
+		        <% count = 0 %>
+		        <ul>
+			      <% added = false %>
+			      <% for prog_outcome in program.program_outcomes %>
+			        <% count = count.next %>
+			        <% if outcome.mapped_to_program_outcome?(prog_outcome.id) 
+				        added = true %>
+			            <li><%= count %>) <%= prog_outcome.outcome %>
+				           (<i>depth: <%= outcome.get_depth_level(prog_outcome.id) %></i>)
+				        </li>
+			        <% end %>
+			      <% end %>
+			      <% unless added %>
+			        <li><i>Not mapped to any program outcomes for this program.</i></li>
+			      <% end %>
+			    </ul>
+		      <% end %>
+		    </ul>
+		  </div>
+	   </td>
+    </tr>
+   <% end %>
+
+</table>

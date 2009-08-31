@@ -32,6 +32,13 @@ class Course < ActiveRecord::Base
   
   before_create :solidify
   
+  def mapped_to_program?( program_id )
+    programs.each do |program|
+      return true if program.id == program_id
+    end
+    return false
+  end
+  
   def merge( other, externalDir )
     Course.transaction do
       #puts "in a transaction?"

@@ -24,9 +24,10 @@
           <% else %>
             <%= link_to "Public API Disabled", {:controller => '/program', :action => 'toggle_api_flag', :id => program.program}, :confirm => 'Are you sure you want to enable API access for this program.', :method => :post %>
           <% end %> |
-	      <%= link_to 'Edit Program Outcomes', :action => 'outcomes', :id => program.program.id %> |
-	      <%= link_to 'Course Outcome Templates', :action => 'templates', :id => program.program.id %> |
-	      <%= link_to 'Program Managers/Auditors', :action => 'users', :id => program.program.id %>
+          <%= link_to 'Courses', :action => 'courses', :id => program.program.id %> |
+	      <%= link_to 'Program Outcomes', :action => 'outcomes', :id => program.program.id %> |
+	      <%= link_to 'Course Templates', :action => 'templates', :id => program.program.id %> |
+	      <%= link_to 'Program Users', :action => 'users', :id => program.program.id %>
 	    <% end %>
 	  </td>
 	</tr>
