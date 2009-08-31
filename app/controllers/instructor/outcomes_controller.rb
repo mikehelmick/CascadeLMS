@@ -56,7 +56,8 @@ class Instructor::OutcomesController < Instructor::InstructorBase
     return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_edit_outcomes' )
     
     @course_outcome = CourseOutcome.find(params[:id])
-    
+    render :layout => 'noright'
+    @title = "Edit Course Outcome for '#{@course.title}'"
   end
   
   def update_outcome
@@ -74,11 +75,8 @@ class Instructor::OutcomesController < Instructor::InstructorBase
     program_outcomes = load_program_outcomes( @course )
     
     CourseOutcome.transaction do
-      @course_outcome.program_outcomes.clear
-      @course_outcome.save
-      program_outcomes.each do |program_outcome|
-         @course_outcome.program_outcomes << program_outcome unless params["program_outcome_#{program_outcome.id}"].nil? 
-      end
+      @course_outcome.clear_program_outcome_mappings
+      read_program_outcome_mappings_from_params( @course_outcome, program_outcomes, params )
       
       # if hierarchy is changing - we have to recalculate both the old parent's child ordering
       # and the new parent's child ordering
@@ -114,7 +112,7 @@ class Instructor::OutcomesController < Instructor::InstructorBase
       @course_outcome.save
       
       flash[:notice] = 'Your outcome changes have been saved.'
-      return redirect_to :action => 'index', :course => @course
+      return redirect_to( :action => 'index', :course => @course )
     end
     render :action => 'edit', :course => @course, :id => params[:id]
   end
@@ -124,6 +122,9 @@ class Instructor::OutcomesController < Instructor::InstructorBase
     return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_edit_outcomes' )
     
     @course_outcome = CourseOutcome.new
+    @title = "Create new Course Outcome for '#{@course.title}'"
+    
+    render :layout => 'noright'
   end
   
   def create_outcome
@@ -145,9 +146,7 @@ class Instructor::OutcomesController < Instructor::InstructorBase
     
     CourseOutcome.transaction do 
       if @course_outcome.save
-        program_outcomes.each do |program_outcome|
-           @course_outcome.program_outcomes << program_outcome unless params["program_outcome_#{program_outcome.id}"].nil? 
-        end
+        read_program_outcome_mappings_from_params( @course_outcome, program_outcomes, params )
         @course_outcome.save
 
         set_highlight( "course_outcome_#{@course_outcome.id}" )
@@ -216,6 +215,7 @@ class Instructor::OutcomesController < Instructor::InstructorBase
         end       
       end
       
+      @course_outcome.clear_program_outcome_mappings
       @course_outcome.destroy
     end
     
@@ -260,8 +260,8 @@ class Instructor::OutcomesController < Instructor::InstructorBase
         new_outcome.parent = parent_map[copy_outcome.parent]
         new_outcome.save
         
-        copy_outcome.program_outcomes.each do |outcome_program|
-          new_outcome.program_outcomes << outcome_program
+        copy_outcome.course_template_outcomes_program_outcomes.each do |copo|
+          new_outcome.course_outcomes_program_outcomes << copo.clone_into_course( new_outcome.id )
         end
         new_outcome.save
         
@@ -309,8 +309,8 @@ class Instructor::OutcomesController < Instructor::InstructorBase
         new_outcome.parent = parent_map[copy_outcome.parent]
         new_outcome.save
         
-        copy_outcome.program_outcomes.each do |outcome_program|
-          new_outcome.program_outcomes << outcome_program
+        copy_outcome.course_outcomes_program_outcomes.each do |copo|
+          new_outcome.course_template_outcomes_program_outcomes << copo.clone_into_template(new_outcome.id)
         end
         new_outcome.save
         
@@ -322,7 +322,7 @@ class Instructor::OutcomesController < Instructor::InstructorBase
       
       @course.programs.each do |program|
         message = "A new course template '#{@new_template.title}' has been exported by #{@user.display_name} and requires your approval."
-        link = url_for :controller => 'program', :action => 'template', :id => program.id, :course => nil rescue link = nil      
+        link = url_for :controller => '/program', :action => 'template', :id => program.id, :course => nil rescue link = nil      
         Notification.create( message, program.users, link )        
       end
       
@@ -349,13 +349,25 @@ class Instructor::OutcomesController < Instructor::InstructorBase
     
     @numbers = load_outcome_numbers( @course )
     
-    render :layout => 'noright'
+    @title = "'#{@course.title}' Outcomes to Program Outcomes Report"    
+    respond_to do |format|
+        format.html { render :layout => 'noright' }
+        format.csv  { 
+          response.headers['Content-Type'] = 'text/csv; charset=iso-8859-1; header=present'
+          response.headers['Content-Disposition'] = "attachment; filename=#{@course.short_description}_course_outcomes.csv"
+          render :layout => 'noright' 
+        }
+        
+    end
   end
+
   
   def rubrics_report
     return unless load_course( params[:course] )
     return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_edit_outcomes' )
     set_title
+    
+    RubricLevel.for_course( @course )
 
     # for each outcome - array of all rubrics
     @outcome_to_rubrics = Hash.new
@@ -424,12 +436,35 @@ class Instructor::OutcomesController < Instructor::InstructorBase
       
     end
     
-    render :layout => 'noright'
+    respond_to do |format|
+        format.html { render :layout => 'noright' }
+        format.csv  { 
+          response.headers['Content-Type'] = 'text/csv; charset=iso-8859-1; header=present'
+          response.headers['Content-Disposition'] = "attachment; filename=#{@course.short_description}_course_outcomes_rubrics_report.csv"
+          render :layout => 'noright' 
+        }
+        
+    end
   end
 
 private
   def set_title
     @title = "Course Outcomes - #{@course.title}"
+  end
+  
+  def read_program_outcome_mappings_from_params( course_outcome, program_outcomes, params )
+    program_outcomes.each do |program_outcome|
+      mapping_level = params["program_outcome_#{program_outcome.id}"]
+      unless mapping_level.eql?('N')
+        copo = CourseOutcomesProgramOutcome.new
+        copo.course_outcome = course_outcome
+        copo.program_outcome = program_outcome
+        copo.level_some = mapping_level.eql?('S')
+        copo.level_moderate = mapping_level.eql?('M')
+        copo.level_extensive = mapping_level.eql?('E')
+        course_outcome.course_outcomes_program_outcomes << copo
+      end 
+    end
   end
   
   def load_program_outcomes( course )

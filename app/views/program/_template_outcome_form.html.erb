@@ -39,17 +39,22 @@
 <p class="blockintro">Map to program outcome:</p>
 <div class="block">
 
-<ul>
+<ul class="outcomesList">
 <% for program in @course_template.programs %>
-  <li>Program outcomes for <b><%= program.title %></b></li>
-  <ul>
+  <li class="outcomesList">Program outcomes for <b><%= program.title %></b></li>
+  <ul class="outcomesList">
     <% if program.program_outcomes.length == 0 %>
-      <li><i>No program outcomes defined.</i></li>
+      <li class="outcomesList"><i>No program outcomes defined.</i></li>
     <% else %>
       <% count = 0
          for prog_outcome in program.program_outcomes
 	       count = count.next %>
-        <li><%= check_box_tag "program_outcome_#{prog_outcome.id}", prog_outcome.id, @course_template_outcome.mapped_to_program_outcome?(prog_outcome.id) %>
+        <li class="outcomesList">
+		    N: <%= radio_button_tag("program_outcome_#{prog_outcome.id}", 'N', !@course_template_outcome.mapped_to_program_outcome?(prog_outcome.id) ) %>
+			S: <%= radio_button_tag("program_outcome_#{prog_outcome.id}", 'S', @course_template_outcome.get_depth_level(prog_outcome.id).eql?('some') ) %>
+			M: <%= radio_button_tag("program_outcome_#{prog_outcome.id}", 'M', @course_template_outcome.get_depth_level(prog_outcome.id).eql?('moderate') ) %>
+			E: <%= radio_button_tag("program_outcome_#{prog_outcome.id}", 'E', @course_template_outcome.get_depth_level(prog_outcome.id).eql?('extensive') ) %>
+
             <%= count %>) <%= prog_outcome.outcome %></li>
       <% end %>
     <% end %>

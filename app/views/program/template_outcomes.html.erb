@@ -74,7 +74,9 @@
 			        <% count = count.next %>
 			        <% if outcome.mapped_to_program_outcome?(prog_outcome.id) 
 				        added = true %>
-			            <li><%= count %>) <%= prog_outcome.outcome %></li>
+			            <li><%= count %>) <%= prog_outcome.outcome %>
+				            (<i>depth: <%= outcome.get_depth_level(prog_outcome.id) %></i>)
+				        </li>
 			        <% end %>
 			      <% end %>
 			      <% unless added %>

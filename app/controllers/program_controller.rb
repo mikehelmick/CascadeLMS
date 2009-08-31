@@ -242,6 +242,7 @@ class ProgramController < ApplicationController
     return unless template_in_program( @course_template, @program )
     
     @course_template_outcome = CourseTemplateOutcome.new    
+    render :layout => 'noright'
   end
   
   def create_course_template_outcome
@@ -265,9 +266,7 @@ class ProgramController < ApplicationController
     
     CourseTemplateOutcome.transaction do 
       if @course_template_outcome.save
-        program_outcomes.each do |program_outcome|
-           @course_template_outcome.program_outcomes << program_outcome unless params["program_outcome_#{program_outcome.id}"].nil? 
-        end
+        read_program_outcome_mappings_from_params( @course_template_outcome, program_outcomes, params )
         @course_template_outcome.save
 
         set_highlight( "course_template_outcome_#{@course_template_outcome.id}" )
@@ -307,11 +306,10 @@ class ProgramController < ApplicationController
     program_outcomes = load_program_outcomes_for_template( @course_template )
     
     CourseTemplateOutcome.transaction do
-      @course_template_outcome.program_outcomes.clear
+      @course_template_outcome.clear_program_outcome_mappings
+     read_program_outcome_mappings_from_params( @course_template_outcome, program_outcomes, params )
       @course_template_outcome.save
-      program_outcomes.each do |program_outcome|
-         @course_template_outcome.program_outcomes << program_outcome unless params["program_outcome_#{program_outcome.id}"].nil? 
-      end
+     
       
       # if hierarchy is changing - we have to recalculate both the old parent's child ordering
       # and the new parent's child ordering
@@ -515,6 +513,21 @@ private
   def set_tab
     @title = "Program Management - Accreditation Tracking"
     @tab = 'programs'
+  end
+  
+  def read_program_outcome_mappings_from_params( course_template_outcome, program_outcomes, params )
+    program_outcomes.each do |program_outcome|
+      mapping_level = params["program_outcome_#{program_outcome.id}"]
+      unless mapping_level.eql?('N')
+        copo = CourseTemplateOutcomesProgramOutcome.new
+        copo.course_template_outcome = course_template_outcome
+        copo.program_outcome = program_outcome
+        copo.level_some = mapping_level.eql?('S')
+        copo.level_moderate = mapping_level.eql?('M')
+        copo.level_extensive = mapping_level.eql?('E')
+        course_template_outcome.course_template_outcomes_program_outcomes << copo
+      end 
+    end
   end
   
   def load_template( template_id, redirect = true )

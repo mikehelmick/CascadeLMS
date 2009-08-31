@@ -36,20 +36,25 @@
    <%= select_tag 'parent', options %></b> </p>
 </div>
 
-<p class="blockintro">Map to program outcome:</p>
+<p class="blockintro">Map to program outcome by depth of coverage level <i>none</i> (N), <i>some</i> (S), <i>moderate</i> (M), or <i>extensive</i> (E):
 <div class="block">
 
-<ul>
+<ul class="outcomesList">
 <% for program in @course.programs %>
-  <li>Program outcomes for <b><%= program.title %></b></li>
-  <ul>
+  <li class="outcomesList">Program outcomes for <b><%= program.title %></b></li>
+  <ul class="outcomesList">
     <% if program.program_outcomes.length == 0 %>
-      <li><i>No program outcomes defined.</i></li>
+      <li class="outcomesList"><i>No program outcomes defined.</i></li>
     <% else %>
       <% count = 0
          for prog_outcome in program.program_outcomes
 	       count = count.next %>
-        <li><%= check_box_tag "program_outcome_#{prog_outcome.id}", prog_outcome.id, @course_outcome.mapped_to_program_outcome?(prog_outcome.id) %>
+        <li class="outcomesList">
+            N: <%= radio_button_tag("program_outcome_#{prog_outcome.id}", 'N', !@course_outcome.mapped_to_program_outcome?(prog_outcome.id) ) %>
+			S: <%= radio_button_tag("program_outcome_#{prog_outcome.id}", 'S', @course_outcome.get_depth_level(prog_outcome.id).eql?('some') ) %>
+			M: <%= radio_button_tag("program_outcome_#{prog_outcome.id}", 'M', @course_outcome.get_depth_level(prog_outcome.id).eql?('moderate') ) %>
+			E: <%= radio_button_tag("program_outcome_#{prog_outcome.id}", 'E', @course_outcome.get_depth_level(prog_outcome.id).eql?('extensive') ) %>
+
             <%= count %>) <%= prog_outcome.outcome %></li>
       <% end %>
     <% end %>
