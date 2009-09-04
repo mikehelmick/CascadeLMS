@@ -28,11 +28,11 @@
 
   <% unless @current_turnin.nil? %>
     <% if @assignment.auto_grade && !@current_turnin.sealed %>
-      <div class="errorExplanation"><%= image_tag 'flag_red.png' %> Your most recent turn-in set has not been finalized.<br/>
-	  <b>You must finalize the turn-in set once you are done uploading all of your files for the assignment.</b>
+      <div class="errorExplanation"><%= image_tag 'flag_red.png' %> Your most recent turn-in set has not been submitted yet.<br/>
+	  <b>You must submit the turn-in set once you are done uploading all of your files for the assignment.</b>
 	  </div>
 	<% elsif @assignment.auto_grade %>
-	  <div class="GoodMessage"><p>This turn-in set has been finalized, no further action is required to have these files graded.</p>
+	  <div class="GoodMessage"><p>This turn-in set has been submitted for grading, no further action is required to have these files graded.</p>
 		
 		<% if @assignment.released %>
 		  <p><b><%= link_to 'View Instructor Feedback', :action => 'feedback', :course => @course, :assignment => @assignment %></b></p>
@@ -54,7 +54,7 @@
 <br />
 
 <% if @current_turnin.sealed %>
-<p><b>This turn-in set is finalized, no changes can be made.</b></p>
+<p><b>This turn-in set has been submitted for grading, no changes can be made.</b></p>
 
 <% elsif @assignment.closed? && (@extension.nil? || @extension.past?)%>
 
@@ -95,19 +95,19 @@
 <% if @assignment.auto_grade && @assignment.enable_upload && !@current_turnin.sealed && (!@assignment.closed? || (!@extension.nil? && !@extension.past?)) %>
 <div id="form_area">
   <% form_tag( { :action => "finalize" }, :onsubmit => "new Element.toggle('finalize_button');new Element.toggle( 'finalize_spinner');" ) do %>
-  <p class="blockintro">Finalize</p>
+  <p class="blockintro">Submit files for grading:</p>
   <div class="block">
 	  <div id="finalize_button">
 	     <% if @has_files %>
-	       <%= submit_tag "Finalize This Turn-In Set", :confirm => "Are you sure you want to submit these files for grading?" %>
+	       <%= submit_tag "Submit For Grading", :confirm => "Are you sure you want to submit these files for grading?" %>
 	     <% else %>
-	       <div class="errorExplanation">This turnin set doesn't contain any files, so it cannot be finalized yet.</div>
+	       <div class="errorExplanation">This turnin set doesn't contain any files, so it cannot be submitted for grading yet.</div>
 	     <% end %>
 	 
 		<% if @assignment.auto_grade %>
 		 <% unless @assignment.auto_grade_setting.nil? %>
 		  <% if @assignment.auto_grade_setting.student_style || @assignment.auto_grade_setting.student_io_check || @assignment.auto_grade_setting.student_autograde %>
-	        <p>The finalize process will submit this turn-in set to the AutoGrader.   If you do not wish to submit this turn-in set for grading, you can <%= link_to "archive this turn-in set and create an empty one", :action => 'create_set', :course => @course, :assignment => @assignment %>.  Archiving does not count against your submission limit.</p>
+	        <p>This will submit this turn-in set to the AutoGrader.   If you do not wish to submit this turn-in set for grading, you can <%= link_to "archive this turn-in set and create an empty one", :action => 'create_set', :course => @course, :assignment => @assignment %>.  Archiving does not count against your submission limit.</p>
 	
 	<%= render :partial => 'agwarning' %>
 	
@@ -133,7 +133,7 @@
     <th>Previous Set (Last Updated Time)</th>   
     <% if @team %><th>Creator</th><% end %> 
     <th>Archived</th>
-    <th>Finalized</th>
+    <th>Submitted</th>
     <th>View</th>
   </tr>
 

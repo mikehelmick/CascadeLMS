@@ -3,7 +3,7 @@
   <% if @assignment.closed? && (@extension.nil? || @extension.past?)%>
     <b>This assignment is closed - the files below are the ones submitted to your instructor.</b>
   <% elsif ! @current_turnin.sealed %>
-    <b>This turn-in is open and can accept more files.</b>  <% if  @assignment.auto_grade %>Please remember to finalize this turn-in set.<% end %>
+    <b>This turn-in is open and can accept more files.</b>  <% if  @assignment.auto_grade %>Please remember to submit this turn-in set for grading.<% end %>
     <%if @assignment.closed? && !@extension.past? %>
        <br/><b><i>This assignment is past due, but you have been granted an extension until: <%= @extension.extension_date.to_formatted_s(:friendly_date) %>.</i></b>
     <% end %>
