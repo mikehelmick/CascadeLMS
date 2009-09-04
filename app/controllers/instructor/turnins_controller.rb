@@ -44,10 +44,10 @@ class Instructor::TurninsController < Instructor::InstructorBase
           if team.nil?
             @turnin_sets[s.id] = nil
           else
-            @turnin_sets[s.id] = UserTurnin.count( :conditions => ["project_team_id=? and assignment_id=?", team.id, @assignment.id ] ) > 0
+            @turnin_sets[s.id] = UserTurnin.find(:first,  :conditions => ["project_team_id=? and assignment_id=?", team.id, @assignment.id ], :order => "id desc" ) 
           end
         else 
-          @turnin_sets[s.id] = UserTurnin.count( :conditions => ["user_id=? and assignment_id=?", s.id, @assignment.id ] ) > 0
+          @turnin_sets[s.id] = UserTurnin.find(:first,  :conditions => ["user_id=? and assignment_id=?", s.id, @assignment.id ], :order => "id desc" ) 
         end
         @any_turnins = @any_turnins || @turnin_sets[s.id]
       end

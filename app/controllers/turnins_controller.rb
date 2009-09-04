@@ -196,6 +196,7 @@ class TurninsController < ApplicationController
     
     @current_turnin.finalized = true
     @current_turnin.sealed = true
+    @current_turnin.force_update = ! @current_turnin.force_update
     if @current_turnin.save
       flash[:notice] = "Your most recent turn-in set has been finalied and submitted to your instructor."
       
@@ -400,6 +401,7 @@ class TurninsController < ApplicationController
     UserTurnin.transaction do
       @current_turnin.make_sub_dir( @app['external_dir'], fname, @team )
       @current_turnin.user_turnin_files << utf
+      @current_turnin.force_update = ! @current_turnin.force_update
       @current_turnin.save
     
       # move the item up
@@ -535,6 +537,7 @@ class TurninsController < ApplicationController
     UserTurnin.transaction do
       if @utf.create_file( file_field, dir_name, @app['banned_java'] )
         @current_turnin.user_turnin_files << @utf
+        @current_turnin.force_update = ! @current_turnin.force_update
         @current_turnin.save
       
         # move the item up

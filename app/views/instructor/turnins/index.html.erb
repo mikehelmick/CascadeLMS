@@ -61,7 +61,7 @@
     <% end %>
 
     <% if (@assignment.use_subversion && @assignment.programming) || @assignment.enable_upload %>
-      <th valign="bottom">Files<br/>Submitted</th>
+      <th valign="bottom">Files Submitted @</th>
     <% end %>
     <% if @assignment.enable_journal %>
       <th valign="bottom">Journals</th>
@@ -130,8 +130,10 @@
 	  <% end %>
 
       <% if (@assignment.use_subversion && @assignment.programming) || @assignment.enable_upload %>
-        <td><% if @turnin_sets[student.id] %>Yes
-	        <% else %>No<% end %>
+        <td nowrap="nowrap"><% if @turnin_sets[student.id].nil? %>No
+	        <% else %>
+	          <%= @turnin_sets[student.id].updated_at.to_formatted_s(:long) %>
+	        <% end %>
         </td>
       <% end %>
       <% if @assignment.enable_journal %>
