@@ -529,9 +529,44 @@ class ProgramController < ApplicationController
   end
   
   def view_course_to_program_outcomes
+    return unless load_program( params[:id] )
+    return unless allowed_to_manage_program( @program, @user )
+    return unless load_course( params[:course] )
+    return unless course_in_program?( @course, @program )
+    
+    @numbers = load_outcome_numbers( @course )
+    
+    @title = "'#{@course.title}' Outcomes to Program Outcomes Report"    
+    respond_to do |format|
+        format.html { render :layout => 'noright' }
+        format.csv  { 
+          response.headers['Content-Type'] = 'text/csv; charset=iso-8859-1; header=present'
+          response.headers['Content-Disposition'] = "attachment; filename=#{@course.short_description}_course_outcomes_report.csv"
+          render :layout => 'noright' 
+        }
+        
+    end
   end
   
   def view_course_rubrics_report
+    return unless load_program( params[:id] )
+    return unless allowed_to_manage_program( @program, @user )
+    return unless load_course( params[:course] )
+    return unless course_in_program?( @course, @program )
+    
+    RubricLevel.for_course( @course )
+     
+    build_course_rubrics_report()
+    
+    respond_to do |format|
+        format.html { render :layout => 'noright' }
+        format.csv  { 
+          response.headers['Content-Type'] = 'text/csv; charset=iso-8859-1; header=present'
+          response.headers['Content-Disposition'] = "attachment; filename=#{@course.short_description}_course_outcomes_rubrics_report.csv"
+          render :layout => 'noright' 
+        }
+        
+    end 
   end
   
 private

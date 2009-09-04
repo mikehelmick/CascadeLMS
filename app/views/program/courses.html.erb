@@ -27,8 +27,10 @@
        odd = "odd"
        odd = "even" if count.even? %>
     <tr class="<%=odd%> hover" id="course_<%=course.id%>">
-      <td><%=h course.short_description %>) <%=h course.title %></td>
-      <td nowrap="nowrap">
+      <td valign="top" align="left"><%=h course.short_description %>) <%=h course.title %> -
+	    <i>Instructor(s): <%=h course.instructors.join( ", " ) %></i>
+	  </td>
+      <td valign="top" align="left" nowrap="nowrap">
 	    <%= link_to 'View Outcomes', :action => 'view_course_outcomes', :id => @program, :course => course %>
 	    <%= link_to "#{image_tag 'report.png', :align => 'absmiddle'}", :action => 'view_course_outcomes', :id => @program, :course => course %> | 
 	    <%= link_to 'Course / Program Outcomes Report', :action => 'view_course_to_program_outcomes', :id => @program, :course => course %> 

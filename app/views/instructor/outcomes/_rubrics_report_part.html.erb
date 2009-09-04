@@ -1,0 +1,55 @@
+<div class="SectionHeader"><div class="Full">
+<h2>Course Outcomes to Rubrics Report for '<%=h @course.title%>' </h2>
+</div></div>
+<br/>
+
+<p>This table shows each course outcome, the rubrics that map to that outcome, and the number of students achieving each mark on that rubric, and aggregate numbers for each outcome.</p>
+
+<% for outcome in @course.ordered_outcomes %>
+
+<div class="SectionHeader"><div class="Full">
+<h3><%= @outcome_position[outcome.id] %> <%= outcome.outcome %></h3>
+</div></div>
+<br/>
+
+<% if @outcome_to_rubrics[outcome.id].length == 0 %>
+  <p><i>No rubrics map to this outcome.</i></p>
+<% else %>
+
+<table class="fancy">
+  <tr class="header">
+	<th align="left">Assignment</th>	
+	<th align="left">Rubrics</th>
+        <th align="center" colspan="2" valign="bottom"><%= @course.rubric_level.l1_name %> / <%= @course.rubric_level.l2_name %></th>
+        <th align="center" colspan="2" valign="bottom"><%= @course.rubric_level.l3_name %></th>
+        <th align="center" colspan="2" valign="bottom"><%= @course.rubric_level.l4_name %></th>
+  </tr>
+
+  <% for rubric in @outcome_to_rubrics[outcome.id] %>
+    <tr>
+	 <td><%= rubric.assignment.title %></td>
+     <td><%= rubric.primary_trait %></td>
+     <td align="right" width="5%" nowrap="nowrap"><%= @rubrics_sums[rubric.id][0] %></td>
+     <td align="right" width="5%" nowrap="nowrap"><%= sprintf("%.2f",@rubrics_avgs[rubric.id][0]) %>%</td>
+     <td align="right" width="5%" nowrap="nowrap"><%= @rubrics_sums[rubric.id][1] %></td>
+     <td align="right" width="5%" nowrap="nowrap"><%= sprintf("%.2f",@rubrics_avgs[rubric.id][1]) %>%</td>
+     <td align="right" width="5%" nowrap="nowrap"><%= @rubrics_sums[rubric.id][2] %></td>
+     <td align="right" width="5%" nowrap="nowrap"><%= sprintf("%.2f",@rubrics_avgs[rubric.id][2]) %>%</td> 
+    </tr>   
+  <% end %>
+
+  <tr>
+	<td align="right" class="summaryCell" colspan="2"><b>Total:</b></td>
+	<td align="right" class="summaryCell"><%= @outcome_sums[outcome.id][0] %></td>
+	<td align="right" class="summaryCell"><%= sprintf("%.2f",@outcome_avgs[outcome.id][0]) %>%</td>
+	<td align="right" class="summaryCell"><%= @outcome_sums[outcome.id][1] %></td>
+	<td align="right" class="summaryCell"><%= sprintf("%.2f",@outcome_avgs[outcome.id][1]) %>%</td>
+	<td align="right" class="summaryCell"><%= @outcome_sums[outcome.id][2] %></td>
+	<td align="right" class="summaryCell"><%= sprintf("%.2f",@outcome_avgs[outcome.id][2]) %>%</td>	
+  </tr>
+
+ 
+</table>
+<% end %>
+
+<% end %>

@@ -1,0 +1,10 @@
+<p><%= link_to 'Back', :controller => '/program', :action => 'courses', :id => @program, :course => nil %></p>
+
+<div class="SectionHeader"><div class="Full">
+<h2>Course Outcomes to Program Outcomes report '<%=h @course.title%>' </h2>
+</div></div>
+
+<br/>
+<p><%= link_to "#{image_tag 'page_white_excel.png', :align => 'absmiddle'} Export this report as a spreadsheet", :controller => '/program', :course => @course, :action => 'view_course_to_program_outcomes', :id => @program, :format => 'csv' %></p>
+
+<%= render :partial => 'instructor/outcomes/course_program_report_part' %>
