@@ -30,6 +30,9 @@ class Document < ActiveRecord::Base
   def validate
     errors.add_to_base("No file was given") if self.filename.nil? || self.filename.size == 0
     
+    
+    errors.add_to_base("Filenames cannot contain more than one period ('.') character") unless self.filename.index('.') == self.filename.rindex('.')
+    
     ## don't let a folder become a podcast if it has subfolders
     if self.podcast_folder
       subs = Document.find(:all, :conditions => ["document_parent = ?", self.id] ) rescue subs = Array.new

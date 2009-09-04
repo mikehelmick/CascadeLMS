@@ -95,46 +95,53 @@ class Instructor::CourseAssignmentsController < Instructor::InstructorBase
     end
     
     # do the save
-    if !do_exit && @assignment.save
-       unless @asgm_document.nil?
-         @asgm_document.create_file( params[:file], @app['external_dir'] )
-       end
-       
-       ## style defaults
-       if @assignment.auto_grade
-         Assignment.transaction do 
-           @assignment.ensure_style_defaults 
-         end
-       end
-       
-       # create grade item
-       if !@points.nil? && @points.to_i > 0
-         gi = GradeItem.new
-         gi.name = @assignment.title
-         gi.date = @assignment.due_date.to_date
-         gi.points = @points.to_f
-         gi.display_type = "s"
-         gi.visible = false
-         gi.grade_category_id = @assignment.grade_category_id
-         gi.assignment_id = @assignment.id
-         gi.course_id = @course.id
-         
-         gi.save
-       end
-       
-       
-       flash[:notice] = 'Assignment was successfully created, you may now upload additional documents and specify auto-grading parameters.'
-       
-       if @assignment.auto_grade
-         redirect_to :action => 'autograde', :id => @assignment
-       else
-         redirect_to :action => 'index'
-       end
-    else
-       @journal_field = JournalField.new if @journal_field.nil?
-       @categories = GradeCategory.for_course( @course )
-      
-       render :action => 'new'
+    begin
+      Assignment.transaction do
+        if !do_exit && @assignment.save
+           unless @asgm_document.nil?
+             if ! @asgm_document.create_file( params[:file], @app['external_dir'] )
+               flash[:badnotice] = "Filenames cannot contain more than one period ('.') character"
+               raise "filename" 
+             end
+           end
+
+           ## style defaults
+           if @assignment.auto_grade
+             Assignment.transaction do 
+               @assignment.ensure_style_defaults 
+             end
+           end
+
+           # create grade item
+           if !@points.nil? && @points.to_i > 0
+             gi = GradeItem.new
+             gi.name = @assignment.title
+             gi.date = @assignment.due_date.to_date
+             gi.points = @points.to_f
+             gi.display_type = "s"
+             gi.visible = false
+             gi.grade_category_id = @assignment.grade_category_id
+             gi.assignment_id = @assignment.id
+             gi.course_id = @course.id
+
+             gi.save
+           end
+
+           flash[:notice] = 'Assignment was successfully created, you may now upload additional documents and specify auto-grading parameters.'
+
+           if @assignment.auto_grade
+             redirect_to :action => 'autograde', :id => @assignment
+           else
+             redirect_to :action => 'index'
+           end
+        else
+           @journal_field = JournalField.new if @journal_field.nil?
+           @categories = GradeCategory.for_course( @course )
+           render :action => 'new'
+        end
+      end
+    rescue Exception => e
+      render :action => 'new'
     end
     # if @document.save
     #  @document.create_file( params[:file], @app['external_dir'] )
@@ -212,30 +219,34 @@ class Instructor::CourseAssignmentsController < Instructor::InstructorBase
     return unless assignment_in_course( @course, @assignment )
     
     begin
-      @assignment.grade_category_id = params[:grade_category_id].to_i
-      raise 'Assignment update failed.' unless @assignment.update_attributes(params[:assignment]) 
-      if @assignment.enable_journal
-        if @assignment.journal_field.nil?
-          @journal_field = JournalField.new( params[:journal_field] )
-          @assignment.journal_field = @journal_field
-          @assignment.save
+      Assignment.transaction do
+        @assignment.grade_category_id = params[:grade_category_id].to_i
+        raise 'Assignment update failed.' unless @assignment.update_attributes(params[:assignment]) 
+        if @assignment.enable_journal
+          if @assignment.journal_field.nil?
+            @journal_field = JournalField.new( params[:journal_field] )
+            @assignment.journal_field = @journal_field
+            @assignment.save
+          else
+            @assignment.journal_field.update_attributes( params[:journal_field] )
+          end
         else
-          @assignment.journal_field.update_attributes( params[:journal_field] )
+          @assignment.journal_field.destroy unless @assignment.journal_field.nil?
         end
-      else
-        @assignment.journal_field.destroy unless @assignment.journal_field.nil?
+
+        ## see if there is a file to upload
+        do_exit = process_file( params[:file], true )
+        unless @asgm_document.nil?
+          if ! @asgm_document.create_file( params[:file], @app['external_dir'] )
+            raise "Filenames cannot contain more than one period ('.') character."
+          end
+          @assignment.file_uploads = true
+          @assignment.save
+        end
+
+        flash[:notice] = 'Assignment has been updated.'
+        redirect_to :action => 'edit', :course => @course, :id => @assignment
       end
-      
-      ## see if there is a file to upload
-      do_exit = process_file( params[:file], true )
-      unless @asgm_document.nil?
-         @asgm_document.create_file( params[:file], @app['external_dir'] )
-         @assignment.file_uploads = true
-         @assignment.save
-      end
-      
-      flash[:notice] = 'Assignment has been updated.'
-      redirect_to :action => 'edit', :course => @course, :id => @assignment
     rescue RuntimeError => re
       flash[:badnotice] = re.message
       redirect_to :action => 'edit', :course => @course, :id => @assignment

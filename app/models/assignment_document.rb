@@ -4,6 +4,7 @@ class AssignmentDocument < ActiveRecord::Base
   belongs_to :assignment
   acts_as_list :scope => :assignment
   
+  
   def create_file( file_field, path )
     path = "#{path}/" unless path[-1] == '/'
     
@@ -13,7 +14,12 @@ class AssignmentDocument < ActiveRecord::Base
     file_name = "#{full_path}/assignment_doc_#{self.id}_#{self.filename}"
     File.open( file_name, "w") { |f| f.write(file_field.read) }
     
-    self.save
+    if self.filename.index('.') != self.filename.rindex('.')
+      return false
+    else
+      self.save
+      return true
+    end
   end
   
   def without_extension
