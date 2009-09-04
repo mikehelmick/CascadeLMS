@@ -40,8 +40,16 @@
 <% else %>
   <div id="form_area">
   <% form_tag( :controller => '/instructor/turnins', :action => 'submit_grade', :id => @student, :course => @course, :assignment => @assignment ) do %>
-    <%= error_messages_for 'grade_entry' %>    
+	<div class="submit">
+	  <div id="button">
+	     <%= submit_tag "Save Grade" %>
+	     <%= submit_tag "Save Grade and Go to Next Student" %>
+	     <%= submit_tag "Skip and Go to Next Student" %>
+	  </div>
+	</div>
 
+    <%= error_messages_for 'grade_entry' %>    
+    
 	<p class="blockintro">You can enter comments here, which will be available to the student. (A score for any multiple choice questions has already been calculated.)</p>
 	<div class="block">
 	  <p><label for="document_title">Points:</label>
@@ -59,7 +67,8 @@
   	<div class="submit">
 	  <div id="button">
 	     <%= submit_tag "Save Grade" %>
-	     <%= submit_tag "Save Grade and Go to Next Student"%>
+	     <%= submit_tag "Save Grade and Go to Next Student" %>
+	     <%= submit_tag "Skip and Go to Next Student" %>
 	  </div>
 	</div>
   <% end %>

@@ -476,89 +476,91 @@ class Instructor::TurninsController < Instructor::InstructorBase
       @team = @course.team_for_user( @student.id )
     end
     
-    # get grade
-    # load grades
-    @grade_item = GradeItem.find(:first, :conditions => ["assignment_id = ?", @assignment.id] )
-    if @grade_item
-      
-      entries = Hash.new
-      rubric_entries = Hash.new
-      
-      if @team.nil?
-        entries[@student.id] = GradeEntry.find(:first, :conditions => ["grade_item_id=? and user_id=?", @grade_item.id, @student.id ] )
-        rubric_entries[@student.id] = Hash.new
-        
-        user_rubric_entries = RubricEntry.find(:all, :conditions => ["assignment_id = ? and user_id=?", @assignment.id, @student.id])
-        user_rubric_entries.each { |x| rubric_entries[@student.id][x.rubric_id] = x }
+    if params[:commit].index("Skip and").nil?
+      # get grade
+      # load grades
+      @grade_item = GradeItem.find(:first, :conditions => ["assignment_id = ?", @assignment.id] )
+      if @grade_item
+
+        entries = Hash.new
+        rubric_entries = Hash.new
+
+        if @team.nil?
+          entries[@student.id] = GradeEntry.find(:first, :conditions => ["grade_item_id=? and user_id=?", @grade_item.id, @student.id ] )
+          rubric_entries[@student.id] = Hash.new
+
+          user_rubric_entries = RubricEntry.find(:all, :conditions => ["assignment_id = ? and user_id=?", @assignment.id, @student.id])
+          user_rubric_entries.each { |x| rubric_entries[@student.id][x.rubric_id] = x }
+        else
+          # load for all team members
+          @team.team_members.each do |tm|
+            entries[tm.user.id] = GradeEntry.find(:first, :conditions => ["grade_item_id=? and user_id=?", @grade_item.id, tm.user.id ] )
+            rubric_entries[tm.user.id] = Hash.new
+
+            user_rubric_entries = RubricEntry.find(:all, :conditions => ["assignment_id = ? and user_id=?", @assignment.id, tm.user.id])
+            user_rubric_entries.each { |x| rubric_entries[tm.user.id][x.rubric_id] = x }
+          end
+        end
+
+        # for each entry save
+        @success = true
+        @deleted = false
+        GradeEntry.transaction do
+          # process all the grade entries
+          entries.keys.each do |key|
+            grade_entry = entries[key]
+
+            if grade_entry
+              grade_entry.update_attributes( params[:grade_entry] )
+            else
+              grade_entry = GradeEntry.new( params[:grade_entry] )
+              grade_entry.course = @course
+              grade_entry.user_id = key.to_i
+              grade_entry.grade_item = @grade_item
+            end
+
+            grade_entry.points = 0 if grade_entry.points.to_s.eql?('')
+
+            if grade_entry.points < 0
+              grade_entry.destroy
+              grade_entry = nil
+              @deleted= true
+            end
+
+            # since the key here is our user ID we can also update the rubrics in the same way
+            # for each rubric for this user (key)
+            @assignment.rubrics.each do |rubric|
+               rubric_entry = rubric_entries[key][rubric.id]
+               if rubric_entry.nil?
+                 rubric_entry = RubricEntry.new
+                 rubric_entry.assignment = @assignment
+                 rubric_entry.user_id = key
+                 rubric_entry.rubric = rubric
+               end
+
+               # update the full/partial/no credit selector
+               rubric_entry.above_credit   = params["rubric_#{rubric.id}"].eql?("above")
+               rubric_entry.full_credit    = params["rubric_#{rubric.id}"].eql?("full")
+               rubric_entry.partial_credit = params["rubric_#{rubric.id}"].eql?("partial")
+               rubric_entry.no_credit      = params["rubric_#{rubric.id}"].eql?("no")
+               rubric_entry.comments       = params["rubric_#{rubric.id}_comments"]
+               @success = rubric_entry.save && @success
+            end
+
+            @success = grade_entry.save && @success unless @deleted
+          end
+        end
+      else 
+        flash[:badnotice] = "Application error - there is not grade item for this assignment.  Set on up in the GradeBook."
+      end
+
+      if @deleted
+        flash[:notice] = "Grade for '#{@student.display_name}' has been deleted for this assignment (Since no point value was entered)."
+      elsif @success
+        flash[:notice] = "Grade for '#{@student.display_name}' has been updated to '#{params[:grade_entry]['points']}' for this assignment."
       else
-        # load for all team members
-        @team.team_members.each do |tm|
-          entries[tm.user.id] = GradeEntry.find(:first, :conditions => ["grade_item_id=? and user_id=?", @grade_item.id, tm.user.id ] )
-          rubric_entries[tm.user.id] = Hash.new
-          
-          user_rubric_entries = RubricEntry.find(:all, :conditions => ["assignment_id = ? and user_id=?", @assignment.id, tm.user.id])
-          user_rubric_entries.each { |x| rubric_entries[tm.user.id][x.rubric_id] = x }
-        end
+        flash[:badnotice] = "Error updating student grade - results not saved."
       end
-      
-      # for each entry save
-      @success = true
-      @deleted = false
-      GradeEntry.transaction do
-        # process all the grade entries
-        entries.keys.each do |key|
-          grade_entry = entries[key]
-          
-          if grade_entry
-            grade_entry.update_attributes( params[:grade_entry] )
-          else
-            grade_entry = GradeEntry.new( params[:grade_entry] )
-            grade_entry.course = @course
-            grade_entry.user_id = key.to_i
-            grade_entry.grade_item = @grade_item
-          end
-
-          grade_entry.points = 0 if grade_entry.points.to_s.eql?('')
-
-          if grade_entry.points < 0
-            grade_entry.destroy
-            grade_entry = nil
-            @deleted= true
-          end
-          
-          # since the key here is our user ID we can also update the rubrics in the same way
-          # for each rubric for this user (key)
-          @assignment.rubrics.each do |rubric|
-             rubric_entry = rubric_entries[key][rubric.id]
-             if rubric_entry.nil?
-               rubric_entry = RubricEntry.new
-               rubric_entry.assignment = @assignment
-               rubric_entry.user_id = key
-               rubric_entry.rubric = rubric
-             end
-             
-             # update the full/partial/no credit selector
-             rubric_entry.above_credit   = params["rubric_#{rubric.id}"].eql?("above")
-             rubric_entry.full_credit    = params["rubric_#{rubric.id}"].eql?("full")
-             rubric_entry.partial_credit = params["rubric_#{rubric.id}"].eql?("partial")
-             rubric_entry.no_credit      = params["rubric_#{rubric.id}"].eql?("no")
-             rubric_entry.comments       = params["rubric_#{rubric.id}_comments"]
-             @success = rubric_entry.save && @success
-          end
-          
-          @success = grade_entry.save && @success unless @deleted
-        end
-      end
-    else 
-      flash[:badnotice] = "Application error - there is not grade item for this assignment.  Set on up in the GradeBook."
-    end
-    
-    if @deleted
-      flash[:notice] = "Grade for '#{@student.display_name}' has been deleted for this assignment (Since no point value was entered)."
-    elsif @success
-      flash[:notice] = "Grade for '#{@student.display_name}' has been updated to '#{params[:grade_entry]['points']}' for this assignment."
-    else
-      flash[:badnotice] = "Error updating student grade - results not saved."
     end
     
     
