@@ -31,21 +31,20 @@
   <td class="post" width="85%" valign="top" align="left">
 	<% if controls.nil? || controls == true %>
 	<div class="forum_control">
+ 	    <% if post.user.id == @user.id %>
+		  <% nowT = Time.now
+		     since_post = (nowT - post.created_at).to_i
+		   %>
+		  
+		  <%= link_to "Edit Post #{image_tag 'comment_edit.png'}", :action => 'edit', :parent => parent.id, :id => post.id %>|		  
+		<% end %>
+		
 		<% if @user.instructor_in_course?( @course.id ) %>
 		    Instructor: <%= link_to "Edit Post", :action => 'edit', :parent => parent.id, :id => post.id %> |
 		<% elsif @user.assistant_in_course_with_privilege?( @course.id, 'ta_course_blog_edit') %>
 		    TA: <%= link_to "Edit Post", :action => 'edit', :parent => parent.id, :id => post.id %> |
 	    <% end %>
 		
-		<% if post.user.id == @user.id %>
-		  <% nowT = Time.now
-		     since_post = (nowT - post.created_at).to_i
-		   %>
-		  
-		  <% if since_post < 900 %>
-		    <%= link_to "Edit Post #{image_tag 'comment_edit.png'}", :action => 'edit', :parent => parent.id, :id => post.id %> (<i>for the next <%= distance_of_time_in_words( nowT, post.created_at + 900 ) %></i>)|
-		  <% end %>
-		<% end %>
 		<% if @topic.allow_posts %>
 		  <%= link_to "Reply #{image_tag 'comment_add.png'}", :action => 'reply', :parent => parent.id, :id => post.id %>
 		<% end %>

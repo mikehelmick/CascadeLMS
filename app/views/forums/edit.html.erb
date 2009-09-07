@@ -2,13 +2,11 @@
 <h2>Course: <%= @course.title %></h2>
 <h3>Forum: <%= @topic.topic %></h3>
 
-<p><b>Editing your post</b> | <%= link_to 'Cancel', :action => 'read', :id => @topic.id %></p>
+<p><b>Editing your post</b> | <%= link_to 'Cancel', :action => 'read', :id => @parent %></p>
 
 <% nowT = Time.now
    since_post = (nowT - @post.created_at).to_i
  %>
-
-<p><b>You have <%= distance_of_time_in_words( nowT, @post.created_at + (1200) ) %> to complete this edit.</b></p>
 
 <div id="form_area">
 <% form_tag( :action => 'submit_post', :topic => @topic.id, :id => @post.id ) do %>
