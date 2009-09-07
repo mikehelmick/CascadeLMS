@@ -77,7 +77,7 @@
 						  <% selected = "" 
 						     selected = "selected=\"selected\"" if !@course.nil? && @course.id == cu.course_id 
  						  %>						
-						  <option value="<%= url_for( :controller => 'overview', :course => cu.course, :id => nil, :action => nil, :only_path => false ) %>" <%= selected %>><%= cu.course.title[0..50] %></option>
+						  <option value="<%= url_for( :controller => '/overview', :course => cu.course, :id => nil, :action => nil, :only_path => false ) %>" <%= selected %>><%= cu.course.title[0..50] %></option>
 						<% end %>
 						<% if @user.program_manager? %>
 						  <% selected = "" 
