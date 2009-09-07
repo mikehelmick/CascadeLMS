@@ -11,7 +11,7 @@
 <table class="FadeTable" cellspacing="0">
   <tr class="header">
 	<th align="left" valign="top">
-	  <%= link_to "<b>#{course_user.course.title}</b> #{course_user.course.short_description} #{'(Archived)' unless course_user.course.open }", :controller => "/overview", :course => course_user.course %> 
+	  <%= link_to "<b>#{course_user.course.title}</b> #{course_user.course.short_description} #{'(Archived)' unless course_user.course.course_open }", :controller => "/overview", :course => course_user.course %> 
 	  <br/>
 	  <b>Instructor: </b>
 	  <% inst = course_user.course.instructors %>

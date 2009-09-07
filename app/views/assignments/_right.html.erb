@@ -1,10 +1,10 @@
-<%= render :partial => 'overview/right' %>
+<h2><%= @course.title %></h2>
 
 <h2>Current Time</h2>
 <p><b><%= Time.now.to_formatted_s(:friendly_date) %></b></p>
 
 <h2>Due Dates</h2>
-<div style="float:left;">
+
 <% 
 today = Date.today 
 code_block = Proc.new do |d|
@@ -33,4 +33,3 @@ code_block = Proc.new do |d|
 <%= calendar( :year => today.year, :month => today.month, :abbrev=>(0..0) ) { |d| code_block.call(d) } %>
 <% today = today.to_time.next_month %>
 <%= calendar( :year => today.year, :month => today.month, :abbrev=>(0..0) ) { |d| code_block.call(d) } %>
-</div>

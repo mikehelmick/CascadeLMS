@@ -20,8 +20,7 @@
     <th align="left" valign="bottom">Turn-ins</th>
     <th align="left" valign="bottom">Graded</th>
     <th align="left" valign="bottom">Category</th>
-    <th align="left" valign="bottom">Available</th>
-    <th align="left" valign="bottom">Due</th>
+    <th align="left" valign="bottom" colspan="2">Available & Due Date</th>
     <% if @user.instructor_in_course?(@course.id) || (@user.assistant_in_course?(@course.id) && @course.course_setting.ta_course_assignments) %>
       <th align="left" valign="bottom">Controls</th>
     <% end %>
@@ -34,7 +33,7 @@
 	   odd = "even" if count.even?
   	  %>
 	  <tr class="<%=odd%> hover" id="assignment_<%=assignment.id%>">
-	    <td align="right" nowrap="nowrap">
+	    <td valign="top" align="right" nowrap="nowrap">
 	      <% if @user.instructor_in_course?(@course.id) || (@user.assistant_in_course?(@course.id) && @course.course_setting.ta_course_assignments) %>
 	         <% if assignment.is_quiz? %>       
 	             <%= link_to "#{h count}", :controller => '/instructor/quiz', :action => 'questions', :id => assignment, :assignment => nil %>
@@ -45,7 +44,7 @@
 	        <%= h count %>
 	      <% end %>
 	    </td>
-	    <td nowrap="nowrap">
+	    <td valign="top" nowrap="nowrap">
 	      <% if @user.instructor_in_course?(@course.id) || (@user.assistant_in_course?(@course.id) && @course.course_setting.ta_course_assignments) %>
 	         <% if assignment.is_quiz? %>       
 	             <%= link_to "#{image_tag 'page_edit.png', :align => 'absmiddle'} #{h assignment.title}", :controller => '/instructor/quiz', :action => 'questions', :id => assignment, :assignment => nil %>
@@ -58,7 +57,7 @@
 	        <%= h assignment.title %>
 	      <% end %>
 	    </td>
-	    <td>
+	    <td valign="top">
 	      <% if assignment.is_quiz? %>
 	         &nbsp;
 	      <% else %>
@@ -78,7 +77,7 @@
 	      <% end %>
 	    </td>
 	    <% if @course.course_setting.enable_project_teams %>
-	     <td>
+	     <td valign="top">
 	       <% if assignment.team_filters.size == 0 %>
 	         <%= link_to "#{image_tag 'group_delete.png', :align => 'absmiddle'} Create", :controller => '/instructor/course_assignments', :action => 'team_filter', :id => assignment %>
 	       <% else %>
@@ -86,7 +85,7 @@
 	       <% end %>
 	     </td>
 	    <% end %>
-	    <td>
+	    <td valign="top">
 	       <%if assignment.auto_grade %>
 	           <% if @user.instructor_in_course?(@course.id) || (@user.assistant_in_course?(@course.id) && @course.course_setting.ta_course_assignments) %>
 	             <%= link_to "#{image_tag 'pencil.png', :align => 'absmiddle'} Edit", :action => 'autograde', :course => @course, :id => assignment.id %> 
@@ -95,7 +94,7 @@
 		       &nbsp;
 		   <% end %>
 	    </td>
-	    <td nowrap="nowrap">
+	    <td nowrap="nowrap" valign="top">
 	      <% if assignment.quiz.nil? %>
 	         <% if assignment.released && !@user.instructor_in_course?(@course.id) && (@user.assistant_in_course?(@course.id) && !@course.course_setting.ta_view_already_graded_assignments) %>
 	           <s>Turn-ins</s>         
@@ -121,7 +120,7 @@
 	      <% end %>
 	    </td>
 	
-		<td align="right" nowrap="nowrap">
+		<td align="right" nowrap="nowrap" valign="top">
 		  <% if assignment.grade_item.nil? && assignment.quiz && assignment.quiz.survey %>
 		    &nbsp;
 		  <% elsif assignment.grade_item.nil? %>
@@ -133,18 +132,19 @@
 	      <% end %>
 		</td>
 	
-	    <td nowrap="nowrap"><%=h assignment.grade_category.category %></td>
-	    <td nowrap="nowrap">
+	    <td nowrap="nowrap" valign="top"><%=h assignment.grade_category.category %></td>
+	    <td nowrap="nowrap" valign="top">
 	    <% if assignment.upcoming? %><%= image_tag 'clock_error.png' %>
 	    <% elsif assignment.current? %><%= image_tag 'clock.png' %>
 	    <% else %><%= image_tag 'clock_red.png' %>
 	    <% end %>
-	
-	    <%= assignment.open_date.to_formatted_s(:compact_date) %></td>
-	    <td nowrap="nowrap"><%= assignment.due_date.to_formatted_s(:compact_date) %></td>
+	    </td>
+	    <td nowrap="nowrap" valign="top" align="left">
+	    S: <%= assignment.open_date.to_formatted_s(:compact_date) %><br/>
+	    E: <%= assignment.due_date.to_formatted_s(:compact_date) %></td>
 	    
 	    <% if @user.instructor_in_course?(@course.id) || (@user.assistant_in_course?(@course.id) && @course.course_setting.ta_course_assignments) %>
-	    <td nowrap="nowrap">	  
+	    <td nowrap="nowrap" valign="top">	  
 	      <%= link_to "#{image_tag 'delete.png', :align => 'absmiddle'} Delete", { :action => 'destroy', :id => assignment }, :method => "post", :confirm => "Are you sure you want to delete the assignment '#{assignment.title}' and all of it's associated data? This action can not be undone." %> 
 	    </td>
 	    <% end %> 

@@ -4,14 +4,32 @@
   <p><i>There are no assignments at this time, please check back later.</i></p>
 <% else %>
 
-  <table class="fancy">
+<script type="text/javascript">
+function resizeContent() {
+	width = document.getElementById('assignments').offsetWidth;
+	alert( "starting width: " + width );
+	newWidth = width + 50;
+	alert( "div width" + document.getElementById('content').offsetWidth );
+	document.getElementById('content').style.minWidth = newWidth + "px";
+	alert( "div width" + document.getElementById('content').offsetWidth );
+	marginLeft = newWidth + 25;
+	document.getElementById('right').style.marginLeft = marginLeft + "px";
+}
+
+</script>
+
+  <p>
+	<a href="#" onclick="javascript:resizeContent();">click here</a>
+  </p>
+
+  <table class="fancy" id="assignments">
     <tr class="header">
 	  <% if @instructor %><th>&nbsp;</th><% end %>
 	 
       <!-- <th>#</th> -->
       <th>Title</th>
       <th>Category</th>
-      <% if !@public %><th colspan="2">Graded?</td><% end %>
+      <% if !@public %><th colspan="2">Graded?</th><% end %>
       <th>Available</th>
       <th>Due</th>
      </tr>
@@ -65,9 +83,9 @@
   		    <% if assignment.team_project %><%= image_tag 'group.png' %><% end %>
           <% end %>
 		</td>
-	    <td><%=h assignment.grade_category.category %></td>
+	    <td valign="top" align="left" ><%=h assignment.grade_category.category %></td>
 	    <% if !@public %>
-	    <td nowrap="nowrap" align="right">
+	    <td valign="top" nowrap="nowrap" align="right">
 	      <% if assignment.released && !assignment.grade_item.nil? %>
 	        <% if assignment.quiz.nil? %>
   	           <%= link_to 'Yes', :controller => '/turnins', :course => @course, :assignment => assignment, :action => 'feedback' %><%= image_tag 'lightbulb.png' %>
@@ -86,7 +104,7 @@
 	        <% end %>
 	      <% end %>
 	    </td>
-	    <td nowrap="nowrap" align="right">
+	    <td nowrap="nowrap" align="right" valign="top">
 	      <% if assignment.released && !assignment.grade_item.nil? %>
 	        <% gi =  @user.grade_for_grade_item(assignment.grade_item) %>
 	        <% if gi.nil? %>
@@ -101,15 +119,15 @@
 	      <% end %>
 	    </td>
 	    <% end %>
-	    <td nowrap="nowrap">
+	    <td nowrap="nowrap" valign="top" align="left" >
 	      <% if assignment.upcoming? %><%= image_tag 'clock_error.png', :align => 'absmiddle' %>
 	      <% elsif assignment.current? %><%= image_tag 'clock.png', :align => 'absmiddle' %>
 	      <% else %><%= image_tag 'clock_red.png', :align => 'absmiddle' %>
 	      <% end %>
 	      <%= assignment.open_date.to_formatted_s(:long) %>
 	    </td>
-	    <td nowrap="nowrap">
-	      <%= assignment.due_date.to_formatted_s(:long) %>
+	    <td nowrap="nowrap" valign="top" align="left" >
+	      <%= assignment.due_date.to_formatted_s(:long) %><br/>
 	      <% unless assignment.past? %>
 	        (<i><%= distance_of_time_in_words_to_now( assignment.due_date, true )%> from now</i>)
 	      <% else %>

@@ -5,6 +5,7 @@
 
 <table class="fancy">
   <tr class="header">
+	<th>&nbsp;</th>
     <th valign="bottom">Uniqueid</th>
     <th valign="bottom">First Name</th>
     <th valign="bottom">Nickname</th>
@@ -30,6 +31,7 @@
 %>
 
   <tr class="<%=odd%> hover" id="item_<%=user.id%>">
+	<td><img src="<%= user.gravatar_url %>" /></td>
     <td><%= user.uniqueid %></td>
     <td><%= user.first_name %></td>
     <td><%= user.preferred_name %></td>

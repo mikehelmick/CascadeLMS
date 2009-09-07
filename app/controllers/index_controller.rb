@@ -13,12 +13,17 @@ class IndexController < ApplicationController
     elsif params[:out].eql?('exp')
       flash[:notice] = "Your session has expired due to inactivity, please log in again."
     end
+    
+    render :layout => 'login'
   end
   
   def credits
+    load_user_if_logged_in()
+    render :layout => 'noright'
   end
   
   def api
+    load_user_if_logged_in
     @title = "CSCW - REST API"
     
     render :layout => 'noright'
@@ -50,6 +55,8 @@ class IndexController < ApplicationController
 
   def forgot
     sreturn unless ensure_basic_auth
+    
+    render :layout => 'login'
   end
   
   def send_forgot
@@ -88,6 +95,7 @@ class IndexController < ApplicationController
       return false
     end
     
+    render :layout => 'login'
     true
   end
   
@@ -124,6 +132,8 @@ class IndexController < ApplicationController
       render :action => 'reset_password'
 
     end
+    
+    render :layout => 'login'
   end
 
   def activate
@@ -142,6 +152,7 @@ class IndexController < ApplicationController
       return false
     end
     
+    render :layout => 'login'
     true
   end
   
@@ -169,7 +180,7 @@ class IndexController < ApplicationController
   
     else    
       flash[:badnotice] = 'New password and its confirmation do not match.'
-      render :action => 'activate'
+      render :action => 'activate', :layout => 'login'
     end
   end
 
@@ -182,7 +193,7 @@ class IndexController < ApplicationController
   end
   
   def set_title
-    @title = @app['title']
+    @title = "#{@app['title']} [CascadeLMS]"
   end
   
 end

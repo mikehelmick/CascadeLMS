@@ -1,7 +1,6 @@
 <%= render :partial => 'instructor/index/right' %>
 
 <h2>Due Dates</h2>
-<div style="float:left;">
 <% 
 today = Date.today 
 code_block = Proc.new do |d|
@@ -24,4 +23,3 @@ code_block = Proc.new do |d|
 <%= calendar( :year => today.year, :month => today.month, :abbrev=>(0..0) ) { |d| code_block.call(d) } %>
 <% today = today.to_time.next_month %>
 <%= calendar( :year => today.year, :month => today.month, :abbrev=>(0..0) ) { |d| code_block.call(d) } %>
-</div>

@@ -1,1 +1,1 @@
-<%= link_to_remote( "#{@course.open_text}", :update => "course_open_#{@course.id}", :url => { :action => 'toggle_open', :id => @course }, :complete => "new Effect.Highlight( 'item_#{@course.id}' )" ) %>
+<%= link_to_remote( "#{@course.course_open_text}", :update => "course_open_#{@course.id}", :url => { :action => 'toggle_open', :id => @course }, :complete => "new Effect.Highlight( 'item_#{@course.id}' )" ) %>

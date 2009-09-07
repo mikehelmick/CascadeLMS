@@ -1,31 +1,6 @@
-<div id="navcontainer">
-
-<table width="100%" border="0" >
- <tr>
-  <td align="left"><div id="headerleft"><%=@app['title']%></div></td>
-  <td align="right"><div id="headerright">
-<% if session[:user] %>
-    <% unless @app['dir_link'].nil? || @app['authtype'].eql?('basic') %> 
-     Logged in as <a href="<%=@app['dir_link']%><%= session[:user].uniqueid %>" target="_blank"><%=session[:user].display_name%></a>
-    <% else %>
-     Logged in as <%= link_to "#{session[:user].display_name} #{image_tag 'user_edit.png'}", :controller => '/home', :action => 'account' %>
-    <% end %>
-     (<%= link_to "log out #{image_tag 'lock_go.png'}", :controller => '/index', :action => 'logout' %>) 
-  
-  <% unless @user.nil? %>
-    <br/>
-   <% for cu in @user.courses_in_term(session[:current_term] ) %>
-      <%= image_tag 'bullet_go.png', :align => 'absmiddle' %><%= link_to "#{cu.course.title}", :controller => '/overview', :course => cu.course.id %> 
-   <% end %>
-  <% end %>
-<%else%>You are not logged in.
-<%end%>
-</div>
- </tr>
-</table>
-
-	<ul id="navlist">
-		
+<div id="navigation" class="clear">
+	<ul>
+	 
 		<% if session[:user].nil? %>
 		  <li><%= link_to "Login", { :controller => '/' }, { :id => 'current' } %></li>
 		
@@ -33,9 +8,9 @@
 		
 		  <% if @show_course_tabs.nil? || !@show_course_tabs %>
 		    <% if @tab.nil? || !@tab.eql?('home') %>
-		      <li><%= link_to 'Home', :controller => '/home', :course => nil, :assignment => nil %></li>
+		      <li><%= link_to "#{image_tag 'house.png', :align => 'absmiddle'}", :controller => '/home', :course => nil, :assignment => nil %></li>
 		    <% else %>
-		      <li><%= link_to 'Home', { :controller => '/home', :course => nil, :assignment => nil }, { :id => 'current' } %></li>
+		      <li><%= link_to "#{image_tag 'house.png', :align => 'absmiddle'}", { :controller => '/home', :course => nil, :assignment => nil }, { :id => 'current' } %></li>
 		    <% end %>
 		
 		    <% if (@tab.nil? || !@tab.eql?('portfolio_generate')) && @portfolio_area %>
@@ -52,9 +27,21 @@
 		       <% end %>
 		    <% end %>
 		
+		    <% if @user.program_manager? %>
+		      <% if !@tab.nil? && @tab.eql?('programs') %>
+		        <li><%= link_to 'Programs', {:controller => '/program', :course => nil, :assignment => nil, :id => nil}, { :id => 'current' } %></li> 
+		      <% end %>
+		    <% end %>
+		
+		    <% if @user.admin %>
+		      <% if !@tab.nil? && @tab.eql?('administration') %>
+		        <li><%= link_to 'Administration', {:controller => '/admin', :course => @course, :assignment => nil}, { :id => 'current' } %></li> 
+		      <% end %>
+		    <% end %>
+		
 		  <% else %>
 		
-		    <li><%= link_to 'Home', :controller => '/home', :course => nil, :assignment => nil %></li>     
+		    <li><%= link_to "#{image_tag 'house.png', :align => 'absmiddle'}", :controller => '/home', :course => nil, :assignment => nil %></li>     
 		    <% if @tab.nil? || !@tab.eql?('course_overview') %>
 		          <li><%= link_to 'Overview', :controller => '/overview', :course => @course, :assignment => nil %></li> 
 		    <% else %>
@@ -105,7 +92,7 @@
 	          <% end %>
 	         <% end %>
 		    
-		    <% if @user.student_in_course?(@course.id) && @course.course_setting.enable_gradebook %>
+		    <% if !@user.nil? && @user.student_in_course?(@course.id) && @course.course_setting.enable_gradebook %>
 		  	  <% if @tab.nil? || !@tab.eql?('course_grades') %>
 			    <li><%= link_to 'Grades', :controller => '/grades', :course => @course, :assignment => nil %></li>
 		      <% else %>
@@ -113,7 +100,7 @@
 		      <% end %>		
 		    <% end %>
 		
-			<% if @user.student_in_course?(@course.id) && @course.course_setting.enable_attendance %>
+			<% if !@user.nil? && @user.student_in_course?(@course.id) && @course.course_setting.enable_attendance %>
 		  	  <% if @tab.nil? || !@tab.eql?('course_attendance') %>
 			    <li><%= link_to 'Attendance', :controller => '/attendance', :course => @course, :assignment => nil %></li>
 		      <% else %>
@@ -121,7 +108,7 @@
 		      <% end %>		
 		    <% end %>
 		
-		    <% if @user.instructor_in_course?(@course.id) || @user.assistant_in_course?(@course.id) %>
+		    <% if !@user.nil? && (@user.instructor_in_course?(@course.id) || @user.assistant_in_course?(@course.id)) %>
 		      <% if @tab.nil? || !@tab.eql?('course_instructor') %>
 		        <li style="padding-left: 25px"><%= link_to 'Instructor', { :controller => '/instructor/index', :course => @course, :assignment => nil } %></li>
 		      <% else %>
@@ -131,26 +118,8 @@
 		
 		  <% end %>
 		
-		  <% if @user && @user.program_manager? %>
-		    <% if @tab.nil? || !@tab.eql?('programs') %>
-		      <li style="padding-left: 25px"><%= link_to 'Programs', :controller => '/program', :course => nil %>
-		    <% else %>
-		      <li style="padding-left: 25px"><%= link_to 'Programs', { :controller => '/program', :course => nil }, { :id => 'current' } %></li>
-		    <% end %>		  
-		  <% end %>
-		
-		  <% if @user && @user.admin %>
-		    <% if @tab.nil? || !@tab.eql?('administration') %>
-		      <li style="padding-left: 25px"><%= link_to 'Administration', :controller => '/admin', :course => nil %>
-		    <% else %>
-		      <li style="padding-left: 25px"><%= link_to 'Administration', { :controller => '/admin', :course => nil }, { :id => 'current' } %></li>
-		    <% end %>
-
-		    
-		  <% end %>
+		  
 		<% end %>
 		
-	</ul>
-	
-
+  <ul>
 </div>

@@ -50,7 +50,7 @@
 
 <table class="fancy">
   <tr class="header">
-    <th valign="bottom">UniqueID</th>
+    <th valign="bottom">&nbsp;</th>
     <th valign="bottom">Student</th>
     <% if @assignment.team_project %>
       <th valign="bottom">Team</th>
@@ -101,8 +101,8 @@
     %>
 
 	<tr class="<%=odd%> hover" id="student_<%=student.id%>">
-      <td><%=h student.uniqueid %></td>
-      <td><%=h student.display_name %></td>
+      <td><img src="<%=student.gravatar_url%>" /></td>
+      <td align="left"><%=h student.display_name %><br/><%=h student.uniqueid %></td>
 
       <% if block 
          colspan = 2
@@ -157,19 +157,19 @@
 	 	</td>
 	  <% end %>
 	  <% if @assignment.auto_grade %>
-	    <td>AutoGrade 
+	    <td><b>AutoGrade</b><br/>
 		<% if @assignment.auto_grade_setting.io_check? %>
 		  <%= link_to_remote( "Summary", :update => "agsummary_#{student.id}",
 		    :url => { :action => "agsummary", :id => student.id, :course => @course, :assignment => @assignment }, :success => visual_effect(:toggle_slide, "agsummary_#{student.id}" ) ) %>
 		<% end %>
 		<% if @assignment.auto_grade_setting.io_check? || @assignment.auto_grade_setting.check_style?  %>
-		  <%= link_to 'Full Report', { :controller => '/instructor/turnins', :action => 'view_io_tests', :course => @course, :assignment => @assignment, :student => student.id }, :popup => true %>
+		  <br/><%= link_to 'Full Report', { :controller => '/instructor/turnins', :action => 'view_io_tests', :course => @course, :assignment => @assignment, :student => student.id }, :popup => true %>
 		<% end %>
 		</td>
 	  <% end %>
 
       <td>
-        <%= link_to "Grade / View files/journals", :action => 'view_student', :id => student, :course => @course, :assignment => @assignment %>
+        <%= link_to "Grade / View Files / Journals", :action => 'view_student', :id => student, :course => @course, :assignment => @assignment %>
       </td> 
 
       <td align="center"> 
@@ -177,7 +177,7 @@
 	    <% if extension.nil? %>
 	      <%= link_to 'Grant', :action => 'grant', :assignment => @assignment, :course => @course, :id => student.id %>
 	    <% else %>
-	      <%= extension.extension_date.to_formatted_s(:long) %> | 
+	      <%= extension.extension_date.to_formatted_s(:long) %> <br/>
 	      <%= link_to 'Edit Grant', :action => 'grant', :assignment => @assignment, :course => @course, :id => student.id %> |
 	      <%= link_to 'Revoke', :action => 'revoke', :assignment => @assignment, :course => @course, :id => student.id %> 
 	    <% end %>

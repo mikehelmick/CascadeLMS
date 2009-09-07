@@ -34,14 +34,14 @@ require 'MyString'
 # Likewise, all the methods added will be available for all controllers.
 class ApplicationController < ActionController::Base
   ## CSCW Application version
-  @@VERSION = '1.3.20 (Rainier) 20090903'
+  @@VERSION = '1.4.0 (Rainier) 20090906'
   
   ## Supress password logging
   filter_parameter_logging :password
   
   layout 'application' rescue puts "couldn't load default layout"
   
-  before_filter :app_config, :browser_check
+  before_filter :app_config, :browser_check, :current_term
   after_filter :pull_msg
   
   @@auth_locations = ['REDIRECT_REDIRECT_X_HTTP_AUTHORIZATION',
@@ -148,6 +148,10 @@ class ApplicationController < ActionController::Base
  		return @@app
   end
   
+  def current_term()
+    @term = Term.find_current
+  end
+  
   def app_config( force = false )
     ApplicationController.app( force )
     @app = @@app
@@ -201,7 +205,7 @@ class ApplicationController < ActionController::Base
   end
   
   def disabled_text
-    if course.open
+    if course.course_open
       ''
     else
       'disabled="disabled"'
@@ -209,13 +213,19 @@ class ApplicationController < ActionController::Base
   end
   
   def course_open( course, redirect_info = {} )
-    unless course.open?
+    unless course.course_open?
       flash[:badnotice] = "The requested action can not be performed, since the course is in archive status."
       redirect_to redirect_info
       return false
     end
     return true
   end
+ 	
+ 	def load_user_if_logged_in
+ 	  unless session[:user].nil?
+ 	    @user = User.find(session[:user].id)
+    end
+ 	end
  	
  	def ensure_logged_in
  	  redirect_uri = "#{request.protocol()}#{request.host()}#{request.port_string}#{request.request_uri()}"

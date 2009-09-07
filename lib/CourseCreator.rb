@@ -58,7 +58,7 @@ class CourseCreator
         course.term = terms[i]
         course.title = crn.name
         course.short_description = crn.title
-        course.open = true
+        course.course_open = true
         
         course.crns << crn
         courseuser = CoursesUser.new

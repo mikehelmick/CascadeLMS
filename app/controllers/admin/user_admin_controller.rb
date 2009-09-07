@@ -11,6 +11,8 @@ class Admin::UserAdminController < ApplicationController
     session[:searchby] = 'uniqueid'
     session[:searchletter] = ''
     set_tab
+    
+    render :layout => 'noright'
   end
 
   def searchby

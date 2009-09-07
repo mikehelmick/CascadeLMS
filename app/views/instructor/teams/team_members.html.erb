@@ -9,6 +9,7 @@
   <tr class="header">
 	<th>On Team?</th>
 	<th align="left">Student</th>
+	<th></th>
   </tr>
 	
 <% count = 0%>  
@@ -18,7 +19,7 @@
    odd = "even" if count.even?
 %>
   <tr class="<%=odd%> hover" id="student_area_<%=student.id%>">
-    <td align="right">
+    <td align="right" valign="top">
 	 <% if @student_team[student.id].nil? %>
        <%= check_box_tag( "student_#{student.id}", 1, false ) %>
      <% elsif @student_team[student.id].project_team_id == @team.id %>
@@ -27,7 +28,8 @@
        <i><%= @student_team[student.id].project_team.team_id %> (<%= @student_team[student.id].project_team.name %>)</i>
      <% end %>
     </td>
-    <td><%= student.display_name %> - <%= student.uniqueid %></td>
+    <td valign="top"><%= student.display_name %> - <%= student.uniqueid %></td>
+    <td valign="top"><img src="<%= student.gravatar_url%>" /></td>
   </tr>
 <% end %>
 </table>

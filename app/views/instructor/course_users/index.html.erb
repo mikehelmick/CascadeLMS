@@ -1,4 +1,10 @@
-<p><%= link_to "#{image_tag 'arrow_left.png' } Back", :controller => '/instructor/index', :course => @course.id %></p>
+<p><%= link_to "#{image_tag 'arrow_left.png' } Back", :controller => '/instructor/index', :course => @course.id %> |
+<% if @show_images %>
+  <%= link_to "Hide user pictures", :controller => '/instructor/course_users', :action => nil, :course => @course, :id => nil %>
+<% else %>
+  <%= link_to "Show user pictures", :controller => '/instructor/course_users', :action => nil, :course => @course, :id => nil, :show_images => true %>
+<% end %>
+</p>	
 
 <h2>Instructor(s) for <%= @course.title %></h2>
 <div id="instructor_error"> </div>

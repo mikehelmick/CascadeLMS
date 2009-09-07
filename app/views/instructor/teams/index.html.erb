@@ -36,6 +36,10 @@
 	      <li><%= member.user.display_name %> (<i><%= member.user.uniqueid %></i>)</li>
 	    <% end %>
 	  </ul>
+	
+	  <% for member in team.team_members %>
+	    <img src="<%= member.user.gravatar_url %>" />
+	  <% end %>
 	</td>
   </tr>
 <% end %>

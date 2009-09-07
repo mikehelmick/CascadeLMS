@@ -2,17 +2,24 @@
 <h2>Subscribe to this course's RSS feed</h2>
 <p>
 Want to be notified any time there is a new document, announcement, or assignment posted? <%= link_to "Subscribe to this course's RSS feed. #{image_tag 'feed_go.png'}", :controller => 'feed', :action => 'subscribe', :course => @course %>
-(<%= link_to "What is RSS?", "http://www.feedburner.com/fb/a/aboutrss", :popup => true %>)
+(<%= link_to "What is RSS?", "http://www.google.com/support/feedburner/bin/answer.py?answer=79408", :popup => true %>)
 </p>
 <% end %>
 
 <h2>Course Information</h2>
 <p>
 <b>Course:</b> <%=h @course.title %><br/>
-<b>Instructor:</b> <%=h @course.instructors.join(', ') %><br/>
+<b>Instructor:</b> <br/>
+ <% for instructor in  @course.instructors %>
+   <span class="instructor"><img src="<%= instructor.gravatar_url %>" align="middle" /> <%= instructor.to_s %></span>
+ <% end %>
+ 
 <% tas = @course.assistants %>
 <% if tas.size > 0 %>
- <b>Assistant(s):</b> <%=h tas.join(', ') %><br/>
+ <b>Assistant(s):</b><br/>
+ <% for assistant in  tas %>
+    <span class="instructor"><img src="<%= assistant.gravatar_url %>" align="middle" /> <%= assistant.to_s %></span>
+ <% end %>
 <% end %>
 
 <% if @course.course_information %>

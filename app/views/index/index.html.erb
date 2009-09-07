@@ -11,11 +11,12 @@
 <% end %>	
 
 
+<h1><%= @app['title'] %></h1>
 
 <div id="form_area">
 <% form_tag( :action => 'login' ) do %>
-  <h2>Please login</h2>
-  <p class="blockintro">Please enter your username and password.</p>
+  <p class="blockintro">
+	<b>Please login:</b> Enter your username and password.</p>
   <div class="block">
   <label for="user_uniqueid" class="required">Username:</label>
   <%= text_field 'user', 'uniqueid', 'tabindex' => '1' %> <br/>
@@ -31,7 +32,6 @@
   <div class="submit">
     <%= submit_tag 'Login', 'tabindex' => '3' %>
   </div>
-
 <% end %>
 </div>
 
@@ -39,6 +39,18 @@
 
 <p>Some courses provide public access to the course material, please <%= link_to "take look at the list of courses offering public access. #{image_tag 'world.png'}", :controller => '/public', :course => nil, :assignment => nil %></p>
 
+<div style="text-align: right; width: 100%; border-top: 1px solid #000000; margin-top 25px;">
+	<div style="float: left">
+CascadeLMS, Copyright &copy; 2006 - 2009 <a href="http://www.cascadelms.org/">Mike Helmick</a> <br/>
+<a href="http://www.cascadelms.org/">CascadeLMS v<%=@app['version']%></a>
+    </div>
+    <div style="float: right">
+      <a href="http://www.cascadelms.org/"><img src="images/cascadeLMS_logo_small.png" /></a>
+    </div>
+</div>
+
 <SCRIPT LANGUAGE="JavaScript">
  document.forms[0].elements[0].focus();
 </SCRIPT>
+
+

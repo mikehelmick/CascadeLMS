@@ -1,4 +1,5 @@
 require 'digest/sha1'
+require 'md5'
 
 class User < ActiveRecord::Base
   validates_uniqueness_of :uniqueid
@@ -28,6 +29,14 @@ class User < ActiveRecord::Base
   has_many :project_teams
   
   attr_accessor :notice
+  
+  def gravatar_url
+    email_address = self.email.downcase
+    #create the md5 hash
+    hash = MD5::md5(email_address)
+    
+    return "http://www.gravatar.com/avatar/#{hash}.png?s=60&d=wavatar&r=PG"
+  end
   
   def assignment_journals( assignment )
     Journal.find(:all, :conditions => ["assignment_id = ? and user_id = ?", assignment.id, self.id], :order => 'created_at asc' )

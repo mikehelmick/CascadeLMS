@@ -1,0 +1,37 @@
+
+body {
+	color: #999999;
+	margin: 0;
+	padding: 0;
+	font: normal 12px/1.5em "Helvetica Neue", "Lucida Grande", "Helvetica Neue", Arial, sans-serif;
+}
+
+div#content {
+  margin: 100px 30% 15px 30%;
+  padding: 15px 15px 15px 15px;
+  background: #eeeeee;
+  color: #000000;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  border-radius: 5px;
+  border: 1px solid #000000;
+  width: 40%;
+  float: left;
+  min-width: 400px;
+}
+
+div#headertitle {
+	width: 66%;
+	margin-top: 18px;
+	display:block;
+}
+
+div#headertitle h1 {
+	color: #000000;
+	margin: 0 0 0 30px;
+}
+
+div#headertitle h4 {
+	color: #555555;
+	margin: 0 0 0 30px;
+}

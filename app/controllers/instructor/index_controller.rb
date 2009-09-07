@@ -14,7 +14,7 @@ class Instructor::IndexController < Instructor::InstructorBase
     return unless load_course( params[:course] )
     return unless ensure_course_instructor_on_assistant( @course, @user )
     
-    @course.open = ! @course.open
+    @course.toggle_open
     @course.save
     
     redirect_to :action => 'index'

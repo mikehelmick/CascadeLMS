@@ -2,6 +2,7 @@ class Public::DocumentsController < ApplicationController
   
   layout 'public', :except => [:podcast, :podcast_download]
   before_filter :set_tab, :except => [:podcast, :podcast_download]
+  before_filter :load_user_if_logged_in
   
   def index
     return unless load_course( params[:course] )

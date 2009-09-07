@@ -7,7 +7,7 @@
 <div id="ErrorExplanation">No users matched your search term.</div>
 <% else %>
 
-<table class="fancy">
+<table class="fancy" width="100%">
 
 <% count = 0 %>
 <% for user in @users %>
@@ -19,9 +19,10 @@
   <tr class="<%=odd%> hover" id="item_<%=user.id%>">
     <td>
 	<table><tr>
-	  <td colspan="5"><%=h user.display_name %> | uid='<%=h user.uniqueid %>'</td>
+	  <td><img src="<%= user.gravatar_url %>"></td>
+	  <td colspan="2"><%=h user.display_name %> | uid='<%=h user.uniqueid %>'</td>
     </tr><tr>
-	  <td align="right">Add As:</td>
+	  <td align="right" rowspan="2" nowrap="nowrap">Add As:</td>
 	  <td>
 		<% if user.student_in_course?(@course.id) %>
 		  <s>Student</s>
@@ -36,6 +37,7 @@
 		  <%= link_to_remote( "Instructor", :update => "instructor", :url => { :action => 'adduser', :type => 'instructor', :course => @course.id, :id => user }, :complete => "new Effect.Highlight( 'instructor' )" ) %>
 		<%end%>
 	  </td>
+	 </tr><tr>
 	  <td>
 		<% if user.assistant_in_course?(@course.id) %>
 		  <s>TA</s>

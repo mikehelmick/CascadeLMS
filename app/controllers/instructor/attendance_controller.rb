@@ -14,6 +14,7 @@ class Instructor::AttendanceController < Instructor::InstructorBase
     return unless ensure_course_instructor_on_assistant( @course, @user )
     
     load_periods
+    @title = "Attendance | Class Periods for #{@course.title}"
   end
   
   def open
@@ -94,6 +95,7 @@ class Instructor::AttendanceController < Instructor::InstructorBase
       end
     end
     
+    @title = "Attendance on #{Date::MONTHNAMES[@period.created_at.mon]} #{@period.created_at.mday}, #{@period.created_at.year} for #{@course.title}"
   end
   
   def mark_attending

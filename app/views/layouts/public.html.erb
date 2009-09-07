@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 
 <head>
-	<title><%=@title if @title%> (Public Access)</title>
+	<title><%=@title if @title%></title>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	
 	<%= javascript_include_tag :defaults %>
@@ -11,103 +11,183 @@
 	
 	<%= stylesheet_link_tag "master", :media => "all" %>
 	<%= stylesheet_link_tag "calendar/red/style", :media => "all" %>
+	
+	<style type="text/css">
+		body {
+			<% if @user.nil? %>
+				background: url(<%= image_path('cascade_bg_short.jpg') %>) repeat-x top center #3F637C;
+			<% else %>
+			    background: url(<%= image_path('cascade_bg.jpg') %>) repeat-x top center #3F637C;
+			<% end %>
+	    }
+	
+		div#content {
+			width: 95%;
+		}
+	</style>
+	
+	<script type="text/javascript">
+	function changeCourse() {
+		location.href = course_jump.course_select_top.options[course_jump.course_select_top.selectedIndex].value
+	}
+	</script>
+	
+	<% if @course %>
+	<%= auto_discovery_link_tag(:rss, {:controller => 'feed', :course => @course }) %>
+	<% end %>
 </head>
 
-<body>
-
-<div id="navcontainer">
-
-<table width="100%" border="0" >
- <tr>
-  <td align="left"><div id="headerleft"><%=@app['title']%></div></td>
-  <td align="right"><div id="headerright"> 
-    <% if session[:user].nil? %>
-		Public Access (<%= link_to "Log in #{image_tag 'lock_open.png'}", :controller => '/' %>)
-	<% else %>
-     	Logged in as <%=session[:user].display_name%> (<%= link_to "log out #{image_tag 'lock_go.png'}", :controller => '/index', :action => 'logout' %>)
-	<% end %>	
-	</div>
- </tr>
-</table>
-
-	<ul id="navlist">
-		<% if session[:user].nil? %>
-			<li><%= link_to "Login", { :controller => '/', :course => nil, :assignment => nil } %></li>
-	    <% else %>
-			<li><%= link_to 'Home', :controller => '/home', :course => nil, :assignment => nil %></li>
-		<% end %>
-		
-		<% if @tab.nil? || !@tab.eql?('public') %>
-		    <li><%= link_to 'Public Courses', :controller => '/public', :course => nil, :assignment => nil %></a></li> 
-		<% else %>
-            <li><%= link_to 'Public Courses', { :controller => '/public', :course => nil, :assignment => nil }, { :id => 'current' } %></li>		
-		<% end %>
-		
-		<% unless @show_course_tabs.nil? || !@show_course_tabs %>
-		  	<% if @tab.nil? || !@tab.eql?('course_overview') %>
-		        <li><%= link_to 'Overview', :controller => '/public/overview', :course => @course, :assignment => nil %></a></li> 
-		    <% else %>
-                <li><%= link_to 'Overview', { :controller => '/public/overview', :course => @course, :assignment => nil }, { :id => 'current' } %></li>		
-		    <% end %>
-		
-		    <% if @course.course_setting.enable_blog %>
-	    	<% if @tab.nil? || !@tab.eql?('course_blog') %>
-		      <li><%= link_to 'Course Blog', :controller => '/public/blog', :course => @course, :assignment => nil %></li> 
-		    <% else %>
-              <li><%= link_to 'Course Blog', { :controller => '/public/blog', :course => @course, :assignment => nil }, { :id => 'current' } %></li>
-            <% end %>
-            <% end %>
-
-            <% if @tab.nil? || !@tab.eql?('course_documents') %>
-              <li><%= link_to 'Documents', :controller => '/public/documents', :course =>@course, :assignment => nil %></li>
-            <% else %>
-              <li><%= link_to 'Documents', { :controller => '/public/documents', :course =>@course, :assignment => nil }, { :id => 'current' } %></li>
-            <% end %>
-
-			<% if @tab.nil? || !@tab.eql?('course_assignments') %>
-		 	  <li><%= link_to 'Assignments', :controller => '/public/assignments', :course => @course, :assignment => nil %></li>
-			<% else %>
-			  <li><%= link_to 'Assignments', { :controller => '/public/assignments', :course => @course, :assignment => nil }, { :id => 'current' } %></li>
-			<% end %>
-
-		<% end %>
-	</ul>
+<body class="webkit">
 	
+<div id="container">	
+  <div id="headercontainer" class="clear">
+	
+	<div id="headertitle">
+		<h1><%=@app['title']%></h1>
+		<h4>CascadeLMS</h4>
+	</div>
+	
+	<div id="headerright">
+		<div id="userinfoarea">
+		  <% if @user.nil? %>	
+		    <div id="userinfo">
+			   Public Access (<%= link_to "Log in #{image_tag 'lock_open.png'}", :controller => '/' %>)
+			</div>
+		  <% else %>
+			<div id="userinfo">
+				<a href="http://en.gravatar.com/">
+				  <img id="avatar" src="<%= @user.gravatar_url %>" />
+				</a>
+				
+				<div id="signout">
+					<%= link_to "log out #{image_tag 'lock_go.png', :class => "noborder"}", :controller => '/index', :action => 'logout' %>
+				</div>
+	
+			 	
+				<span class="loginInfo">
+				<% unless @app['dir_link'].nil? || @app['authtype'].eql?('basic') %> 
+			      <a href="<%=@app['dir_link']%><%= session[:user].uniqueid %>" target="_blank"><%=session[:user].display_name%></a>
+			    <% else %>
+			      <%= link_to "#{session[:user].display_name} #{image_tag 'user_edit.png'}", :controller => '/home', :action => 'account' %>
+			    <% end %><br/>
+				<%= @user.email %>
+				</span>
+				
+				<div class="courses"><form name="course_jump">
+				
+					<%= @term.semester %>:
+					<select id="course_select_top" name="course_id">
+						<% for cu in @user.courses_in_term( @term ) %>
+						  <% selected = "" 
+						     selected = "selected=\"selected\"" if !@course.nil? && @course.id == cu.course_id 
+ 						  %>						
+						  <option value="<%= url_for( :controller => 'overview', :course => cu.course, :id => nil, :action => nil, :only_path => false ) %>" <%= selected %>><%= cu.course.title[0..50] %></option>
+						<% end %>
+						<% if @user.program_manager? %>
+						  <% selected = "" 
+							 selected = "selected=\"selected\"" unless @tab.nil? || !@tab.eql?('programs') %>
+						  <option value="<%= url_for :controller => '/program', :course => nil, :id => nil, :only_path => false %>">* Programs</option>
+					    <% end %>
+					    <% if @user.admin %>
+						  <% selected = "" 
+							 selected = "selected=\"selected\"" unless @tab.nil? || !@tab.eql?('administration') %>
+					      <option value="<%= url_for :controller => '/admin', :course => nil, :id => nil, :only_path => false %>">* Administration</option>
+					    <% end %>
+					</select>
+					<a onClick="changeCourse(); return true" href="#">
+						<%= image_tag 'application_go.png', :align => 'absmiddle', :class => 'noborder' %>
+					</a>
+					</form>
+				</div>
+				
+			</div>
+		  <% end %>
+	    </div>
+	
+	</div>
+	
+  </div>
 
-</div>
+<div id="navigation" class="clear">
+	<ul>
 
-<div id="Wrapper">
-<div class="Container">
+		  <% if @show_course_tabs.nil? || !@show_course_tabs %>
+		    <% if @tab.nil? || !@tab.eql?('home') %>
+		      <li><%= link_to "#{image_tag 'house.png', :align => 'absmiddle'}", :controller => '/home', :course => nil, :assignment => nil %></li>
+		    <% else %>
+		      <li><%= link_to "#{image_tag 'house.png', :align => 'absmiddle'}", { :controller => '/home', :course => nil, :assignment => nil }, { :id => 'current' } %></li>
+		    <% end %>
 
-<table class="layout">
-  <tr>
-    <td class="left">
-      <div class="Left">
-        <div class="col">
-<% if flash[:notice] %><div id="GoodMessage"><%= flash[:notice] %></div><% end %>
-<% if flash[:badnotice] %><div class="errorExplanation"><%= flash[:badnotice] %></div><% end %>
+		    <% if @tab.nil? || !@tab.eql?('public') %>
+      		   <li><%= link_to "Public Access Courses", :controller => '/public', :course => nil, :assignment => nil %></li>
+		    <% else %>
+		       <li><%= link_to "Public Access Courses", {:controller => '/public', :course => nil, :assignment => nil}, { :id => 'current' } %></li>
+		    <% end %>
 
-<% if @course && !@course.open %>
-<div class="errorExplanation" align="center"><b>This course is now in archive mode, no changes may be made.</b></div>
-<% end  %>
+ 		  <% else %>
 
-<%= @content_for_layout %>
-
-		</div>
+		    <li><%= link_to "#{image_tag 'house.png', :align => 'absmiddle'}", :controller => '/home', :course => nil, :assignment => nil %></li>     
+	
+		    <% if @tab.nil? || !@tab.eql?('public') %>
+      		   <li><%= link_to "Public Access Courses", :controller => '/public', :course => nil, :assignment => nil %></li>
+		    <% else %>
+		       <li><%= link_to "Public Access Courses", {:controller => '/public', :course => nil, :assignment => nil}, { :id => 'current' } %></li>
+		    <% end %>
+		 
 		
-<%= render :partial => '/layouts/footer' %>	
-	  </div>
-	</td>
+		    <% if @tab.nil? || !@tab.eql?('course_overview') %>
+		          <li><%= link_to 'Overview', :controller => '/public/overview', :course => @course, :assignment => nil %></li> 
+		    <% else %>
+                  <li><%= link_to 'Overview', { :controller => '/public/overview', :course => @course, :assignment => nil }, { :id => 'current' } %></li>		
+		    <% end %> 
 
- </tr>
-</table>
+		     <% if @course.course_setting.enable_blog %>
+			  <% if @tab.nil? || !@tab.eql?('course_blog') %>
+			    <li><%= link_to 'Course Blog', :controller => '/public/blog', :course => @course, :assignment => nil %></li> 
+			  <% else %>
+	            <li><%= link_to 'Course Blog', { :controller => '/public/blog', :course => @course, :assignment => nil }, { :id => 'current' } %></li>
+	          <% end %>
+	         <% end %>
 
-<% if flash[:highlight] %> 
-  <%= javascript_tag visual_effect(:highlight, "#{flash[:highlight]}", :duration => 3.5 )  %>
-<% end %>
+			  <% if @tab.nil? || !@tab.eql?('course_documents') %>
+			    <li><%= link_to 'Documents', :controller => '/public/documents', :course =>@course, :assignment => nil %></li>
+			  <% else %>
+			    <li><%= link_to 'Documents', { :controller => '/public/documents', :course =>@course, :assignment => nil }, { :id => 'current' } %></li>
+			  <% end %>
 
+			  <% if @tab.nil? || !@tab.eql?('course_assignments') %>
+				<li><%= link_to 'Assignments', :controller => '/public/assignments', :course => @course, :assignment => nil %></li>
+			  <% else %>
+			    <li><%= link_to 'Assignments', { :controller => '/public/assignments', :course => @course, :assignment => nil }, { :id => 'current' } %></li>
+			  <% end %>
+
+		  <% end %>
+  <ul>
 </div>
-</div>
 
+  <div id="contentarea" class="clear">
+	
+	<div id="content">
+		<% if flash[:notice] %><div id="GoodMessage"><%= flash[:notice] %></div><% end %>
+		<% if flash[:badnotice] %><div class="errorExplanation"><%= flash[:badnotice] %></div><% end %>
+
+		<% if @course && !@course.course_open %>
+		<div class="errorExplanation" align="center"><b>This course is now in archive mode, no changes may be made.</b></div>
+		<% end  %>		
+		
+	    <%= @content_for_layout %>
+	</div>
+	
+	
+  </div>
+
+
+<%= render :partial => '/layouts/footer' %>
+
+  
+<div>	
+	
+	
 </body>
 </html>
+

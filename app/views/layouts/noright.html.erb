@@ -11,44 +11,123 @@
 	
 	<%= stylesheet_link_tag "master", :media => "all" %>
 	<%= stylesheet_link_tag "calendar/red/style", :media => "all" %>
+	
+	<style type="text/css">
+		body {
+			<% if @user.nil? %>
+				background: url(<%= image_path('cascade_bg_short.jpg') %>) repeat-x top center #3F637C;
+			<% else %>
+			    background: url(<%= image_path('cascade_bg.jpg') %>) repeat-x top center #3F637C;
+			<% end %>
+	    }
+	
+		div#content {
+			width: 95%;
+		}
+	</style>
+	
+	<script type="text/javascript">
+	function changeCourse() {
+		location.href = course_jump.course_select_top.options[course_jump.course_select_top.selectedIndex].value
+	}
+	</script>
+	
+	<% if @course %>
+	<%= auto_discovery_link_tag(:rss, {:controller => 'feed', :course => @course }) %>
+	<% end %>
 </head>
 
-<body>
+<body class="webkit">
+	
+<div id="container">	
+  <div id="headercontainer" class="clear">
+	
+	<div id="headertitle">
+		<h1><%=@app['title']%></h1>
+		<h4>CascadeLMS</h4>
+	</div>
+	
+	<div id="headerright">
+		<div id="userinfoarea">
+		  <% unless @user.nil? %>	
+			<div id="userinfo">
+				<a href="http://en.gravatar.com/">
+				  <img id="avatar" src="<%= @user.gravatar_url %>" />
+				</a>
+				
+				<div id="signout">
+					<%= link_to "log out #{image_tag 'lock_go.png', :class => "noborder"}", :controller => '/index', :action => 'logout' %>
+				</div>
+	
+			 	
+				<span class="loginInfo">
+				<% unless @app['dir_link'].nil? || @app['authtype'].eql?('basic') %> 
+			      <a href="<%=@app['dir_link']%><%= session[:user].uniqueid %>" target="_blank"><%=session[:user].display_name%></a>
+			    <% else %>
+			      <%= link_to "#{session[:user].display_name} #{image_tag 'user_edit.png'}", :controller => '/home', :action => 'account' %>
+			    <% end %><br/>
+				<%= @user.email %>
+				</span>
+				
+				<div class="courses"><form name="course_jump">
+				
+					<%= @term.semester %>:
+					<select id="course_select_top" name="course_id">
+						<% for cu in @user.courses_in_term( @term ) %>
+						  <% selected = "" 
+						     selected = "selected=\"selected\"" if !@course.nil? && @course.id == cu.course_id 
+ 						  %>						
+						  <option value="<%= url_for( :controller => 'overview', :course => cu.course, :id => nil, :action => nil, :only_path => false ) %>" <%= selected %>><%= cu.course.title[0..50] %></option>
+						<% end %>
+						<% if @user.program_manager? %>
+						  <% selected = "" 
+							 selected = "selected=\"selected\"" unless @tab.nil? || !@tab.eql?('programs') %>
+						  <option value="<%= url_for :controller => '/program', :course => nil, :id => nil, :only_path => false %>">* Programs</option>
+					    <% end %>
+					    <% if @user.admin %>
+						  <% selected = "" 
+							 selected = "selected=\"selected\"" unless @tab.nil? || !@tab.eql?('administration') %>
+					      <option value="<%= url_for :controller => '/admin', :course => nil, :id => nil, :only_path => false %>">* Administration</option>
+					    <% end %>
+					</select>
+					<a onClick="changeCourse(); return true" href="#">
+						<%= image_tag 'application_go.png', :align => 'absmiddle', :class => 'noborder' %>
+					</a>
+					</form>
+				</div>
+				
+			</div>
+		  <% end %>
+	    </div>
+	
+	</div>
+	
+  </div>
 
 <%= render :partial => '/layouts/menu' %>
-
-<div id="Wrapper">
-<div class="Container">
-
-<table class="layout">
-  <tr>
-    <td class="left">
-      <div class="Left">
-        <div class="col">
-<% if flash[:notice] %><div id="GoodMessage"><%= flash[:notice] %></div><% end %>
-<% if flash[:badnotice] %><div class="errorExplanation"><%= flash[:badnotice] %></div><% end %>
-
-<% if @course && !@course.open %>
-<div class="errorExplanation" align="center"><b>This course is now in archive mode, no changes may be made.</b></div>
-<% end  %>
-
-<%= @content_for_layout %>
-
-		</div>
-		
-<%= render :partial => '/layouts/footer' %>	
-	</td>
-
- </tr>
-</table>
-
-<% if flash[:highlight] %> 
-  <%= javascript_tag visual_effect(:highlight, "#{flash[:highlight]}", :duration => 3.5 )  %>
-<% end %>
-
-</div>
-</div>
+	
+  <div id="contentarea" class="clear">
+	
+	<div id="content">
+	    <%= @content_for_layout %>
+	</div>
+	
+	
+  </div>
 
 
+<%= render :partial => '/layouts/footer' %>
+
+  
+<div>	
+
+	
+	<% if flash[:highlight] %> 
+	  <%= javascript_tag visual_effect(:highlight, "#{flash[:highlight]}", :duration => 3.5 )  %>
+	<% end %>	
+
+	
+	
 </body>
 </html>
+

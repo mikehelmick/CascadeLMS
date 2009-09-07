@@ -140,8 +140,8 @@ class Course < ActiveRecord::Base
     end
   end
     
-  def open_text
-    return 'Yes' if self.open
+  def course_open_text
+    return 'Yes' if self.course_open
     return 'No'
   end
   
@@ -254,6 +254,10 @@ class Course < ActiveRecord::Base
     end   
     
     rtnArr
+  end
+  
+  def toggle_open 
+    self.course_open = ! self.course_open
   end
   
   def extract_outcome_by_parent( outcomes, parent ) 

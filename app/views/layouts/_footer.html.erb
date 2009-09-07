@@ -1,28 +1,26 @@
-<div class="bottom">&nbsp;</div>
- <div id="Footer">
-   <table>
-	 <tr><td align="left">
-	    <%= image_tag 'cascadeLMS_logo_small.png' %>
-	 </td>
-	 <td valign="top" align="left">
-   Copyright &copy; 2006 - 2009 <a href="http://www.cascadelms.org/">Mike Helmick</a> 
-     | Found a bug? Have a suggestion? File a ticket at <a href="http://cascadelms.lighthouseapp.com/">http://cascadelms.lighthouseapp.com/</a><br/>
-   <a href="http://www.cascadelms.org/">CascadeLMS v<%=@app['version']%></a> |
-   <% unless session[:user].nil? %> 
-     <%= link_to "REST API", :controller => "/index", :action => 'api', :course => nil, :assignment => nil, :id => nil %> |
-   <% end %>
-   <%= link_to "Credits", :controller => "/index", :action => 'credits', :course => nil, :assignment => nil, :id => nil %>
-   <br/>
-   Installed for <%=@app['title']%>, Site contact: <a href="mailto:<%=@app['email']%>"><%=@app['email']%></a> <br/>
-	
-	
-   
 
-   <% unless session[:user].nil? %>
-   Powered by Ruby v<%= RUBY_VERSION %> and Ruby on Rails v<%= Rails::VERSION::STRING %> 
-   <% end %>
-    </td>
-    </tr> 
-   </table>
- </div>
+
+<div id="footer" class="clear">
+  <div id="footerContent">	
+	<div id="logo">
+       <%= image_tag 'cascadeLMS_logo_small.png' %>
+    </div>
+    <div id="footerText">
+		   CascadeLMS, Copyright &copy; 2006 - 2009 <a href="http://www.cascadelms.org/">Mike Helmick</a> <br/> 		    
+		   <a href="http://www.cascadelms.org/">CascadeLMS v<%=@app['version']%></a> |
+		   <% unless session[:user].nil? %> 
+		     <%= link_to "REST API", :controller => "/index", :action => 'api', :course => nil, :assignment => nil, :id => nil %> |
+		   <% end %>
+		   <%= link_to "Credits", :controller => "/index", :action => 'credits', :course => nil, :assignment => nil, :id => nil %>
+		   <br/>   
+		   Found a bug? Have a suggestion? File a ticket at <a href="http://cascadelms.lighthouseapp.com/">http://cascadelms.lighthouseapp.com/</a><br/>
+		   
+		   Installed for <%=@app['title']%>, Site contact: <a href="mailto:<%=@app['email']%>"><%=@app['email']%></a> <br/>
+
+		   <% unless session[:user].nil? %>
+		   Powered by Ruby v<%= RUBY_VERSION %> and Ruby on Rails v<%= Rails::VERSION::STRING %> 
+		   <% end %>
+	</div>
+  </div>
+  <p>&nbsp;</p>
 </div>
