@@ -60,7 +60,7 @@
 
 <% else %>
 <div id="form_area">
-
+ <% if @assignment.enable_upload %>
   <%= error_messages_for 'utf' %>
   <% form_tag( { :action => "upload_file" }, :multipart => true, :onsubmit => "new Element.toggle('f_button'); new Element.toggle( 'f_spinner');" ) do %>
 
@@ -89,6 +89,7 @@
 	<div id="f_button"><%= submit_tag "Create Directory" %></div>
   </div>
   <% end %>
+ <% end %>
 </div>
 <% end %>
 
