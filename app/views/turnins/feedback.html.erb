@@ -3,7 +3,11 @@
 
 <h3>Feedback for <%= @user.display_name %></h3>
 
-<p><%= link_to 'Back to my turn-ins', :controller => 'turnins', :course => @course, :assignment => @assignment %> | <%= link_to 'Back to assignment', :controller => 'assignments', :course => @course, :id => @assignment, :action => 'view', :assignment => nil %></p>
+<p><%= link_to 'Back to my turn-ins', :controller => '/turnins', :course => @course, :assignment => @assignment %> | 
+   <%= link_to 'Back to assignment', :controller => '/assignments', :course => @course, :id => @assignment, :action => 'view', :assignment => nil %> |
+   <%= link_to 'All Assignments', :controller => '/assignments', :course => @course, :assignment => nil, :id => nil, :action => nil %> |
+   <%= link_to 'My Grades', :controller => '/grades', :course => @course, :id => nil, :action => nil %>
+</p> 
 
 <% if @grade_item %>
   <% if @grade_entry.nil? %>

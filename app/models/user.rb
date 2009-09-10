@@ -35,7 +35,7 @@ class User < ActiveRecord::Base
     #create the md5 hash
     hash = MD5::md5(email_address)
     
-    return "http://www.gravatar.com/avatar/#{hash}.png?s=60&d=wavatar&r=PG"
+    return "http://www.gravatar.com/avatar/#{hash}.jpg?s=60&d=wavatar&r=PG"
   end
   
   def assignment_journals( assignment )

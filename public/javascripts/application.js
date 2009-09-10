@@ -1,3 +1,10 @@
+// Course jump
+function changeCourse() {
+	var cjForm = document.forms["course_jump"];
+	location.href = cjForm.course_select_top.options[cjForm.course_select_top.selectedIndex].value;		
+}
+
+
 // Place your application-specific JavaScript functions and classes here
 // This file is automatically included by javascript_include_tag :defaults
 

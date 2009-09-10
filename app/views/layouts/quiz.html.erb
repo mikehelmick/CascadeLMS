@@ -22,12 +22,7 @@
 	<% if @auto_refresh %>
 	  <meta http-equiv="refresh" content="8">
 	<% end %>
-	
-	<script type="text/javascript">
-	function changeCourse() {
-		location.href = course_jump.course_select_top.options[course_jump.course_select_top.selectedIndex].value
-	}
-	</script>
+
 	
 	<% if @course %>
 	<%= auto_discovery_link_tag(:rss, {:controller => 'feed', :course => @course }) %>

@@ -4,6 +4,7 @@
 <table class="fancy">
   <tr class="header">
     <th>Assignment</th>
+    <th>Feedback</th>
     <th>Category</th>
     <% if !@course.gradebook.nil? && @course.gradebook.weight_grades %><th>Category Weight</th><% end %>
     <th>Date</th>
@@ -27,12 +28,31 @@
           <%= grade_item.name %>
 	    <% end %>
 	  </td>
+	  <td>
+		<% if grade_item.assignment.released %>
+	        <% if grade_item.assignment.quiz.nil? %>
+  	           <%= link_to 'View Feedback', :controller => '/turnins', :course => @course, :assignment => grade_item.assignment, :action => 'feedback' %><%= image_tag 'lightbulb.png' %>
+            <% elsif grade_item.assignment.quiz.survey %>
+               -N/A-
+            <% else %>
+               <%= link_to 'View Feedback', :controller => '/quiz', :action => 'results', :course => @course, :id => grade_item.assignment %><%= image_tag 'lightbulb.png' %>
+            <% end %>
+	      <% else %>
+	        <% if grade_item.assignment.quiz.nil? %>
+	          <%= link_to 'Not Yet', :controller => '/turnins', :course => @course, :assignment => grade_item.assignment, :action => 'feedback' %> <%= image_tag 'lightbulb_off.png' %>
+	        <% elsif grade_item.assignment.quiz.survey %>
+               -N/A-
+	        <% else %>
+	          <%= link_to 'Not Yet', :controller => '/quiz', :action => 'results', :course => @course, :id => grade_item.assignment %><%= image_tag 'lightbulb_off.png' %>
+	        <% end %>
+	      <% end %>
+	  </td>
 	  <td><%= grade_item.grade_category.category %></td>
 	  <% if  @course.gradebook && @course.gradebook.weight_grades %><td align="right"><%= sprintf("%.2f", @weight_map[grade_item.grade_category.id] ) %>%</td><% end %>
       <td><%= grade_item.date.to_formatted_s(:long) %></td>
 
       <% if grade_item.display_type.eql?( GradeItem::shown_type( GradeItem::COMPLETE ) ) %>
-		<td align="center" class="cell" colspan="3">
+		<td align="center" class="cell" colspan="4">
 			Assignment
 			<% if  @grade_map[grade_item.id].nil? %>
 			  <%= image_tag 'cross.png' %> Incomplete
