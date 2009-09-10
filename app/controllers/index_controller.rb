@@ -34,7 +34,7 @@ class IndexController < ApplicationController
     
     if @user.password.nil? || @user.password.eql?('') 
       @login_error = 'You must enter a password.'
-      render :action => 'index'
+      render :action => 'index', :layout => 'login'
       return
     end
     

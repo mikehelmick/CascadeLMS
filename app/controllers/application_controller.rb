@@ -34,7 +34,7 @@ require 'MyString'
 # Likewise, all the methods added will be available for all controllers.
 class ApplicationController < ActionController::Base
   ## CSCW Application version
-  @@VERSION = '1.4.6 (Rainier) 20090909'
+  @@VERSION = '1.4.7 (Rainier) 20090909'
   
   ## Supress password logging
   filter_parameter_logging :password
@@ -435,13 +435,13 @@ class ApplicationController < ActionController::Base
         if redirect
 
           ## should we log this error
-          unless doh.message.index('No such object') || doh.message.index('Invalid credentials')
-            log_error(doh)
-          end
+          #unless doh.message.index('No such object') || doh.message.index('Invalid credentials')
+          #  log_error(doh)
+          #end
 
           @login_error = doh.message
           @user.password = '' 
-          render :action => 'index' 
+          render :action => 'index', :layout => 'login' 
         end
         return false
       end
