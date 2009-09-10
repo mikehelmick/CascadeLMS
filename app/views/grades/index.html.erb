@@ -29,7 +29,7 @@
 	    <% end %>
 	  </td>
 	  <td>
-		<% if grade_item.assignment.released %>
+		<% if !grade_item.assignment.nil? &&  grade_item.assignment.released %>
 	        <% if grade_item.assignment.quiz.nil? %>
   	           <%= link_to 'View Feedback', :controller => '/turnins', :course => @course, :assignment => grade_item.assignment, :action => 'feedback' %><%= image_tag 'lightbulb.png' %>
             <% elsif grade_item.assignment.quiz.survey %>
