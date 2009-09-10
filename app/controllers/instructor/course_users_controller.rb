@@ -8,6 +8,7 @@ class Instructor::CourseUsersController < Instructor::InstructorBase
     return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_users' )
     
     @show_images = true if params[:show_images]
+    @showCRN = false
   end
   
   def set_tab
@@ -53,6 +54,33 @@ class Instructor::CourseUsersController < Instructor::InstructorBase
     render :nothing => true
   end
   
+  # This action is only for changing student CRNs.
+  # if called w/ other types of user, no harm, no foul
+  def change_student_crn
+    return unless load_course( params[:course] )
+    return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_users' )
+    
+    crn = Crn.find(params[:crn]) rescue crn = nil
+    found = false
+    found = true if params[:crn].eql?("0")
+    @course.crns.each do |course_crn|
+      found = found || course_crn.id = crn.id
+    end    
+    return unless found
+    
+    @course.courses_users.each do |u|
+      if u.user_id.to_i == params[:id].to_i && u.course_student
+        u.crn_id = params[:crn].to_i
+        if u.save
+          flash[:notice] = "Section assignment has been updated for student: #{u.user.display_name}"
+        end
+        @course.save
+      end
+    end
+    
+    redirect_to :action => 'index', :course => @course, :id => nil, :crn => nil
+  end
+  
   def adduser
     return unless load_course( params[:course] )
     return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_users' )
@@ -87,7 +115,10 @@ class Instructor::CourseUsersController < Instructor::InstructorBase
       @course.save   
     end
     
-    @users = @course.students if @utype.eql?('student')
+    @showCRN = false
+    
+    @users = @course.students_courses_users if @utype.eql?('student')
+    @showCRN = true if @utype.eql?('student')
     @users = @course.assistants if @utype.eql?('assistant')
     @users = @course.guests if @utype.eql?('guest')
     @users = @course.instructors if @utype.eql?('instructor')

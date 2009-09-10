@@ -1,14 +1,42 @@
-<ul>
+<div id="form_area">
+	<div class="block">
+
 <% if @users.nil? || @users.size == 0 %>
-  <li>No users in this category</li>
+  <p><li>No users in this category</li></p>
 <% else %>	
 <% for user in @users %>
-  <li id="<%=@utype%>_user_<%=user.id%>">
+  <% course_user = nil
+     if user.class.to_s.eql?( 'CoursesUser' ) 
+	     course_user = user
+	     user = user.user 
+     end 
+  %>
+  <div id="<%=@utype%>_user_<%=user.id%>" style="margin-left: 20px" class="clear">
+	<label>
     <% if @course.course_open %>
-	<%= link_to_remote( image_tag('delete.png', :align => 'absmiddle' ), :url => { :action => 'deluser', :type => @utype, :course => @course.id, :id => user }, :confirm => "Remove user #{user.display_name} from this course?", :success => "new Effect.Puff( '#{@utype}_user_#{user.id}' )", :failure => "alert('There was an error removing the selected user from this course.');" ) %>
-	 <% end %>
-	   <% if @show_images %><img src="<%= user.gravatar_url %>" align="middle" /><% end %> <%=h user.display_name %> (<%=h user.email%>)
-	</li>
+	  <%= link_to_remote( image_tag('delete.png', :align => 'absmiddle' ), :url => { :action => 'deluser', :type => @utype, :course => @course.id, :id => user }, :confirm => "Remove user #{user.display_name} from this course?", :success => "new Effect.Puff( '#{@utype}_user_#{user.id}' )", :failure => "alert('There was an error removing the selected user from this course.');" ) %>
+	<% end %>
+	   <% if @show_images %><img src="<%= user.gravatar_url %>" align="top" /><% end %> 
+		 <%=h user.display_name %> (<%=h user.email%>) 
+	   <% if @showCRN && !course_user.nil? %> 
+    </label>
+		  <% form_tag( :action => 'change_student_crn', :id => user ) do %> 
+			<select id="course_select_top" name="crn" onchange="this.form.submit();">
+		       <% selected = ""
+		          selected = 'selected="selected"' if (course_user.crn_id == 0) %>
+		       <option value="0" <%= selected %>>-- Select Section --</option>     
+		       <% for crn in @course.crns %> 
+		         <% selected = ""
+			        selected = 'selected="selected"' if (course_user.crn_id == crn.id) %>
+		         <option value="<%= crn.id %>" <%= selected %>>Section: <%= crn.name %>, <%= crn.crn %></option>     
+		       <% end %>
+		     </select>
+      	 <% end %> 	  
+	   
+	   <% end %>
+	</div>
 <% end %>
 <% end %>
-</ul>
+
+ </div>
+</div>

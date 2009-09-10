@@ -28,9 +28,11 @@
 <h2>Students(s) for <%= @course.title %></h2>
 <div id="student_error"> </div>
 <div id="student">
-<% @users = @course.students %>
+<% @users = @course.students_courses_users %>
 <% @utype = 'student' %>
+<% @showCRN = true if @course.crns.size > 1 %>
 <%= render :partial => 'userlist' %>
+<% @showCRN = false %>
 </div>
 
 

@@ -21,6 +21,11 @@ class AutoEnrollment < CourseCreator
           found = false
           course.courses_users.each do |cu|
             if cu.user_id == @user.id
+              if cu.crn_id == 0
+                cu.crn_id = crn.id
+                cu.save
+              end
+              
               unless cu.course_student
                 cu.course_student = true
                 cu.save
@@ -37,6 +42,7 @@ class AutoEnrollment < CourseCreator
             courseuser.course_student = true
             courseuser.course_instructor = false
             courseuser.term_id = course.term_id
+            courseuser.crn_id = crn.id
         
             courseuser.save
             status = "#{status} You have been enrolled in the course: #{course.title} (#{crn.crn}, #{crn.name}).<br/>"

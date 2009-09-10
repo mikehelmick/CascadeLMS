@@ -9,6 +9,8 @@ class Instructor::CourseGradebookController < Instructor::InstructorBase
     return unless load_course( params[:course] )
     return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_gradebook' )
     
+    @showSections = @course.crns.size > 1
+    
     process_grades( @course )
   end
   
@@ -338,9 +340,25 @@ class Instructor::CourseGradebookController < Instructor::InstructorBase
   end
   
   def process_grades( course )
+    
+    @crn_averages = Hash.new
+    @crn_students = Hash.new 
+    @crn_averages[0] = Hash.new
+    @crn_students[0] = Hash.new 
+    course.crns.each do |crn|
+      @crn_averages[crn.id] = Hash.new
+      @crn_students[crn.id] = Hash.new
+    end
+    
     # get the grade items and students
     @grade_items = course.grade_items
-    @students = course.students
+    @cu_students = course.students_courses_users
+    @students = Array.new
+    @student_crn = Hash.new
+    @cu_students.each do |cu|
+      @students << cu.user
+      @student_crn[cu.user.id] = cu.crn_id
+    end 
     @total_points = 0
     
     create_gradebook
@@ -387,6 +405,13 @@ class Instructor::CourseGradebookController < Instructor::InstructorBase
         @averages[gi.id] = 0
         @average_no_blank[gi.id] = 0
         
+        course.crns.each do |crn|
+          @crn_averages[crn.id][gi.id] = 0
+          @crn_students[crn.id][gi.id] = 0
+        end
+        @crn_averages[0][gi.id] = 0
+        @crn_students[0][gi.id] = 0
+        
         @total_points += gi.points
         
         gi.grade_entries.each do |ge|
@@ -394,7 +419,11 @@ class Instructor::CourseGradebookController < Instructor::InstructorBase
           unless @grade_matrix[ge.user_id].nil?
             @grade_matrix[ge.user_id][gi.id] = ge.points
             @averages[gi.id] += ge.points
+            @crn_averages[@student_crn[ge.user_id]][gi.id] += ge.points
+
             @student_totals[ge.user_id] += ge.points
+            
+            @crn_students[@student_crn[ge.user_id]][gi.id] += 1
             
             if @student_cat_total[ge.user_id][gi.grade_category_id].nil?
               @student_cat_total[ge.user_id][gi.grade_category_id] = ge.points
@@ -408,7 +437,7 @@ class Instructor::CourseGradebookController < Instructor::InstructorBase
         ## need to calculate the empties
         @students.each do |student|
           if @grade_matrix[student.id][gi.id].nil? || @grade_matrix[student.id][gi.id] == 0
-            @average_no_blank[gi.id] = @average_no_blank[gi.id] + 1
+            @average_no_blank[gi.id] = @average_no_blank[gi.id] + 1 
           end
         end
         

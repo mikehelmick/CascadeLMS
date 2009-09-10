@@ -46,7 +46,7 @@ class Course < ActiveRecord::Base
       # merge course details
       self.title = "#{self.title} #{other.title}"
       self.short_description = "#{self.short_description} #{other.short_description}"
-      self.open = self.open || other.open
+      self.course_open = self.course_open || other.course_open
       
       # reassign any CRNs to this new course
       crnmap = Hash.new
@@ -153,6 +153,14 @@ class Course < ActiveRecord::Base
     count = 0
     self.courses_users.each { |u| count += 1 if u.course_student }
     count
+  end
+  
+  def students_courses_users
+    inst = Array.new
+    self.courses_users.each do |u|
+      inst << u if u.course_student
+    end
+    sort_courses_users inst  
   end
   
   def students
@@ -270,6 +278,23 @@ class Course < ActiveRecord::Base
   end
  
   private
+  
+  # sorts course_users entries
+  def sort_courses_users(arr)
+    arr.sort! do |x,y|
+      res = x.crn_id <=> y.crn_id      
+      if res != 0 && x.crn_id != 0 && y.crn_id != 0
+        res = x.crn.name <=> y.crn.name
+      end      
+      if res == 0
+        res = x.user.last_name.downcase <=> y.user.last_name.downcase
+        if res == 0 
+          res = x.user.uniqueid.downcase <=> y.user.uniqueid.downcase
+        end
+      end
+      res
+    end
+  end
   
   def sort_c_users(arr)
     arr.sort! do |x,y|

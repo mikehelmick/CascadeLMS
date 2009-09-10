@@ -12,6 +12,7 @@
   <tr class="header"> 
    <th nowrap="nowrap">ID</th>
    <th nowrap="nowrap">Students</th>
+   <% if @showSections %><th nowrap="nowrap">Section</th><% end %>
    <% for gi in @grade_items %>
 	<th class="cell"  nowrap="nowrap">  
 	  <% if gi.assignment.nil? || gi.assignment.file_uploads %>
@@ -60,7 +61,8 @@
   </tr>
 
 <% count = 0 %>
-<% for student in @students %>
+<% for student_cu in @course.students_courses_users %>
+  <% student = student_cu.user %>
   <% count = count.next 
 	   odd = "odd"
 	   odd = "even" if count.even?
@@ -68,6 +70,7 @@
   <tr class="<%=odd%> hover" id="student_<%=student.id%>">
 	<td  nowrap="nowrap"><%= student.uniqueid %></td>
 	<td  nowrap="nowrap"><%= student.display_name %></td>
+	<% if @showSections %><td nowrap="nowrap"><%= student_cu.crn.name rescue "-none-" %></th><% end %>
 	
 	<% for gi in @grade_items %>
 	  <td class="cell">
@@ -106,7 +109,9 @@
 
 <% if @students.size > 0 %>
   <tr class="summary">
-    <td colspan="2" class="summaryCell"><b>Item Averages</b></td>
+	<% span = 2 
+	   span = 3 if @showSections %>
+    <td colspan="<%= span %>" class="summaryCell"><b>Item Averages</b></td>
 	
 	<% for gi in @grade_items %>
 		<td class="summaryCell"> 
@@ -126,7 +131,7 @@
   </tr>
 
   <tr class="summary">
-    <td colspan="2" class="summaryCell"><b>Item Averages w/o blanks and zeros</b></td>
+    <td colspan="<%= span %>" class="summaryCell"><b>Item Averages w/o blanks and zeros</b></td>
 	
 	<% for gi in @grade_items %>
 		<td class="summaryCell"> 
@@ -144,6 +149,32 @@
     <td class="summaryCell">*****</td>
     <td class="summaryCell">*****</td>
   </tr>
+
+  <% if @showSections %>
+    <% for crn in @course.crns %>
+    <tr class="summary">
+	    <td colspan="<%= span %>" class="summaryCell"><b>Section '<%= crn.crn %> / <%= crn.name %>' Average:</b></td>
+	
+	    <% for gi in @grade_items %>
+		  <td class="summaryCell"> 
+		    <%= sprintf( "%.2f", @crn_averages[crn.id][gi.id]/@crn_students[crn.id][gi.id] ) rescue 'xx' %> 
+		  </td>
+	    <% end %>  
+	
+	    <% if @course.gradebook.weight_grades %>
+	      <td class="summaryCell">&nbsp;</td>
+            <% for category in @categories %><td class="summaryCell" colspan="2">----</td><% end %>
+          <td class="summaryCell">&nbsp;</td>
+	    <% end %>
+	
+        <td class="summaryCell">*****</td>
+        <td class="summaryCell">*****</td>
+        <td class="summaryCell" nowrap="nowrap"><b>Section '<%= crn.crn %> / <%= crn.name %>' Average:</b></td>
+      </tr>
+    <% end %>
+  <% end %>
+
 <% end %>
+
 
 </table>

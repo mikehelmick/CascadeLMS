@@ -95,6 +95,9 @@
   <div id="contentarea" class="clear">
 	
 	<div id="content">
+		<% if flash[:notice] %><div id="GoodMessage"><%= flash[:notice] %></div><% end %>
+		<% if flash[:badnotice] %><div class="errorExplanation"><%= flash[:badnotice] %></div><% end %>
+		
 	    <%= @content_for_layout %>
 	</div>
 		

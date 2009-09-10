@@ -30,12 +30,16 @@
 		    <% if @user.program_manager? %>
 		      <% if !@tab.nil? && @tab.eql?('programs') %>
 		        <li><%= link_to 'Programs', {:controller => '/program', :course => nil, :assignment => nil, :id => nil}, { :id => 'current' } %></li> 
+	          <% else %>
+	            <li><%= link_to 'Programs', {:controller => '/program', :course => nil, :assignment => nil, :id => nil} %></li> 
 		      <% end %>
 		    <% end %>
 		
 		    <% if @user.admin %>
 		      <% if !@tab.nil? && @tab.eql?('administration') %>
-		        <li><%= link_to 'Administration', {:controller => '/admin', :course => @course, :assignment => nil}, { :id => 'current' } %></li> 
+		        <li><%= link_to 'Administration', {:controller => '/admin', :course => @course, :assignment => nil}, { :id => 'current' } %></li>
+		      <% else %>
+		        <li><%= link_to 'Administration', {:controller => '/admin', :course => @course, :assignment => nil} %></li> 
 		      <% end %>
 		    <% end %>
 		
