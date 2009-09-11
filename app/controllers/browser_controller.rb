@@ -1,6 +1,6 @@
 class BrowserController < ApplicationController
   
-  layout 'noright'
+  layout 'login'
   
   def index    
     @user = User.new
