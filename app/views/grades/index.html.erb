@@ -30,22 +30,26 @@
 	  </td>
 	  <td>
 		<% if !grade_item.assignment.nil? &&  grade_item.assignment.released %>
-	        <% if grade_item.assignment.quiz.nil? %>
-  	           <%= link_to 'View Feedback', :controller => '/turnins', :course => @course, :assignment => grade_item.assignment, :action => 'feedback' %><%= image_tag 'lightbulb.png' %>
-            <% elsif grade_item.assignment.quiz.survey %>
-               -N/A-
-            <% else %>
-               <%= link_to 'View Feedback', :controller => '/quiz', :action => 'results', :course => @course, :id => grade_item.assignment %><%= image_tag 'lightbulb.png' %>
-            <% end %>
-	      <% else %>
-	        <% if grade_item.assignment.quiz.nil? %>
-	          <%= link_to 'Not Yet', :controller => '/turnins', :course => @course, :assignment => grade_item.assignment, :action => 'feedback' %> <%= image_tag 'lightbulb_off.png' %>
-	        <% elsif grade_item.assignment.quiz.survey %>
-               -N/A-
-	        <% else %>
-	          <%= link_to 'Not Yet', :controller => '/quiz', :action => 'results', :course => @course, :id => grade_item.assignment %><%= image_tag 'lightbulb_off.png' %>
-	        <% end %>
-	      <% end %>
+		  <% if grade_item.assignment.quiz.nil? %>                
+			<%= link_to 'View Feedback', :controller => '/turnins', :course => @course, :assignment => grade_item.assignment, :action => 'feedback' %>
+			<%= image_tag 'lightbulb.png' %>
+          <% elsif grade_item.assignment.quiz.survey %>
+		    -N/A-
+		  <% else %> 
+		    <%= link_to 'View Feedback', :controller => '/quiz', :action => 'results', :course => @course, :id => grade_item.assignment %>
+		    <%= image_tag 'lightbulb.png' %>
+		  <% end %>
+		<% elsif !grade_item.assignment.nil? %>
+		  <% if grade_item.assignment.quiz.nil? %>
+		    <%= link_to 'Not Yet', :controller => '/turnins', :course => @course, :assignment => grade_item.assignment, :action => 'feedback' %> <%= image_tag 'lightbulb_off.png' %>
+		  <% elsif grade_item.assignment.quiz.survey %>               
+		    -N/A-
+		  <% else %>
+		    <%= link_to 'Not Yet', :controller => '/quiz', :action => 'results', :course => @course, :id => grade_item.assignment %><%= image_tag 'lightbulb_off.png' %>
+		  <% end %>
+		<% else %>
+          -N/A-
+		<% end %>
 	  </td>
 	  <td><%= grade_item.grade_category.category %></td>
 	  <% if  @course.gradebook && @course.gradebook.weight_grades %><td align="right"><%= sprintf("%.2f", @weight_map[grade_item.grade_category.id] ) %>%</td><% end %>
