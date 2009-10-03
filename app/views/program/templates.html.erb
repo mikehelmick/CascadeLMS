@@ -33,8 +33,13 @@
 		  </td>
 	      <td nowrap="nowrap"><%=h course_template.start_date %></td>
 	      <td nowrap="nowrap">
-		    <%= link_to 'Edit Template', :action => 'edit_template', :id => @program, :template => course_template %> |
-		    <%= link_to 'Edit Outcomes', :action => 'template_outcomes', :id => @program, :template => course_template %> |
+		    <%= link_to 'Edit', :action => 'edit_template', :id => @program, :template => course_template %> |
+		    <%= link_to 'Outcomes', :action => 'template_outcomes', :id => @program, :template => course_template %> |
+			
+			<%= link_to 'Outcome Mapping Report', :action => 'view_course_template_to_program_outcomes', :id => @program, :template => course_template %> 
+			<%= link_to "#{image_tag 'report.png', :align => 'absmiddle'}", :action => 'view_course_template_to_program_outcomes', :id => @program, :template => course_template %>
+		    <%= link_to "#{image_tag 'page_white_excel.png', :align => 'absmiddle'}", :action => 'view_course_template_to_program_outcomes', :id => @program, :template => course_template, :format => 'csv' %> | 
+			
 			<%= link_to 'Clone', {:action => 'clone_template', :id => @program, :template => course_template}, :confirm => 'Are you sure you want to clone this course template, and all outcomes and outcome mappings?' %> |
 		    <% extended = "" 
 		       extended = "ATTENTION: This course template is shared by multiple programs.  Deleting it will delete it from all programs!\n" if course_template.programs.length > 1 %>

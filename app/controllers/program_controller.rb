@@ -173,6 +173,8 @@ class ProgramController < ApplicationController
          rtn
       end
     end
+    
+    render :layout => 'noright'
   end
   
   def create_template
@@ -527,6 +529,28 @@ class ProgramController < ApplicationController
     
     render :layout => 'noright'
   end
+  
+  
+  def view_course_template_to_program_outcomes
+    return unless load_program( params[:id] )
+    return unless allowed_to_manage_program( @program, @user )
+    return unless load_template( params[:template] )
+    return unless template_in_program( @course_template, @program )
+    
+    @numbers = load_outcome_numbers( @course_template )
+    @course = @course_template ## For shared rendering
+    
+    @title = "'#{@course_template.title}' (#{@course_template.start_date}) Outcomes to Program Outcomes Report"    
+    respond_to do |format|
+        format.html { render :layout => 'noright' }
+        format.csv  { 
+          response.headers['Content-Type'] = 'text/csv; charset=iso-8859-1; header=present'
+          response.headers['Content-Disposition'] = "attachment; filename=#{@course_template.title}_course_template_outcomes_report.csv"
+          render :layout => 'noright' 
+        }
+    end   
+  end
+  
   
   def view_course_to_program_outcomes
     return unless load_program( params[:id] )
