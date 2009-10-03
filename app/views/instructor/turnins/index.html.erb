@@ -158,11 +158,11 @@
 	  <% end %>
 	  <% if @assignment.auto_grade %>
 	    <td><b>AutoGrade</b><br/>
-		<% if @assignment.auto_grade_setting.io_check? %>
+		<% if !@assignment.auto_grade_setting.nil? && @assignment.auto_grade_setting.io_check? %>
 		  <%= link_to_remote( "Summary", :update => "agsummary_#{student.id}",
 		    :url => { :action => "agsummary", :id => student.id, :course => @course, :assignment => @assignment }, :success => visual_effect(:toggle_slide, "agsummary_#{student.id}" ) ) %>
 		<% end %>
-		<% if @assignment.auto_grade_setting.io_check? || @assignment.auto_grade_setting.check_style?  %>
+		<% if !@assignment.auto_grade_setting.nil? && (@assignment.auto_grade_setting.io_check? || @assignment.auto_grade_setting.check_style?) %>
 		  <br/><%= link_to 'Full Report', { :controller => '/instructor/turnins', :action => 'view_io_tests', :course => @course, :assignment => @assignment, :student => student.id }, :popup => true %>
 		<% end %>
 		</td>
