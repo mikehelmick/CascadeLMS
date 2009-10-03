@@ -55,6 +55,7 @@ class Instructor::RubricsController< Instructor::InstructorBase
  def edit
    return unless common_data_load( params )  
    return unless load_rubric( params[:id] )
+   @title = "Edit Rubric for '#{@assignment.title}'"
  end
  
  def update

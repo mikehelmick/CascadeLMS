@@ -531,20 +531,24 @@ class Instructor::TurninsController < Instructor::InstructorBase
             # for each rubric for this user (key)
             @assignment.rubrics.each do |rubric|
                rubric_entry = rubric_entries[key][rubric.id]
-               if rubric_entry.nil?
-                 rubric_entry = RubricEntry.new
-                 rubric_entry.assignment = @assignment
-                 rubric_entry.user_id = key
-                 rubric_entry.rubric = rubric
-               end
+               if @deleted # boolean - if deleted
+                 rubric_entry.destroy unless rubric_entry.nil?
+               else
+                 if rubric_entry.nil?
+                   rubric_entry = RubricEntry.new
+                   rubric_entry.assignment = @assignment
+                   rubric_entry.user_id = key
+                   rubric_entry.rubric = rubric
+                 end
 
-               # update the full/partial/no credit selector
-               rubric_entry.above_credit   = params["rubric_#{rubric.id}"].eql?("above")
-               rubric_entry.full_credit    = params["rubric_#{rubric.id}"].eql?("full")
-               rubric_entry.partial_credit = params["rubric_#{rubric.id}"].eql?("partial")
-               rubric_entry.no_credit      = params["rubric_#{rubric.id}"].eql?("no")
-               rubric_entry.comments       = params["rubric_#{rubric.id}_comments"]
-               @success = rubric_entry.save && @success
+                 # update the full/partial/no credit selector
+                 rubric_entry.above_credit   = params["rubric_#{rubric.id}"].eql?("above")
+                 rubric_entry.full_credit    = params["rubric_#{rubric.id}"].eql?("full")
+                 rubric_entry.partial_credit = params["rubric_#{rubric.id}"].eql?("partial")
+                 rubric_entry.no_credit      = params["rubric_#{rubric.id}"].eql?("no")
+                 rubric_entry.comments       = params["rubric_#{rubric.id}_comments"]
+                 @success = rubric_entry.save && @success
+               end
             end
 
             @success = grade_entry.save && @success unless @deleted
