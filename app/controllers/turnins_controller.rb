@@ -98,8 +98,26 @@ class TurninsController < ApplicationController
     directory = @turnin.get_team_dir( @app['external_dir'], @team ) unless @team.nil?
     last_part = directory[directory.rindex('/')+1...directory.size]
     first_part = directory[0...directory.rindex('/')]
+
+    file_list = Array.new
+    @turnin.user_turnin_files.each do |utf|
+      if !utf.directory_entry && !utf.hidden
+        relative_name = utf.filename
+        walker = utf
+        while walker.directory_parent > 0 
+          walker = UserTurninFile.find( walker.directory_parent )
+          relative_name = "#{walker.filename}/#{relative_name}"
+        end
+        
+        while( relative_name[0...1].eql?("/") )
+            relative_name = relative_name[1..-1] if relative_name.size >= 1 && relative_name[0...1].eql?("/") 
+        end
+        
+        file_list << "#{last_part}/#{relative_name}"
+      end
+    end
     
-    tar_cmd = "tar -C #{first_part} -czf #{tf.filename} #{last_part}"
+    tar_cmd = "tar -C #{first_part} -czf #{tf.filename} #{file_list.join(' ')}"
     result = `#{tar_cmd} 2>&1`
     
     if result.size > 0 
