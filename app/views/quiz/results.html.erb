@@ -57,23 +57,32 @@
             total_correct = 0
           %>
 	     <ul style="list-style-type: upper-latin;">
+		   <% for quiz_answer in question.quiz_question_answers 
+		        if quiz_answer.correct && answer_ids[quiz_answer.id] 
+		          possible_correct = possible_correct + 1 
+		          total_correct = total_correct + 1
+		        elsif quiz_answer.correct
+			      possible_correct = possible_correct + 1
+			    end
+		      end %>
+		
 	       <% for quiz_answer in question.quiz_question_answers %>
-	         <li><% if quiz_answer.correct && answer_ids[quiz_answer.id] %>
+	         <li><% if quiz_answer.correct && answer_ids[quiz_answer.id] && total_correct == possible_correct %>
 		             <b><font color="green">Correct! <%= image_tag 'accept.png' %></font></b>
-		             <% possible_correct = possible_correct + 1 
-		                total_correct = total_correct + 1
-		              %>
-		         <% elsif quiz_answer.correct %>
-		             <% possible_correct = possible_correct + 1 %>
-	  	         <% elsif answer_ids[quiz_answer.id] %>
+		         <% elsif answer_ids[quiz_answer.id] && total_correct == possible_correct %>
 	                 <b><font color="red">Incorrect <%= image_tag 'cancel.png' %></font></b>
 	             <% end %>
+	 
+	             <% if answer_ids[quiz_answer.id] && total_correct != possible_correct %>
+	                <b>Selected:</b>                                                     
+	             <% end %> 
+	
 	             <%= quiz_answer.answer_text_html %>
 		     </li>
 	       <% end %>
 	     </ul>
 	     <% if total_correct != possible_correct %>
-	       <p><font color="red">Incorrect <%= image_tag 'cancel.png' %>: <i>There are <%= possible_correct - total_correct %> more correct answers to this question.</i></font></p>
+	       <p><font color="red">Incorrect <%= image_tag 'cancel.png' %>: <i>You have not selected the correct answers to this question.</i></font></p>
 	     <% end %>
 	   
 	
