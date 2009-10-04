@@ -255,6 +255,15 @@ class TurninsController < ApplicationController
     @current_turnin = nil
     @current_turnin = @turnins[0] if @turnins.size > 0
     
+    if !@current_turnin.nil?
+      if @current_turnin.user_turnin_files.size == 1
+        flash[:badnotice] = "Current turnin set is empty, so it hasn't been archived."
+        redirect_to :action => 'index'
+        return
+      end
+    end
+    
+    
     # create new turning set
     ut = UserTurnin.new
     ut.assignment = @assignment
