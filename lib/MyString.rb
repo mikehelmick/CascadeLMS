@@ -6,7 +6,7 @@ class String
       str = self[i...i+1]
       if str.eql?("\n")
         html << "<br/>"
-      elsif str.eql?(" ")
+      elsif str.eql?(" ") && self[i-1...i].eql?(" ")
         html << "&nbsp;"
       else 
         html << str
