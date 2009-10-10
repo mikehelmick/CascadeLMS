@@ -1,5 +1,5 @@
 
-<% if @user.instructor_in_course?(@course.id) || @course.course_setting.enable_forum_topic_create %>
+<% if @user.instructor_in_course?(@course.id) || @user.assistant_in_course?(@course.id) || @course.course_setting.enable_forum_topic_create %>
 <p><%= link_to "#{image_tag 'layout_add.png'} Create new forum", :course => @course, :action => 'new_forum' %> |
 <%= link_to "#{image_tag 'chart_pie.png'} View post report", :course => @course, :action => 'post_report' %>
 </p>

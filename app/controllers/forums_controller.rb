@@ -237,7 +237,7 @@ class ForumsController < ApplicationController
     return unless load_course( params[:course] )
     return unless allowed_to_see_course( @course, @user )
     unless @course.course_setting.enable_forum_topic_create
-      return unless ensure_course_instructor( @course, @user )
+      return unless ensure_course_instructor_or_assistant( @course, @user )
     end
     return unless course_open( @course, :action => 'index' )
     
@@ -246,7 +246,7 @@ class ForumsController < ApplicationController
   
   def post_report
     return unless load_course( params[:course] )
-    return unless ensure_course_instructor( @course, @user )
+    return unless ensure_course_instructor_or_assistant( @course, @user )
     
     @count_map = Hash.new
     @course.courses_users.each do |u|
@@ -267,7 +267,7 @@ class ForumsController < ApplicationController
   
   def post_report_graph
     return unless load_course( params[:course] )
-    return unless ensure_course_instructor( @course, @user )
+    return unless ensure_course_instructor_or_assistant( @course, @user )
     
     @count_map = Hash.new
     @course.courses_users.each do |u|
@@ -318,7 +318,7 @@ class ForumsController < ApplicationController
   
   def create_forum
     return unless load_course( params[:course] )
-    return unless ensure_course_instructor( @course, @user )
+    return unless ensure_course_instructor_or_assistant( @course, @user )
     return unless course_open( @course, :action => 'index' )
     
     @topic = ForumTopic.new(params[:topic])

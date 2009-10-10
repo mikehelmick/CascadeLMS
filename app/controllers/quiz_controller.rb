@@ -290,6 +290,7 @@ class QuizController < ApplicationController
     @quiz_attempt.quiz = @quiz
     @quiz_attempt.user = @user
     @quiz_attempt.completed = false
+    @quiz_attempt.save_count = 0
     @quiz_attempt.save
     
     # build the answer set

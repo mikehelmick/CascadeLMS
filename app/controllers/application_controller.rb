@@ -34,7 +34,7 @@ require 'MyString'
 # Likewise, all the methods added will be available for all controllers.
 class ApplicationController < ActionController::Base
   ## CSCW Application version
-  @@VERSION = '1.4.15 (Rainier) 20091004'
+  @@VERSION = '1.4.17 (Rainier) 20091010'
   
   ## Supress password logging
   filter_parameter_logging :password
@@ -249,6 +249,19 @@ class ApplicationController < ActionController::Base
     # duplicate user - to keep session down
     @user = User.find(session[:user].id)
     return true
+  end
+  
+  def ensure_course_instructor_or_assistant( course, user )
+    user.courses_users.each do |cu|
+      if cu.course_id == course.id
+        if cu.course_instructor || cu.course_assistant
+          return true
+        end
+      end  
+    end
+    flash[:badnotice] = "You are not authorized to perform that action."
+    redirect_to :controller => '/overview', :course => course.id
+    return false    
   end
   
   def ensure_course_instructor( course, user )

@@ -158,7 +158,18 @@ class IndexController < ApplicationController
   
   def confirm
     ## just call the activate function, same results
-    return unless activate
+    @act_user = User.find(:first, :conditions => ['id = ? and activation_token = ?', params[:id], params[:seq] ] ) rescue @act_user = nil
+    
+    if @act_user.nil?
+      flash[:badnotice] = 'The information you requested is invalid or does not exist, please verify the account activation link in your email.'
+      redirect_to :controller => '/', :action => nil, :id => nil
+      return false
+    
+    elsif @act_user.activated
+      flash[:notice] = 'Your account has already been activated.'
+      redirect_to :controller => '/', :action => nil, :id => nil
+      return false
+    end
     
     unless @act_user.email.eql?(params[:email])
       flash[:badnotice] = "Email address is invalid, your account has not been activated."

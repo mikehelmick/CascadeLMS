@@ -11,7 +11,7 @@ class Notifier < ActionMailer::Base
   
   def send_create( new_user, user, link, organization )  
     @recipients = "#{new_user.display_name} <#{new_user.email}>"
-    @subject = "#{subject} - Account Created - CSCW"
+    @subject = "#{subject} - Account Created - CascadeLMS"
     @from = "#{user.display_name} <#{user.email}>"
     
     @body[:link] = link
@@ -22,7 +22,7 @@ class Notifier < ActionMailer::Base
   
   def send_recover( user, from_address, link, organization )
     @recipients = "#{user.display_name} <#{user.email}>"
-    @subject = "Password Reset Request - Account Created - CSCW"
+    @subject = "Password Reset Request - CascadeLMS"
     @from = "#{from_address} <#{from_address}>"
     
     @body[:link] = link
