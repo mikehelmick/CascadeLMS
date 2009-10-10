@@ -30,8 +30,9 @@ class Document < ActiveRecord::Base
   def validate
     errors.add_to_base("No file was given") if self.filename.nil? || self.filename.size == 0
     
-    
     errors.add_to_base("Filenames cannot contain more than one period ('.') character") unless self.filename.index('.') == self.filename.rindex('.')
+    
+    errors.add_to_base("All files must have an extension") if self.filename.index(".").nil?
     
     ## don't let a folder become a podcast if it has subfolders
     if self.podcast_folder

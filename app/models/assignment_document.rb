@@ -16,6 +16,8 @@ class AssignmentDocument < ActiveRecord::Base
     
     if self.filename.index('.') != self.filename.rindex('.')
       return false
+    elsif self.filename.index('.').nil?
+      return false
     else
       self.save
       return true

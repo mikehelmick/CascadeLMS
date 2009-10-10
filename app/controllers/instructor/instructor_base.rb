@@ -22,7 +22,7 @@ class Instructor::InstructorBase < ApplicationController
     # see if we got a document
     if file_param && file_param.size > 0
       if file_param.nil? || file_param.class.to_s.eql?('String')
-        flash[:badnotice] = "You must upload an assignment file, or enter a description." unless supress_error
+        flash[:badnotice] = "You must upload an assignment file, or enter a description.  All filenames must have an extension, but may only contain a single period ('.') character." unless supress_error
         return true
       else
         @asgm_document = AssignmentDocument.new

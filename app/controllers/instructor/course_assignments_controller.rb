@@ -100,7 +100,7 @@ class Instructor::CourseAssignmentsController < Instructor::InstructorBase
         if !do_exit && @assignment.save
            unless @asgm_document.nil?
              if ! @asgm_document.create_file( params[:file], @app['external_dir'] )
-               flash[:badnotice] = "Filenames cannot contain more than one period ('.') character"
+               flash[:badnotice] = "Filenames cannot contain more than one period ('.') character and must have an extension."
                raise "filename" 
              end
            end
@@ -141,6 +141,9 @@ class Instructor::CourseAssignmentsController < Instructor::InstructorBase
         end
       end
     rescue Exception => e
+      flash[:badnotice] = "Filenames cannot contain more than one period ('.') character and must have an extension." unless params[:file].nil?
+      @journal_field = JournalField.new if @journal_field.nil?
+      @categories = GradeCategory.for_course( @course )
       render :action => 'new'
     end
     # if @document.save
@@ -235,10 +238,12 @@ class Instructor::CourseAssignmentsController < Instructor::InstructorBase
         end
 
         ## see if there is a file to upload
-        do_exit = process_file( params[:file], true )
+        do_exit = process_file( params[:file], false )
+        raise "All filenames must have an extension, but may only contain a single period ('.') character." if do_exit
         unless @asgm_document.nil?
           if ! @asgm_document.create_file( params[:file], @app['external_dir'] )
-            raise "Filenames cannot contain more than one period ('.') character."
+            flash[:badnotice] = "Filenames cannot contain more than one period ('.') character and must have an extension."
+            raise "Filenames cannot contain more than one period ('.') character and must have an extension."
           end
           @assignment.file_uploads = true
           @assignment.save
@@ -248,7 +253,6 @@ class Instructor::CourseAssignmentsController < Instructor::InstructorBase
         redirect_to :action => 'edit', :course => @course, :id => @assignment
       end
     rescue RuntimeError => re
-      flash[:badnotice] = re.message
       redirect_to :action => 'edit', :course => @course, :id => @assignment
     end
         
