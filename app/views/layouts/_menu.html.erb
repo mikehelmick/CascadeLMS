@@ -37,9 +37,9 @@
 		
 		    <% if @user.admin %>
 		      <% if !@tab.nil? && @tab.eql?('administration') %>
-		        <li><%= link_to 'Administration', {:controller => '/admin', :course => @course, :assignment => nil}, { :id => 'current' } %></li>
+		        <li><%= link_to 'Administration', {:controller => '/admin', :course => nil, :assignment => nil}, { :id => 'current' } %></li>
 		      <% else %>
-		        <li><%= link_to 'Administration', {:controller => '/admin', :course => @course, :assignment => nil} %></li> 
+		        <li><%= link_to 'Administration', {:controller => '/admin', :course => nil, :assignment => nil} %></li> 
 		      <% end %>
 		    <% end %>
 		

@@ -29,9 +29,6 @@ class Instructor::ResultsController < Instructor::InstructorBase
     
     flash[:badnotice] = "The entry/exit surveys are not identical, comparisons are unreliable." if (!same_length)
     # more extensive validation...  
-      
-    
-    puts "ANS: #{@all_answer_count_maps.inspect}"
        
   end
 
@@ -342,36 +339,6 @@ private
     end
     
     return @answer_map
-  end
-
-  def aggregate_survey_responses( quiz )
-    # we can make some assumptions since 
-    @answer_count_map = Hash.new
-    @question_answer_total = Hash.new
-    @text_responses = Hash.new
-    
-    quiz.quiz_questions.each do |question|
-       
-      if question.text_response
-        @text_responses[question.id] = Array.new
-        responses = QuizAttemptAnswer.find(:all,:conditions => ["quiz_question_id = ?", question.id])
-        responses.each do |response|
-          @text_responses[question.id] << response.text_answer
-        end
-      
-      else
-        total_responses = 0
-        question.quiz_question_answers.each do |answer|
-          responses  = QuizAttemptAnswer.count(:conditions => ["quiz_question_answer_id = ?", answer.id])
-          @answer_count_map[answer.id] = responses
-          total_responses = total_responses + responses
-        end
-        @question_answer_total[question.id] = total_responses
-        
-      end
-    end
-    
-    return @answer_count_map, @question_answer_total, @text_responses
   end
   
   def set_tab

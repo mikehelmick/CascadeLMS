@@ -10,17 +10,23 @@
 '<%= @assignment.title %>'</h2>
 </div></div>
 
+<% show_controls = true %>
 
-<% if @assignment.upcoming? %>
+<% if @assignment.upcoming? && ! @assignment.quiz.entry_exit %>
   <p><%= link_to "#{image_tag 'add.png', :align => 'absmiddle'} New Question", :action => 'new_question', :course => @course, :id => @assignment %> |
  	 <%= link_to "#{image_tag 'application_edit.png', :align => 'absmiddle'} Edit Quiz Details", :action => 'edit', :course => @course, :id => @assignment %> 
      <% if !@quiz.show_elapsed %> |
         <%= link_to "Generate Self-reported Quiz Time", {:action => 'gen_quiz_time_question', :course => @course, :id => @assignment }, :method => :post %>
      <% end %>
   </p>
+
+<% elsif @assignment.quiz.entry_exit %>
+  <p class="errorExplanation">You cannot modify the questions on an automatically generated entry or exit survey.</p>
+  <% show_controls = false %>
+  <p><%= link_to "#{image_tag 'application_edit.png', :align => 'absmiddle'} Edit Quiz Details", :action => 'edit', :course => @course, :id => @assignment %></p>
 <% else %>
   <p class="errorExplanation">You cannot edit or create questions for this quiz since it is already available to students.</p>
-
+  <% show_controls = false %>
   <p><%= link_to "#{image_tag 'application_edit.png', :align => 'absmiddle'} Edit Quiz Details", :action => 'edit', :course => @course, :id => @assignment %></p>
 <% end %>
 
@@ -39,8 +45,9 @@
   <p><i>There are no questions for this quiz.</i></p>
 <% else %>
  
+  <% if @show_controls %> 
   <p><%= link_to "#{image_tag 'arrow_switch.png'} Reorder Questions", :action => 'reorder', :course => @course, :id => @assignment %></p>
-
+  <% end %>
 
   <table class="fancy" width="99%">
   <tr class="header">
@@ -48,7 +55,9 @@
 	  <th align="center">Type</th>
 	  <th align="center">Auto Score?</th>
 	  <th align="center" width="90%">Question</th>
-	  <th align="center">Controls</th>
+	  <% if @show_controls %>  
+	    <th align="center">Controls</th>
+	  <% end %>
 	</tr>
 
    <% row_count = 0 %>
@@ -78,6 +87,7 @@
 		   </ul>
 	     <% end %>	
 	   </td>
+	<% if @show_controls %> 
 	   <td valign="top" nowrap="nowrap">
 		 <% if @assignment.upcoming? %>
 		   <%= link_to "#{image_tag 'application_edit.png'} Edit Question", :action => 'edit_question', :course => @course, :id => @assignment, :question => question %> <br/>
@@ -93,6 +103,7 @@
 		   <s><%= image_tag 'delete.png' %> Delete Question</s>
 		 <% end %>
 	   </td>  
+	<% end %>
 	 </tr>
    <% end %>
   </table>
