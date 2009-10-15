@@ -31,15 +31,15 @@
 	    <i>Instructor(s): <%=h course.instructors.join( ", " ) %></i>
 	  </td>
       <td valign="top" align="left" nowrap="nowrap">
-	    <%= link_to 'View Outcomes', :action => 'view_course_outcomes', :id => @program, :course => course %>
-	    <%= link_to "#{image_tag 'report.png', :align => 'absmiddle'}", :action => 'view_course_outcomes', :id => @program, :course => course %> | 
-	    <%= link_to "Entry/Exit Surveys", :action => 'surveys', :id => @program, :course => course %> |
-	    <%= link_to 'Course / Program Outcomes Report', :action => 'view_course_to_program_outcomes', :id => @program, :course => course %> 
-		<%= link_to "#{image_tag 'report.png', :align => 'absmiddle'}", :action => 'view_course_to_program_outcomes', :id => @program, :course => course %>
-	    <%= link_to "#{image_tag 'page_white_excel.png', :align => 'absmiddle'}", :action => 'view_course_to_program_outcomes', :id => @program, :course => course, :format => 'csv' %> | 
-	    <%= link_to 'Course Rubrics Report', :action => 'view_course_rubrics_report', :id => @program, :course => course %>
-		<%= link_to "#{image_tag 'report.png', :align => 'absmiddle'}", :action => 'view_course_rubrics_report', :id => @program, :course => course %>
-	    <%= link_to "#{image_tag 'page_white_excel.png', :align => 'absmiddle'}", :action => 'view_course_rubrics_report', :id => @program, :course => course, :format => 'csv' %> 
+	    <%= link_to 'View Outcomes', :controller => 'program', :action => 'view_course_outcomes', :id => @program, :course => course %>
+	    <%= link_to "#{image_tag 'report.png', :align => 'absmiddle'}", :controller => 'program', :action => 'view_course_outcomes', :id => @program, :course => course %> | 
+	    <%= link_to "Entry/Exit Surveys", :controller => 'program', :action => 'surveys', :id => @program, :course => course %> |
+	    <%= link_to 'Course / Program Outcomes Report', :controller => 'program', :action => 'view_course_to_program_outcomes', :id => @program, :course => course %> 
+		<%= link_to "#{image_tag 'report.png', :align => 'absmiddle'}", :controller => 'program', :action => 'view_course_to_program_outcomes', :id => @program, :course => course %>
+	    <%= link_to "#{image_tag 'page_white_excel.png', :align => 'absmiddle'}", :controller => 'program', :action => 'view_course_to_program_outcomes', :id => @program, :course => course, :format => 'csv' %> | 
+	    <%= link_to 'Course Rubrics Report', :controller => 'program', :action => 'view_course_rubrics_report', :id => @program, :course => course %>
+		<%= link_to "#{image_tag 'report.png', :align => 'absmiddle'}", :controller => 'program', :action => 'view_course_rubrics_report', :id => @program, :course => course %>
+	    <%= link_to "#{image_tag 'page_white_excel.png', :align => 'absmiddle'}", :controller => 'program', :action => 'view_course_rubrics_report', :id => @program, :course => course, :format => 'csv' %> 
 	  </td>
 	</tr>
   <% end %>	
