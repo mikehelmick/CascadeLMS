@@ -10,7 +10,7 @@
 '<%= @assignment.title %>'</h2>
 </div></div>
 
-<% show_controls = true %>
+<% @show_controls = true %>
 
 <% if @assignment.upcoming? && ! @assignment.quiz.entry_exit %>
   <p><%= link_to "#{image_tag 'add.png', :align => 'absmiddle'} New Question", :action => 'new_question', :course => @course, :id => @assignment %> |
@@ -22,11 +22,11 @@
 
 <% elsif @assignment.quiz.entry_exit %>
   <p class="errorExplanation">You cannot modify the questions on an automatically generated entry or exit survey.</p>
-  <% show_controls = false %>
+  <% @show_controls = false %>
   <p><%= link_to "#{image_tag 'application_edit.png', :align => 'absmiddle'} Edit Quiz Details", :action => 'edit', :course => @course, :id => @assignment %></p>
 <% else %>
   <p class="errorExplanation">You cannot edit or create questions for this quiz since it is already available to students.</p>
-  <% show_controls = false %>
+  <% @show_controls = false %>
   <p><%= link_to "#{image_tag 'application_edit.png', :align => 'absmiddle'} Edit Quiz Details", :action => 'edit', :course => @course, :id => @assignment %></p>
 <% end %>
 
