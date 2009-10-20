@@ -71,6 +71,7 @@ class Instructor::QuizController < Instructor::InstructorBase
     
     @quiz = Quiz.new( params[:quiz] )
     @quiz.assignment = @assignment
+    @quiz.course_id = @course.id
     @quiz.anonymous = false if !@quiz.survey
     @quiz.linear_score = !@quiz.survey && (@points.nil? || (@points.class.to_s.eql?('String') && @points.eql?('')))
     @assignment.quiz = @quiz
