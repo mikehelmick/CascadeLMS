@@ -32,6 +32,15 @@ class Course < ActiveRecord::Base
   
   before_create :solidify
   
+  def sorted_grade_items
+    items = self.grade_items
+    items.sort do |a,b|
+      result = a.position <=> b.position
+      result = a.date <=> b.date if result == 0
+      result
+    end
+  end
+  
   def mapped_to_program?( program_id )
     programs.each do |program|
       return true if program.id == program_id

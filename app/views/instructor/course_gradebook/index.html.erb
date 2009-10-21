@@ -4,7 +4,8 @@
   <%= link_to 'Set Weighting', :action => 'set_weights', :course => @course %> |
 <% end %>
 <%= link_to 'Export', :action => 'export', :course => @course %> |
-<%= link_to 'Add New Item', :action => 'item', :course => @course %>
+<%= link_to 'Add New Item', :action => 'item', :course => @course %> |
+<%= link_to "#{image_tag 'arrow_switch.png', :align => 'absmiddle'} Set Display Order", :action => 'reorder', :course => @course %>
 
 <h2>Grade Book for <%= @course.title %></h2>
 

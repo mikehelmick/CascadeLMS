@@ -14,6 +14,30 @@ class Instructor::CourseGradebookController < Instructor::InstructorBase
     process_grades( @course )
   end
   
+  def reorder
+    return unless load_course( params[:course] )
+    return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_gradebook' )
+    
+    @grade_items = @course.sorted_grade_items
+  end
+  
+  def sort
+    return unless load_course( params[:course] )
+    return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_gradebook' )
+    
+    @grade_items = @course.sorted_grade_items
+    
+    # get the outcomes at this level
+    GradeItem.transaction do
+      @grade_items.each do |gi|
+        gi.position = params['grades-order'].index( gi.id.to_s ) + 1
+        gi.save
+      end
+    end
+    
+    render :nothing => true    
+  end
+  
   def settings
     return unless load_course( params[:course] )
     return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_gradebook' )
@@ -351,7 +375,7 @@ class Instructor::CourseGradebookController < Instructor::InstructorBase
     end
     
     # get the grade items and students
-    @grade_items = course.grade_items
+    @grade_items = course.sorted_grade_items
     @cu_students = course.students_courses_users
     @students = Array.new
     @student_crn = Hash.new

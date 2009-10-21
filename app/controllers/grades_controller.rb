@@ -7,7 +7,7 @@ class GradesController < ApplicationController
     return unless load_course( params[:course] )
     return unless allowed_to_see_course( @course, @user )
     
-    @grade_items = @course.grade_items
+    @grade_items = @course.sorted_grade_items
     grades = GradeEntry.find(:all, :conditions => ["user_id=? and course_id=?", @user.id, @course.id ] )
     @total_points = 0
     @total_points_possible = 0
