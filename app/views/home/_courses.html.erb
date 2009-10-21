@@ -7,7 +7,6 @@
 <% else %>
 
  <% for course_user in @courses %>
-
 <table class="FadeTable" cellspacing="0">
   <tr class="header">
 	<th align="left" valign="top">
@@ -31,4 +30,6 @@
 
 
 
-<p><b><%= link_to "View courses from past semesters...", :controller => "home", :action => "courses", :id => nil%></b></p>
+<p>
+<b><%= link_to "#{image_tag 'arrow_switch.png', :align => 'absmiddle'} Change Display Order", :controller => '/home', :action => 'reorder' %></b> |
+<b><%= link_to "View courses from past semesters...", :controller => "home", :action => "courses", :id => nil%></b></p>

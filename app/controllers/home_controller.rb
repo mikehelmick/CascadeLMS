@@ -49,6 +49,28 @@ class HomeController < ApplicationController
     end
   end
   
+  def reorder
+    set_tab
+    
+    @title = "Home for #{@user.display_name}"
+    @announcements = Announcement.current_announcements
+    @courses = @user.courses_in_term( @term )
+  end
+  
+  def sort_courses
+    @courses = @user.courses_in_term( @term )
+    
+    # get the outcomes at this level
+    CoursesUser.transaction do
+      @courses.each do |cu|
+        cu.position = params['course-order'].index( cu.id.to_s ) + 1
+        cu.save
+      end
+    end
+    
+    render :nothing => true
+  end
+  
   def acknowledge
     notification = Notification.find( params[:id] )
     unless notification.nil?

@@ -57,7 +57,11 @@ class User < ActiveRecord::Base
   ## Returns a courses_user obj - so you have the course and relationship to the course
   def courses_in_term( term )
     cur = CoursesUser.find(:all, :conditions => ["user_id = ? and term_id =?", self.id, term.id])
-    cur.sort! { |x,y| x.course.title <=> y.course.title }    
+    cur.sort! do |x,y| 
+      result = x.position <=> y.position
+      result = x.course.title <=> y.course.title if result == 0
+      result
+    end    
   end
 
   def courses_instructing( term )
