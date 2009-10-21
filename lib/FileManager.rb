@@ -104,14 +104,14 @@ class FileManager
   end
               
   def FileManager.enscript_language( extension )
-    format = @@enscripts[extension]
+    format = @@enscripts[extension.downcase]
     format = 'java' if format.nil?
     return format
   end
   
   def FileManager.format_file( enscript, path, extension )
     ## to be moved
-    command = "#{enscript} -C --pretty-print=#{FileManager.enscript_language(extension)} --language=html --color -p- -B #{path}"
+    command = "#{enscript} -C --pretty-print=#{FileManager.enscript_language(extension.downcase)} --language=html --color -p- -B #{path}"
     formatted =`#{command}`
     
     lines = Array.new
@@ -179,13 +179,13 @@ class FileManager
   end
               
   def FileManager.icon( extension ) 
-    icn = @@icons[extension]
+    icn = @@icons[extension.downcase]
     icn = 'page_white.png' if icn.nil?
     return icn
   end
   
   def FileManager.is_text_file( extension ) 
-    @@text_exts[extension]
+    @@text_exts[extension.downcase]
   end
   
   def FileManager.base_part_of(file_name)
