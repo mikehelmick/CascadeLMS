@@ -1,0 +1,27 @@
+"Entry/Exit Survey Results '<%= @course.title %>'"
+"Exported at <%= Time.now.to_formatted_s(:long) %>"
+"Created for <%= @user.display_name %> : <%= @user.email %>"
+
+"<%= @entry.assignment.title %> (Administered: <%= @entry.assignment.close_date.to_formatted_s(:short) %>)"
+Course,Question,Strongly Agree,Agree,Indifferent,Disagree,Strongly Disagree,N/A,Outcome,Count,Agree,Neutral,Disagree,N/A
+<% counter = 0 %><% for question in @entry.quiz_questions %><% counter = counter.next %>"<%= @course.title %>","<%= counter %>",<% total = 0.0 %><% for answer in @entry.quiz_questions[counter-1].quiz_question_answers %>"<%= @all_answer_count_maps[@entry.id][answer.id] %>",<% total = total + @all_answer_count_maps[@entry.id][answer.id]  %><% end %> "<%= @quest_outcome_number[question.id] %>","<%= @all_question_answer_totals[@entry.id][@entry.quiz_questions[counter-1].id] %>",<% answer1 = @entry.quiz_questions[counter-1].quiz_question_answers[0].id %><% answer2 = @entry.quiz_questions[counter-1].quiz_question_answers[1].id %>"<%= sprintf("%3.2f%%", (@all_answer_count_maps[@entry.id][answer1] + @all_answer_count_maps[@entry.id][answer2]) / total * 100.0 ) rescue "?.?%" %>",<% answer1 = @entry.quiz_questions[counter-1].quiz_question_answers[2].id %>"<%= sprintf("%3.2f%%", (@all_answer_count_maps[@entry.id][answer1]) / total * 100.0 ) rescue "?.?%" %>",<% answer1 = @entry.quiz_questions[counter-1].quiz_question_answers[3].id %><% answer2 = @entry.quiz_questions[counter-1].quiz_question_answers[4].id %>"<%= sprintf("%3.2f%%", (@all_answer_count_maps[@entry.id][answer1] + @all_answer_count_maps[@entry.id][answer2]) / total * 100.0 ) rescue "?.?%" %>",<% answer1 = @entry.quiz_questions[counter-1].quiz_question_answers[5].id %>"<%= sprintf("%3.2f%%", (@all_answer_count_maps[@entry.id][answer1]) / total * 100.0 ) rescue "?.?%" %>",
+<% end %>
+<% unless @exit.nil? %>
+"<%= @exit.assignment.title %> (Administered: <%= @exit.assignment.close_date.to_formatted_s(:short) %>)"
+Course,Question,Strongly Agree,Agree,Indifferent,Disagree,Strongly Disagree,N/A,Outcome,Count,Agree,Neutral,Disagree,N/A
+<% counter = 0 %><% for question in @exit.quiz_questions %><% counter = counter.next %>"<%= @course.title %>","<%= counter %>",<% total = 0.0 %><% for answer in @exit.quiz_questions[counter-1].quiz_question_answers %>"<%= @all_answer_count_maps[@exit.id][answer.id] %>",<% total = total + @all_answer_count_maps[@exit.id][answer.id]  %><% end %> "<%= @quest_outcome_number[question.id] %>","<%= @all_question_answer_totals[@exit.id][@exit.quiz_questions[counter-1].id] %>",<% answer1 = @exit.quiz_questions[counter-1].quiz_question_answers[0].id %><% answer2 = @exit.quiz_questions[counter-1].quiz_question_answers[1].id %>"<%= sprintf("%3.2f%%", (@all_answer_count_maps[@exit.id][answer1] + @all_answer_count_maps[@exit.id][answer2]) / total * 100.0 ) rescue "?.?%" %>",<% answer1 = @exit.quiz_questions[counter-1].quiz_question_answers[2].id %>"<%= sprintf("%3.2f%%", (@all_answer_count_maps[@exit.id][answer1]) / total * 100.0 ) rescue "?.?%" %>",<% answer1 = @exit.quiz_questions[counter-1].quiz_question_answers[3].id %><% answer2 = @exit.quiz_questions[counter-1].quiz_question_answers[4].id %>"<%= sprintf("%3.2f%%", (@all_answer_count_maps[@exit.id][answer1] + @all_answer_count_maps[@exit.id][answer2]) / total * 100.0 ) rescue "?.?%" %>",<% answer1 = @exit.quiz_questions[counter-1].quiz_question_answers[5].id %>"<%= sprintf("%3.2f%%", (@all_answer_count_maps[@exit.id][answer1]) / total * 100.0 ) rescue "?.?%" %>",
+<% end %>
+
+"Survey of Learning Outcomes: <%= @course.title %>"
+"Question","Outcome#","Agree Before","Agree After"
+<% counter = 0 %><% while counter < @entry.quiz_questions.length %>"Question <%= sprintf('%3d',counter + 1) %>","<%= @quest_outcome_number[@entry.quiz_questions[counter].id] %>","<%= @all_answer_count_maps[@entry.id][@entry.quiz_questions[counter].quiz_question_answers[0].id] + @all_answer_count_maps[@entry.id][@entry.quiz_questions[counter].quiz_question_answers[1].id] %>",<%= @all_answer_count_maps[@exit.id][@exit.quiz_questions[counter].quiz_question_answers[0].id] + @all_answer_count_maps[@exit.id][@exit.quiz_questions[counter].quiz_question_answers[1].id] rescue '??' %>",<% counter = counter + 1 %>
+<% end %>
+<% end %>
+
+"Course Outcomes",<% newline = "\n" %>
+<% for outcome in @course.ordered_outcomes %>"<%= @outcome_numbers[outcome.id] %>)","<%=h outcome.outcome.gsub(/\n/," ").gsub(/\r/," ").gsub(/\"/,"'") %>",<%= newline %><% for program in @course.programs %>" ","Program:","<%=program.title%>",<% count = 0 %>,<%= newline %><% for prog_outcome in program.program_outcomes %><% count = count.next %><% if outcome.mapped_to_program_outcome?(prog_outcome.id) %>" "," ","<%= count %>)","depth:","<%= outcome.get_depth_level(prog_outcome.id) %>","<%= prog_outcome.outcome %>",<%= newline %><% end %><% end %><% end %><% end %>
+
+"Survey Questions",
+"Outcome #","Question"
+<% count = 0 %><% for question in @entry.quiz_questions %><% count = count + 1 %>"<%= @quest_outcome_number[question.id] %>","<%= count %>) <%= question.question.gsub(/\n/," ").gsub(/\r/," ").gsub(/\"/,"'") %>"
+<% end %>

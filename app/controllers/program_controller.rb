@@ -615,6 +615,9 @@ class ProgramController < ApplicationController
     @surveys.each do |survey|
       @selected_surveys << survey unless params["survey_#{survey.id}"].nil?
     end
+    @selected_surveys.sort do |a,b|
+      a.assignment.close_date <=> b.assignment.close_date
+    end
     
     @error_msg = nil
     if @selected_surveys.size == 0
@@ -671,7 +674,22 @@ class ProgramController < ApplicationController
       flash[:badnotice] = "The entry/exit surveys are not identical, comparisons are unreliable." if (!same_length)
       # more extensive validation...
       
-      render :layout => 'noright'
+      @title = "Surveys for '#{@course.title}' (#{@course.term.semester})"
+      @printer = params[:format].eql?('printer') rescue @printer = false
+      params[:format] = 'html' if @printer
+      respond_to do |format|
+          format.html { 
+              if @printer
+                render :layout => 'printer'
+              else
+                render :layout => 'noright'
+              end }
+          format.csv  { 
+            response.headers['Content-Type'] = 'text/csv; charset=iso-8859-1; header=present'
+            response.headers['Content-Disposition'] = "attachment; filename=#{@course.short_description}_surveys.csv"
+            render :layout => false 
+          }
+      end
     end
   end
   

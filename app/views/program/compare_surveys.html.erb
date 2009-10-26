@@ -1,4 +1,6 @@
+<div id="sub_menu">
 <p><%= link_to 'Back to Courses', :controller => '/program', :id => @program, :action => 'courses' %></p>
+</div>
 
 <div class="SectionHeader"><div class="Full">
 <h1>Entry/Exit Survey Results '<%= @course.title %>' (<%= @course.term.semester %>)</h1>
@@ -68,10 +70,9 @@
 
 </table>
 
-<br/>
+<div class="page_break"><p>&nbsp;</p></div>
 
 <div id="entry_chart_div"></div>
-
 
 <script type="text/javascript">
   google.load("visualization", "1", {packages:["columnchart"]});
@@ -91,16 +92,17 @@
           data.setCell( <%= counter %>, 1, <%= @all_answer_count_maps[@entry.id][question.quiz_question_answers[0].id] + @all_answer_count_maps[@entry.id][question.quiz_question_answers[1].id] %> );
           data.setCell( <%= counter %>, 2, <%= @all_answer_count_maps[@entry.id][question.quiz_question_answers[2].id] %> );
           data.setCell( <%= counter %>, 3, <%= @all_answer_count_maps[@entry.id][question.quiz_question_answers[3].id] + @all_answer_count_maps[@entry.id][question.quiz_question_answers[4].id]%> );
-
+          
 		  <% counter = counter + 1 %>
 		<% end %>		
 
         var chart = new google.visualization.ColumnChart(document.getElementById('entry_chart_div'));
-        chart.draw(data, {width: 1200, height: 500, is3D: false, title: '<%= @entry.assignment.title %> (Administered: <%= @entry.assignment.close_date.to_formatted_s(:short) %>)'});
+        chart.draw(data, {width: 1000, height: 500, is3D: false, title: '<%= @entry.assignment.title %> (Administered: <%= @entry.assignment.close_date.to_formatted_s(:short) %>)'});
   }
 </script>
 
-<br/>
+
+<div class="page_break"><p>&nbsp;</p></div>
 
 <% unless @exit.nil? %>
  <div class="SectionHeader"><div class="Full">
@@ -168,7 +170,7 @@
 
 </table>
 
-<br/>
+<div class="page_break"><p>&nbsp;</p></div>
 
 <div id="exit_chart_div"></div>
 
@@ -196,11 +198,11 @@
 		<% end %>		
 
         var chart = new google.visualization.ColumnChart(document.getElementById('exit_chart_div'));
-        chart.draw(data, {width: 1200, height: 500, is3D: false, title: '<%= @exit.assignment.title %> (Administered: <%= @exit.assignment.close_date.to_formatted_s(:short) %>)'});
+        chart.draw(data, {width: 1000, height: 500, is3D: false, title: '<%= @exit.assignment.title %> (Administered: <%= @exit.assignment.close_date.to_formatted_s(:short) %>)'});
   }
 </script>
 
-<br/>
+<div class="page_break"><p>&nbsp;</p></div>
 
 <div class="SectionHeader"><div class="Full">
 <h2>Survey of Learning Outcomes: <%= @course.title %></h2>
@@ -210,7 +212,7 @@
 
 <div id="compare_chart"></div>
 
-<br/>
+<div class="page_break"><p>&nbsp;</p></div>
 
 <div id="compare_table"></div>
 
@@ -238,13 +240,14 @@
 		<% end %>		
 
         var chart = new google.visualization.ColumnChart(document.getElementById('compare_chart'));
-        chart.draw(data, {width: 1200, height: 500, is3D: false, title: 'Survey of Learning Outcomes: <%= @course.title %>'});
+        chart.draw(data, {width: 1000, height: 500, is3D: false, title: 'Survey of Learning Outcomes: <%= @course.title %>'});
   
         var table = new google.visualization.Table(document.getElementById('compare_table'));
         table.draw(data, {showRowNumber: true});
   }
 </script>
-<br/>
+
+<div class="page_break"><p>&nbsp;</p></div>
 
 <% end %>
 
@@ -257,7 +260,7 @@
 
 <%= render :partial => 'course_outcomes_part' %>
 
-<br/>
+<div class="page_break"><p>&nbsp;</p></div>
 
 <div class="SectionHeader"><div class="Full">
 <h2>Survey Questions</h2>

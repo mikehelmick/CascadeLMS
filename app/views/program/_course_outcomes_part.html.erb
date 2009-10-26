@@ -38,7 +38,10 @@
 	      <% end%>
 	
 	      <br/>
-	      <div id="outcome_details_<%=outcome.id%>" style="display: none; padding-left: 25px">
+	      <% display = "none"
+	         display = "block" if @printer %>
+	
+	      <div id="outcome_details_<%=outcome.id%>" style="display: <%= display %>; padding-left: 25px">
 		    <ul>
 		      <% for program in @course.programs %>
 		        <li>Program: <b><%=program.title%></b></li>

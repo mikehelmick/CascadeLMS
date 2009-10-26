@@ -30,10 +30,9 @@ The HTML view will automatically generate comparison graphs.
   <div class="blockintro">Select the format for your report HTML (in browser with graphs) or export to Excel (CSV format) <i>coming soon</i>.</div>
   <div class="block">
     <label for="format" class="required">Select Format:</label>
-	<p><%= radio_button_tag 'format', 'html', true %> HTML / In Browser
-		<!-- <br/>
-	   <%= radio_button_tag 'format', 'csv', false %> Export to Excel (CSV format)</p>
-	    -->
+	<p><%= radio_button_tag 'format', 'html', true %> HTML / In Browser<br/>
+	   <%= radio_button_tag 'format', 'printer', false %> Printer Friendly<br/>	
+	   <%= radio_button_tag 'format', 'csv', false %> Export to Excel (CSV format) (<i>Charts will not be included</i>)</p>
   </div>
 
   <div class="submit">
