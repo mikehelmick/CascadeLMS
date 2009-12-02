@@ -231,7 +231,7 @@ class TeamController < ApplicationController
     
     send_users = Array.new
     @team.team_members do |tm|
-      send_users << tm.users
+      send_users << tm.user.email
     end
     
     @email = TeamEmail.new(params[:email])
