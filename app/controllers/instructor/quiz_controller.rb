@@ -74,6 +74,7 @@ class Instructor::QuizController < Instructor::InstructorBase
     @quiz.course_id = @course.id
     @quiz.anonymous = false if !@quiz.survey
     @quiz.linear_score = !@quiz.survey && (@points.nil? || (@points.class.to_s.eql?('String') && @points.eql?('')))
+    @quiz.entry_exit = @clone_from.quiz.entry_exit
     @assignment.quiz = @quiz
     
     @gradeItem = nil
