@@ -30,7 +30,14 @@
 	<% end %>
 </head>
 
+<% if !@checkForm.nil? && @checkForm == true %>
 <body class="webkit">
+	<script language="JavaScript">
+	  window.onbeforeunload = check_form_submitted
+	</script>
+<% else %>
+<body class="webkit">
+<% end %>
 	
 <div id="container">	
   <div id="headercontainer" class="clear">

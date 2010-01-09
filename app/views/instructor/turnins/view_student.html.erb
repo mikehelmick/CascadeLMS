@@ -220,7 +220,7 @@ Last Updated: <%= @display_turnin.updated_at.to_formatted_s(:friendly_date) %><b
 <p><i>Warning - this assignment is not connected with an entry in the GradeBook.</i></p>
 <% else %>
   <div id="form_area">
-  <% form_tag( {:controller => 'instructor/turnins', :action => 'submit_grade', :id => @student, :course => @course, :assignment => @assignment}, {:name=>"gradeForm"} ) do %>
+  <% form_tag( {:controller => 'instructor/turnins', :action => 'submit_grade', :id => @student, :course => @course, :assignment => @assignment}, {:name=>"gradeForm", :onsubmit=>"set_form_submitted();"} ) do %>
 	<div class="submit">
 	  <div id="button">
 		 <%= submit_tag "Skip and Go to Next Student" %>

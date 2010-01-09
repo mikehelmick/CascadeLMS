@@ -455,7 +455,7 @@ class Instructor::TurninsController < Instructor::InstructorBase
     
     
     @title = "#{@student.display_name} (#{@student.uniqueid}) - #{@assignment.title}"
-    
+    @checkForm = true
   end
   
   def submit_grade

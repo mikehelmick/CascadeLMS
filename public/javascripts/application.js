@@ -1,3 +1,21 @@
+
+// warn when editing form
+var formChecked = false
+
+function initialize_check_form() {
+	formChecked = false
+}
+
+function set_form_submitted() {
+	formChecked = true
+}
+
+function check_form_submitted() {
+	if (!formChecked) {
+	  return "This form contains unsaved work. Would you like to save before exiting this page? Click OK to continue or cancel to return to editing this page."
+    }
+}
+
 // Course jump
 function changeCourse() {
 	var cjForm = document.forms["course_jump"];
