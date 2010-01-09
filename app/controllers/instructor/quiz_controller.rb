@@ -495,7 +495,10 @@ class Instructor::QuizController < Instructor::InstructorBase
     begin
       QuizQuestion.transaction do
         @quiz_question.update_attributes( params[:quiz_question] )
-
+        @quiz_question.text_response = params[:question_type].eql?('text_response')
+        @quiz_question.multiple_choice = params[:question_type].eql?('multiple_choice')
+        @quiz_question.checkbox = params[:question_type].eql?('checkbox')
+        
         answers = @quiz_question.quiz_question_answers
         1.upto(15) do |i|       
           if params["answer_#{i}"]['answer_text'].eql?('')
@@ -544,10 +547,15 @@ class Instructor::QuizController < Instructor::InstructorBase
           end
         end
 
+        if @quiz_question.text_response
+          @quiz_question.quiz_question_answers.delete_all
+        end
+        @quiz_question.save
+
         flash[:notice] = "Question was successfully updated."
-        redirect_to :action => 'questions', :course => @course, :id => @assignment
-        return
+        redirect_to :action => 'questions', :course => @course, :id => @assignment        
       end
+      return
     rescue 
   	  do_redirect = false
     end  
