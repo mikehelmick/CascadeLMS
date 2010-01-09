@@ -158,25 +158,27 @@ class Instructor::TurninsController < Instructor::InstructorBase
         ## go through and update the grades
         @students.each do |student|
           new_grade = params["grade_#{student.id}"]
+          
+          unless new_grade.nil? || new_grade.eql?("")
+            if @grades[student.id].nil?
+              # no current entry
+              unless new_grade.nil?
+                entry = GradeEntry.new
+                entry.user = student
+                entry.grade_item = @grade_item
+                entry.course = @course
+                entry.points = new_grade.to_f
+                entry.save
+              end
 
-          if @grades[student.id].nil?
-            # no current entry
-            unless new_grade.nil?
-              entry = GradeEntry.new
-              entry.user = student
-              entry.grade_item = @grade_item
-              entry.course = @course
-              entry.points = new_grade.to_f
-              entry.save
-            end
-            
-          else
-            ## existing entry
-            if new_grade.nil? || new_grade.to_f < 0
-              @grades[student.id].destroy
             else
-              @grades[student.id].points = new_grade.to_f 
-              @grades[student.id].save
+              ## existing entry
+              if new_grade.nil? || new_grade.to_f < 0
+                @grades[student.id].destroy
+              else
+                @grades[student.id].points = new_grade.to_f 
+                @grades[student.id].save
+              end
             end
           end
 

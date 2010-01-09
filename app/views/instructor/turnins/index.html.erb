@@ -45,7 +45,7 @@
 <% form_tag( :controller => '/instructor/turnins', :action => 'save_all_grades', :course => @course, :assignment => @assignment, :id => nil ) do %>
 
 <% if @grade_item %>
-<p><i>When entering grades, you can enter a grade less than zero to remove the entry all together.  If you leave the field blank, a grade of zero (0) will be assigned.</i></p>
+<p><i>When entering grades, you can enter a grade less than zero to remove the entry all together.  If you leave the field blank, no change will be made.</i></p>
 <% end %>
 
 <table class="fancy">
