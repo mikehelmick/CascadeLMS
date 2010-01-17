@@ -54,7 +54,7 @@ Last Updated: <%= @display_turnin.updated_at.to_formatted_s(:friendly_date) %><b
 <% if @display_turnin.id == @current_turnin.id && @current_turnin.user_turnin_files.size == 1 && @turnins.size > 1 %>
 <div class="errorExplanation">This student's current turn-in set does not have any files in it, and there are previous turn-in sets.  You may <%= link_to 'rollback to the previous turn-in set', :controller => 'instructor/turnins', :action => 'rollback', :course => @course, :assignment => @assignment, :student => @student, :id => @student %></div>
 <% end %>
-</div>
+
 
 <% parent_spaces = Hash.new 
    parent_spaces[0.to_s] = 0
@@ -196,7 +196,8 @@ Last Updated: <%= @display_turnin.updated_at.to_formatted_s(:friendly_date) %><b
  </div></div>
 
  <div class="Section">
-    <p><%= link_to "View I/O Check results for #{@student.display_name}.", :course => @course, :assignment => @assignment, :student => @student, :action => 'view_io_tests', :controller => 'instructor/turnins' %> <b>From this screen you can also re-run the automatic tests.</b></p>
+    <p><%= link_to "View I/O Check results for #{@student.display_name}.", :course => @course, :assignment => @assignment, :student => @student, :action => 'view_io_tests', :controller => 'instructor/turnins' %> 
+	<b>From this screen you can also re-run the automatic tests.</b></p>
  </div>
 
 <% elsif @assignment.auto_grade && !@assignment.auto_grade_setting.nil? && @assignment.auto_grade_setting.check_style? %>
@@ -216,10 +217,10 @@ Last Updated: <%= @display_turnin.updated_at.to_formatted_s(:friendly_date) %><b
   <h2>Grade</h2>
 </div></div>
 
+  <div id="form_area">
 <% unless @grade_item %>
 <p><i>Warning - this assignment is not connected with an entry in the GradeBook.</i></p>
 <% else %>
-  <div id="form_area">
   <% form_tag( {:controller => 'instructor/turnins', :action => 'submit_grade', :id => @student, :course => @course, :assignment => @assignment}, {:name=>"gradeForm", :onsubmit=>"set_form_submitted();"} ) do %>
 	<div class="submit">
 	  <div id="button">
