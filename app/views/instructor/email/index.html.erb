@@ -10,6 +10,8 @@
 <div id="assistant_error"> </div>
 <div id="assistant">
   <div class="block">
+	<input type="button" name="CheckAll" value="Check All" onClick="checkAllAssistants();">
+	<input type="button" name="UnCheckAll" value="Uncheck All" onClick="uncheckAllAssistants();"> <br/>
 <% @users = @course.assistants %>
     <% for user in @users %>
       <%= check_box_tag("user_#{user.id}", value = "1", checked = @users_hash[user.id] ) %> <%= user.display_name %> (<%= user.email %>) <br/>
@@ -17,17 +19,59 @@
   </div>
 </div>
 
+<script language="javascript">
+<!-- Begin
+function checkAllAssistants()
+{
+  <% @users = @course.assistants %>
+  <% for user in @users %>
+    document.getElementById('user_<%= user.id %>').checked = true;
+  <% end %>	
+}
+
+function uncheckAllAssistants()
+{
+  <% @users = @course.assistants %>
+  <% for user in @users %>
+    document.getElementById('user_<%= user.id %>').checked = false;
+  <% end %>
+}
+//  End -->
+</script>
+
 <hr/>
 <h2>Students(s) for <%= @course.title %></h2>
 <div id="student_error"> </div>
 <div id="student">
   <div class="block">
-<% @users = @course.students %>
+	<input type="button" name="CheckAll" value="Check All" onClick="checkAllStudents();">
+	<input type="button" name="UnCheckAll" value="Uncheck All" onClick="uncheckAllStudents();"> <br/>
+    <% @users = @course.students %>
     <% for user in @users %>
       <%= check_box_tag("user_#{user.id}", value = "1", checked = @users_hash[user.id] ) %> <%= user.display_name %> (<%= user.email %>) <br/>
     <% end %>
   </div>
 </div>
+
+<script language="javascript">
+<!-- Begin
+function checkAllStudents()
+{
+  <% @users = @course.students %>
+  <% for user in @users %>
+    document.getElementById('user_<%= user.id %>').checked = true;
+  <% end %>	
+}
+
+function uncheckAllStudents()
+{
+  <% @users = @course.students %>
+  <% for user in @users %>
+    document.getElementById('user_<%= user.id %>').checked = false;
+  <% end %>
+}
+//  End -->
+</script>
 
 
 <hr/>
@@ -35,12 +79,34 @@
 <div id="guest_error"> </div>
 <div id="guest">
   <div class="block">
-<% @users = @course.guests %>
+	<input type="button" name="CheckAll" value="Check All" onClick="checkAllGuests();">
+	<input type="button" name="UnCheckAll" value="Uncheck All" onClick="uncheckAllGuests();"> <br/>
+    <% @users = @course.guests %>
     <% for user in @users %>
       <%= check_box_tag("user_#{user.id}", value = "1", checked = @users_hash[user.id] ) %> <%= user.display_name %> (<%= user.email %>) <br/>
     <% end %>
   </div>
 </div>
+
+<script language="javascript">
+<!-- Begin
+function checkAllGuests()
+{
+  <% @users = @course.guests %>
+  <% for user in @users %>
+    document.getElementById('user_<%= user.id %>').checked = true;
+  <% end %>	
+}
+
+function uncheckAllGuests()
+{
+  <% @users = @course.guests %>
+  <% for user in @users %>
+    document.getElementById('user_<%= user.id %>').checked = false;
+  <% end %>
+}
+//  End -->
+</script>
 
 <p><label for="email_subject" class="required">Email Subject:</label>
 <%= text_field_tag 'email_subject', @email_subject %></p>

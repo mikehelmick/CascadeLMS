@@ -85,6 +85,7 @@ class Instructor::CourseDocsController < Instructor::InstructorBase
     @document.filename = @document.title
     @document.folder = true
     @document.document_parent = @folder_id
+    @document.content_type = 'folder'
     
     if @document.save
       flash[:notice] = 'Folder was created successfully.'
