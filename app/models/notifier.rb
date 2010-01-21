@@ -20,7 +20,7 @@ class Notifier < ActionMailer::Base
   
   def send_create( new_user, user, link, organization )  
     @recipients = "#{new_user.display_name} <#{new_user.email}>"
-    @subject = "#{subject} - Account Created - CascadeLMS"
+    @subject = "#{organization} - Account Created - CascadeLMS"
     @from = "#{user.display_name} <#{user.email}>"
     
     @body[:link] = link
