@@ -24,7 +24,7 @@ Viewing Email Archive
 
  <ul>
   <% for email in @emails %>
-    <li><b><%= link_to "#{email.subject}", :action => 'email_read', :id => @team, :email => email.id %></b> by <%= email.user.display_name %> at <i><%= email.created_at.to_formatted_s(:long) %></li>
+    <li><b><%= link_to "#{email.subject}", :action => 'email_read', :id => @team, :email => email.id %></b> by <%= email.user.display_name %> at <i><%= email.created_at.to_formatted_s(:long) %></i></li>
   <% end %>
  </ul>
 

@@ -229,9 +229,9 @@ class TeamController < ApplicationController
     return unless on_team_or_instructor( @course, @team, @user )
     return unless team_enable_email( @course )
     
-    send_users = Array.new
-    @team.team_members do |tm|
-      send_users << tm.user.email
+    @send_users = Array.new
+    @team.team_members.each do |tm|
+      @send_users << tm.user.email
     end
     
     @email = TeamEmail.new(params[:email])
@@ -243,7 +243,7 @@ class TeamController < ApplicationController
       return
     end
     
-    Notifier::deliver_send_email( send_users, @email.message, @email.subject, @user )
+    Notifier::deliver_send_email_to( @send_users, @email.message, @email.subject, @user )
    
     flash[:notice] = 'Email delivered to selected users.'    
     
