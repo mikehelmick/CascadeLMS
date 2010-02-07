@@ -8,7 +8,6 @@
     <th>Year</th>
     <th>Semester</th>
     <th>Current</th>
-    <th>Open</th>
     <th>Actions</th>
   </tr>
   
@@ -26,12 +25,6 @@
     <td><%if term.current? %><b>current</b>
 	    <% else %><%= link_to 'make current', :action => 'current', :id => term %>
 	    <%end%></td>
-    <td id="open_<%=term.id%>">
-        <%if term.open? %>
-           <b><%= link_to_remote( 'yes', :update => "open_#{term.id}", :url => { :action => 'toggle', :id => term }, :complete => "new Effect.Highlight( 'item_#{term.id}' )" ) %></b>
-	    <% else %><%= link_to_remote( 'no', :update => "open_#{term.id}", :url => { :action => 'toggle', :id => term }, :complete => "new Effect.Highlight( 'item_#{term.id}' )" ) %>
-	    <%end%></td>
-
     <td><%= link_to 'Edit', :action => 'edit', :id => term %></td>
   </tr>
 <% end %>

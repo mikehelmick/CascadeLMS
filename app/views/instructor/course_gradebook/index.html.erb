@@ -175,6 +175,27 @@
     <% end %>
   <% end %>
 
+  <tr class="summary">
+	<td colspan="<%= span %>" class="summaryCell"><b>Assignment</b></td>
+	
+	<% for gi in @grade_items %>
+	  <td class="summaryCell" align="right">
+		<b>
+		<% if gi.assignment.nil? || gi.assignment.file_uploads %>
+		  <%= gi.name %>
+		<% else %>
+		  <acronym title="<%=h gi.assignment.description %>"><%= gi.name %></acronym>
+		<% end %><br/>
+		<i><%= gi.grade_category.category %></i><br/>
+		Points: <%= gi.points %><br/>
+	  </td>
+	<% end %>
+	
+	<td class="summaryCell">*****</td>
+	<td class="summaryCell">*****</td>
+	<td class="summaryCell">*****</td>
+  </tr>
+
 <% end %>
 
 
