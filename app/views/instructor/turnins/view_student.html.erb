@@ -267,16 +267,16 @@ function update_rubric_<%=rubric.id%>_to( newValue ) {
 <% end %>
 
     <ul>
-	  <li><%= radio_button_tag( "rubric_#{rubric.id}", 'above', @rubric_entry_map[rubric.id].above_credit, :onclick => "update_rubric_#{rubric.id}_to( #{rubric.above_credit_points} )" )%><b><%= @course.rubric_level.l1_name %>:</b> 
+	  <li><%= radio_button_tag( "rubric_#{rubric.id}", 'above', @rubric_entry_map[rubric.id].above_credit, :onclick => "update_rubric_#{rubric.id}_to( #{rubric.above_credit_points} ); set_form_needs_checked();" )%><b><%= @course.rubric_level.l1_name %>:</b> 
 			  <%=h rubric.above_credit_criteria %> (<%=h rubric.above_credit_points%> points)
-	  <li><%= radio_button_tag( "rubric_#{rubric.id}", 'full', @rubric_entry_map[rubric.id].full_credit, :onclick => "update_rubric_#{rubric.id}_to( #{rubric.full_credit_points} )" )%><b><%= @course.rubric_level.l2_name %>:</b>
+	  <li><%= radio_button_tag( "rubric_#{rubric.id}", 'full', @rubric_entry_map[rubric.id].full_credit, :onclick => "update_rubric_#{rubric.id}_to( #{rubric.full_credit_points} ); set_form_needs_checked();" )%><b><%= @course.rubric_level.l2_name %>:</b>
 		  <%=h rubric.full_credit_criteria %> (<%=h rubric.full_credit_points%> points)</li>
-	  <li><%= radio_button_tag( "rubric_#{rubric.id}", 'partial', @rubric_entry_map[rubric.id].partial_credit, :onclick => "update_rubric_#{rubric.id}_to( #{rubric.part_credit_points} )" )%><b><%= @course.rubric_level.l3_name %>:</b>
+	  <li><%= radio_button_tag( "rubric_#{rubric.id}", 'partial', @rubric_entry_map[rubric.id].partial_credit, :onclick => "update_rubric_#{rubric.id}_to( #{rubric.part_credit_points} ); set_form_needs_checked();" )%><b><%= @course.rubric_level.l3_name %>:</b>
 	      <%=h rubric.part_credit_criteria %> (<%=h rubric.part_credit_points%> points)</li>
-	  <li><%= radio_button_tag( "rubric_#{rubric.id}", 'no', @rubric_entry_map[rubric.id].no_credit, :onclick => "update_rubric_#{rubric.id}_to( #{rubric.no_credit_points} )" )%><b><%= @course.rubric_level.l4_name %>:</b>
+	  <li><%= radio_button_tag( "rubric_#{rubric.id}", 'no', @rubric_entry_map[rubric.id].no_credit, :onclick => "update_rubric_#{rubric.id}_to( #{rubric.no_credit_points} ); set_form_needs_checked();" )%><b><%= @course.rubric_level.l4_name %>:</b>
 	      <%=h rubric.no_credit_criteria %> (<%=h rubric.no_credit_points%> points)</li>
 	  <li>Comments:<br/>
-		 <%= text_area_tag("rubric_#{rubric.id}_comments", @rubric_entry_map[rubric.id].comments, { "cols" => 80, "rows" => 7 } ) %>
+		 <%= text_area_tag("rubric_#{rubric.id}_comments", @rubric_entry_map[rubric.id].comments, { "cols" => 80, "rows" => 7, :onchange => 'set_form_needs_checked();'} ) %>
 		 </li>
 	</ul>
   <% end %></ul>
@@ -285,14 +285,14 @@ function update_rubric_<%=rubric.id%>_to( newValue ) {
 <% end %>				
 		
 	  <p><label for="document_title">Points:</label>
-	  <%= text_field 'grade_entry', 'points', :size => 10  %> / <%= sprintf("%0.1f", @grade_item.points ) %>
+	  <%= text_field 'grade_entry', 'points', :size => 10, :onchange => 'set_form_needs_checked();'  %> / <%= sprintf("%0.1f", @grade_item.points ) %>
           <% if @assignment.team_project && !@team.nil? %>
              <br/><%= check_box_tag( 'apply_to_team', true, @apply_to_team )%> Apply grade and comments to all team members.
           <% end %> 
       </p>
 
       <p><label for="document_comments">General comments:</label><br/>
-        <%= text_area 'grade_entry', 'comment', "cols" => 90, "rows" => 12, :class=>'short'  %><br/>
+        <%= text_area 'grade_entry', 'comment', "cols" => 90, "rows" => 12, :class=>'short', :onchange => 'set_form_needs_checked();'  %><br/>
         <%= link_to_function "More room to type", "Form.Element.toggleHeight(this, 'grade_entry_comment'); return false;", :class => 'bottab more' %>
       </p>
 

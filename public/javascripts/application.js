@@ -1,9 +1,15 @@
 
 // warn when editing form
 var formChecked = false
+var formNeedsChecked = false
+
+function set_form_needs_checked() {
+	formNeedsChecked = true
+}
 
 function initialize_check_form() {
 	formChecked = false
+	formNeedsChecked = false
 }
 
 function set_form_submitted() {
@@ -11,7 +17,7 @@ function set_form_submitted() {
 }
 
 function check_form_submitted() {
-	if (!formChecked) {
+	if (formNeedsChecked && !formChecked) {
 	  return "This form contains unsaved work. Would you like to save before exiting this page? Click OK to continue or cancel to return to editing this page."
     }
 }
