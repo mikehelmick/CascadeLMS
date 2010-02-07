@@ -303,6 +303,16 @@ class Instructor::QuizController < Instructor::InstructorBase
       @assignment.update_attributes( params[:assignment] )
       @assignment.quiz.update_attributes( params[:quiz] ) 
       
+      if @assignment.grade_item
+        if @assignment.quiz.linear_score
+          adjust_linear_score( @assignment.quiz )
+        else
+          @assignment.grade_item.points = params['point_value'].to_i
+        end
+        @assignment.grade_item.save
+      end
+      
+      
       flash[:notice] = "Quiz '#{@assignment.title}' has been updated."
       redirect_to :controller => '/instructor/quiz', :action => 'questions', :course => @course, :id => @assignment.id
       return
