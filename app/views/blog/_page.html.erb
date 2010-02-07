@@ -2,6 +2,10 @@
 public = false if public.nil?
 %>
 
+<% if @user && @user.instructor_in_course?(@course.id) %>
+ <%= link_to 'New Blog Post', :controller => '/instructor/blog', :action => 'new' %>
+<% end %>
+
 <% if @posts.size == 0 %>
  <p><i>There are no entries in this course's blog.</i></p>
 
