@@ -65,6 +65,7 @@ class Assignment < ActiveRecord::Base
       new_gi.course_id = course_id
       new_gi.assignment_id = dup.id
       new_gi.date = Time.at( new_gi.date.to_time + time_offset ).to_date
+      new_gi.visible = false
       dup.grade_item = new_gi
       dup.save
     end
