@@ -15,6 +15,14 @@
 
   <%= render :partial => 'form', :locals => { :edit_mode => true } %>
 
+<% unless @assignment.grade_item.nil? %>
+<div class="blockintro">Editing the point value here will also update the course gradebook.</div>
+<div class="block">
+<p><label for="point_value" class="required">Points:</label>
+  <%= text_field_tag 'point_value', @assignment.grade_item.points  %></p>
+</div>
+<% end %>
+
 <div class="submit">
   <div id="button"><%= submit_tag "Save Changes" %></div>
   <div id="spinner" style="display: none;"><%= image_tag 'spinner.gif' %></div>

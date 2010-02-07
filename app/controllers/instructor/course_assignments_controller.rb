@@ -220,6 +220,7 @@ class Instructor::CourseAssignmentsController < Instructor::InstructorBase
     
     @assignment = Assignment.find( params['id'] )
     return unless assignment_in_course( @course, @assignment )
+    @points = params[:point_value]
     
     begin
       Assignment.transaction do
@@ -247,6 +248,13 @@ class Instructor::CourseAssignmentsController < Instructor::InstructorBase
           end
           @assignment.file_uploads = true
           @assignment.save
+        end
+        
+        if @assignment.grade_item
+          if !@points.nil? && @points.to_i > 0
+            @assignment.grade_item.points = @points.to_i
+            @assignment.grade_item.save
+          end
         end
 
         flash[:notice] = 'Assignment has been updated.'
