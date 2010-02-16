@@ -104,7 +104,13 @@
 
 <% if @current_turnin %>
 <!--  -->
- <% if @assignment.auto_grade && !@assignment.auto_grade_setting.nil? && @assignment.auto_grade_setting.io_check? %>
+ <% anyVisibleAutoGradeResults = false 
+    @assignment.io_checks.each do |check|      
+       anyVisibleAutoGradeResults = anyVisibleAutoGradeResults || check.student_level || @assignment.released
+    end
+  %>
+
+ <% if anyVisibleAutoGradeResults && @assignment.auto_grade && !@assignment.auto_grade_setting.nil? && @assignment.auto_grade_setting.io_check? %>
    <div class="SectionHeader"><div class="Full"><b>AutoGrade Results</b></div></div>
    <div class="Section">
 	

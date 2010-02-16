@@ -62,7 +62,11 @@
      
      <% io_count = 0 
         count = 0 %>
-     <% for check in @assignment.io_checks %>         
+     <% for check in @assignment.io_checks %>   
+       <% if check.student_level || @assignment.released %>
+         <% show_input = check.show_input && @assignment.released 
+          %>
+      
 	   <table width="100%" class="fancy">
 	     <tr>
 		   <th>Output Line</td>
@@ -111,6 +115,7 @@
        </table>
 
 		<p>&nbsp;<br/></p>
+	   <% end %>
      <% end %>
    <% else %>
      <p><%= image_tag 'flag_yellow.png' %><i>Automatic grading by way of output verification is enabled for this assignment, but the results are hidden until the grades and instructor comments are released.</i></p>
