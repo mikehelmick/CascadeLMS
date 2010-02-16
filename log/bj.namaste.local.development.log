@@ -1,0 +1,15 @@
+I, [2010-02-06T21:59:29.983880 #19719]  INFO -- : STARTED
+I, [2010-02-06T21:59:29.994632 #19719]  INFO -- : job[1](./script/runner ./jobs/upgrade_journal_entries.rb 1 tasks 2 7 4 8 1 9 3 10 6 11 5 12) - started
+I, [2010-02-06T21:59:32.899935 #19719]  INFO -- : job[1](./script/runner ./jobs/upgrade_journal_entries.rb 1 tasks 2 7 4 8 1 9 3 10 6 11 5 12) - exit_status=0
+I, [2010-02-06T21:59:32.903091 #19719]  INFO -- : job[2](./script/runner ./jobs/upgrade_journal_entries.rb 1 stop_reasons 1 7 2 8 5 9 4 10 3 11 6 12) - started
+I, [2010-02-06T21:59:35.988064 #19719]  INFO -- : job[2](./script/runner ./jobs/upgrade_journal_entries.rb 1 stop_reasons 1 7 2 8 5 9 4 10 3 11 6 12) - exit_status=0
+I, [2010-02-06T22:17:49.211597 #19719]  INFO -- : STOPPED
+I, [2010-02-15T21:54:36.284941 #2495]  INFO -- : STARTED
+I, [2010-02-15T21:54:36.303458 #2495]  INFO -- : job[1](./script/runner ./jobs/upgrade_journal_entries.rb 1 tasks 2 7 4 8 1 9 3 10 6 11 5 12) - archived
+I, [2010-02-15T21:54:36.310260 #2495]  INFO -- : job[2](./script/runner ./jobs/upgrade_journal_entries.rb 1 stop_reasons 1 7 2 8 5 9 4 10 3 11 6 12) - archived
+I, [2010-02-15T21:54:36.314452 #2495]  INFO -- : job[3](./script/runner ./jobs/autograde_job.rb 1) - started
+I, [2010-02-15T21:54:39.072619 #2495]  INFO -- : job[3](./script/runner ./jobs/autograde_job.rb 1) - exit_status=256
+I, [2010-02-15T21:57:02.119974 #2495]  INFO -- : job[4](./script/runner ./jobs/autograde_job.rb 1) - started
+I, [2010-02-15T21:57:25.168045 #2495]  INFO -- : job[4](./script/runner ./jobs/autograde_job.rb 1) - exit_status=0
+I, [2010-02-15T21:59:01.193572 #2495]  INFO -- : job[5](./script/runner ./jobs/autograde_job.rb 2) - started
+I, [2010-02-15T21:59:08.527880 #2495]  INFO -- : job[5](./script/runner ./jobs/autograde_job.rb 2) - exit_status=0
