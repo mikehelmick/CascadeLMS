@@ -13,7 +13,7 @@ Net::HTTP.start('localhost', 3000) do |http|
   #puts "Cookie: #{session}"
   
   #Do something with the response.
-  response = http.get('/public/api/course_template/345', {'Accept' => 'text/xml', 'Cookie' => cookie} )
+  response = http.get('/course/1/grades', {'Accept' => 'text/xml', 'Cookie' => cookie} )
 
   puts "Code: #{response.code}" 
   puts "Headers: #{response.header}"

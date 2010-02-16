@@ -62,9 +62,14 @@ class GradesController < ApplicationController
     
     end
     
-    
-    
     set_title
+    
+    respond_to do |format|
+      format.html
+      format.xml { 
+        render :layout => false 
+      }
+    end
   end
   
   def set_tab

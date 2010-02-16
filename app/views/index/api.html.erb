@@ -31,6 +31,7 @@ This will allow your response to be returned as XML.  Otherwise you will be retu
       <li><a href="#Course_AssignmentsList">Course - Assignments List</a></li>
       <li><a href="#Course_AssignmentView">Course - Assignment View</a></li>
       <li><a href="#Course_AssignmentFeedback">Course - Assignment Feedback</a></li>
+      <li><a href="#Course_Grades">Course - Grades</a></li>
     </ol> 
   </li>
   <li>Course Wiki
@@ -619,6 +620,48 @@ Make sure that you pass the 2 required HTTP headers, (1) the Cookies passed back
 </div>
 
 
+<br/><div class="SectionHeader"><div class="Full">
+<h2><a name="Course_Grades">Course - Grades</a></h2>
+</div></div>
+<p>You can access the grades for an individual user for a course, by making an HTTP GET call to <br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<tt><%= url_for( :only_path => false, :controller => "/grades", :course => 'COURSE_ID' ) %></tt><br/>
+There are 3 different types of grades that can be reported (1) "Complete / Incomplete", (2) "Percentage", and (3) "Score". Examples of all 3 are shown below.<br/>
+The date element will always be midnight in the local time zone, but shown in GMT.
+</p>
+<p><b><%= link_to_function "#{image_tag 'page_code.png', :align => 'absmiddle'} View Sample Response", visual_effect(:toggle_slide, 'Sample_Course_Grades' ) %></b></p>	
+<div class="code" id="Sample_Course_Grades" style="display: none;">
+	<% segment ="<?xml version=\"1.0\" encoding=\"UTF-8\"?>
+<grades>
+  <grade>
+    <assignment_id>-1</assignment_id>
+    <assignment>Complete / Incomplete</assignment>
+    <category>Assignment</category>
+    <date>Mon, 15 Feb 2010 08:00:00 GMT</date>
+    <grade_type>Complete/Incomplete</grade_type>
+    <grade>Complete</grade>
+  </grade>
+  <grade>
+    <assignment_id>-1</assignment_id>
+    <assignment>Percentage</assignment>
+    <category>Assignment</category>
+    <date>Mon, 15 Feb 2010 08:00:00 GMT</date>
+    <grade_type>Percentage</grade_type>
+    <grade>88.00</grade>
+  </grade>
+  <grade>
+    <assignment_id>1</assignment_id>
+    <assignment>Homework #1</assignment>
+    <category>Homework</category>
+    <date>Sat, 06 Mar 2010 08:00:00 GMT</date>
+    <grade_type>Score</grade_type>
+    <grade>23.0</grade>
+    <points_possible>25.0</points_possible>
+    <percentage>92.00</percentage>
+  </grade>
+</grades>
+ " %>	
+<% for line in segment.split("\n") %><% 0.upto(line.size-1) do |i| %><% if line[i...i+1].eql?(" ") %>&nbsp;<% else %><%=h  line[i...i+1] %><% end %><% end %><br/><% end %>	
+</div>
 
 
 <br/><div class="SectionHeader"><div class="Full">
