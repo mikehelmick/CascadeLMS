@@ -100,7 +100,7 @@
 	       <tr class="<%=odd%> hover"><td width="5%" nowrap="nowrap" align="right">YOUR OUTPUT:</td>
 	         <td class="codeA">
 			  <% unless @student_io_check[check.id].nil? %>
-            	<%= @student_io_check_lines[check.id][:STUDENT][i] unless @student_io_check_lines[check.id][:STUDENT][i].nil? %> 
+            	<%= @student_io_check_lines[check.id][:STUDENT][i].to_html unless @student_io_check_lines[check.id][:STUDENT][i].nil? %> 
               <% end %>
              </td>
 	       </tr>

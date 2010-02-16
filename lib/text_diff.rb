@@ -5,6 +5,21 @@ require 'diff/lcs/hunk'
 
 class TextDiff
   
+  def TextDiff.process_spaces( output ) 
+    return "&nbsp;" if output.eql?(" ") 
+    
+    html = ""
+     0.upto(output.size-1) do |i|
+      str = output[i...i+1]
+      if str.eql?(" ") && output[i-1...i].eql?(" ")
+        html << "&nbsp;"
+      else 
+        html << str
+      end
+    end
+    return html
+  end
+  
   def TextDiff.html_patch(src, patchset )
     patch_map = {
       :patch => { '+' => '+', '-' => '-', '!' => '!', '=' => '=' },
@@ -49,7 +64,7 @@ class TextDiff
             bj += 1
           end
 
-          res << "<span class=\"diffSub\">#{old}</span>"
+          res << "<span class=\"diffSub\">#{TextDiff.process_spaces(old)}</span>"
 
           ai += 1
         when '+'
@@ -59,7 +74,7 @@ class TextDiff
             bj += 1
           end
 
-          res << "<span class=\"diffAdd\">#{el}</span>"
+          res << "<span class=\"diffAdd\">#{TextDiff.process_spaces(el)}</span>"
           bj += 1
         when '='
             # This only appears in sdiff output with the SDiff callback.
@@ -79,7 +94,7 @@ class TextDiff
           bj += 1
           ai += 1
 
-          res << "<span class=\"diffChange\">#{el}</span>"
+          res << "<span class=\"diffChange\">#{TextDiff.process_spaces(el)}</span>"
         end
       when Diff::LCS::Change
         case action

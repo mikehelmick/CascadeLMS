@@ -2,12 +2,17 @@ class String
   
   def to_html
      html = ""
+     addOne = false
      0.upto(self.size-1) do |i|
       str = self[i...i+1]
       if str.eql?("\n")
         html << "<br/>"
-      elsif str.eql?(" ") && self[i-1...i].eql?(" ")
+      elsif str.eql?(" ") && self[i+1...i+2].eql?(" ")
         html << "&nbsp;"
+        addOne = true
+      elsif str.eql?(" ") && addOne
+        html << "&nbsp;"
+        addOne = false
       else 
         html << str
       end
