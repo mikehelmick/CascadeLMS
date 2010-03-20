@@ -13,6 +13,43 @@ class Instructor::CustomController < Instructor::InstructorBase
     redirect_to :controller => '/instructor/index', :course => @course, :action => nil, :id => nil
   end
   
+  def categories
+    return unless load_course( params[:course] )
+    return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_settings' )    
+    
+    load_category_info()
+    
+    @title = "Customize Grade Categories for '#{@course.title}'"
+  end
+  
+  def add_category
+    return unless load_course( params[:course] )
+    return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_settings' )    
+    
+    @category = GradeCategory.new
+    @category.category = params['grade_category']
+    @category.course_id = @course.id
+    @category.save
+    
+    load_category_info()
+    
+    render :layout => false, :partial => 'grade_categories'
+  end
+  
+  def del_category
+    return unless load_course( params[:course] )
+    return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_settings' )    
+    
+    @grade_category = GradeCategory.find( params[:id] )
+    unless @grade_category.nil?
+      if @grade_category.course_id == @course.id
+        @grade_category.destroy
+      end
+    end
+    
+    render :nothing => true
+  end
+  
   def rubrics
     return unless load_course( params[:course] )
     return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_settings' )    
@@ -103,6 +140,16 @@ class Instructor::CustomController < Instructor::InstructorBase
   
   
   private
+  
+  def load_category_info()
+    @categories = GradeCategory.for_course(@course)
+    
+    @category_in_use = Hash.new
+    @categories.each do |category|
+      @category_in_use[category.id] = Assignment.count(:conditions => ["grade_category_id = ?", category.id]) > 0 || 
+                                      GradeItem.count(:conditions => ["grade_category_id = ?", category.id]) > 0
+    end
+  end
   
   def load_journal_info()
       @journal_tasks = JournalTask.for_course( @course )

@@ -134,6 +134,17 @@
 		<% end %>				
 	</td>
   </tr>
+  <tr>
+	<td>&nbsp;</td>
+	<td>
+		<% if  @user.instructor_in_course?( @course.id ) || @course.course_setting.ta_course_settings %>
+		  <%= link_to "#{image_tag 'table_multiple.png', :align => 'absmiddle'} Assignment / Grade Categories", :controller => '/instructor/custom', :course => @course, :action => 'categories' %>
+		<% else %>
+		  <%= image_tag 'table_multiple.png', :align => 'absmiddle' %> <s>Assignment / Grade Categories</s>
+		<% end %>		
+	</td>
+	<td>&nbsp;</td>
+  </tr>
   <tr><td colspan="3"><hr/></td></tr>
 
   <tr>

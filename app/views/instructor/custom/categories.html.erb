@@ -1,0 +1,23 @@
+<div class="SectionHeader"><div class="Full">
+<h2>Grade Gategories for <%= @course.title %></h2>
+</div></div>
+<p><%= link_to 'Back', :controller => '/instructor/index', :action => nil, :course => @course %></p>
+
+<p>You can edit the grade categories for this course. 
+Grade categories can be removed, as long as they are not already in use.</p>
+
+<div class="SectionHeader"><div class="Full">
+<h2>Grade Categories</h2>
+</div></div>
+
+<div id="grade_categories">
+	<%= render :partial => 'grade_categories' %>
+</div>
+
+<div id="add_form">
+	<% form_remote_tag( :update => 'grade_categories', :url => { :action => 'add_category', :id => @course }, :complete => "new Effect.Highlight('grade_categories');" ) do %>
+	<label for="id">New Grade Category:</label> 
+	<%= text_field_tag 'grade_category', '', :size => 60 %>
+	<%= submit_tag 'Add' %><br/>
+	<% end %>
+</div>
