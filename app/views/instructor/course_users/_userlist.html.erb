@@ -2,7 +2,7 @@
 	<div class="block">
 
 <% if @users.nil? || @users.size == 0 %>
-  <p><li>No users in this category</li></p>
+  <ul><li>No users in this category</li></ul>
 <% else %>	
 <% for user in @users %>
   <% course_user = nil
@@ -14,7 +14,13 @@
   <div id="<%=@utype%>_user_<%=user.id%>" style="margin-left: 20px" class="clear">
 	<label>
     <% if @course.course_open %>
-	  <%= link_to_remote( image_tag('delete.png', :align => 'absmiddle' ), :url => { :action => 'deluser', :type => @utype, :course => @course.id, :id => user }, :confirm => "Remove user #{user.display_name} from this course?", :success => "new Effect.Puff( '#{@utype}_user_#{user.id}' )", :failure => "alert('There was an error removing the selected user from this course.');" ) %>
+      <% unless @utype.eql?('dropped') %>
+       <% if @utype.eql?('student') %>
+        <%= link_to_remote( image_tag('delete.png', :align => 'absmiddle' ), :url => { :action => 'deluser', :type => @utype, :course => @course.id, :id => user }, :confirm => "Are you sure you want to remove the student '#{user.display_name}' from this course? The user will not be automatically enrolled in this course again.", :success => "new Effect.Puff( '#{@utype}_user_#{user.id}' )", :failure => "alert('There was an error removing the selected user from this course.');" ) %>
+       <% else %>
+	    <%= link_to_remote( image_tag('delete.png', :align => 'absmiddle' ), :url => { :action => 'deluser', :type => @utype, :course => @course.id, :id => user }, :confirm => "Remove user #{user.display_name} from this course?", :success => "new Effect.Puff( '#{@utype}_user_#{user.id}' )", :failure => "alert('There was an error removing the selected user from this course.');" ) %>
+	   <% end %>
+	  <% end %>
 	<% end %>
 	   <% if @show_images %><img src="<%= user.gravatar_url %>" align="top" /><% end %> 
 		 <%=h user.display_name %> (<%=h user.email%>) 

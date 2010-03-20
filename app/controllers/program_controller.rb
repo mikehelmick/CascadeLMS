@@ -699,7 +699,7 @@ private
     # Load up the entry/exit surveys
     @surveys = Quiz.find(:all, :conditions => ["course_id=? and entry_exit=?", course_id, true])
     @surveys.sort! do |a,b|
-      a.assignment.close_date <=> b.assignment.close_date
+      a.assignment.open_date <=> b.assignment.open_date
     end
   end
 

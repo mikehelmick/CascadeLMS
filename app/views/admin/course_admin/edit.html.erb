@@ -68,4 +68,13 @@
 </div>
 
 <hr/>
+<h2>Dropped Students(s) for <%= @course.title %></h2>
+<div id="dropped_error"> </div>
+<div id="dropped">
+<% @users = @course.drops %>
+<% @utype = 'dropped' %>
+<%= render :partial => 'userlist' %>
+</div>
+
+<hr/>
 <p><%= link_to "#{image_tag 'arrow_left.png' } Back", :action => 'index' %>

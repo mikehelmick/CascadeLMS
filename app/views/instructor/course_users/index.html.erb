@@ -46,4 +46,18 @@
 </div>
 
 <hr/>
+<h2>Dropped Student(s) for <%= @course.title %></h2>
+<div id="dropped_error"> </div>
+<div id="dropped">
+<% @users = @course.drops %>
+<% @utype = 'dropped' %>
+<%= render :partial => 'userlist' %>
+</div>
+
+<hr/>
 <p><%= link_to "#{image_tag 'arrow_left.png' } Back", :controller => '/instructor/index', :course => @course.id %></p>
+
+
+<script language="javascript">
+  prepareOverlayForm();
+</script>

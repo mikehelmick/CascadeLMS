@@ -27,8 +27,10 @@ class AutoEnrollment < CourseCreator
               end
               
               unless cu.course_student
-                cu.course_student = true
-                cu.save
+                unless cu.dropped
+                  cu.course_student = true
+                  cu.save
+                end
               end
               found = true
             end

@@ -210,6 +210,14 @@ class Course < ActiveRecord::Base
     sort_c_users inst
   end
   
+  def drops
+    users = Array.new
+    self.courses_users.each do |u|
+      users << u.user if u.dropped
+    end
+    sort_c_users users
+  end
+  
   def assignments_for_user( user_id )
     # if there are no project teams, you get all assignments
     return self.assignments unless self.course_setting.enable_project_teams
