@@ -9,7 +9,10 @@
 	
 <p>	
   <%= link_to "#{image_tag('add.png', :align => 'absmiddle' )} Create new rubric", :controller => '/instructor/rubrics', :action => 'new', :course => @course.id, :assignment => @assignment %> 
-  
+  <% if @user.instructor_in_course?(@course.id) || (@user.assistant_in_course?(@course.id) && @course.course_setting.ta_course_assignments) %>
+   <br/><%= link_to "#{image_tag 'arrow_switch.png', :align => 'absmiddle'} Reorder Rubrics", :action => 'reorder', :course => @course %>
+  <% end %>  
+
   <% if @all_rubrics.size > 0 %>
     <br/>
 	<%= link_to_function "#{image_tag('database_refresh.png', :align => 'absmiddle' )} Copy rubric from another assignment.", "blindToggle('import')" %>
@@ -43,14 +46,14 @@
 	</div>
 	</div>
     <% end %>
+
   <% end %>
 </p>
 	
 <% if @assignment.rubrics.length == 0 %>
   <p><i>There are no rubrics for this assignment.</i></p>
-<% else %>	
-	
-  <p>Reorder Rubrics for '<%= @assignment.title %>'</p>
+<% else %>
+
 
 <table class="fancy" width="99%">
   <tr class="header">

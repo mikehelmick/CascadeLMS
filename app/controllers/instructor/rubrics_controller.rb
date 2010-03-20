@@ -20,6 +20,27 @@ class Instructor::RubricsController< Instructor::InstructorBase
    @rubric_level = RubricLevel.for_course(@course)
  end
  
+ def reorder
+   return unless common_data_load( params ) 
+   @title = "Reorder Rubrics for '#{@assignment.title}'"
+   
+   render :layout => 'noright'
+ end
+ 
+ def sort
+   return unless common_data_load( params ) 
+   
+   # get the outcomes at this level
+   Assignment.transaction do
+     @assignment.rubrics.each do |rubric|
+       rubric.position = params['rubric-order'].index( rubric.id.to_s ) + 1
+       rubric.save
+     end
+   end
+   
+   render :nothing => true
+ end
+ 
  def new
    return unless common_data_load( params )
    @rubric = Rubric.new

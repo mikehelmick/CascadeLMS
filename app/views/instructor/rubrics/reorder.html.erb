@@ -1,0 +1,24 @@
+<div class="SectionHeader"><div class="Full">
+<h2>Reorder Rubrics for 
+'<%= @assignment.title %>'</h2>
+</div></div>
+
+
+<div id="reorder">
+  <p>Drag and Drop the rubrics to order.</p>
+
+  <p><b><%= link_to "I'm done reordering rubrics.", :controller => '/instructor/rubrics', :course => @course, :action => nil, :id => nil %></b></p>
+
+  <ul id="rubric-order">
+    <% for rubric in  @assignment.rubrics %>
+      <li id="rubric_<%= rubric.id %>"><%= image_tag 'arrow_switch.png', :align => 'absmiddle' %>
+        <b><%= rubric.primary_trait %></b>
+      </li>
+    <% end %>
+  </ul>
+</div>
+
+<%= sortable_element 'rubric-order', 
+    :url => { :action => 'sort', :course => @course },
+    :complete => visual_effect(:highlight, 'rubric-order')
+%>
