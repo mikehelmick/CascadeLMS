@@ -163,6 +163,7 @@
 <p>
   <% if @user.instructor_in_course?(@course.id) || (@user.assistant_in_course?(@course.id) && @course.course_setting.ta_course_assignments) %>
     <%= link_to 'New Assignment', :action => 'new' %> |
+    <%= link_to 'Duplicate Assignment', :action => 'duplicate' %> |
 	<% if @course.course_setting.enable_quizzes && (@user.instructor_in_course?(@course.id) || (@user.assistant_in_course?(@course.id) && @course.course_setting.ta_create_quizzes) )%>
 	  <%= link_to 'New Quiz/Survey', :controller => '/instructor/quiz', :action => 'new' %> |
 	  <%= link_to 'Duplicate Quiz/Survey', :controller => '/instructor/quiz', :action => 'duplicate' %> |

@@ -66,6 +66,7 @@ class Instructor::CourseAssignmentsController < Instructor::InstructorBase
     
     set_title
     @title = "New Assignment"
+    @duplicate = false
   end
   
   def create
@@ -199,6 +200,65 @@ class Instructor::CourseAssignmentsController < Instructor::InstructorBase
     redirect_to :action => 'autograde', :id => @assignment
   end
   
+  def duplicate
+    return unless load_course( params[:course] )
+    return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_assignments' )
+    return unless course_open( @course, :action => 'index' )
+
+    
+    @assignments = Array.new
+    @course.assignments.each do |asgn|
+      @assignments << asgn unless asgn.quiz
+    end
+    
+    ## setup some basics 
+    @assignment = Assignment.new
+    @assignment.default_dates
+    
+    @duplicate = true
+    
+    @title = "Duplicate Assignment - #{@course.title}"    
+  end
+  
+  def clone
+    return unless load_course( params[:course] )
+    return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_assignments' )
+    return unless course_open( @course, :action => 'index' )
+    
+    @copy_from = Assignment.find( params['copy_from_id'] )
+    return unless assignment_in_course( @course, @copy_from )
+    @assignmentDates = Assignment.new( params[:assignment] )    
+    
+    Assignment.transaction do 
+      @assignment = @copy_from.clone_to_course( @course.id, @user.id, 0, @app['external_dir'] )
+
+      @assignment.open_date  = @assignmentDates.open_date
+      @assignment.due_date   = @assignmentDates.due_date
+      @assignment.close_date = @assignmentDates.close_date
+      @assignment.title = "copy: #{@assignment.title}"
+      @assignment.save
+
+      # copy the rubrics
+      @copy_from.rubrics.each do |rubric|
+        rubric.copy_to( @assignment )
+      end
+      
+      @assignment.auto_grade_setting = @copy_from.auto_grade_setting.clone rescue @assignment.auto_grade_setting = nil
+      
+      @copy_from.io_checks.each do |io|
+        newIo = io.clone
+        newIo.assignment_id = @assignment.id
+        newIo.save
+      end
+      
+      @assignment.save
+      flash[:notice] = 'The selected assignment has been cloned to this one, you can continue to edit the details now.'
+
+      @duplicate = false
+      redirect_to :controller => '/instructor/course_assignments', :action => 'edit', :course => @course, :id => @assignment
+    end
+  end
+    
   def edit
     return unless load_course( params[:course] )
     return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_assignments' )
@@ -211,6 +271,7 @@ class Instructor::CourseAssignmentsController < Instructor::InstructorBase
     @journal_field = JournalField.new if @assignment.journal_field.nil?
     @categories = GradeCategory.for_course( @course ) 
     @title = "Edit #{@assignment.title} (#{@course.title})"
+    @duplicate = false
   end
   
   def update

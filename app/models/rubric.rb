@@ -20,6 +20,13 @@ class Rubric < ActiveRecord::Base
     return false
   end
   
+  def copy_to(assignment)
+    newCopy = self.clone()
+    newCopy.assignment_id = assignment.id
+    newCopy.save
+    return newCopy
+  end
+  
   def normalize_points
     # Normalize to 1 decimal point
     self.no_credit_points = normalize_point_value( self.no_credit_points )

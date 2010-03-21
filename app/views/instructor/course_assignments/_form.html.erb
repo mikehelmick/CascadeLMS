@@ -2,8 +2,16 @@
 <%= error_messages_for 'journal_field' %>
 
 
+<% if @duplicate %>
+ <div class="blockintro">Duplicate assignment.</div>
+ <div class="block">
+ <p><label for="term" class="required">Assignment to copy:</label> 
+    <%= select_tag 'copy_from_id', options_from_collection_for_select(@assignments, "id", "title" ) %></p>
+ </div>
 
-<div class="blockintro">Create a new assignment for this course.</div>
+ <div class="blockintro">Details for cloned version of assignment.</div><br/>
+<% else %>
+ <div class="blockintro">Create a new assignment for this course.</div>
 
 <div class="block">
 <p><label for="assignment[title]" class="required">Assignment name:</label>
@@ -18,6 +26,7 @@
 		<%= radio_button 'assignment', 'visible', false %> No
 	</p>	
 </div>
+<% end %>
 
 <div class="blockintro">For the dates of an assignment: the available date allows to set up an assignment in this system without allowing students to see it until a certain point in time.  The due date and the close date allow you to set a time that assignments are due, but still allow files to be submitted for a slightly longer period of time.</div>
 <div class="block">
@@ -37,6 +46,8 @@
  </tr>
 </table>
 </div>
+
+<% unless @duplicate %>
 
 <% if @course.course_setting.enable_project_teams %>
 <div class="blockintro">Since this course has project teams enabled, you can make this assignment a team assignment.   By making the assignment a team assignment, all submission avenues will be shared by all the students on the same team, although you can assign separate grades to each team member.</div>
@@ -238,4 +249,6 @@
   <%= hidden_field 'assignment', 'use_subversion', :value => false %>
   <%= hidden_field 'assignment', 'subversion_server', :value => '' %>
   <%= hidden_field 'assignment', 'auto_grade', :value => false %>
+<% end %>
+
 <% end %>

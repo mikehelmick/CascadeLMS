@@ -36,6 +36,14 @@ class Assignment < ActiveRecord::Base
   before_save :transform_markup
   
   def clone_to_course( course_id, user_id, time_offset, external_dir )
+    cloneToCourse = Course.find(course_id)
+    categoryMap = Hash.new
+    defaultCategory = 0
+    GradeCategory.for_course(cloneToCourse).each do |category|
+      categoryMap[category.category] = category.id
+      defaultCategory = category.id
+    end
+    
     dup = Assignment.new
     dup.course_id = course_id
     dup.position = self.position
@@ -53,10 +61,15 @@ class Assignment < ActiveRecord::Base
     dup.subversion_development_path = self.subversion_development_path
     dup.subversion_release_path = self.subversion_release_path
     dup.auto_grade = self.auto_grade
-    dup.grade_category_id = self.grade_category_id
+    
+    fromCategory = GradeCategory.find(self.grade_category_id)
+    dup.grade_category_id = categoryMap[fromCategory]
+    dup.grade_category_id = defaultCategory if dup.grade_category_id.nil?
+    
     dup.released = false
     dup.team_project = self.team_project
     dup.quiz_assignment = self.quiz_assignment
+    dup.visible = self.visible
     dup.save
     
     ## if grade item
