@@ -15,6 +15,7 @@
 	  <th>Last Poster</th>
 	  <th>When</th>
 	  <th>Posts</th>
+	  <th>Watching?</th>
 	
 	  <% if @user.instructor_in_course?(@course.id) %>
 	    <th>Controls</th>
@@ -33,14 +34,20 @@
 	  <td nowrap="nowrap" align="left"><%=h topic.user.display_name %></td>
 	  <td nowrap="nowrap" align="left"><%= distance_of_time_in_words_to_now( topic.last_post, true ) %> ago</td>
 	  <td nowrap="nowrap" align="left"><%= topic.post_count %></td>
+	  <td nowrap="nowrap" align="left">
+		<% if topic.is_watching(@user) %><b>Watching</b>
+		<% else %>
+		  Not Watching
+		<% end %>
+	  </td>
 	  <% if @user.instructor_in_course?(@course.id) %>
 	    <td nowrap="nowrap" align="left">
-		  <%= link_to "#{image_tag 'arrow_up.png'} Move Up", :action => 'move_up', :id => topic %> |
-		  <%= link_to "#{image_tag 'arrow_down.png'} Move Down", :action => 'move_down', :id => topic %> |
+		  <%= link_to "#{image_tag 'arrow_up.png', :align => 'absmiddle'} Move Up", :action => 'move_up', :id => topic %> |
+		  <%= link_to "#{image_tag 'arrow_down.png', :align => 'absmiddle'} Move Down", :action => 'move_down', :id => topic %> |
 		  <% if topic.allow_posts %>
-		    <%= link_to "#{image_tag 'door_open.png'} Close Topic", :action => 'toggle_open', :id => topic %>
+		    <%= link_to "#{image_tag 'door_open.png', :align => 'absmiddle'} Close Topic", :action => 'toggle_open', :id => topic %>
 		  <% else %>
-		    <%= link_to "#{image_tag 'door.png'} Open Topic", :action => 'toggle_open', :id => topic %>
+		    <%= link_to "#{image_tag 'door.png', :align => 'absmiddle'} Open Topic", :action => 'toggle_open', :id => topic %>
 		  <% end %>
 	    </td>
 	  <% end %>

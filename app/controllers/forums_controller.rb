@@ -210,8 +210,7 @@ class ForumsController < ApplicationController
         @parent = ForumPost.find( params[:parent].to_i )
         @parent.replies = @parent.replies + 1 rescue @parent.replies = 1
         @parent.last_user_id = @user.id
-      end
-  
+      end 
     
       success = false
       ForumPost.transaction do
@@ -225,6 +224,14 @@ class ForumsController < ApplicationController
       
       if success
         flash[:notice] = 'New post created in this forum.'
+        
+        link = ""
+        if ( @post.parent_post == 0 ) 
+          link = url_for :controller => '/forums', :action => 'read', :id => @post.id, :course => @course, :only_path => false
+        else
+          link = url_for :controller => '/forums', :action => 'read', :id => @post.parent_post, :course => @course, :only_path => false
+        end
+        Bj.submit "./script/runner ./jobs/forum_topic_notifier.rb #{@topic.id} #{@post.id} \"#{link}\""
         redirect_for_post( @post )
       else
         render :action => 'new_post' 
@@ -334,6 +341,38 @@ class ForumsController < ApplicationController
     else
       render :action => 'new_forum'
     end   
+  end
+  
+  def watch
+    return unless load_course( params[:course] )
+    return unless allowed_to_see_course( @course, @user )
+    
+    @topic = ForumTopic.find(params[:id])
+    return unless topic_in_course( @course, @topic )
+    
+    watch = ForumWatch.find(:first, :conditions => ["user_id=? and forum_topic_id=?", @user.id, @topic.id])
+    if watch.nil?
+      watch = ForumWatch.new
+      watch.user_id = @user.id
+      watch.forum_topic_id = @topic.id
+      watch.save
+    end
+    
+    flash[:notice] = "You are now watching the forum '#{@topic.topic}', and you will get an email when there are new posts."
+    redirect_to :action => 'view_topic', :course => @course, :id => @topic
+  end
+  
+  def stop_watch
+    return unless load_course( params[:course] )
+    return unless allowed_to_see_course( @course, @user )
+    
+    @topic = ForumTopic.find(params[:id])
+    return unless topic_in_course( @course, @topic )
+ 
+    ForumWatch.delete_all(["user_id=? and forum_topic_id=?", @user.id, @topic.id])
+    
+    flash[:notice] = "You no longer watching the forum '#{@topic.topic}'."
+    redirect_to :action => 'view_topic', :course => @course, :id => @topic    
   end
   
   def view_topic

@@ -11,5 +11,8 @@ class ForumTopic < ActiveRecord::Base
     self.last_post = Time.now
   end
  
+  def is_watching(user)
+    ForumWatch.find(:all, :conditions => ["user_id =? and forum_topic_id = ?", user.id, self.id]).size > 0
+  end
   
 end
