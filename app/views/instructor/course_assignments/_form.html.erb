@@ -11,6 +11,14 @@
 <p><label for="term" class="required">Category:</label> <%= select_tag 'grade_category_id', options_from_collection_for_select(@categories, "id", "category", @assignment.grade_category_id ) %></p>
 </div>
 
+<div class="blockintro">Is this assignment visible to students?</div>
+<div class="block">
+	<p><b>Assignment published:</b>
+		<%= radio_button 'assignment', 'visible', true %> Yes
+		<%= radio_button 'assignment', 'visible', false %> No
+	</p>	
+</div>
+
 <div class="blockintro">For the dates of an assignment: the available date allows to set up an assignment in this system without allowing students to see it until a certain point in time.  The due date and the close date allow you to set a time that assignments are due, but still allow files to be submitted for a slightly longer period of time.</div>
 <div class="block">
 

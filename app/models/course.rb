@@ -219,15 +219,19 @@ class Course < ActiveRecord::Base
   end
   
   def assignments_for_user( user_id )
+    published_asgn = Array.new
+    self.assignments.each do |asgn|
+      published_asgn << asgn if asgn.visible
+    end
     # if there are no project teams, you get all assignments
-    return self.assignments unless self.course_setting.enable_project_teams
+    return published_asgn unless self.course_setting.enable_project_teams
     # otherwise, we need to filter
     team_id = 0
     team = team_for_user(user_id)
     team_id = team.id unless team.nil?
     rtn_asgn = Array.new
-    self.assignments.each do |asgn|
-      rtn_asgn << asgn if asgn.enabled_for_team?(team_id)  
+    published_asgn.each do |asgn|
+      rtn_asgn << asgn if asgn.enabled_for_team?(team_id) 
     end
     return rtn_asgn
   end

@@ -34,7 +34,7 @@ require 'MyString'
 # Likewise, all the methods added will be available for all controllers.
 class ApplicationController < ActionController::Base
   ## CSCW Application version
-  @@VERSION = '1.4.46 (Rainier) 20100320'
+  @@VERSION = '1.4.47 (Rainier) 20100320'
   
   ## Supress password logging
   filter_parameter_logging :password
@@ -338,7 +338,7 @@ class ApplicationController < ActionController::Base
   end
   
   def assignment_available( assignment, redirect = true )
-    unless assignment.open_date <= Time.now
+    unless assignment.open_date <= Time.now && assignment.visible
       flash[:badnotice] = "The requisted assignment is not yet available."
       redirect_to :action => 'index' if redirect
       return false
