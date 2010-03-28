@@ -37,7 +37,7 @@ class ForumTopicNotifier
                       "If you no longer wish to watch this topic, please unwatch this topic in CascadeLMS.\n\n"
  
           # send each user an email
-          Notifier::deliver_send_forum_email( emailUsers, emailBody, subject )
+          Notifier::deliver_send_forum_email( emailUsers, emailBody, subject, user )
             
           puts "Sent email to #{user.display_name} - #{user.email}"
         end
