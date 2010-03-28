@@ -1,10 +1,10 @@
 class Notifier < ActionMailer::Base
   
   ## This should be a single user
-  def send_forum_email( addresses, text, subject )
+  def send_forum_email( addresses, text, subject, from_user )
     @recipients = addresses
     @subject = subject
-    @from = "#{addresses[0].display_name} <#{addresses[0].email}>"
+    @from = "#{from_user.display_name} <#{from_user.email}>"
     
     @body[:text] = text
   end
