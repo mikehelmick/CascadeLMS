@@ -13,13 +13,14 @@ class ForumTopicNotifier
     
     if ( @post.forum_topic_id == @topic.id ) 
       # find all the watches
+      emailUsers = Array.new
       
       watches = ForumWatch.find(:all, :conditions => ["forum_topic_id = ?", @topic.id])
       watches.each do |watch|
         user = watch.user
         unless user.nil?
-          users = Array.new
-          users << user
+          emailUsers.clear
+          emailUsers << user
           
           subject = "#{@topic.course.title}: New forum post in topic '#{@topic.topic}'"
           part = if @post.parent_post == 0
@@ -35,10 +36,10 @@ class ForumTopicNotifier
                       "\n" +
                       "If you no longer wish to watch this topic, please unwatch this topic in CascadeLMS.\n\n"
  
-            # send each user an email
-            Notifier::deliver_send_email( users, emailBody, subject, @post.user )
+          # send each user an email
+          Notifier::deliver_send_email( emailUsers, emailBody, subject, @post.user )
             
-            puts "Sent email to #{user.display_name} - #{user.email}"
+          puts "Sent email to #{user.display_name} - #{user.email}"
         end
       end
       
