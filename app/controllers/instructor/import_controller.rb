@@ -128,7 +128,7 @@ class Instructor::ImportController < Instructor::InstructorBase
       end
     
       ## Assignment imports
-      if params[:import_assignments]
+      if params[:import_assignments]  
         @import_from.assignments.each do |cp_asgn|
           new_asgn = cp_asgn.clone_to_course( @course.id, @user.id, distance, @app['external_dir'] )
           new_asgn.save
