@@ -177,6 +177,21 @@
   </tr>
   <tr><td colspan="3"><hr/></td></tr>
 
+  <% if @user.instructor_in_course?( @course.id ) && @app['enableTwitter'].eql?('true') %>
+  <tr>
+	<td><b>Integration:</b></td>
+	<td>
+	  <% if @app['enableTwitter'].eql?('true') %>
+	    <%= link_to "#{image_tag 'twitter.png', :align => 'absmiddle'} Twitter Settings", :controller => '/instructor/twitter', :course => @course %>
+	  <% else %>
+	    <s><%= image_tag 'twitter.png', :align => 'absmiddle' %> Twitter Settings</s>
+	  <% end %>
+	</td>
+	<td>&nbsp;</td>
+  </tr>
+  <tr><td colspan="3"><hr/></td></tr>
+  <% end %>
+
   <% if @user.instructor_in_course?( @course.id ) %>
   <tr>
 	<td><b>Import:</b></td>

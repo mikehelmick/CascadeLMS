@@ -1,0 +1,36 @@
+<h2>Twitter Integration Setup</h2>
+
+<p><%= link_to 'Cancel', :controller => '/instructor/index', :course => @course, :action => 'index' %></p>
+
+<p>To use Twitter integration, you must already have a Twitter account.  
+If you don't have one, you can sign up at <a href="http://www.twitter.com" target="_blank">twitter.com</a>.
+We recommend that you don't use your personal twitter account, but rather one dedicated to your teaching.</p>
+
+<p>If you are ready to integrate with Twitter, click the link below. 
+ After you have authorized this application, come back to this window and enter the code that Twitter gives you.</p>
+
+<div id="GoodMessage">
+  <a href="<%= @courseTwitter.auth_url %>" target="_blank"><%= @courseTwitter.auth_url %></a>
+</div>
+	
+	
+<div id="form_area">
+<% form_tag( :action => 'authorize', :id => @course ) do %>
+ <h2>Authorize Twitter for <%= @course.title %></h2>
+
+ <p class="blockintro">Enter the pin code that you received on twitter.com</p>
+ <div class="block">
+  <p>
+   <label for='auth_code'>Twitter Authorization PIN Code:</label>
+   <%= text_field_tag 'auth_code', '', :size => 20  %>
+ </p>
+ </div>
+
+ <div class="submit">
+  <%= submit_tag 'Authorize Twitter for this course' %>
+ </div>
+<% end %>
+</div>
+
+<p><%= link_to 'Cancel', :controller => '/instructor/index', :course => @course, :action => 'index' %></p>
+	

@@ -3,3 +3,4 @@ config/database.yml
 db/schema.rb
 config/deploy.rb
 log/development.log 
+log/bj.namaste.local.development.log

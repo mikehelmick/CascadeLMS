@@ -5,6 +5,7 @@ class Course < ActiveRecord::Base
   has_and_belongs_to_many :crns
   
   has_one :course_setting, :dependent => :destroy
+  has_one :course_twitter, :dependent => :destroy
   has_one :course_information, :dependent => :destroy
   has_one :gradebook, :dependent => :destroy
   has_one :rubric_level, :dependent => :destroy

@@ -1,0 +1,28 @@
+<div class="SectionHeader"><div class="Full">
+<h2>Twitter Integration For '<%=h @course.title%>' </h2>
+</div></div>
+
+<p>
+ <ul>
+  <li><b>Twitter Name:</b> @<%= @course.course_twitter.twitter_name %> <img src="<%= @credentials['profile_image_url']%>"/></li>
+  <ul>
+	<li>Twitter page: <a href="http://twitter.com/<%= @course.course_twitter.twitter_name %>">http://twitter.com/<%= @course.course_twitter.twitter_name %></a></li>
+  </ul>
+  <li><b>Description:</b> <%= @credentials['description'] %></li>
+  <li><b>Followers:</b> <%= @credentials['followers_count']%></li>
+  <li><%= link_to "#{image_tag 'delete.png', :align => 'absmiddle'} Disable Twitter for this course", { :action => 'disable', :course => @course }, :confirm => 'Are you sure you want to disable Twitter for this course? Previously published "tweets" will not be deleted.', :method => :post %></li>
+ </ul>
+</p>
+
+<div class="SectionHeader"><div class="Full">
+<h2>Recent Tweets by '<%= @course.course_twitter.twitter_name %>' </h2>
+</div></div>
+
+<ul>
+<% for status in @timeline %>
+ <li><%=h status.text %></li>
+ <ul>
+  <li><%=h status.created_at %> from <%= status.source %></li>
+ </ul>
+<% end %>
+</ul>
