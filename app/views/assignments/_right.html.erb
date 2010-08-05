@@ -13,7 +13,7 @@ code_block = Proc.new do |d|
 	  else
 		clazz = "day"       
 		duea = Array.new                              
-		@course.assignments.each do |x|
+		@course.assignments_for_user(@user).each do |x|
 		  if x.due_date.to_date.eql?(d)
 		    clazz = "specialDay" 
 		    duea << x.title
