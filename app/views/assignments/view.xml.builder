@@ -32,7 +32,7 @@ xml.assignment do
       xml.points_earned "#{gi.points}"
       xml.points_possible "#{@assignment.grade_item.points}"
     end
-  elsif !assignment.grade_item.nil? 
+  elsif !@assignment.grade_item.nil? 
     xml.points_possible "#{@assignment.grade_item.points}"
   end
   
