@@ -45,10 +45,10 @@ class CrnLoader
                                      'submit' => 'Get Classes',
                                      
                                      'monday' => 'M',
-                                     'tuesday' => 'T'
+                                     'tuesday' => 'T',
                                      'wednesday' => 'W',
                                      'thursday' => 'R',
-                                     'friday' => 'F'
+                                     'friday' => 'F',
                                      'saturday' => 'S',
 
                                      'campus_required' => 'A Campus must be selected',
