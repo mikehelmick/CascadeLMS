@@ -43,6 +43,13 @@ class CrnLoader
                                      'begin_time' => '',
                                      'end_time' => '',
                                      'submit' => 'Get Classes',
+                                     
+                                     'monday' => 'M',
+                                     'tuesday' => 'T'
+                                     'wednesday' => 'W',
+                                     'thursday' => 'R',
+                                     'friday' => 'F'
+                                     'saturday' => 'S',
 
                                      'campus_required' => 'A Campus must be selected',
                                      'subj_required' => 'A Subject must be selected'
