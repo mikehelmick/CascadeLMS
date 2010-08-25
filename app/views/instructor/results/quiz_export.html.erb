@@ -1,0 +1,8 @@
+Quiz Answers: <%= @assignment.title %>
+Exported at:, <%= Time.now.to_formatted_s(:long) %>
+,,,Users:,<% for s in @students %><%= s.uniqueid %>,<% end %>
+"<% for q in @assignment.quiz.quiz_questions %><%= q.question.gsub(',','\,').gsub('"','\"') %>",,,,<% if q.multiple_choice || q.checkbox %><% for s in @students %><%= s.uniqueid %>,<% end %><% end %>
+<% if q.multiple_choice || q.checkbox %><% for qqa in q.quiz_question_answers %>,"<%= qqa.answer_text.gsub(',','\,').gsub('"','\"') %> ",<%= @answer_count_map[qqa.id] %>,<% if !@question_answer_total[q.id].nil? && !@answer_count_map[qqa.id].nil? && @question_answer_total[q.id].to_i > 0 %><%= sprintf("%.3f", @answer_count_map[qqa.id]/@question_answer_total[q.id].to_f * 100 ) %><% else %>0.000<% end %>,<% for s in @students %><% if @student_answer_map[s.id][q.id][qqa.id] %>XX<% end %>,<% end %>
+<% end %>,TOTAL:,<%= @question_answer_total[q.id] %>,100.0
+<% else %><% for s in @students %>,<%= s.uniqueid %>,"<% if @student_answer_map[s.id][q.id] %><%= @student_answer_map[s.id][q.id].gsub(',','\,').gsub('"','\"')  %>",<% else %>,<% end %>
+<% end %><% end %><% end %>

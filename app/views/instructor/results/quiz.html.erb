@@ -30,6 +30,10 @@
   </ul>
 <% end %>
 
+<ul>
+  <li><%= image_tag 'page_excel.png', :align => 'absmiddle' %> <%= link_to 'Export quiz responses to Excel', :controller => '/instructor/results', :action => 'quiz_export', :course => @course, :assignment => @assignment %></li>
+</ul>
+
 <% if @course.course_setting.enable_project_teams %>
  <% if @assignment.team_filters.size > 0 %>
    <div class="errorExplanation">This assignment uses team filters, so not all students have it available.</div>

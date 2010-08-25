@@ -99,6 +99,15 @@ class Instructor::ResultsController < Instructor::InstructorBase
     
     render :layout => false
   end
+  
+  def quiz_export
+    quiz_summary( params )
+    
+    response.headers['Content-Type'] = 'text/csv; charset=iso-8859-1; header=present'
+    response.headers['Content-Disposition'] = "inline; filename=quiz_results_#{@assignment.id}.csv"
+    
+    render :layout => false
+  end
 
   def survey
     survey_results_common( params )
@@ -350,6 +359,50 @@ private
      @title = "Quiz - #{@course.title}"
   end
   
+  def quiz_summary(params)
+    return unless load_course( params[:course] )
+    return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_view_survey_results' )
+    return unless quiz_enabled( @course )
+    return unless course_open( @course, :action => 'index' )
+    return unless load_assignment( params[:assignment] )
+    return unless assignment_in_course( @course, @assignment )
+    return unless assignment_is_quiz( @assignment )
+    @quiz = @assignment.quiz
+    
+    @students = @course.students
+    
+    @answer_count_map = Hash.new
+    @question_answer_total = Hash.new
+    @student_answer_map = Hash.new
+    
+    # For each student, process latest attempt
+    @students.each do |student|
+      @student_answer_map[student.id] = Hash.new
+      attempt = QuizAttempt.find(:first, :conditions => ["quiz_id = ? and user_id = ? and completed = ?", @quiz.id, student.id, true], :order => "created_at desc" )      
+      
+      unless attempt.nil?
+        attempt.quiz_attempt_answers.each do |qaa|
+          if qaa.quiz_question_answer_id.nil?
+            ## text question
+            @student_answer_map[student.id][qaa.quiz_question_id] = qaa.text_answer
+          else
+            ## multiple choice
+            @answer_count_map[qaa.quiz_question_answer_id] = 0 if @answer_count_map[qaa.quiz_question_answer_id].nil?
+            @question_answer_total[qaa.quiz_question_id] = 0 if @question_answer_total[qaa.quiz_question_id].nil?
+            
+            @answer_count_map[qaa.quiz_question_answer_id] = @answer_count_map[qaa.quiz_question_answer_id].next
+            @question_answer_total[qaa.quiz_question_id] = @question_answer_total[qaa.quiz_question_id].next
+            
+            @student_answer_map[student.id][qaa.quiz_question_id] = Hash.new if @student_answer_map[student.id][qaa.quiz_question_id].nil?
+            @student_answer_map[student.id][qaa.quiz_question_id][qaa.quiz_question_answer_id] = 1
+          end
+        end
+      end
+      
+    end
+    
+  end
+  
   def survey_results_common( params )
     return unless load_course( params[:course] )
     return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_view_survey_results' )
@@ -360,7 +413,7 @@ private
     return unless assignment_is_quiz( @assignment )
     @quiz = @assignment.quiz
     
-    if ( ! @assignment.quiz.survey ) 
+    if ( !@assignment.quiz.survey ) 
       redirect_to :action => 'quiz', :course => @course, :assignment => @assignment
     end
     
@@ -373,12 +426,12 @@ private
     (size+1).upto(@students.length-1) { |i| @column2 << @students[i] }
       
     # if anonymous, run through all attempts
+    @student_map = Hash.new
     if @quiz.anonymous
       attempts = QuizAttempt.find(:all, :conditions => ["quiz_id = ?", @quiz.id])
-      @student_map = Hash.new
       attempts.each { |attempt| @student_map[attempt.user_id] = true }  
     end  
-      
+    
     aggregate_survey_responses( @quiz )
   end
   
