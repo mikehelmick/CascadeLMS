@@ -119,7 +119,13 @@ class Quiz < ActiveRecord::Base
       #puts "POS: #{self.assignment.grade_item.points}"      
       #puts "TOSCORE: #{questions_to_score.to_f}"
       #puts "CORRECT: #{correct_count}"
-      entry.points = self.assignment.grade_item.points/questions_to_score.to_f * correct_count
+      entry.points = 
+        if questions_to_score == 0 
+          0
+        else 
+         self.assignment.grade_item.points/questions_to_score.to_f * correct_count
+        end
+      
       #puts "POINTS: #{entry.points}"      
       entry.save 
     end   
