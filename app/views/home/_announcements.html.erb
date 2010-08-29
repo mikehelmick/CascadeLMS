@@ -1,5 +1,5 @@
 <% if @announcements.size > 0 %>
-<p><b>System Announcements:</b><br/>
+<p><b>System Announcements:</b><br/></p>
 <% for announcement in @announcements %>
 <b>Posted <%= announcement.start.to_date.to_formatted_s(:long )%>:</b> <%= link_to_function( "#{announcement.headline} #{image_tag('email_open.png')}", "blindToggle('announcement_#{announcement.id}')" ) %>
 <div id="announcement_<%=announcement.id%>" class="announcement" style="display: none;">
@@ -7,5 +7,5 @@
 <%= announcement.text_html %>
 </div>
 <% end %>
-</p>
+
 <% end %>
