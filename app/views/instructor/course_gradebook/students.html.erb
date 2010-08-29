@@ -8,9 +8,9 @@
 	 odd = "even" if i.even?
 	  %>
   <tr class="<%=odd%> hover">
-	<td width="50%"><img src="<%= @column1[i].gravatar_url %>" align="absmiddle" /><%= link_to "#{@column1[i].display_name} (#{@column1[i].uniqueid})", :id => @column1[i].id, :action => 'for_student' %></td>
+	<td width="50%"><img src="<%= @column1[i].gravatar_url(request.ssl?) %>" align="absmiddle" /><%= link_to "#{@column1[i].display_name} (#{@column1[i].uniqueid})", :id => @column1[i].id, :action => 'for_student' %></td>
 	<td width="50%">
-	   <% unless @column2[i].nil? %><img src="<%= @column2[i].gravatar_url %>" align="absmiddle" /><% end %>
+	   <% unless @column2[i].nil? %><img src="<%= @column2[i].gravatar_url(request.ssl?) %>" align="absmiddle" /><% end %>
 	   <%= link_to( "#{@column2[i].display_name} (#{@column2[i].uniqueid})", :id => @column2[i].id, :action => 'for_student') rescue "&nbsp;" %></td>
   </tr>
 <% end %>

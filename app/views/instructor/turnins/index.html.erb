@@ -101,7 +101,7 @@
     %>
 
 	<tr class="<%=odd%> hover" id="student_<%=student.id%>">
-      <td><img src="<%=student.gravatar_url%>" /></td>
+      <td><img src="<%=student.gravatar_url(request.ssl?) %>" /></td>
       <td align="left"><%=h student.display_name %><br/><%=h student.uniqueid %></td>
 
       <% if block 

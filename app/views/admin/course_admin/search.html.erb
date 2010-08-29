@@ -19,7 +19,7 @@
 <tr class="<%=odd%> hover" id="item_<%=user.id%>">
   <td>
 	<table><tr>
-	  <td><img src="<%= user.gravatar_url %>"></td>
+	  <td><img src="<%= user.gravatar_url(request.ssl?) %>"></td>
 	  <td colspan="2"><%=h user.display_name %> | uid='<%=h user.uniqueid %>'</td>
   </tr><tr>
 	  <td align="right" rowspan="2" nowrap="nowrap">Add As:</td>

@@ -30,14 +30,15 @@ class User < ActiveRecord::Base
   
   attr_accessor :notice
   
-  def gravatar_url
+  def gravatar_url(ssl = false)
     email_address = self.email.downcase
     #create the md5 hash
     hash = MD5::md5(email_address)
     
-    return "http://www.gravatar.com/avatar/#{hash}.jpg?s=60&d=wavatar&r=PG"
+    return "http://www.gravatar.com/avatar/#{hash}.jpg?s=60&d=wavatar&r=PG" unless ssl
+    return "https://secure.gravatar.com/avatar/#{hash}.jpg?s=60&d=wavatar&r=PG"
   end
-  
+
   def assignment_journals( assignment )
     Journal.find(:all, :conditions => ["assignment_id = ? and user_id = ?", assignment.id, self.id], :order => 'created_at asc' )
   end

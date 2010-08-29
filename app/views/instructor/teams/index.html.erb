@@ -38,7 +38,7 @@
 	  </ul>
 	
 	  <% for member in team.team_members %>
-	    <img src="<%= member.user.gravatar_url %>" />
+	    <img src="<%= member.user.gravatar_url(request.ssl?) %>" />
 	  <% end %>
 	</td>
   </tr>

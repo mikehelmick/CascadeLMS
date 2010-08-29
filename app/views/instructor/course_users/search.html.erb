@@ -17,7 +17,7 @@
 %>
 
   <tr class="<%=odd%> hover" id="item_<%=user.id%>">
-    <td><img src="<%= user.gravatar_url %>"><br/>
+    <td><img src="<%= user.gravatar_url(request.ssl?) %>"><br/>
 		<%=h user.display_name %><br/> 
 		(<em>'<%=h user.uniqueid %>'</em>)
 		</td>

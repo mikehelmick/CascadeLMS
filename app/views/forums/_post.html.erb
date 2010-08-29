@@ -6,7 +6,7 @@
 <tr>
   <td class="poster" nowrap="nowrap" valign="top" align="left">
     <p><b><%= post.user.display_name %></b><br/>
-	  <img src="<%= post.user.gravatar_url%>" />
+	  <img src="<%= post.user.gravatar_url(request.ssl?) %>" />
 	  <% if post.user.instructor_in_course?( @course.id ) %> <%= image_tag 'user_suit.png' %> <br/> instructor
 	  <% elsif post.user.assistant_in_course?( @course.id ) %> <%= image_tag 'user_gray.png' %> <br/> assistant
 	  <% elsif post.user.student_in_course?( @course.id ) %> <%= image_tag 'user.png' %> <br/> student

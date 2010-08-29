@@ -3,7 +3,7 @@
 
 <p><%= link_to 'Back to all students', :controller => '/instructor/turnins', :course => @course, :assignment => @assignment %> |
    <%= link_to "Grade overview for #{@student.display_name}", :controller => '/instructor/course_gradebook', :action => 'for_student', :course => @course, :id => @student.id %>
-   <img src="<%= @student.gravatar_url %>" align="top" />
+   <img src="<%= @student.gravatar_url(request.ssl?) %>" align="top" />
 	</p>
 
 <!-- team -->
@@ -23,7 +23,7 @@
 		         <% end %>
 		       </ul>
 		<% for tm in @team.team_members %>
-		  <img src="<%= tm.user.gravatar_url %>" />
+		  <img src="<%= tm.user.gravatar_url(request.ssl?) %>" />
 		<% end %>
   <% end %>
   <p>

@@ -11,14 +11,14 @@ Want to be notified any time there is a new document, announcement, or assignmen
 <b>Course:</b> <%=h @course.title %><br/>
 <b>Instructor:</b> <br/>
  <% for instructor in  @course.instructors %>
-   <span class="instructor"><img src="<%= instructor.gravatar_url %>" align="middle" /> <%= instructor.to_s %></span>
+   <span class="instructor"><img src="<%= instructor.gravatar_url(request.ssl?) %>" align="middle" /> <%= instructor.to_s %></span>
  <% end %>
  
 <% tas = @course.assistants %>
 <% if tas.size > 0 %>
  <b>Assistant(s):</b><br/>
  <% for assistant in  tas %>
-    <span class="instructor"><img src="<%= assistant.gravatar_url %>" align="middle" /> <%= assistant.to_s %></span>
+    <span class="instructor"><img src="<%= assistant.gravatar_url(request.ssl?) %>" align="middle" /> <%= assistant.to_s %></span>
  <% end %>
 <% end %>
 

@@ -22,7 +22,7 @@
 	   <% end %>
 	  <% end %>
 	<% end %>
-	   <% if @show_images %><img src="<%= user.gravatar_url %>" align="top" /><% end %> 
+	   <% if @show_images %><img src="<%= user.gravatar_url(request.ssl?) %>" align="top" /><% end %> 
 		 <%=h user.display_name %> (<%=h user.email%>) 
 	   <% if @showCRN && !course_user.nil? %> 
     </label>

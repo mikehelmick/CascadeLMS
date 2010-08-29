@@ -29,7 +29,7 @@
      <% end %>
     </td>
     <td valign="top"><%= student.display_name %> - <%= student.uniqueid %></td>
-    <td valign="top"><img src="<%= student.gravatar_url%>" /></td>
+    <td valign="top"><img src="<%= student.gravatar_url(request.ssl?) %>" /></td>
   </tr>
 <% end %>
 </table>
