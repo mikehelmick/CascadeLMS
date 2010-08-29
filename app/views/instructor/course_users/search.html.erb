@@ -7,7 +7,7 @@
 <div id="ErrorExplanation">No users matched your search term.</div>
 <% else %>
 
-<table class="fancy" width="100%">
+<table class="fancy" width="100%" style="display: block;">
 
 <% count = 0 %>
 <% for user in @users %>
@@ -17,43 +17,33 @@
 %>
 
   <tr class="<%=odd%> hover" id="item_<%=user.id%>">
-    <td>
-	<table><tr>
-	  <td><img src="<%= user.gravatar_url %>"></td>
-	  <td colspan="2"><%=h user.display_name %> | uid='<%=h user.uniqueid %>'</td>
-    </tr><tr>
-	  <td align="right" rowspan="2" nowrap="nowrap">Add As:</td>
-	  <td>
-		<% if user.student_in_course?(@course.id) %>
-		  <s>Student</s>
-		<% else %>
-		  <%= link_to_remote( "Student", :update => "student", :url => { :action => 'adduser', :type => 'student', :course => @course.id, :id => user }, :complete => "new Effect.Highlight( 'student' )" ) %>
-		<% end %>
+    <td><img src="<%= user.gravatar_url %>"><br/>
+		<%=h user.display_name %><br/> 
+		(<em>'<%=h user.uniqueid %>'</em>)
+		</td>
+	  <td align="left" nowrap="nowrap">Add As:
+		<ul>
+		   <li><% if user.student_in_course?(@course.id) %><s>Student</s>
+			   <% else %>
+			     <%= link_to_remote( "Student", :update => "student", :url => { :action => 'adduser', :type => 'student', :course => @course.id, :id => user }, :complete => "new Effect.Highlight( 'student' )" ) %>
+			   <% end %></li>
+		   <li><% if user.instructor_in_course?(@course.id) || !user.instructor %>
+			   <s><acronym title="This user can not be granted the instructor role because they have not been given the instructor role.  Contact your site administrator for additional information.">Instructor</acronym></s>
+			   <%else%>
+			    <%= link_to_remote( "Instructor", :update => "instructor", :url => { :action => 'adduser', :type => 'instructor', :course => @course.id, :id => user }, :complete => "new Effect.Highlight( 'instructor' )" ) %>
+			   <%end%></li>
+		   <li><% if user.assistant_in_course?(@course.id) %>
+			     <s>TA</s>
+			   <%else%>
+			     <%= link_to_remote( "TA", :update => "assistant", :url => { :action => 'adduser', :type => 'assistant', :course => @course.id, :id => user }, :complete => "new Effect.Highlight( 'assistant' )" ) %>
+			   <%end%></li>
+		   <li><% if user.guest_in_course?(@course.id) %>
+			     <s>Guest</s>
+			   <%else%>
+			     <%= link_to_remote( "Guest", :update => "guest", :url => { :action => 'adduser', :type => 'guest', :course => @course.id, :id => user }, :complete => "new Effect.Highlight( 'guest' )" ) %>
+		   	   <%end%></li>
+	    </ul>
 	  </td>
-	  <td>
-		<% if user.instructor_in_course?(@course.id) || !user.instructor %>
-		  <s><acronym title="This user can not be granted the instructor role because they have not been given the instructor role.  Contact your site administrator for additional information.">Instructor</acronym></s>
-		<%else%>
-		  <%= link_to_remote( "Instructor", :update => "instructor", :url => { :action => 'adduser', :type => 'instructor', :course => @course.id, :id => user }, :complete => "new Effect.Highlight( 'instructor' )" ) %>
-		<%end%>
-	  </td>
-	 </tr><tr>
-	  <td>
-		<% if user.assistant_in_course?(@course.id) %>
-		  <s>TA</s>
-		<%else%>
-		  <%= link_to_remote( "TA", :update => "assistant", :url => { :action => 'adduser', :type => 'assistant', :course => @course.id, :id => user }, :complete => "new Effect.Highlight( 'assistant' )" ) %>
-		<%end%>
-	  </td>
-	  <td>
-		<% if user.guest_in_course?(@course.id) %>
-		  <s>Guest</s>
-		<%else%>
-		  <%= link_to_remote( "Guest", :update => "guest", :url => { :action => 'adduser', :type => 'guest', :course => @course.id, :id => user }, :complete => "new Effect.Highlight( 'guest' )" ) %>
-		<%end%>	  	
-	  </td>
-	</tr></table>
-	</td>
   </tr>
 
 <% end %>
