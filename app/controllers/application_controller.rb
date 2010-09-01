@@ -34,7 +34,7 @@ require 'MyString'
 # Likewise, all the methods added will be available for all controllers.
 class ApplicationController < ActionController::Base
   ## CSCW Application version
-  @@VERSION = '1.4.53 (Rainier) 20100824'
+  @@VERSION = '1.4.54 (Rainier) 20100831'
   
   ## Supress password logging
   filter_parameter_logging :password
@@ -626,7 +626,6 @@ class ApplicationController < ActionController::Base
     @text_responses = Hash.new
     
     quiz.quiz_questions.each do |question|
-      @full_answer_map[question.id] = Hash.new unless process_full
        
       if question.text_response
         @text_responses[question.id] = Array.new
