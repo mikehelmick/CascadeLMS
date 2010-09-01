@@ -1,4 +1,4 @@
-<p><%= link_to 'Back', :controller => '/instructor', :action => nil, :course => @course %></p>
+<p><%= link_to 'Back', :controller => '/instructor', :action => 'index, :course => @course %></p>
 
 <div class="SectionHeader"><div class="Full">
 <h2>Import Content into '<%=h @course.title%>' </h2>
@@ -23,6 +23,7 @@
 	    <% if course.id == @course.id %>
 	      <i>This is the current course.</i>
 	    <% else %>
+	       <p><i><%= course.short_description %></i></p>
 	
 	    <div id="form_area">
 	    <% form_tag( :action => 'import_data', :course => @course, :id => course.id ) do %>

@@ -9,8 +9,8 @@ class Instructor::ImportController < Instructor::InstructorBase
   
     @courses = @user.courses
     @courses.sort! do |a,b|  
-      rtn = a.term.semester <=> b.term.semester
-      rtn = a.title <=> b.title if rtn == 0
+      rtn = b.term.term <=> a.term.term
+      rtn = b.title <=> a.title if rtn == 0
       rtn
     end
     
@@ -39,7 +39,6 @@ class Instructor::ImportController < Instructor::InstructorBase
       end
       
     end
-    
   
     set_title
   end
