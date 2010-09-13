@@ -4,9 +4,19 @@
  <p><i>There are no assignments in this course.</i></p>
 <% else %>
 
-<% if @user.instructor_in_course?(@course.id) || (@user.assistant_in_course?(@course.id) && @course.course_setting.ta_course_assignments) %>
-  <p><%= link_to "#{image_tag 'arrow_switch.png'} Reorder Assignments", :action => 'reorder', :course => @course %></p>
-<% end %>
+<p>
+ <% if @user.instructor_in_course?(@course.id) || (@user.assistant_in_course?(@course.id) && @course.course_setting.ta_course_assignments) %>
+   <%= link_to "#{image_tag 'arrow_switch.png'} Reorder Assignments", :action => 'reorder', :course => @course %> | 
+   <%= link_to 'New Assignment', :action => 'new' %> |
+   <%= link_to 'Duplicate Assignment', :action => 'duplicate' %> |
+	<% if @course.course_setting.enable_quizzes && (@user.instructor_in_course?(@course.id) || (@user.assistant_in_course?(@course.id) && @course.course_setting.ta_create_quizzes) )%>
+	  <%= link_to 'New Quiz/Survey', :controller => '/instructor/quiz', :action => 'new' %> |
+	  <%= link_to 'Duplicate Quiz/Survey', :controller => '/instructor/quiz', :action => 'duplicate' %> |
+	<% end %>
+   <%= link_to 'View All Rubrics', :controller => '/instructor/rubrics', :action => 'all', :course => @course %> |
+ <% end %>
+<%= link_to 'Back', :controller => '/instructor/index', :course => @course %>
+</p>
 
  <table class="fancy" id="asignment_table"> 
    <tr class="header"> 
@@ -162,12 +172,14 @@
 
 <p>
   <% if @user.instructor_in_course?(@course.id) || (@user.assistant_in_course?(@course.id) && @course.course_setting.ta_course_assignments) %>
+    <%= link_to "#{image_tag 'arrow_switch.png'} Reorder Assignments", :action => 'reorder', :course => @course %> | 
     <%= link_to 'New Assignment', :action => 'new' %> |
     <%= link_to 'Duplicate Assignment', :action => 'duplicate' %> |
 	<% if @course.course_setting.enable_quizzes && (@user.instructor_in_course?(@course.id) || (@user.assistant_in_course?(@course.id) && @course.course_setting.ta_create_quizzes) )%>
 	  <%= link_to 'New Quiz/Survey', :controller => '/instructor/quiz', :action => 'new' %> |
 	  <%= link_to 'Duplicate Quiz/Survey', :controller => '/instructor/quiz', :action => 'duplicate' %> |
 	<% end %>
+	<%= link_to 'View All Rubrics', :controller => '/instructor/rubrics', :action => 'all', :course => @course %> |
   <% end %>
  <%= link_to 'Back', :controller => '/instructor/index', :course => @course %>
 </p>

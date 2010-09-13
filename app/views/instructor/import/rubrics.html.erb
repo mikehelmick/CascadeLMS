@@ -1,0 +1,92 @@
+<p><%= link_to 'Back', :controller => '/instructor/index', :action => nil, :course => @course %></p>
+
+<div class="SectionHeader"><div class="Full">
+<h2>Rubrics already available in '<%=h @course.title%>'</h2>
+</div></div>
+
+<%= link_to_function( 'Show/Hide existing rubrics', "blindToggle('existing')" ) %>
+<div id="existing"><ul><% for rubric in @thisCourse %>
+<li><a class="hover_more" href="#hover"><%= rubric.primary_trait %> (<% if rubric.assignment_id == 0%>No assignment.<% else %><%= rubric.assignment.title %><% end %>)
+<span><table width="400px">
+<tr><td colspan="2"><em>Primary Trait:</em> <%=rubric.primary_trait%></td><td><em>Points</em></td></tr>
+<tr><td><%= @course.rubric_level.l1_name %></td><td><%= rubric.above_credit_criteria %></td><td><%= rubric.above_credit_points %></td></tr>
+<tr><td><%= @course.rubric_level.l2_name %></td><td><%= rubric.full_credit_criteria %></td><td><%= rubric.full_credit_points %></td></tr>
+<tr><td><%= @course.rubric_level.l3_name %></td><td><%= rubric.part_credit_criteria %></td><td><%= rubric.part_credit_points %></td></tr>
+<tr><td><%= @course.rubric_level.l4_name %></td><td><%= rubric.no_credit_criteria %></td><td><%= rubric.no_credit_points %></td></tr>
+</table></span></a></li>
+<% end %></ul></div>
+
+<div class="SectionHeader"><div class="Full">
+<h2>Import Rubrics into '<%=h @course.title%>' </h2>
+</div></div>
+
+
+  <% form_tag( :action => 'import_rubrics', :course => @course ) do %>
+
+  <div id="short_lists">
+  <p class="blockintro">Select rubrics to import into this course. Hover over the rubric name for more information about the rubric.</p>
+          
+    <table width="99%" class="fancy">
+	  <tr class="header">
+		<th width="15%" nowrap="nowrap" align="left">Course</th>
+		<th width="85%" align="left">Rubrics</th>
+	  </tr>
+	  
+	  <% row_count = 0 
+	     lastCourse = 0
+	     lastAssignment = 0
+	   %>
+	  <% for rubric in @rubrics %>
+	    <% if rubric.course_id != lastCourse %>
+	      <% if lastCourse != 0 %>
+	         </li></td></tr>
+	      <% end %>  
+	
+	      <% row_count = row_count.next 
+	         odd = "odd"
+             odd = "even" if row_count.even? 
+             lastCourse = rubric.course_id
+           %>
+	      <tr class="<%=odd%> hover" id="course_<%=lastCourse%>">
+		   <td><%= rubric.course.title %><br/><i><%= rubric.course.term.semester %></i>
+			   <br/>--<br/>
+			   <%= rubric.course.short_description %></td>
+		   <td>
+			<ul>
+				
+		   <% if lastAssignment != rubric.assignment_id %>	
+		     <% lastAssignment = rubric.assignment_id %>
+			
+			 <li><% if rubric.assignment_id == 0 %>
+				 	<i>Not attached to an assignment...</i>
+				 <% else %>
+				    <em>Assignment:</em> <%= rubric.assignment.title %>
+				 <% end %>
+			  <ul>
+		  <% end %>
+			<li><%= check_box_tag "rubric_#{rubric.id}", rubric.id %> <a class="hover_more" href="#hover"><%= rubric.primary_trait %> 
+ <span><table width="400px">
+  <tr><td colspan="2"><em>Primary Trait:</em> <%=rubric.primary_trait%></td><td><em>Points</em></td></tr>
+  <tr><td><%= @course.rubric_level.l1_name %></td><td><%= rubric.above_credit_criteria %></td><td><%= rubric.above_credit_points %></td></tr>
+  <tr><td><%= @course.rubric_level.l2_name %></td><td><%= rubric.full_credit_criteria %></td><td><%= rubric.full_credit_points %></td></tr>
+  <tr><td><%= @course.rubric_level.l3_name %></td><td><%= rubric.part_credit_criteria %></td><td><%= rubric.part_credit_points %></td></tr>
+  <tr><td><%= @course.rubric_level.l4_name %></td><td><%= rubric.no_credit_criteria %></td><td><%= rubric.no_credit_points %></td></tr>
+ </table></span></a></li>
+	    <% end %>
+	
+	    
+	
+	  <% end %>
+	  </td></tr>
+	</table>
+ 
+  <br/>
+
+  <div class="submit">
+	<%= submit_tag "Import selected rubrics" %>
+  </div>
+  <% end %>	
+
+  </div>
+
+<p>&nbsp;<br/>&nbsp;<br/>&nbsp;</p>

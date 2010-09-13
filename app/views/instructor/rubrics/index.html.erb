@@ -26,8 +26,13 @@
 	    <% # build options list
 	       options = ""
 	       @all_rubrics.each do |rubric|
-		     unless rubric.assignment.id == @assignment.id
-			   import_title = "(#{rubric.assignment.title}) #{rubric.primary_trait}"
+		     unless rubric.assignment_id == @assignment.id
+			   import_title =
+			     if rubric.assignment_id == 0
+				   "(no assignment) #{rubric.primary_trait}"
+				 else
+				   "(#{rubric.assignment.title}) #{rubric.primary_trait}" 
+				 end
 			   if import_title.length > 100 
 			     import_title = "#{import_title[0...90]} ... #{import_title[-10..-1]}"	
 			   end

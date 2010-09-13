@@ -196,7 +196,7 @@
   <tr>
 	<td><b>Import:</b></td>
 	<td><%= link_to "#{image_tag 'application_side_expand.png', :align => 'absmiddle'} Import Content From Other Courses", :controller => '/instructor/import', :action => nil, :id => nil, :course => @course %></td>
-	<td>&nbsp;</td>
+	<td><%= link_to "#{image_tag 'application_side_expand.png', :align => 'absmiddle'} Import Rubrics From Other Courses", :controller => '/instructor/import', :action => 'rubrics', :id => nil, :course => @course %></td>
   </tr>
   <tr><td colspan="3"><hr/></td></tr>
 

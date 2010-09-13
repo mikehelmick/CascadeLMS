@@ -1,7 +1,16 @@
 <%= render :partial => 'instructor/index/right' %>
 
 <h2>Import Course Data</h2>
-<p>You can only import from courses that you are/were an instructor of.  If someone else has agreed to let you import their course content, they will need to add you as an instructor to their course first.</p>
+<p>You can only import from courses that you are/were an instructor of, or courses that have been shared to you by another instructor.</p>
+
+<% if @rubric_right_only %>
+
+<h2>Import Followup</h2>
+<ul>
+  <li>Rubrics are added without being associated with an assignment. You can copy these rubrics to individual assignments from each assignment's rubrics definition screen.</li>
+</ul>
+
+<% else %>
 <p>All dates are adjusted relative to the previous course, you should adjust the dates to meet your needs.</p>
 
 <h2>Import Followup</h2>
@@ -12,3 +21,4 @@
 
   <li><b>Assignments:</b> All assignments will be immediately visible, subject to their adjusted open date.</li>
 </ul>
+<% end %>

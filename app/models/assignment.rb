@@ -68,6 +68,15 @@ class Assignment < ActiveRecord::Base
     dup.visible = self.visible
     dup.save
     
+    ## Copy any rubrics that exist
+    if self.rubrics.size > 0
+      self.rubrics.each do |rubric|
+        newRubric = rubric.copy_to_course(cloneToCourse)
+        newRubric.assignment_id = dup.id
+        newRubric.save
+      end
+    end
+    
     ## if grade item
     if self.grade_item
       new_gi = self.grade_item.clone

@@ -12,7 +12,12 @@ class Instructor::RubricsController< Instructor::InstructorBase
    
    @all_rubrics = @course.rubrics
    @all_rubrics.sort do |a,b|
-     res = a.assignment.position <=> b.assignment.position
+     res = 
+       if (a.assignment_id==0 || b.assignment_id==0)
+         b.assignment_id <=> a.assignment_id
+       else
+         a.assignment.position <=> b.assignment.position 
+       end
      res = a.position <=> b.position if res == 0
      res 
    end
@@ -146,6 +151,15 @@ class Instructor::RubricsController< Instructor::InstructorBase
    
    flash[:badnotice] = "There was an error saving your changes."
    redirect_to :action => 'index', :course => @course, :assignment => @assignment
+ end
+ 
+ def all
+   return unless load_course( params[:course] )
+   return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_assignments' )
+   return unless course_open( @course, {:controller => '/instructor/course_assignments', :action => 'index'} )
+   
+   @rubrics = Rubric.find(:all, :conditions => ["course_id = ? and assignment_id != ?", @course.id, 0], :order => 'assignment_id desc, position asc')  
+   @title = "Map rubrics: #{@course.title}."
  end
   
  private

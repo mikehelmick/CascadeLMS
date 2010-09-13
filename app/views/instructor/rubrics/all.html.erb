@@ -1,0 +1,66 @@
+<p><%= link_to 'View All Assignments', :controller => '/instructor/course_assignments', :action => nil, :course => @course, :id => nil, :assignment => nil %></p>
+
+<div class="SectionHeader"><div class="Full">
+<h2>All Rubrics for '<%=h @course.title %>' </h2>
+</div></div>
+
+<% form_tag( :action => 'map_rubrics_to_outcomes', :course => @course ) do %>
+
+<% for rubric in @rubrics %> 
+
+<p>Rubric: <strong><%= rubric.primary_trait %></strong><br/>
+Assignment: <%= rubric.assignment.title %></p>
+<ul><li><%= @course.rubric_level.l1_name %>: <%= rubric.above_credit_criteria %> (<em><%= rubric.above_credit_points %></em>)</li>
+<li><%= @course.rubric_level.l2_name %>: <%= rubric.full_credit_criteria %> (<em><%= rubric.full_credit_points %></em>)</li>
+<li><%= @course.rubric_level.l3_name %>: <%= rubric.part_credit_criteria %> (<em><%= rubric.part_credit_points %></em>)</li>
+<li><%= @course.rubric_level.l4_name %>: <%= rubric.no_credit_criteria %> (<em><%= rubric.no_credit_points %></em>)</li>
+</ul>
+
+<p class="blockintro">Map this rubric to one or more course outcomes.</p>
+<div class="block">
+<ul>
+<%
+  parent_stack = [-1]
+  count_stack = [0]
+  last_stack_size = 1
+  @course.ordered_outcomes.each do |outcome|
+    if outcome.parent == parent_stack[-1] ## Same level 
+      count_stack.push( count_stack.pop + 1 ) 
+    elsif parent_stack.index( outcome.parent ).nil?  ## New level 
+      parent_stack.push outcome.parent 
+      count_stack.push 1 
+    else ## need to pop back to correct level 
+      while (parent_stack[-1] != outcome.parent) 
+        parent_stack.pop
+        count_stack.pop
+      end 
+      count_stack.push( count_stack.pop + 1 )
+    end 
+
+    number = count_stack.join('.')
+%>	
+<%  if parent_stack.length > last_stack_size %>
+    <ul>
+<% end %>
+<%  if parent_stack.length < last_stack_size %>
+    </ul>
+<% end %>
+    <li>
+     <%= check_box_tag "rubric_#{rubric.id}_co_#{outcome.id}", true, false %>
+     <%= number %>) <%=h outcome.outcome %>
+    </li>
+<%
+    last_stack_size = parent_stack.length
+  end
+%>
+</ul>
+</div>
+
+<hr/>
+
+<% end %>
+
+<div class="submit">
+	<%= submit_tag "Save course outcome mappings for imported rubrics" %>
+</div>
+<% end %>
