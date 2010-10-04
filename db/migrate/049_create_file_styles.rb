@@ -16,7 +16,7 @@ class CreateFileStyles < ActiveRecord::Migration
       # t.column :name, :string
     end
     
-    add_index(:file_styles, [:user_turnin_file_id], :name => 'file_line_number_idx', :unique => false )
+    add_index(:file_styles, [:user_turnin_file_id], :name => 'file_line_num_idx', :unique => false )
   end
 
   def self.down
