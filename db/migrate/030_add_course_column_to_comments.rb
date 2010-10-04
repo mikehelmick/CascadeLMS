@@ -1,6 +1,7 @@
 class AddCourseColumnToComments < ActiveRecord::Migration
   def self.up
-    add_column( :comments, :course_id, :integer, :null => false )
+    add_column( :comments, :course_id, :integer )
+    change_column :comments, :course_id, :integer, :null => false
   end
 
   def self.down
