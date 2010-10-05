@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class CRNTest < Test::Unit::TestCase
+class CRNTest < ActiveSupport::TestCase
   fixtures :crns
 
   # Replace this with your real tests.

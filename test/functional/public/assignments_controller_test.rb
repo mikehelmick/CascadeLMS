@@ -4,7 +4,7 @@ require 'public/assignments_controller'
 # Re-raise errors caught by the controller.
 class Public::AssignmentsController; def rescue_action(e) raise e end; end
 
-class Public::AssignmentsControllerTest < Test::Unit::TestCase
+class Public::AssignmentsControllerTest < ActiveSupport::TestCase
   def setup
     @controller = Public::AssignmentsController.new
     @request    = ActionController::TestRequest.new

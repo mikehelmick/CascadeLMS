@@ -4,7 +4,7 @@ require 'instructor/assignment_io_checks_controller'
 # Re-raise errors caught by the controller.
 class Instructor::AssignmentIoChecksController; def rescue_action(e) raise e end; end
 
-class Instructor::AssignmentIoChecksControllerTest < Test::Unit::TestCase
+class Instructor::AssignmentIoChecksControllerTest < ActiveSupport::TestCase
   fixtures :io_checks
 
   def setup

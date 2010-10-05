@@ -4,7 +4,7 @@ require 'instructor/autograder_checks_controller'
 # Re-raise errors caught by the controller.
 class Instructor::AutograderChecksController; def rescue_action(e) raise e end; end
 
-class Instructor::AutograderChecksControllerTest < Test::Unit::TestCase
+class Instructor::AutograderChecksControllerTest < ActiveSupport::TestCase
   def setup
     @controller = Instructor::AutograderChecksController.new
     @request    = ActionController::TestRequest.new

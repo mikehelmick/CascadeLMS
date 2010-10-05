@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class WikiTest < Test::Unit::TestCase
+class WikiTest < ActiveSupport::TestCase
   fixtures :wikis
 
   # Replace this with your real tests.

@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class AutoGradeSettingTest < Test::Unit::TestCase
+class AutoGradeSettingTest < ActiveSupport::TestCase
   fixtures :auto_grade_settings
 
   # Replace this with your real tests.

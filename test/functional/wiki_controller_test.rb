@@ -4,7 +4,7 @@ require 'wiki_controller'
 # Re-raise errors caught by the controller.
 class WikiController; def rescue_action(e) raise e end; end
 
-class WikiControllerTest < Test::Unit::TestCase
+class WikiControllerTest < ActiveSupport::TestCase
   def setup
     @controller = WikiController.new
     @request    = ActionController::TestRequest.new

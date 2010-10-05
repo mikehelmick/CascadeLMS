@@ -4,7 +4,7 @@ require 'documents_controller'
 # Re-raise errors caught by the controller.
 class DocumentsController; def rescue_action(e) raise e end; end
 
-class DocumentsControllerTest < Test::Unit::TestCase
+class DocumentsControllerTest < ActiveSupport::TestCase
   def setup
     @controller = DocumentController.new
     @request    = ActionController::TestRequest.new

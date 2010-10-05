@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class AssignmentDocumentTest < Test::Unit::TestCase
+class AssignmentDocumentTest < ActiveSupport::TestCase
   fixtures :assignment_documents
 
   # Replace this with your real tests.

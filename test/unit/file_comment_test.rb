@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class FileCommentTest < Test::Unit::TestCase
+class FileCommentTest < ActiveSupport::TestCase
   fixtures :file_comments
 
   # Replace this with your real tests.

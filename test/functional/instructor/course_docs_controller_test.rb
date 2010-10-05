@@ -4,7 +4,7 @@ require 'instructor/course_docs_controller'
 # Re-raise errors caught by the controller.
 class Instructor::CourseDocsController; def rescue_action(e) raise e end; end
 
-class Instructor::CourseDocsControllerTest < Test::Unit::TestCase
+class Instructor::CourseDocsControllerTest < ActiveSupport::TestCase
   fixtures :documents
 
   def setup

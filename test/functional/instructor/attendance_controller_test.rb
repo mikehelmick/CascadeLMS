@@ -4,7 +4,7 @@ require 'instructor/attendance_controller'
 # Re-raise errors caught by the controller.
 class Instructor::AttendanceController; def rescue_action(e) raise e end; end
 
-class Instructor::AttendanceControllerTest < Test::Unit::TestCase
+class Instructor::AttendanceControllerTest < ActiveSupport::TestCase
   def setup
     @controller = Instructor::AttendanceController.new
     @request    = ActionController::TestRequest.new

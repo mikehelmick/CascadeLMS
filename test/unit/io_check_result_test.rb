@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class IoCheckResultTest < Test::Unit::TestCase
+class IoCheckResultTest < ActiveSupport::TestCase
   fixtures :io_check_results
 
   # Replace this with your real tests.

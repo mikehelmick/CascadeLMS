@@ -4,7 +4,7 @@ require 'admin/announcement_controller'
 # Re-raise errors caught by the controller.
 class Admin::AnnouncementController; def rescue_action(e) raise e end; end
 
-class Admin::AnnouncementControllerTest < Test::Unit::TestCase
+class Admin::AnnouncementControllerTest < ActiveSupport::TestCase
   fixtures :announcements
 
   def setup

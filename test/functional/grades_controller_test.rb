@@ -4,7 +4,7 @@ require 'grades_controller'
 # Re-raise errors caught by the controller.
 class GradesController; def rescue_action(e) raise e end; end
 
-class GradesControllerTest < Test::Unit::TestCase
+class GradesControllerTest < ActiveSupport::TestCase
   def setup
     @controller = GradesController.new
     @request    = ActionController::TestRequest.new
