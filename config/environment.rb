@@ -40,6 +40,8 @@ Rails::Initializer.run do |config|
 
   config.gem 'RedCloth', :lib => 'redcloth'
   config.gem 'packet'
+  config.gem 'oauth'
+  config.gem 'twitter'
 
   # See Rails::Configuration for more options
 end
