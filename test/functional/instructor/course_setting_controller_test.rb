@@ -1,14 +1,14 @@
 require File.dirname(__FILE__) + '/../../test_helper'
-require 'instructor/course_settings_controller'
+require 'instructor/course_setting_controller'
 
 # Re-raise errors caught by the controller.
-class Instructor::CourseSettingsController; def rescue_action(e) raise e end; end
+class Instructor::CourseSettingController; def rescue_action(e) raise e end; end
 
-class Instructor::CourseSettingsControllerTest < ActiveSupport::TestCase
+class Instructor::CourseSettingControllerTest < ActiveSupport::TestCase
   fixtures :course_settings
 
   def setup
-    @controller = Instructor::CourseSettingsController.new
+    @controller = Instructor::CourseSettingController.new
     @request    = ActionController::TestRequest.new
     @response   = ActionController::TestResponse.new
   end
@@ -48,14 +48,14 @@ class Instructor::CourseSettingsControllerTest < ActiveSupport::TestCase
   end
 
   def test_create
-    num_course_settings = CourseSettings.count
+    num_course_settings = CourseSetting.count
 
     post :create, :course_settings => {}
 
     assert_response :redirect
     assert_redirected_to :action => 'list'
 
-    assert_equal num_course_settings + 1, CourseSettings.count
+    assert_equal num_course_settings + 1, CourseSetting.count
   end
 
   def test_edit
@@ -82,7 +82,7 @@ class Instructor::CourseSettingsControllerTest < ActiveSupport::TestCase
     assert_redirected_to :action => 'list'
 
     assert_raise(ActiveRecord::RecordNotFound) {
-      CourseSettings.find(1)
+      CourseSetting.find(1)
     }
   end
 end
