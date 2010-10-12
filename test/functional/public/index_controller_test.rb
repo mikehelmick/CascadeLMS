@@ -4,7 +4,7 @@ require 'public/index_controller'
 # Re-raise errors caught by the controller.
 class Public::IndexController; def rescue_action(e) raise e end; end
 
-class Public::IndexControllerTest < ActiveSupport::TestCase
+class Public::IndexControllerTest < ActionController::TestCase
   def setup
     @controller = Public::IndexController.new
     @request    = ActionController::TestRequest.new

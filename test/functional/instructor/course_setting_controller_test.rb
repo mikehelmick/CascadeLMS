@@ -4,7 +4,7 @@ require 'instructor/course_setting_controller'
 # Re-raise errors caught by the controller.
 class Instructor::CourseSettingController; def rescue_action(e) raise e end; end
 
-class Instructor::CourseSettingControllerTest < ActiveSupport::TestCase
+class Instructor::CourseSettingControllerTest < ActionController::TestCase
   fixtures :course_settings
 
   def setup

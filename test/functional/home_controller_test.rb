@@ -4,7 +4,7 @@ require 'home_controller'
 # Re-raise errors caught by the controller.
 class HomeController; def rescue_action(e) raise e end; end
 
-class HomeControllerTest < ActiveSupport::TestCase
+class HomeControllerTest < ActionController::TestCase
   def setup
     @controller = HomeController.new
     @request    = ActionController::TestRequest.new

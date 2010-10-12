@@ -4,7 +4,7 @@ require 'turnins_controller'
 # Re-raise errors caught by the controller.
 class TurninsController; def rescue_action(e) raise e end; end
 
-class TurninsControllerTest < ActiveSupport::TestCase
+class TurninsControllerTest < ActionController::TestCase
   def setup
     @controller = TurninsController.new
     @request    = ActionController::TestRequest.new

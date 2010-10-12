@@ -4,7 +4,7 @@ require 'wait_controller'
 # Re-raise errors caught by the controller.
 class WaitController; def rescue_action(e) raise e end; end
 
-class WaitControllerTest < ActiveSupport::TestCase
+class WaitControllerTest < ActionController::TestCase
   def setup
     @controller = WaitController.new
     @request    = ActionController::TestRequest.new

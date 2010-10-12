@@ -4,7 +4,7 @@ require 'overview_controller'
 # Re-raise errors caught by the controller.
 class OverviewController; def rescue_action(e) raise e end; end
 
-class OverviewControllerTest < ActiveSupport::TestCase
+class OverviewControllerTest < ActionController::TestCase
   def setup
     @controller = OverviewController.new
     @request    = ActionController::TestRequest.new

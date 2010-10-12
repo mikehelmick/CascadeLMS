@@ -4,7 +4,7 @@ require 'admin/languages_controller'
 # Re-raise errors caught by the controller.
 class Admin::LanguagesController; def rescue_action(e) raise e end; end
 
-class Admin::LanguagesControllerTest < ActiveSupport::TestCase
+class Admin::LanguagesControllerTest < ActionController::TestCase
   fixtures :programming_languages
 
   def setup

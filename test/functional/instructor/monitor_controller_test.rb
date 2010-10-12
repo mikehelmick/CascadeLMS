@@ -4,7 +4,7 @@ require 'instructor/monitor_controller'
 # Re-raise errors caught by the controller.
 class Instructor::MonitorController; def rescue_action(e) raise e end; end
 
-class Instructor::MonitorControllerTest < ActiveSupport::TestCase
+class Instructor::MonitorControllerTest < ActionController::TestCase
   def setup
     @controller = Instructor::MonitorController.new
     @request    = ActionController::TestRequest.new

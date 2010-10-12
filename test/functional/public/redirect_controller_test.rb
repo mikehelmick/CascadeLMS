@@ -4,7 +4,7 @@ require 'public/redirect_controller'
 # Re-raise errors caught by the controller.
 class Public::RedirectController; def rescue_action(e) raise e end; end
 
-class Public::RedirectControllerTest < ActiveSupport::TestCase
+class Public::RedirectControllerTest < ActionController::TestCase
   def setup
     @controller = Public::RedirectController.new
     @request    = ActionController::TestRequest.new
