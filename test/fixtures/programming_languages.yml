@@ -1,5 +1,11 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
 first:
   id: 1
+  enable_compile_step: false
+  execute_command: "go!"
+  extension: ".rb"
 another:
   id: 2
+  enable_compile_step: false
+  execute_command: "go!"
+  extension: ".rb"

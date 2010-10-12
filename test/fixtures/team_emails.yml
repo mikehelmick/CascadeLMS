@@ -1,5 +1,13 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
 first:
   id: 1
+  project_team: first
+  user: first
+  subject: "first"
+  message: "first message"
 another:
   id: 2
+  project_team: another
+  user: another
+  subject: "another"
+  message: "another message"

@@ -1,5 +1,11 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
 first:
   id: 1
+  term: 1
+  year: 2010
+  semester: 1
 another:
   id: 2
+  term: 2
+  year: 2010
+  semester: 2

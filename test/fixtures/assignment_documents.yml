@@ -1,5 +1,9 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
 first:
   id: 1
+  filename: 'first'
+  content_type: 'test'
 another:
   id: 2
+  filename: 'another'
+  content_type: 'test'

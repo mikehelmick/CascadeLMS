@@ -1,5 +1,9 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
 first:
   id: 1
+  term: first
+  title: "first course"
 another:
   id: 2
+  term: another
+  title: "another course"

@@ -1,5 +1,9 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
 first:
   id: 1
+  crn: 1
+  name: 'first'
 another:
   id: 2
+  crn: 2
+  name: 'another'

@@ -1,5 +1,9 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
 first:
   id: 1
+  grade_category: first
+  gradebook: first
 another:
   id: 2
+  grade_category: another
+  gradebook: another

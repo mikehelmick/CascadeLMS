@@ -1,5 +1,15 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
 first:
   id: 1
+  course: first
+  position: 0
+  title: "first"
+  filename: "first"
+  content_type: "text"
 another:
   id: 2
+  course: another
+  position: 1
+  title: "another"
+  filename: "another"
+  content_type: "text"

@@ -1,5 +1,11 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
 one:
   id: 1
+  name: "first"
+  value: "first value"
+  description: "first description"
 two:
   id: 2
+  name: "another"
+  value: "another value"
+  description: "another description"

@@ -1,5 +1,15 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
 first:
   id: 1
+  project_team: first
+  page: "first"
+  content: "first content"
+  content_html: "first html"
+  user: first
 another:
   id: 2
+  project_team: another
+  page: "another"
+  content: "another content"
+  content_html: "another html"
+  user: another

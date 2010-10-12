@@ -1,5 +1,11 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
 first:
   id: 1
+  user_turnin_file: first
+  line_number: 1
+  user: first
 another:
   id: 2
+  user_turnin_file: another
+  line_number: 2
+  user: another

@@ -1,5 +1,17 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
 first:
   id: 1
+  headline: "first headline"
+  post: "first post"
+  post_html: "first html"
+  forum_topic: first
+  parent_post: first
+  user: first
 another:
   id: 2
+  headline: "another headline"
+  post: "another post"
+  post_html: "another html"
+  forum_topic: another
+  parent_post: another
+  user: another

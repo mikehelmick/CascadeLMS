@@ -1,5 +1,17 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
 first:
   id: 1
+  post: first
+  user: first
+  body: "body"
+  body_html: "body html"
+  course: first
+  ip: 1
 another:
   id: 2
+  post: another
+  user: another
+  body: "body"
+  body_html: "body html"
+  course: another
+  ip: 2

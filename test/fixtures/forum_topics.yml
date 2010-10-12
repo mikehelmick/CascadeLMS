@@ -1,5 +1,15 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
 first:
   id: 1
+  course: first
+  topic: "first"
+  position: 0
+  user: first
+  post_count: 1
 another:
   id: 2
+  course: another
+  topic: "another"
+  position: 1
+  user: another
+  post_count: 1
