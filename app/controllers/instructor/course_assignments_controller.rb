@@ -238,11 +238,6 @@ class Instructor::CourseAssignmentsController < Instructor::InstructorBase
       @assignment.title = "copy: #{@assignment.title}"
       @assignment.save
 
-      # copy the rubrics
-      @copy_from.rubrics.each do |rubric|
-        rubric.copy_to( @assignment )
-      end
-      
       @assignment.auto_grade_setting = @copy_from.auto_grade_setting.clone rescue @assignment.auto_grade_setting = nil
       
       @copy_from.io_checks.each do |io|
