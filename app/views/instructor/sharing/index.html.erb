@@ -22,14 +22,13 @@
 	  <%= check_box_tag "u_#{share.user_id}_a", true, share.assignments %> assignments |
 	  <%= check_box_tag "u_#{share.user_id}_d", true, share.documents %> documents |
 	  <%= check_box_tag "u_#{share.user_id}_b", true, share.blogs %> blogs |
-	  <%= check_box_tag "u_#{share.user_id}_o", true, share.outcomes %> outcomes |
 	  <%= check_box_tag "u_#{share.user_id}_r", true, share.rubrics %> rubrics
 	</td>
   </tr>
  <% end %>
  </table><br/>
 <div id="form_area">
- <div class="submit"><%= submit_tag "Save course outcome mappings for imported rubrics" %></div>
+ <div class="submit"><%= submit_tag "Save course sharing settings" %></div>
 </div>
 <% end %>
 <% end %>
