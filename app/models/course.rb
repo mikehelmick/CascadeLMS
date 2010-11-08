@@ -26,12 +26,22 @@ class Course < ActiveRecord::Base
   
   has_many :project_teams, :order => "team_id", :dependent => :destroy
   
+  has_many :course_shares, :dependent => :destroy
+  
   has_and_belongs_to_many :programs
   has_many :course_outcomes, :order => "position", :dependent => :destroy
   # rubrics are destroyed through the destruction of assignments
   has_many :rubrics
   
   before_create :solidify
+  
+  def share_with_user(user)
+    new_share = CourseShare.new
+    new_share.course = self
+    new_share.user = user
+    new_share.save
+    return new_share
+  end
   
   def sorted_grade_items
     items = self.grade_items

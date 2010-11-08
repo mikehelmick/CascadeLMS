@@ -1,0 +1,120 @@
+<div class="SectionHeader"><div class="Full">
+<h2>Import content from <%= @import_from.title %></h2>
+</div></div>
+
+<p>You are importing content from <strong><%= @import_from.title %></strong> (<%= @import_from.term.semester %>, <i><%= @import_from.short_description %></i>).<br/>
+Instructor(s): <% for instructor in  @course.instructors %><%= instructor.display_name %><% end %>
+</p>
+
+<div id="form_area">
+<% form_tag( :action => 'import_data', :course => @course, :id => @import_from.id ) do %>
+	
+ <div class="blockintro">Select assignments to import.</div>
+ <div class="block">	 
+	<% if @import_from.assignments.size == 0 %>
+	  <p><i>There are no assignments to import.</i></p>
+	<% else %>
+	  <% if @user.instructor_in_course?(@import_from.id) || 
+		 (!@course_share.nil? && @course_share.assignments) %>
+        <ul><% for assignment in @import_from.assignments %>
+          <li><%= check_box_tag "assignment_#{assignment.id}", true %> <a class="hover_more" href="#hover"><%= assignment.title %> <span>
+          	 <ul>
+	           <li><strong>Open date:</strong> <%= assignment.open_date.to_formatted_s(:long) %></li>
+	           <li><strong>Due date:</strong> <%= assignment.due_date.to_formatted_s(:long) %></li>
+	           <li><strong>Rubrics:</strong>
+		         <ul>
+			       <% if assignment.rubrics.size == 0 %>
+			         <li><em>No rubircs</em></li>
+			       <% else %>
+			         <% for rubric in assignment.rubrics %>
+			           <li><%= rubric.primary_trait %></li>
+			         <% end %>
+			       <% end %>
+			     </ul>
+		       </li>
+	         </ul>
+          </span></a></li>
+        <% end %></ul>
+      <% else %>
+        <p><i>Assignments for this course have not been shared.</i></p>
+      <% end %>
+    <% end %>
+ </div>
+
+ <div class="blockintro">Select rubrics to import.</div>
+ <div class="block">
+ 	<% if @import_from.rubrics.size == 0 %>
+	  <p><i>There are no rubrics to import.</i></p>
+	<% else %>
+	  <% if @user.instructor_in_course?(@import_from.id) || 
+		 (!@course_share.nil? && @course_share.rubrics) %>
+        <ul><% for rubric in @import_from.rubrics %>
+          <li><%= check_box_tag "rubric_#{rubric.id}", true %> 	<a class="hover_more" href="#hover"><%= rubric.primary_trait %> 
+	 (<em><% if rubric.assignment_id == 0 %>not associated with an assignment.<% else %>Assignment: <%= rubric.assignment.title %><% end %></em>)
+ <span><table width="400px">
+  <tr><td colspan="2"><em>Primary Trait:</em> <%=rubric.primary_trait%></td><td><em>Points</em></td></tr>
+  <tr><td><%= @course.rubric_level.l1_name %></td><td><%= rubric.above_credit_criteria %></td><td><%= rubric.above_credit_points %></td></tr>
+  <tr><td><%= @course.rubric_level.l2_name %></td><td><%= rubric.full_credit_criteria %></td><td><%= rubric.full_credit_points %></td></tr>
+  <tr><td><%= @course.rubric_level.l3_name %></td><td><%= rubric.part_credit_criteria %></td><td><%= rubric.part_credit_points %></td></tr>
+  <tr><td><%= @course.rubric_level.l4_name %></td><td><%= rubric.no_credit_criteria %></td><td><%= rubric.no_credit_points %></td></tr>
+ </table></span></a></li>
+        <% end %></ul>
+      <% else %>
+        <p><i>Rubrics for this course have not been shared.</i></p>
+      <% end %>
+    <% end %>
+ </div>
+
+ <div class="blockintro">Course outcomes.</div>
+ <div class="block">
+ 	<p><em>Course outcomes cannot be copied directly between courses. For this functionality, please use the program mapping and course template functionality.</em></p>
+ </div>
+
+ <div class="blockintro">Select documents to import.</div>
+ <div class="block">
+	<% if @import_from.documents.size == 0 %>
+	  <p><i>There are no documents to import.</i></p>
+	<% else %>
+	  <% if @user.instructor_in_course?(@import_from.id) || 
+		 (!@course_share.nil? && @course_share.documents) %>
+        <ul><% for document in @import_from.documents %>
+	     <% if !document.folder %>
+          <li><%= check_box_tag "document_#{document.id}", true %><a class="hover_more" href="#hover"><%= document.title %> (<%= document.filename %>)<span><ul>
+	        <li><strong>Date: </strong><%= document.created_at.to_formatted_s(:long) %></li>
+	        <li><strong>Comments: </strong></li>
+	      </ul>
+	      <%= document.comments_html %></span></a></li>
+	     <% end %>
+        <% end %></ul>
+      <% else %>
+        <p><i>Documents for this course have not been shared.</i></p>
+      <% end %>
+    <% end %> 	
+ </div>
+
+ <div class="blockintro">Select blog posts to import.</div>
+ <div class="block">
+ 	<% if @import_from.posts.size == 0 %>
+	  <p><i>There are no blog posts to import.</i></p>
+	<% else %>
+	  <% if @user.instructor_in_course?(@import_from.id) || 
+		 (!@course_share.nil? && @course_share.blogs) %>
+        <ul><% for post in @import_from.posts %>
+          <li><%= check_box_tag "post_#{post.id}", true %><a class="hover_more" href="#hover"><%= post.title %><span><ul>
+            <li><strong>Author: </strong> <%= post.user.display_name %></li>
+            <li><strong>Date: </strong> <%= post.created_at.to_formatted_s(:long) %></li>           
+          </ul><%= post.body_html %></span></a></li>
+        <% end %></ul>
+      <% else %>
+        <p><i>Blog posts for this course have not been shared.</i></p>
+      <% end %>
+    <% end %>
+ </div>
+
+
+ <div class="submit">
+  <div id="button"><%= submit_tag "Import" %></div>
+ </div>
+
+ <% end %>
+</div>

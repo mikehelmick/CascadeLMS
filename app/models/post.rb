@@ -7,7 +7,7 @@ class Post < ActiveRecord::Base
   
   before_save :transform_markup
   
-  def clone_to_course( course_id, user_id, time_offset )
+  def clone_to_course( course_id, user_id, time_offset = nil? )
     dup = Post.new
     dup.course_id = course_id
     dup.user_id = user_id
@@ -16,7 +16,11 @@ class Post < ActiveRecord::Base
     dup.body = self.body
     dup.body_html = self.body_html
     dup.enable_comments = self.enable_comments
-    dup.created_at = Time.at( self.created_at + time_offset )
+    if time_offset.nil?
+      dup.created_at = Time.at( self.created_at + time_offset )
+    else 
+      dup.created_at = self.created_at
+    end
     dup.published = self.published
     return dup
   end

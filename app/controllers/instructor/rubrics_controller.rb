@@ -158,8 +158,31 @@ class Instructor::RubricsController< Instructor::InstructorBase
    return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_assignments' )
    return unless course_open( @course, {:controller => '/instructor/course_assignments', :action => 'index'} )
    
-   @rubrics = Rubric.find(:all, :conditions => ["course_id = ? and assignment_id != ?", @course.id, 0], :order => 'assignment_id desc, position asc')  
+   @rubrics = Rubric.find(:all, :conditions => ["course_id = ? ", @course.id], :order => 'assignment_id desc, position asc')  
+   
    @title = "Map rubrics: #{@course.title}."
+ end
+ 
+ def map_rubrics_to_outcomes
+   return unless load_course( params[:course] )
+   return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_assignments' )
+   return unless course_open( @course, {:controller => '/instructor/course_assignments', :action => 'index'} )
+   
+   @rubrics = Rubric.find(:all, :conditions => ["course_id = ? and assignment_id != ?", @course.id, 0], :order => 'assignment_id desc, position asc') 
+   
+   Rubric.transaction do
+      @rubrics.each do |rubric|
+        rubric.course_outcomes.clear
+        @course.course_outcomes.each do |course_outcome|
+           if params["rubric_#{rubric.id}_co_#{course_outcome.id}"]
+             rubric.course_outcomes << course_outcome
+           end
+        end
+        rubric.save
+      end
+   end
+  
+   redirect_to :action => 'all'
  end
   
  private

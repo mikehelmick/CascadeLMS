@@ -1,6 +1,7 @@
 
 body {
 	color: #999999;
+	background: #426479;
 	margin: 0;
 	padding: 0;
 	font: normal 12px/1.5em "Helvetica Neue", "Lucida Grande", "Helvetica Neue", Arial, sans-serif;
@@ -1009,11 +1010,13 @@ a img {
   background-color: #FFFFCC;
   padding: 5px;
   left: -1000px;
-  margin-top: 1.25em;
+  margin-top: 1.0em;
   border: 2px solid #000000;
   visibility: hidden;
   color: black;
   text-decoration: none;
+  overflow: scroll;
+  min-width: 500px;
 }
 
 .hover_more:hover span{ 

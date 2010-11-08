@@ -9,7 +9,7 @@
 <% for rubric in @rubrics %> 
 
 <p>Rubric: <strong><%= rubric.primary_trait %></strong><br/>
-Assignment: <%= rubric.assignment.title %></p>
+Assignment: <%= rubric.assignment.title rescue "<em>No assignment</em>" %></p>
 <ul><li><%= @course.rubric_level.l1_name %>: <%= rubric.above_credit_criteria %> (<em><%= rubric.above_credit_points %></em>)</li>
 <li><%= @course.rubric_level.l2_name %>: <%= rubric.full_credit_criteria %> (<em><%= rubric.full_credit_points %></em>)</li>
 <li><%= @course.rubric_level.l3_name %>: <%= rubric.part_credit_criteria %> (<em><%= rubric.part_credit_points %></em>)</li>
@@ -46,7 +46,7 @@ Assignment: <%= rubric.assignment.title %></p>
     </ul>
 <% end %>
     <li>
-     <%= check_box_tag "rubric_#{rubric.id}_co_#{outcome.id}", true, false %>
+     <%= check_box_tag "rubric_#{rubric.id}_co_#{outcome.id}", true, rubric.mapped_to_course_outcome?(outcome.id) %>
      <%= number %>) <%=h outcome.outcome %>
     </li>
 <%
@@ -60,7 +60,9 @@ Assignment: <%= rubric.assignment.title %></p>
 
 <% end %>
 
+<div id="form_area">
 <div class="submit">
 	<%= submit_tag "Save course outcome mappings for imported rubrics" %>
+</div>
 </div>
 <% end %>

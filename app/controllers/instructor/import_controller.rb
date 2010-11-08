@@ -15,32 +15,42 @@ class Instructor::ImportController < Instructor::InstructorBase
     end
     
     @blog_count = Hash.new
-    @first_blog = Hash.new
     @assignment_count = Hash.new
-    @first_assignment = Hash.new
     @document_count = Hash.new
-    @first_document = Hash.new
-    
+    @rubric_count = Hash.new
     
     @courses.each do |course|
       @blog_count[course.id] = course.posts.size
-      @first_blog[course.id] = course.posts[-1] unless course.posts.size == 0
-      
       @document_count[course.id] = course.documents.size
-      @first_document[course.id] = course.documents[0] unless course.documents.size == 0
-      course.documents.each do |doc|
-        @first_document[course.id] = doc if doc.created_at < @first_document[course.id].created_at
-      end
-
       @assignment_count[course.id] = course.assignments.size
-      @first_assignment[course.id] = course.assignments[0] unless course.assignments.size == 0
-      course.assignments.each do |asgn|
-        @first_assignment[course.id] = asgn if asgn.open_date < @first_assignment[course.id].open_date
-      end
-      
+      @rubric_count[course.id] = course.rubrics.size
+    end
+    
+    @shares = @user.course_shares
+    
+    @shares.each do |share|
+      @blog_count[share.course.id] = share.course.posts.size
+      @document_count[share.course.id] = share.course.documents.size
+      @assignment_count[share.course.id] = share.course.assignments.size
+      @rubric_count[share.course.id] = share.course.rubrics.size
     end
   
     set_title
+  end
+  
+  def start
+    return unless load_course( params[:course] )
+    return unless ensure_course_instructor_on_assistant( @course, @user )
+    
+    @import_from = Course.find(params[:id].to_i)
+    @course_share = @user.course_share(@import_from.id)
+    
+    if !@user.instructor_in_course?(@course.id) && @course_share.nil?
+      flash[:bad_notice] = "You do not have permission to import contect from the selected course."
+      redirect_to :action => 'index', :course => @course, :id => nil
+    end
+
+    @title = "Import content from #{@import_from.title} into #{@course.title}"
   end
   
   def import_data
@@ -48,176 +58,147 @@ class Instructor::ImportController < Instructor::InstructorBase
     return unless ensure_course_instructor_on_assistant( @course, @user )
     
     @import_from = Course.find(params[:id].to_i)
+    @course_share = @user.course_share(@import_from.id)
     
-    if @import_from.nil? || !@user.instructor_in_course?(@import_from.id)
-      flash[:badnotice] = "Invalid course to import from, please select another."
+    if @import_from.nil? || (!@user.instructor_in_course?(@import_from.id) && @course_share.nil?)
+      flash[:badnotice] = "You do not have permission to import contect from the selected course."
       redirect_to :controller => '/instructor/import', :action => nil, :course => @course, :id => nil
       return
     end
     
-    @start_date = Date.civil(params[:import][:"relative_to(1i)"].to_i,params[:import][:"relative_to(2i)"].to_i,params[:import][:"relative_to(3i)"].to_i)
-    clone_time = Time.now
+    ## The @coure_share object is going to be used for all permission enforcement, so create a new one if instructor.
+    if @user.instructor_in_course?(@import_from.id)
+      @course_share = CourseShare.full_share
+    end
     
+    ## For reporting on the results page
     @imported_posts = Array.new
     @imported_documents = Array.new
     @imported_assignments = Array.new
+    @imported_rubrics = Array.new
     
-    Course.transaction do
-      # find overall min date of selected import items for data adjustement
-      @min_date = nil
-      if params[:import_blog]
-        blog_min_date = Post.find(:first, :conditions => ["course_id = ?", @import_from.id], :order => 'created_at ASC').created_at
-        @min_date = blog_min_date if @min_date.nil? || blog_min_date < @min_date
-      end
-      if params[:import_documents]
-        doc_min_date = Document.find(:first, :conditions => ["course_id = ?", @import_from.id], :order => 'created_at ASC').created_at
-        @min_date = doc_min_date if @min_date.nil? || doc_min_date < @min_date
-      end
-      if params[:import_assignments]
-        assignment_min_date = Assignment.find(:first, :conditions => ["course_id = ?", @import_from.id], :order => 'open_date ASC').open_date
-        @min_date = assignment_min_date if @min_date.nil? || assignment_min_date < @min_date
-      end
-      distance = @start_date.to_time - @min_date.to_time
-      
+    @errorMessages = Array.new
+    
+    Course.transaction do   
+      params.keys.each do |key|
+        
       ## BLOG IMPORTS
-      if params[:import_blog]
-        @import_from.posts.each do |post|
-          new_post = post.clone_to_course( @course.id, @user.id, distance )
-          if new_post.created_at > clone_time
-            new_post.published = false
-          end
-          new_post.save
-          @course.posts << new_post
-          @imported_posts << new_post
-        end
-      end
-      
-      ## Document imports
-      if params[:import_documents]
-        dir_created = false
-        parent_map = Hash.new
-        parent_map[0] = 0
-        import_stack = Document.find(:all, :conditions => ["course_id = ? and document_parent = ?", @import_from.id, 0], :order => "position DESC")
-        # Process these as a stack
-        while import_stack.size > 0
-          copy_from = import_stack.pop
-          new_doc = copy_from.clone_to_course( @course.id, @user.id, distance)
-          new_doc.document_parent = parent_map[copy_from.document_parent]
-          new_doc.save
-          parent_map[copy_from.id] = new_doc.id
-          
-          # create dir
-          new_doc.ensure_directory_exists(@app['external_dir']) unless dir_created
-          dir_created = true
-          
-          ## If copy_from is a folder, load contents into stack
-          if copy_from.folder
-            contents = Document.find(:all, :conditions => ["course_id = ? and document_parent = ?", @import_from.id, copy_from.id], :order => "position DESC")
-            contents.each { |i| import_stack.push(i) }
+      if key.index('post_') ==  0
+        postId = key.split('_')[1].to_i rescue postId = 0
+        if (postId == 0) 
+          @errorMessages << "Invalid post specified, cannot import."
+        else
+          cloneFromPost = Post.find(postId)
+
+          if !@course_share.blogs || cloneFromPost.course_id != @import_from.id
+            @errorMessages << "You are not authorized to import the blog post '#{cloneFromPost.title}' from the course '#{@import_from.title}'."
           else
-            ## Need to actually copy the file
-            from_file_name = copy_from.resolve_file_name(@app['external_dir'])
+            new_post = cloneFromPost.clone_to_course(@course.id, @user.id)
+            new_post.save
+            @imported_posts << new_post
+          end
+        end
+        
+      ## DOCUMENT IMPORTS
+      elsif key.index('document_') == 0
+        docId = key.split('_')[1].to_i rescue docId = 0
+        if (docId == 0) 
+          @errorMessages << "Invalid post specified, cannot import."
+        else
+          cloneFromDoc = Document.find(docId)
+          
+          if !@course_share.documents || cloneFromDoc.course_id != @import_from.id
+            @errorMessages << "You are not authorized to import the document '#{cloneFromDoc.title}' from the course '#{@import_from.title}'."
+          else
+            dir_created = false
+            
+            copyFromParentFolders = cloneFromDoc.get_parent_folders
+            
+            # These parent directories either need to be created
+            parentFolder = nil
+            copyFromParentFolders.each do |folder|
+              prevParentId = if parentFolder.nil?
+                               0
+                             else
+                               parentFolder.id
+                             end    
+              # See if there is an existing folder with the same name
+              localFolder = Document.find(:first, :conditions => ["course_id = ? and document_parent = ? and folder = ? and title = ?", @course.id, prevParentId, true, folder.title])
+              
+              if localFolder.nil?
+                # Create a folder 
+                localFolder = Document.new
+                localFolder.course = @course
+                localFolder.title = folder.title
+                localFolder.filename = folder.filename
+                localFolder.content_type = 'folder'
+                localFolder.published = folder.published
+                localFolder.folder = true
+                localFolder.document_parent = prevParentId
+                localFolder.save
+              end
+              parentFolder = localFolder
+            end
+            
+            # parentFolder is now the appropriate parent folder, or nil (zero)
+            new_doc = cloneFromDoc.clone_to_course(@course.id, @user.id)
+            new_doc.document_parent = parentFolder.id rescue new_doc.document_parent = 0
+            new_doc.save
+            new_doc.ensure_directory_exists(@app['external_dir'])
+            
+            # copy the file
+            from_file_name = cloneFromDoc.resolve_file_name(@app['external_dir'])
             to_file_name = new_doc.resolve_file_name(@app['external_dir'])
             ## shell out to copy file
             `cp #{from_file_name} #{to_file_name}`
+            
+            @imported_documents << new_doc
           end
-          
-          @imported_documents << new_doc
         end  
-      end
-    
-      ## Assignment imports
-      if params[:import_assignments]  
-        @import_from.assignments.each do |cp_asgn|
-          new_asgn = cp_asgn.clone_to_course( @course.id, @user.id, distance, @app['external_dir'] )
-          new_asgn.save
-          
-          @imported_assignments << new_asgn
+      
+      ## ASSIGNMENT IMPORTS  
+      elsif key.index('assignment_') == 0
+        assignmentId = key.split('_')[1].to_i rescue assignmentId = 0
+        if (assignmentId == 0) 
+          @errorMessages << "Invalid assignment specified, cannot import."
+        else
+          cloneFromAssignment = Assignment.find(assignmentId)
+
+          if !@course_share.assignments || cloneFromAssignment.course_id != @import_from.id
+            @errorMessages << "You are not authorized to import the assignment '#{cloneFromAssignment.title}' from the course '#{@import_from.title}'."
+          else
+            new_assignment = cloneFromAssignment.clone_to_course(@course.id, @user.id, 0, @app['external_dir'])
+            new_assignment.save
+            @imported_assignments << new_assignment
+          end
         end
-      end    
+      
+      ## RUBRIC IMPORTS
+      elsif key.index('rubric_') == 0
+        rubricId = key.split('_')[1].to_i rescue rubricId = 0
+        if (rubricId == 0) 
+          @errorMessages << "Invalid rubric specified, cannot import."
+        else
+          cloneFromRubric = Rubric.find(rubricId)
+
+          if !@course_share.rubrics || cloneFromRubric.course_id != @import_from.id
+            @errorMessages << "You are not authorized to import the rubric '#{rubric.primary_trait}' from the course '#{@import_from.title}'."
+          else
+            new_rubric = cloneFromRubric.copy_to_course(@course)
+            new_rubric.save
+            @imported_rubrics << new_rubric
+          end
+        end
+      end
+
+      ## end of loop          
+      end  
+      ## end of transaction
     end
+    
+    flash[:badnotice] = @errorMessages.join(', ') if @errorMessages.size > 0
     
     @title = "Import Results - #{@course.title}"
-  end
-  
-  def rubrics
-    return unless load_course( params[:course] )
-    return unless ensure_course_instructor_on_assistant( @course, @user )
-  
-    @courses = @user.courses
-    @courseIds = Array.new
-    @courses.each { |a| @courseIds << a.id unless a.id == @course.id }
-    
-    @courses.sort! do |a,b|  
-      @courseIds << a.id unless a.id == @course.id
-      @courseIds << b.id unless b.id == @course.id
-      rtn = b.term.term <=> a.term.term
-      rtn = b.title <=> a.title if rtn == 0
-      rtn
-    end
-    @courseIds.uniq!
-     
-    # Load all rubrics
-    @rubrics = Rubric.find_by_sql("SELECT * from rubrics where course_id in (#{@courseIds.join(',')})")
-    #@rubrics = Rubric.where(:all, :conditions => ["course_id in ?", @courseIds])
-    
-    @thisCourse = Rubric.find(:all, :conditions => ["course_id = ?", @course.id], :order => 'assignment_id desc, position asc')
-    
-    # Sort rubrics
-    @rubrics.sort! do |a,b|
-      rtn = b.course.term.term <=> a.course.term.term
-      rtn = b.course.title <=> a.course.title if rtn == 0 
-      if b.assignment_id == 0 || b.assignment_id == 0 
-        rtn = b.assignment_id <=> a.assignment_id if rtn = 0
-      else
-        rtn = b.assignment.position <=> a.assignment.position if rtn == 0
-      end
-      rtn = b.position <=> a.position if rtn == 0
-      rtn
-    end
-    
-    set_title
-    
-    @rubric_right_only = true
-  end
-  
-  def import_rubrics
-    return unless load_course( params[:course] )
-    return unless ensure_course_instructor_on_assistant( @course, @user )
-    
-    errors = Array.new
-    @imported = Array.new
-    
-    Rubric.transaction do
-      params.keys.each do |key|
-        if key[0..6].eql?('rubric_')
-          rubric = Rubric.find(params[key])
-          @imported << rubric.copy_to_course(@course)
-        end
-      end
-    end
-    
-    if errors.size > 0 
-      flash[:badnotice] = "Some rubrics coult not be imported."
-      redirect_to :action => 'rubrics'
-    else
-      flash[:notice] = "Selected rubrics have been imported into this course."
-      @rubric_right_only = true
-    end
-  end
-  
-  def map_rubrics_to_outcomes
-    return unless load_course( params[:course] )
-    return unless ensure_course_instructor_on_assistant( @course, @user )    
-        
-    errors = Rubric.process_full_mapping(params, @course)
-    
-    if errors.size > 0
-      flash[:badnotice] = "Some mappings couldn't be saved. #{errors.join(' ')}"
-    end
-    flash[:notice] = "Imported rubrics to course outcome mappings have been saved."
-    
-    redirect_to :controller => '/instructor/index', :action => nil, :id => nil, :course => @course
   end
   
   private

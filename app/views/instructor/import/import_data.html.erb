@@ -8,13 +8,46 @@
   <li>Imported <%= pluralize( @imported_posts.size, 'blog post' ) %></li>
   <li>Imported <%= pluralize( @imported_documents.size, 'document' ) %></li>
   <li>Imported <%= pluralize( @imported_assignments.size, 'assignment' ) %></li>
+  <li>Imported <%= pluralize( @imported_rubrics.size, 'rubric' ) %></li>
 </ul>
+
+<% if @imported_assignments.size > 0 %>
+<div class="SectionHeader"><div class="Full">
+<h2>Imported Assignments</h2>
+</div></div>
+<ul>	
+ <% for assignment in @imported_assignments %>
+   <li><%= assignment.title %></li>
+ <% end %>
+</ul>	
+<% end %>
+
+<% if @imported_rubrics.size > 0 %>
+<div class="SectionHeader"><div class="Full">
+<h2>Imported Rubrics</h2>
+</div></div>
+<ul>	
+ <% for rubric in @imported_rubrics %>
+   <li><%= rubric.primary_trait %></li>
+ <% end %>
+</ul>	
+<% end %>
+
+<% if @imported_documents.size > 0 %>
+<div class="SectionHeader"><div class="Full">
+<h2>Imported Documents</h2>
+</div></div>
+<ul>	
+ <% for document in @imported_documents %>
+   <li><%= image_tag( document.icon_file ) %> <%= document.title %> (<i><%= document.filename %></i>)</li>
+ <% end %>
+</ul>
+<% end %>
 
 <% if @imported_posts.size > 0 %>
 <div class="SectionHeader"><div class="Full">
 <h2>Imported blog posts</h2>
 </div></div>
-
 <ul>
  <% for post in @imported_posts %>
    <li><%= post.title %></li>
@@ -25,28 +58,4 @@
    </ul>
  <% end %>
 </ul>
-<% end %>
-
-<% if @imported_documents.size > 0 %>
-<div class="SectionHeader"><div class="Full">
-<h2>Imported Documents</h2>
-</div></div>
-
-<ul>	
- <% for document in @imported_documents %>
-   <li><%= image_tag( document.icon_file ) %> <%= document.title %> (<i><%= document.filename %></i>)</li>
- <% end %>
-</ul>
-<% end %>
-
-<% if @imported_assignments.size > 0 %>
-<div class="SectionHeader"><div class="Full">
-<h2>Imported Assignments</h2>
-</div></div>
-
-<ul>	
- <% for assignment in @imported_assignments %>
-   <li><%= assignment.title %></li>
- <% end %>
-</ul>	
 <% end %>

@@ -8,7 +8,7 @@ class CourseOutcome < ActiveRecord::Base
   has_many :program_outcomes, :through => :course_outcomes_program_outcomes
   
   has_and_belongs_to_many :rubrics
-  
+ 
   def child_outcomes
     CourseOutcome.find(:all, :conditions => ["parent = ?",self.id], :order => "position ASC")
   end

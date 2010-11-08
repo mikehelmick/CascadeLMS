@@ -9,6 +9,8 @@ class User < ActiveRecord::Base
   has_many :courses_users
   has_many :courses, :through => :courses_users
   
+  has_many :course_shares
+  
   has_many :programs_users
   has_many :programs, :through => :programs_users
   
@@ -105,6 +107,17 @@ class User < ActiveRecord::Base
   
   def instructor_in_course?( course_id )
     blank_in_course( course_id ) { |x| x.course_instructor }
+  end
+  
+  def sharing_for_course?( course_id )
+    return !course_share(course_id).nil?
+  end
+  
+  def course_share( course_id ) 
+    self.course_shares.each do |x|
+      return x if x.course_id.to_i == course_id.to_i
+    end
+    nil
   end
   
   def blank_in_course( course_id, &cb ) 

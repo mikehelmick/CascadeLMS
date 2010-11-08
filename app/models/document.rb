@@ -9,7 +9,7 @@ class Document < ActiveRecord::Base
   
   before_save :transform_markup
   
-  def clone_to_course( course_id, user_id, time_offset )
+  def clone_to_course( course_id, user_id, time_offset = nil )
     dup = Document.new
     dup.course_id = course_id
     dup.position = self.position
@@ -22,7 +22,11 @@ class Document < ActiveRecord::Base
     dup.size = self.size
     dup.published = self.published
     dup.folder = self.folder
-    dup.created_at = Time.at( self.created_at + time_offset )
+    if time_offset.nil?
+      dup.created_at = self.created_at
+    else
+      dup.created_at = Time.at( self.created_at + time_offset )
+    end
     dup.podcast_folder = self.podcast_folder
     return dup
   end
@@ -170,6 +174,19 @@ class Document < ActiveRecord::Base
 	  self.comments_html = HtmlEngine.apply_textile( self.comments )
 	  
 	  #self.podcast_folder = false if self.folder == false
+  end
+  
+  def get_parent_folders
+    parentDocs = Array.new
+    
+    curDoc = self
+    while curDoc.document_parent != 0   
+      parent = Document.find(curDoc.document_parent)
+      parentDocs << parent
+      curDoc = parent
+    end
+    
+    return parentDocs.reverse
   end
   
 end

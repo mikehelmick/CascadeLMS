@@ -1,16 +1,18 @@
 <p><%= link_to 'Back', :controller => '/instructor/index', :action => nil, :course => @course %></p>
 
+<ul><li><a href="#own">Import From Your Courses</a></li>
+<li><a href="#other">Import From Shared Courses</a></li></ul>
+
 <div class="SectionHeader"><div class="Full">
-<h2>Import Content into '<%=h @course.title%>' </h2>
+<h2><a name="own">Import From Your Courses</a></h2>
 </div></div>
 
-
+<br/>
 <table class="fancy" width="99%">
   <tr class="header">
 	<th width="10%" nowrap="nowrap">Import From</th>
 	<th width="90%">&nbsp;</th>
   </tr>
-
   <% row_count = 0 %>
   <% for course in @courses %>
     <% row_count = row_count.next 
@@ -23,34 +25,51 @@
 	    <% if course.id == @course.id %>
 	      <i>This is the current course.</i>
 	    <% else %>
-	       <p><i><%= course.short_description %></i></p>
-	
-	    <div id="form_area">
-	    <% form_tag( :action => 'import_data', :course => @course, :id => course.id ) do %>
-        
-        <ul>
-	      <li><%= check_box_tag "import_blog", course.id, false, :disabled =>  @blog_count[course.id]==0 %> Import <%= pluralize( @blog_count[course.id], 'blog post' ) %>. <% if @blog_count[course.id] > 0 %> (<i>Earliest post: <%= @first_blog[course.id].created_at.to_formatted_s(:long) %></i>)<% end %> </li>
-	
-	      <li><%= check_box_tag "import_documents", course.id, false, :disabled => @document_count[course.id]==0 %> Import <%= pluralize(@document_count[course.id], 'document') %>.  <% if @document_count[course.id] > 0 %> (<i>Earliest document: <%= @first_document[course.id].created_at.to_formatted_s(:long) %>) <% end %> </li>
-	
-	      <li><%= check_box_tag "import_assignments", course.id, false, :disabled => @assignment_count[course.id]==0 %> Import <%= pluralize(@assignment_count[course.id], 'assignment') %>.  <% if @assignment_count[course.id] > 0 %> (<i>Earliest assignment: <%= @first_assignment[course.id].open_date.to_formatted_s(:long) %>) <% end %> </li>
-	
-	
-	      <li>Match earliest import item to: <%= date_select("import", "relative_to") %></li>
-	    </ul>
-	
-	    
-	
-
-		<div class="submit">
-		  <%= submit_tag "Import", :disabled => @blog_count[course.id]==0 && @document_count[course.id]==0 &&  @assignment_count[course.id]==0  %>
-		</div>
-		<% end %>
-	    </div>
-	
+	       <p><i><%= course.short_description %></i> | 
+		   <%= link_to "Start import of content from #{course.title} (#{course.term.semester})", :action => 'start', :id => course %></p>
+	  
+	    <p>This course contains <%= pluralize(@blog_count[course.id], 'blog post' ) %>, <%= pluralize(@document_count[course.id], 'document') %>, <%= pluralize(@assignment_count[course.id], 'assignment') %>, and <%= pluralize(@rubric_count[course.id], 'rubric') %>.</p>
 	    <% end %>
 	  </td>
     </tr>
 
   <% end %>
 </table>
+<br/>
+
+<div class="SectionHeader"><div class="Full">
+<h2><a name="other">Import From Shared Courses</a></h2>
+</div></div>
+
+<br/>
+<table class="fancy" width="99%">
+  <tr class="header">
+	<th width="10%" nowrap="nowrap">Import From</th>
+	<th width="90%">&nbsp;</th>
+  </tr>
+  <% row_count = 0 %>
+  <% for share in @shares %>
+    <% course = share.course
+       row_count = row_count.next 
+	   odd = "odd"
+       odd = "even" if row_count.even? %>
+
+    <tr class="<%=odd%> hover" id="course_<%=course.id%>">
+      <td valign="top" align="left"><%= course.title %><br/><i><%= course.term.semester %></td>
+      <td valign="top" align="left">
+	    <% if course.id == @course.id %>
+	      <i>This is the current course.</i>
+	    <% else %>
+	       <p><i><%= course.short_description %></i> | 
+		   <%= link_to "Start import of content from #{course.title} (#{course.term.semester})", :action => 'start', :id => course %><br/>
+		   Instructor(s): <%= course.instructors.join(', ') %>
+		   </p>
+	  
+	    <p>This course contains <%= pluralize(@blog_count[course.id], 'blog post' ) %>, <%= pluralize(@document_count[course.id], 'document') %>, <%= pluralize(@assignment_count[course.id], 'assignment') %>, and <%= pluralize(@rubric_count[course.id], 'rubric') %>.</p>
+	    <% end %>
+	  </td>
+    </tr>
+
+  <% end %>
+</table>
+<br/>

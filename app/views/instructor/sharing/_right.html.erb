@@ -1,0 +1,18 @@
+<%= render :partial => 'instructor/index/right' %>
+
+<h2>Search for instructors:</h2>
+<% if @course.course_open %>
+<div id="search_area">
+<% form_remote_tag( :update => 'search_results', :url => { :action => :search, :id => @course }, :complete => "new Effect.BlindDown('search_results');" ) do %>
+	<label for="id">Search Terms:</label> 
+	<%= text_field_tag 'searchterms', '' %>
+	<%= submit_tag 'Search' %><br/>
+	<% end %>
+<span id="spinner" style="display: none;"><%= image_tag 'spinner.gif' %></span>
+</div>
+
+<div id="search_results" style="display: none;">
+</div>
+<% else %>
+<i><b>Disabled:</b> this course is in archive status.</i>
+<% end %>

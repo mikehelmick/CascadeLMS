@@ -1,0 +1,35 @@
+<p><%= link_to "#{image_tag 'arrow_left.png' } Back", :controller => '/instructor/index', :course => @course.id %></p>
+<div class="SectionHeader"><div class="Full">
+<h2>Sharing for '<%=h @course.title%>'</h2>
+</div></div>
+
+<% if @course.course_shares.size == 0 %>
+<p><em>This course is not being shared with any other users.</em></p>
+<% else %>
+
+<% form_tag( :action => 'update_sharing', :course => @course ) do %>
+ <p>This course is being shared with the following users:</p>
+ <table class="fancy" width="99%">
+ <tr class="header"><th width="20%" align="center">Instructor</th><th align="center">Elements Shared</th></tr>
+ <% row_count = 0 %>
+ <% for share in @course.course_shares %>
+  <% row_count = row_count.next 
+     odd = "odd"
+     odd = "even" if row_count.even? %> 
+  <tr class="<%=odd%> hover" id="share_user_<%=share.user_id%>">
+	<td><%= link_to_remote( image_tag('delete.png', :align => 'absmiddle' ), :url => { :action => 'del_share', :course => @course.id, :id => share.user_id }, :confirm => "Are you sure you want to stop sharing this course with '#{share.user.display_name}'?", :success => "new Effect.Puff( 'share_user_#{share.user_id}' )", :failure => "alert('There was an error removing sharing for this user.');" ) %> <%= share.user.display_name %></td>
+	<td>
+	  <%= check_box_tag "u_#{share.user_id}_a", true, share.assignments %> assignments |
+	  <%= check_box_tag "u_#{share.user_id}_d", true, share.documents %> documents |
+	  <%= check_box_tag "u_#{share.user_id}_b", true, share.blogs %> blogs |
+	  <%= check_box_tag "u_#{share.user_id}_o", true, share.outcomes %> outcomes |
+	  <%= check_box_tag "u_#{share.user_id}_r", true, share.rubrics %> rubrics
+	</td>
+  </tr>
+ <% end %>
+ </table><br/>
+<div id="form_area">
+ <div class="submit"><%= submit_tag "Save course outcome mappings for imported rubrics" %></div>
+</div>
+<% end %>
+<% end %>
