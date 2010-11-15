@@ -2,7 +2,7 @@ class AddTermToCoursesUsers < ActiveRecord::Migration
   def self.up
     add_column( :courses_users, :term_id, :int, :null => true, :default => 0 )
     
-    add_index(:courses_users, [:user_id, :term_id], :unique => false, :name => :user_term_idx)
+    add_index(:courses_users, [:user_id, :term_id], :unique => false, :name => 'user_term_idx')
     
     ## Upgrade - wanted to do this in SQL, by puts a dependency on mysql 5...
     CoursesUser.reset_column_information

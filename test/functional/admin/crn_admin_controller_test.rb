@@ -4,7 +4,7 @@ require 'admin/crn_admin_controller'
 # Re-raise errors caught by the controller.
 class Admin::CrnAdminController; def rescue_action(e) raise e end; end
 
-class Admin::CrnAdminControllerTest < Test::Unit::TestCase
+class Admin::CrnAdminControllerTest < ActionController::TestCase
   def setup
     @controller = Admin::CrnAdminController.new
     @request    = ActionController::TestRequest.new

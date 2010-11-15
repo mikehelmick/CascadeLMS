@@ -4,7 +4,7 @@ require 'admin/course_admin_controller'
 # Re-raise errors caught by the controller.
 class Admin::CourseAdminController; def rescue_action(e) raise e end; end
 
-class Admin::CourseAdminControllerTest < Test::Unit::TestCase
+class Admin::CourseAdminControllerTest < ActionController::TestCase
   def setup
     @controller = Admin::CourseAdminController.new
     @request    = ActionController::TestRequest.new

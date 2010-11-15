@@ -1,5 +1,13 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
 first:
   id: 1
+  directory_entry: false
+  directory_parent: 0
+  position: 0
+  filename: "first"
 another:
   id: 2
+  directory_entry: false
+  directory_parent: 0
+  position: 0
+  filename: "another"

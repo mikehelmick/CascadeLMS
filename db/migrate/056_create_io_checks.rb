@@ -16,7 +16,7 @@ class CreateIoChecks < ActiveRecord::Migration
       t.column :student_level, :boolean, :null => false, :default => false
     end
     
-    add_index(:io_checks, [:name, :assignment_id], :name => :io_checks_name_by_assignment, :unique => true )
+    add_index(:io_checks, [:name, :assignment_id], :name => 'io_checks_name_by_assignment', :unique => true )
     add_index(:io_checks, [:assignment_id], :unique => false)
   end
 

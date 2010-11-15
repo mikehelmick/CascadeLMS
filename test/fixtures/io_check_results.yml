@@ -1,5 +1,13 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
 first:
   id: 1
+  io_check: first
+  user: first
+  user_turnin: first
+  match_percent: 100
 another:
   id: 2
+  io_check: another
+  user: another
+  user_turnin: another
+  match_percent: 100

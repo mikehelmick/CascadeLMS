@@ -4,7 +4,7 @@ require 'admin/terms_controller'
 # Re-raise errors caught by the controller.
 class Admin::TermsController; def rescue_action(e) raise e end; end
 
-class Admin::TermsControllerTest < Test::Unit::TestCase
+class Admin::TermsControllerTest < ActionController::TestCase
   fixtures :terms
 
   def setup

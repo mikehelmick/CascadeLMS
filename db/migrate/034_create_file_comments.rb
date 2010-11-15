@@ -8,8 +8,8 @@ class CreateFileComments < ActiveRecord::Migration
       # t.column :name, :string
     end
     
-    add_index(:file_comments, [:user_turnin_file_id, :line_number], :name => :file_comments_file_line_number_idx, :unique => true )
-    add_index(:file_comments, [:user_turnin_file_id], :name => :file_line_number_idx, :unique => false )
+    add_index(:file_comments, [:user_turnin_file_id, :line_number], :name => 'file_comments_file_line_number_idx', :unique => true )
+    add_index(:file_comments, [:user_turnin_file_id], :name => 'file_line_number_idx', :unique => false )
   end
 
   def self.down

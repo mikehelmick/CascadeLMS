@@ -4,7 +4,7 @@ require 'instructor/quiz_controller'
 # Re-raise errors caught by the controller.
 class Instructor::QuizController; def rescue_action(e) raise e end; end
 
-class Instructor::QuizControllerTest < Test::Unit::TestCase
+class Instructor::QuizControllerTest < ActionController::TestCase
   def setup
     @controller = Instructor::QuizController.new
     @request    = ActionController::TestRequest.new

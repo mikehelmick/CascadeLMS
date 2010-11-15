@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class AssignmentPmdSettingTest < Test::Unit::TestCase
+class AssignmentPmdSettingTest < ActiveSupport::TestCase
   fixtures :assignment_pmd_settings
 
   # Replace this with your real tests.

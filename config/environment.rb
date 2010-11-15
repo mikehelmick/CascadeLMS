@@ -5,12 +5,10 @@
 # ENV['RAILS_ENV'] ||= 'production'
 
 # Specifies gem version of Rails to use when vendor/rails is not present
-#RAILS_GEM_VERSION = '1.1.2'
+RAILS_GEM_VERSION = '2.3.9' unless defined? RAILS_GEM_VERSION
 
 # Bootstrap the Rails environment, frameworks, and default configuration
 require File.join(File.dirname(__FILE__), 'boot')
-
-require 'redcloth'
 
 Rails::Initializer.run do |config|
   # Settings in config/environments/* take precedence those specified here
@@ -39,7 +37,12 @@ Rails::Initializer.run do |config|
 
   # Make Active Record use UTC-base instead of local time
   # config.active_record.default_timezone = :utc
-  
+
+  config.gem 'RedCloth', :lib => 'redcloth'
+  config.gem 'packet'
+  config.gem 'oauth'
+  config.gem 'twitter'
+
   # See Rails::Configuration for more options
 end
 
@@ -54,12 +57,11 @@ end
 
 # Include your application configuration below
 
-# Include your application configuration below
 ActionMailer::Base.smtp_settings = {
-  :address  => 'mailfwd.muohio.edu',
-  :port  => 25, 
-  :domain  => 'muohio.edu'
-    }
+  :address  => 'localhost',
+  :port  => 8025,
+  :domain  => 'localhost.localdomain'
+}
 
 my_formats = {
   :friendly_date => '%A %B %d, %Y %I:%M:%S %p %Z',

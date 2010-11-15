@@ -4,7 +4,7 @@ require 'instructor/email_controller'
 # Re-raise errors caught by the controller.
 class Instructor::EmailController; def rescue_action(e) raise e end; end
 
-class Instructor::EmailControllerTest < Test::Unit::TestCase
+class Instructor::EmailControllerTest < ActionController::TestCase
   def setup
     @controller = Instructor::EmailController.new
     @request    = ActionController::TestRequest.new
