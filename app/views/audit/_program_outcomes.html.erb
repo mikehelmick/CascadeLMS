@@ -1,0 +1,14 @@
+<div class="SectionHeader"><div class="Full">
+<h2>Program outcomes for <%= @program.title %></h2>
+</div></div>
+<% if @program.program_outcomes.length == 0 %>
+  <p><em>There are no outcomes defined for this program.</em></p>
+<% else %>
+<ul>
+<% count = 0 %>
+<% for outcome in @program.program_outcomes %>	
+  <% count = count.next  %>
+  <li><%= count %>) <%=h outcome.outcome %></li>
+<% end %>	
+</ul>
+<% end %>

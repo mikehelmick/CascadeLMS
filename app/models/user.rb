@@ -67,6 +67,13 @@ class User < ActiveRecord::Base
     end    
   end
 
+  def programs_under_audit() 
+    prog_user = ProgramsUser.find(:all, :conditions => ["user_id = ? and program_auditor = ?", self.id, true])
+    prog_user.sort! do |x,y|
+      x.program.title <=> y.program.title
+    end
+  end
+
   def courses_instructing( term )
     all_term = courses_in_term( term )
     cur = Array.new

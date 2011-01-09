@@ -1,0 +1,13 @@
+"Course Outcomes to Program Outcomes report for '<%= @course.title %>'"
+"Exported at <%= Time.now.to_formatted_s(:long) %>"
+"Created for <%= @user.display_name %> : <%= @user.email %>"
+
+"Program:","<%= @program.title %>"
+"Course Outcomes \ Program Outcomes",<% for po in @program.program_outcomes %><%= po.position %>,<% end %>
+<% for outcome in @course.ordered_outcomes %>"<%= @numbers[outcome.id] %>) <%=h outcome.outcome.strip.gsub(/"/,"'") %>",<% for po in @program.program_outcomes%><% if outcome.mapped_to_program_outcome?(po.id) %><%= outcome.get_depth_level(po.id) %><% else %> <% end %>,<% end %>
+<% end %>
+
+Program Outcomes
+"<%= @program.title %>"
+<% for po in @program.program_outcomes %>"<%= @program.title[0...1] %><%= po.position %>) <%=h po.outcome.strip.gsub(/"/,"'") %>"
+<% end %>	

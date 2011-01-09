@@ -609,99 +609,11 @@ class ProgramController < ApplicationController
     return unless load_course( params[:course] )
     return unless course_in_program?( @course, @program )
     
-    load_surveys( @course.id )
-    
-    @selected_surveys = Array.new
-    @surveys.each do |survey|
-      @selected_surveys << survey unless params["survey_#{survey.id}"].nil?
-    end
-    @selected_surveys.sort do |a,b|
-      a.assignment.close_date <=> b.assignment.close_date
-    end
-    
-    @error_msg = nil
-    if @selected_surveys.size == 0
-      @error_msg = "You must select either 1 or 2 surveys for the report."
-    elsif @selected_surveys.size > 2
-      @error_msg = "You can only select a maximum of 2 surveys for the report."
-    end
-    
-    if !@error_msg.nil?
-      flash[:badnotice] = @error_msg
-      redirect_to :action => 'surveys', :id => @program, :course => @course
-      
-    else
-      ## Good version - do report
-      @all_answer_count_maps = Hash.new
-      @all_question_answer_totals = Hash.new
-      @all_text_responses = Hash.new
-
-      @surveys.each do |survey|
-         @all_answer_count_maps[survey.id], @all_question_answer_totals[survey.id], @all_text_responses[survey.id] =
-              aggregate_survey_responses( survey )
-      end
-      
-      @entry = @surveys[0]
-      @exit = @surveys[1] rescue @exit = nil
-
-      quest_arrays = Array.new
-      @surveys.each { |sur| quest_arrays << sur.quiz_questions }
-      same_length = true
-      quest_arrays.each do |arr| 
-        same_length = same_length && quest_arrays[0].length==arr.length 
-      end
-      
-      ## Check the question content
-      
-      @outcomes = @course.ordered_outcomes
-      @outcome_numbers = load_outcome_numbers( @course )
-      
-      ## try to mapquestions to outcome numbers
-      @quest_outcome_number = Hash.new
-      @surveys.each do |survey|
-        survey.quiz_questions.each do |question|
-          @outcomes.each do |outcome|
-            if @quest_outcome_number[question.id].nil?
-              unless question.question.downcase.index(outcome.outcome.downcase.lstrip.rstrip).nil?
-                @quest_outcome_number[question.id] = @outcome_numbers[outcome.id]
-              end
-            end
-          end
-          @quest_outcome_number[question.id] = "?" if @quest_outcome_number[question.id].nil?
-        end
-      end
-      
-      flash[:badnotice] = "The entry/exit surveys are not identical, comparisons are unreliable." if (!same_length)
-      # more extensive validation...
-      
-      @title = "Surveys for '#{@course.title}' (#{@course.term.semester})"
-      @printer = params[:format].eql?('printer') rescue @printer = false
-      params[:format] = 'html' if @printer
-      respond_to do |format|
-          format.html { 
-              if @printer
-                render :layout => 'printer'
-              else
-                render :layout => 'noright'
-              end }
-          format.csv  { 
-            response.headers['Content-Type'] = 'text/csv; charset=iso-8859-1; header=present'
-            response.headers['Content-Disposition'] = "attachment; filename=#{@course.short_description}_surveys.csv"
-            render :layout => false 
-          }
-      end
-    end
+    error_url = url_for(:action => 'surveys', :id => @program, :course => @course)
+    entry_exit_survey_compare(error_url)
   end
   
 private
-
-  def load_surveys( course_id )
-    # Load up the entry/exit surveys
-    @surveys = Quiz.find(:all, :conditions => ["course_id=? and entry_exit=?", course_id, true])
-    @surveys.sort! do |a,b|
-      a.assignment.open_date <=> b.assignment.open_date
-    end
-  end
 
   def course_in_program?( course, program )
     if course.mapped_to_program?( program.id )

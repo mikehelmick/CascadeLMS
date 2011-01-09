@@ -1,0 +1,9 @@
+"Course Outcomes / Rubrics to Program Outcomes report for '<%= @course.title %>'"
+"Exported at <%= Time.now.to_formatted_s(:long) %>"
+"Created for <%= @user.display_name %> : <%= @user.email %>"
+
+Course Outcome, Assignment, Rubric,"<%= @course.rubric_level.l1_name %> / <%= @course.rubric_level.l2_name %>",%,"<%= @course.rubric_level.l3_name %>",%,"<%= @course.rubric_level.l4_name %>",%,
+<% for outcome in @course.ordered_outcomes %>"<%= @outcome_position[outcome.id] %> <%= outcome.outcome.strip.gsub(/"/,"'") %>",
+<% if @outcome_to_rubrics[outcome.id].length == 0 %>,No rubrics map to this outcome.
+<% else %><% for rubric in @outcome_to_rubrics[outcome.id] %>,"<%= rubric.assignment.title %>","<%= rubric.primary_trait %>","<%= @rubrics_sums[rubric.id][0] %>",<%= sprintf("%.2f",@rubrics_avgs[rubric.id][0]) %>,<%= @rubrics_sums[rubric.id][1] %>,<%= sprintf("%.2f",@rubrics_avgs[rubric.id][1]) %>,<%= @rubrics_sums[rubric.id][2] %>,<%= sprintf("%.2f",@rubrics_avgs[rubric.id][2]) %>,
+<% end %><% end %><% end %>

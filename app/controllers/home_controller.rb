@@ -37,6 +37,11 @@ class HomeController < ApplicationController
     rescue
     end
     
+    if @user.auditor
+      @programs = @user.programs_under_audit()
+      @audit_term = @term
+    end
+    
     respond_to do |format|
       format.html
       format.xml { 

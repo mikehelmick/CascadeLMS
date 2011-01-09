@@ -6,37 +6,4 @@
 <h2>Entry/Exit Surveys for <%= @course.title %> (<%= @course.term.semester %>)</h2>
 </div></div>
 
-<p>Select the surveys that you would like to export, and the format that you would like. 
-The HTML view will automatically generate comparison graphs.
-<i>It make take up to 2 minutes to render survey data.</i>
-</p>
-
-<div id="form_area">
-  <% form_tag( :action => 'compare_surveys', :template => @course_template, :id => @program ) do %>
-  
-  <div class="blockintro">Select the surveys that you want to include in your report (max of 2).</div>
-  <div class="block">
-	<ul>
-	<% for survey in @surveys %>
-	  <li>
-	    <%= check_box_tag "survey_#{survey.id}", survey.id, false %>
-	    <%= survey.assignment.title %> 
-	    (<%= survey.assignment.close_date.to_formatted_s(:short) %>)
-      </li>
-	<% end %>
-	</ul>
-  </div> 
-
-  <div class="blockintro">Select the format for your report HTML (in browser with graphs) or export to Excel (CSV format) <i>coming soon</i>.</div>
-  <div class="block">
-    <label for="format" class="required">Select Format:</label>
-	<p><%= radio_button_tag 'format', 'html', true %> HTML / In Browser<br/>
-	   <%= radio_button_tag 'format', 'printer', false %> Printer Friendly<br/>	
-	   <%= radio_button_tag 'format', 'csv', false %> Export to Excel (CSV format) (<i>Charts will not be included</i>)</p>
-  </div>
-
-  <div class="submit">
-	<%= submit_tag "Generate Survey Report" %>
-  </div>
-  <% end %>	
-</div>
+<%= render :partial => 'survey_select' %>

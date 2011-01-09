@@ -1,0 +1,14 @@
+<% unless @program.nil? %>
+<h2>Currently auditing</h2>
+<p><ul>
+<li><strong>Program:</strong> <%= @program.title %></li>
+<li><strong>Term:</strong> <%= @audit_term.semester %></li>
+<% unless @course.nil? %><li><strong>Course:</strong> <%= @course.title %>, <%= @course.short_description %><% end %>
+<ul></p>
+<% end %>
+
+<% unless @programs.nil? %>
+<p>You have auditor access to the following programs:<ul>
+<% for prog_user in @programs %><li><%= prog_user.program.title %></li><% end %>
+<ul></p>
+<% end %>

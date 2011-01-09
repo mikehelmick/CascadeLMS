@@ -34,7 +34,7 @@ require 'MyString'
 # Likewise, all the methods added will be available for all controllers.
 class ApplicationController < ActionController::Base
   ## CSCW Application version
-  @@VERSION = '1.4.59 (Rainier) 20101114'
+  @@VERSION = '1.4.60 (Rainier) 20110105'
   
   ## Supress password logging
   filter_parameter_logging :password
@@ -183,6 +183,15 @@ class ApplicationController < ActionController::Base
     end
     return true    
   end
+
+  def ensure_program_auditor
+    unless session[:user].auditor?
+      flash[:badnotice] = "You do not have the rights to view the requested page."
+      redirect_to :controller => '/home'
+      return false
+    end
+    return true
+  end
   
   def nil_or_empty( str )
     return str.nil? || str.eql?('')
@@ -305,6 +314,15 @@ class ApplicationController < ActionController::Base
     end
     true
   end
+
+  def allowed_to_audit_program(program, user, redirect = true)
+    unless user.auditor_in_program?(program.id)
+      flash[:badnotice] = "You are not authorized to audit the requested program."
+      redirect_to :controller => '/audit', :action => 'index', :id => nil if redirect
+      return false
+    end
+    true
+  end
   
   def allowed_to_see_course( course, user, redirect = true)
     user.courses_users.each do |cu|
@@ -392,7 +410,15 @@ class ApplicationController < ActionController::Base
       return false
     end    
   end
-  
+
+  def load_surveys( course_id )
+    # Load up the entry/exit surveys
+    @surveys = Quiz.find(:all, :conditions => ["course_id=? and entry_exit=?", course_id, true])
+    @surveys.sort! do |a,b|
+      a.assignment.open_date <=> b.assignment.open_date
+    end
+  end
+ 
   def load_assignment( assignment_id, redirect = true )
     begin
       @assignment = Assignment.find( assignment_id )
@@ -581,8 +607,10 @@ class ApplicationController < ActionController::Base
      
       @outcome_sums[outcome.id] = [0,0,0] if @outcome_sums[outcome.id].nil?
      
+      rubrics = outcome.rubrics.delete_if { |x| x.assignment.nil? }
+     
       # for each rubric
-      rubrics = outcome.rubrics.sort do |a,b| 
+      rubrics = rubrics.sort do |a,b| 
                   result = a.assignment.position <=> b.assignment.position
                   result = a.position <=> b.position if result == 0
                   result
@@ -647,6 +675,91 @@ class ApplicationController < ActionController::Base
     end
     
     return @answer_count_map, @question_answer_total, @text_responses
+  end
+  
+  def entry_exit_survey_compare(error_url)
+    load_surveys( @course.id )
+    
+    @selected_surveys = Array.new
+    @surveys.each do |survey|
+      @selected_surveys << survey unless params["survey_#{survey.id}"].nil?
+    end
+    @selected_surveys.sort do |a,b|
+      a.assignment.close_date <=> b.assignment.close_date
+    end
+    
+    @error_msg = nil
+    if @selected_surveys.size == 0
+      @error_msg = "You must select either 1 or 2 surveys for the report."
+    elsif @selected_surveys.size > 2
+      @error_msg = "You can only select a maximum of 2 surveys for the report."
+    end
+    
+    if !@error_msg.nil?
+      flash[:badnotice] = @error_msg
+      redirect_to error_url
+      
+    else
+      ## Good version - do report
+      @all_answer_count_maps = Hash.new
+      @all_question_answer_totals = Hash.new
+      @all_text_responses = Hash.new
+
+      @surveys.each do |survey|
+         @all_answer_count_maps[survey.id], @all_question_answer_totals[survey.id], @all_text_responses[survey.id] =
+              aggregate_survey_responses( survey )
+      end
+      
+      @entry = @surveys[0]
+      @exit = @surveys[1] rescue @exit = nil
+
+      quest_arrays = Array.new
+      @surveys.each { |sur| quest_arrays << sur.quiz_questions }
+      same_length = true
+      quest_arrays.each do |arr| 
+        same_length = same_length && quest_arrays[0].length==arr.length 
+      end
+      
+      ## Check the question content
+      
+      @outcomes = @course.ordered_outcomes
+      @outcome_numbers = load_outcome_numbers( @course )
+      
+      ## try to mapquestions to outcome numbers
+      @quest_outcome_number = Hash.new
+      @surveys.each do |survey|
+        survey.quiz_questions.each do |question|
+          @outcomes.each do |outcome|
+            if @quest_outcome_number[question.id].nil?
+              unless question.question.downcase.index(outcome.outcome.downcase.lstrip.rstrip).nil?
+                @quest_outcome_number[question.id] = @outcome_numbers[outcome.id]
+              end
+            end
+          end
+          @quest_outcome_number[question.id] = "?" if @quest_outcome_number[question.id].nil?
+        end
+      end
+      
+      flash[:badnotice] = "The entry/exit surveys are not identical, comparisons are unreliable." if (!same_length)
+      # more extensive validation...
+      
+      @title = "Surveys for '#{@course.title}' (#{@course.term.semester})"
+      @printer = params[:format].eql?('printer') rescue @printer = false
+      params[:format] = 'html' if @printer
+      respond_to do |format|
+          format.html { 
+              if @printer
+                render :layout => 'printer'
+              else
+                render :layout => 'noright'
+              end }
+          format.csv  { 
+            response.headers['Content-Type'] = 'text/csv; charset=iso-8859-1; header=present'
+            response.headers['Content-Disposition'] = "attachment; filename=#{@course.short_description}_surveys.csv"
+            render :layout => false 
+          }
+      end
+    end
   end
   
   protected :log_error

@@ -1,0 +1,17 @@
+<div id="form_area">
+<% form_remote_tag( :update => 'courses', :url => { :action => :change_term, :id => @program }, :complete => "new Effect.Highlight('courses', { duration: 3.0 });" )do  %>
+<div id="block">
+<label for="id">Term:</label> <%= select_tag 'term', options_from_collection_for_select(@terms, "id", "semester", @audit_term.id ) %> 
+<%= submit_tag( 'Change Term' ) %><br/>
+</div>
+<% end %>
+</div>
+
+<div id="courses">
+<%= render :partial => 'courses' %>
+</div>
+
+<div id="program_outcomes">
+<%= render :partial => 'program_outcomes' %>
+</div>
+

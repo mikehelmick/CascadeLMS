@@ -556,6 +556,7 @@ div#right .rightbox {
 
 .fancy {
 	border: 1px solid #666666;
+	margin-top: 5px;
 }
 
 .fancy .cell {
@@ -667,7 +668,7 @@ div#right .rightbox {
 
 /** general content */
 .SectionHeader {
-	margin: 5px 0 0px 0;
+	margin: 15px 0 0px 0;
 	border-bottom: 1px solid #000000;
 	padding-bottom: 5px;
 }

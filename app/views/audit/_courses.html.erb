@@ -1,0 +1,30 @@
+<div class="SectionHeader"><div class="Full">
+<h2><%= @program.title %> courses in <%= @audit_term.semester %></h2>
+</div></div>
+<% if @courses.size == 0 %>
+  <p><em>There are no courses for <%= @program.title %> in <%= @term.semester %>.</em></p>
+<% else %>
+<table class="fancy" width="99%">
+  <% count = 0 %>
+  <% for course in @courses %>	
+    <% count = count.next 
+       odd = "odd"
+       odd = "even" if count.even? %>
+    <tr class="<%=odd%> hover" id="course_<%=course.id%>">
+      <td valign="middle" align="left"><%=h course.short_description %>) <%=h course.title %><br/>
+	    <ul>
+	     <li><strong>Instructor(s):</strong> <%=h course.instructors.join( ", " ) %></li>
+	     <li><strong>Students:</strong> <%= course.student_count %></li>
+	    </ul>
+	  </td>
+      <td valign="top" align="left" nowrap="nowrap" width="35%">
+	    <ul>
+	    <li><%= link_to 'Course outcomes', :action => 'course_outcomes', :course => course, :id => @program %></li>
+	    <li><%= link_to 'Entry and exit surveys', :action => 'surveys', :course => course, :id => @program %></li>
+	    <li><%= link_to 'Course rubrics report', :action => 'rubric_report', :course => course, :id => @program %></li>
+	    </ul>
+	  </td>
+	</tr>
+  <% end %>	
+</table>
+<% end %>

@@ -1,0 +1,282 @@
+<div class="SectionHeader"><div class="Full">
+<h1>Entry/Exit Survey Results '<%= @course.title %>' (<%= @course.term.semester %>)</h1>
+</div></div>
+
+<div class="SectionHeader"><div class="Full">
+<h2><%= @entry.assignment.title %> (Administered: <%= @entry.assignment.close_date.to_formatted_s(:short) %>)</h2>
+</div></div>
+<br/>
+
+<table class="fancy">
+ <tr>
+   <th>Course</th>
+   <th>Question</th>
+   <th width="50px">Strongly Agree</th>
+   <th width="50px">Agree</th>
+   <th width="50px">Indifferent</th>
+   <th width="50px">Disagree</th>
+   <th width="50px">Strongly Disagree</th>
+   <th width="50px">N/A</th>	
+   <th width="50px">Outcome</th>
+   <th>Count</th>
+   <th>Agree</th>
+   <th>Neutral</th>
+   <th>Disagree</th>
+   <th>N/A</th>
+ </tr>
+
+ <% counter = 0 %>
+ <% row_count = 0 %>
+ <% for question in @entry.quiz_questions %>
+   <% counter = counter.next %>
+   <% row_count = row_count.next 
+      odd = "odd"
+      odd = "even" if row_count.even? %>
+ <tr class="<%=odd%> hover">
+   <td><%= @course.title %></td>
+   <td><%= counter %></td>
+   <% total = 0.0 %>
+   <% for answer in @entry.quiz_questions[row_count-1].quiz_question_answers %>
+     <td><%= @all_answer_count_maps[@entry.id][answer.id] %></td>
+     <% total = total + @all_answer_count_maps[@entry.id][answer.id]  %>
+   <% end %> 
+   <td><%= @quest_outcome_number[question.id] %></td>
+   <td><%= @all_question_answer_totals[@entry.id][@entry.quiz_questions[row_count-1].id] %></td>
+   <td>
+	 <% answer1 = @entry.quiz_questions[row_count-1].quiz_question_answers[0].id %>
+	 <% answer2 = @entry.quiz_questions[row_count-1].quiz_question_answers[1].id %>
+	 <%= sprintf("%6.2f%%", (@all_answer_count_maps[@entry.id][answer1] + @all_answer_count_maps[@entry.id][answer2]) / total * 100.0 ) rescue "?.?%" %>   	
+   </td>
+   <td>
+ 	 <% answer1 = @entry.quiz_questions[row_count-1].quiz_question_answers[2].id %>
+	 <%= sprintf("%6.2f%%", (@all_answer_count_maps[@entry.id][answer1]) / total * 100.0 ) rescue "?.?%" %>   	
+   </td>
+   <td>
+	 <% answer1 = @entry.quiz_questions[row_count-1].quiz_question_answers[3].id %>
+	 <% answer2 = @entry.quiz_questions[row_count-1].quiz_question_answers[4].id %>
+	
+   	 <%= sprintf("%6.2f%%", (@all_answer_count_maps[@entry.id][answer1] + @all_answer_count_maps[@entry.id][answer2]) / total * 100.0 ) rescue "?.?%" %>   	
+   </td>	 
+   <td>
+	 <% answer1 = @entry.quiz_questions[row_count-1].quiz_question_answers[5].id %>
+     <%= sprintf("%6.2f%%", (@all_answer_count_maps[@entry.id][answer1]) / total * 100.0 ) rescue "?.?%" %>   	
+   </td>
+ </tr> 
+ <% end %>
+
+</table>
+
+<div class="page_break"><p>&nbsp;</p></div>
+
+<div id="entry_chart_div"></div>
+
+<script type="text/javascript">
+  google.load("visualization", "1", {packages:["columnchart"]});
+  google.setOnLoadCallback(drawChart);
+  
+  function drawChart() {
+        var data = new google.visualization.DataTable();
+        data.addColumn('string', 'Question');
+        data.addColumn('number', 'Agree');
+        data.addColumn('number', 'Indifferent');
+		data.addColumn('number', 'Disagree');
+        data.addRows( <%= @entry.quiz_questions.size %> );
+        
+        <% counter = 0 %>
+		<% for question in @entry.quiz_questions %>
+		  data.setCell( <%= counter %>, 0, "Question <%= counter + 1 %>" );
+          data.setCell( <%= counter %>, 1, <%= @all_answer_count_maps[@entry.id][question.quiz_question_answers[0].id] + @all_answer_count_maps[@entry.id][question.quiz_question_answers[1].id] %> );
+          data.setCell( <%= counter %>, 2, <%= @all_answer_count_maps[@entry.id][question.quiz_question_answers[2].id] %> );
+          data.setCell( <%= counter %>, 3, <%= @all_answer_count_maps[@entry.id][question.quiz_question_answers[3].id] + @all_answer_count_maps[@entry.id][question.quiz_question_answers[4].id]%> );
+          
+		  <% counter = counter + 1 %>
+		<% end %>		
+
+        var chart = new google.visualization.ColumnChart(document.getElementById('entry_chart_div'));
+        chart.draw(data, {width: 1000, height: 500, is3D: false, title: '<%= @entry.assignment.title %> (Administered: <%= @entry.assignment.close_date.to_formatted_s(:short) %>)'});
+  }
+</script>
+
+
+<div class="page_break"><p>&nbsp;</p></div>
+
+<% unless @exit.nil? %>
+ <div class="SectionHeader"><div class="Full">
+ <h2><%= @exit.assignment.title %> (Administered: <%= @exit.assignment.close_date.to_formatted_s(:short) %>)</h2>
+ </div></div>
+
+<br/>
+
+<table class="fancy">
+ <tr>
+   <th>Course</th>
+   <th>Question</th>
+   <th width="50px">Strongly Agree</th>
+   <th width="50px">Agree</th>
+   <th width="50px">Indifferent</th>
+   <th width="50px">Disagree</th>
+   <th width="50px">Strongly Disagree</th>
+   <th width="50px">N/A</th>	
+   <th width="50px">Outcome</th>
+   <th>Count</th>
+   <th>Agree</th>
+   <th>Neutral</th>
+   <th>Disagree</th>
+   <th>N/A</th>
+ </tr>
+
+ <% counter = 0 %>
+ <% row_count = 0 %>
+ <% for question in @exit.quiz_questions %>
+   <% counter = counter.next %>
+   <% row_count = row_count.next 
+      odd = "odd"
+      odd = "even" if row_count.even? %>
+ <tr class="<%=odd%> hover">
+   <td><%= @course.title %></td>
+   <td><%= counter %></td>
+   <% total = 0.0 %>
+   <% for answer in @exit.quiz_questions[row_count-1].quiz_question_answers %>
+     <td><%= @all_answer_count_maps[@exit.id][answer.id] %></td>
+     <% total = total + @all_answer_count_maps[@exit.id][answer.id]  %>
+   <% end %> 
+   <td><%= @quest_outcome_number[question.id] %></td>
+   <td><%= @all_question_answer_totals[@exit.id][@exit.quiz_questions[row_count-1].id] %></td>
+   <td>
+	 <% answer1 = @exit.quiz_questions[row_count-1].quiz_question_answers[0].id %>
+	 <% answer2 = @exit.quiz_questions[row_count-1].quiz_question_answers[1].id %>
+	 <%= sprintf("%6.2f%%", (@all_answer_count_maps[@exit.id][answer1] + @all_answer_count_maps[@exit.id][answer2]) / total * 100.0 ) rescue "?.?%" %>   	
+   </td>
+   <td>
+ 	 <% answer1 = @exit.quiz_questions[row_count-1].quiz_question_answers[2].id %>
+	 <%= sprintf("%6.2f%%", (@all_answer_count_maps[@exit.id][answer1]) / total * 100.0 ) rescue "?.?%" %>   	
+   </td>
+   <td>
+	 <% answer1 = @exit.quiz_questions[row_count-1].quiz_question_answers[3].id %>
+	 <% answer2 = @exit.quiz_questions[row_count-1].quiz_question_answers[4].id %>
+
+   	 <%= sprintf("%6.2f%%", (@all_answer_count_maps[@exit.id][answer1] + @all_answer_count_maps[@exit.id][answer2]) / total * 100.0 ) rescue "?.?%" %>   	
+   </td>	 
+   <td>
+	 <% answer1 = @exit.quiz_questions[row_count-1].quiz_question_answers[5].id %>
+     <%= sprintf("%6.2f%%", (@all_answer_count_maps[@exit.id][answer1]) / total * 100.0 ) rescue "?.?%" %>   	
+   </td>
+ </tr> 
+ <% end %>
+
+</table>
+
+<div class="page_break"><p>&nbsp;</p></div>
+
+<div id="exit_chart_div"></div>
+
+
+<script type="text/javascript">
+  google.load("visualization", "1", {packages:["columnchart"]});
+  google.setOnLoadCallback(drawChart);
+
+  function drawChart() {
+        var data = new google.visualization.DataTable();
+        data.addColumn('string', 'Question');
+        data.addColumn('number', 'Agree');
+        data.addColumn('number', 'Indifferent');
+		data.addColumn('number', 'Disagree');
+        data.addRows( <%= @exit.quiz_questions.size %> );
+
+        <% counter = 0 %>
+		<% for question in @exit.quiz_questions %>
+		  data.setCell( <%= counter %>, 0, "Question <%= counter + 1 %>" );
+          data.setCell( <%= counter %>, 1, <%= @all_answer_count_maps[@exit.id][question.quiz_question_answers[0].id] + @all_answer_count_maps[@exit.id][question.quiz_question_answers[1].id] %> );
+          data.setCell( <%= counter %>, 2, <%= @all_answer_count_maps[@exit.id][question.quiz_question_answers[2].id] %> );
+          data.setCell( <%= counter %>, 3, <%= @all_answer_count_maps[@exit.id][question.quiz_question_answers[3].id] + @all_answer_count_maps[@exit.id][question.quiz_question_answers[4].id]%> );
+
+		  <% counter = counter + 1 %>
+		<% end %>		
+
+        var chart = new google.visualization.ColumnChart(document.getElementById('exit_chart_div'));
+        chart.draw(data, {width: 1000, height: 500, is3D: false, title: '<%= @exit.assignment.title %> (Administered: <%= @exit.assignment.close_date.to_formatted_s(:short) %>)'});
+  }
+</script>
+
+<div class="page_break"><p>&nbsp;</p></div>
+
+<div class="SectionHeader"><div class="Full">
+<h2>Survey of Learning Outcomes: <%= @course.title %></h2>
+</div></div>
+
+<br/>
+
+<div id="compare_chart"></div>
+
+<div class="page_break"><p>&nbsp;</p></div>
+
+<div id="compare_table"></div>
+
+<script type="text/javascript">
+  google.load("visualization", "1", {packages:["columnchart","table"]});
+  google.setOnLoadCallback(drawChart);
+
+  function drawChart() {
+        var data = new google.visualization.DataTable();
+        data.addColumn('string', 'Question');
+        data.addColumn('number', 'Agree Before');
+        data.addColumn('number', 'Agree After');
+        data.addRows( <%= @entry.quiz_questions.size %> );
+
+        <% counter = 0 %>
+		<% for question in @entry.quiz_questions %>
+		  data.setCell( <%= counter %>, 0, "Question <%= sprintf('%3d',counter + 1) %>" );
+          data.setCell( <%= counter %>, 1, <%= @all_answer_count_maps[@entry.id][question.quiz_question_answers[0].id] + @all_answer_count_maps[@entry.id][question.quiz_question_answers[1].id] %> );
+          <% counter = counter + 1 %>
+		<% end %>
+		<% counter = 0 %>
+		<% for question in @exit.quiz_questions %>
+		  data.setCell( <%= counter %>, 2, <%= @all_answer_count_maps[@exit.id][question.quiz_question_answers[0].id] + @all_answer_count_maps[@exit.id][question.quiz_question_answers[1].id] %> );
+          <% counter = counter + 1 %>
+		<% end %>		
+
+        var chart = new google.visualization.ColumnChart(document.getElementById('compare_chart'));
+        chart.draw(data, {width: 1000, height: 500, is3D: false, title: 'Survey of Learning Outcomes: <%= @course.title %>'});
+  
+        var table = new google.visualization.Table(document.getElementById('compare_table'));
+        table.draw(data, {showRowNumber: true});
+  }
+</script>
+
+<div class="page_break"><p>&nbsp;</p></div>
+
+<% end %>
+
+
+<div class="SectionHeader"><div class="Full">
+<h2>Course Outcomes</h2>
+</div></div>
+
+<br/>
+
+<%= render :partial => '/program/course_outcomes_part' %>
+
+<div class="page_break"><p>&nbsp;</p></div>
+
+<div class="SectionHeader"><div class="Full">
+<h2>Survey Questions</h2>
+</div></div>
+
+<br/>
+<table class="fancy" width="99%">
+  <tr class="header">
+	  <th width="90%">Question</th>
+	  <th>Outcome #</th>
+	</tr>
+
+  <% count = 0 %>
+  <% for question in @entry.quiz_questions %>	
+    <% count = count.next 
+       odd = "odd"
+       odd = "even" if count.even? %>
+    <tr class="<%=odd%> hover" id="question_<%=question.id%>">
+      <td><%= count %>) <%= question.question %></td>
+      <td nowrap="nowrap"><%= @quest_outcome_number[question.id] %></td>
+	</tr>
+  <% end %>	
+</table>
