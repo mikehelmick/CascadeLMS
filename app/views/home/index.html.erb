@@ -2,13 +2,12 @@
 
 <%= render :partial => 'announcements' %>
 
-<% if @user.auditor %>
-<%= render :partial => 'auditor' %>
-<% end %>
-
 
 <%= render :partial => 'courses' %>
 
+<% if @user.auditor %>
+<%= render :partial => 'auditor' %>
+<% end %>
 
 <div class="SectionHeader"><div class="Full">
 <h2>Browse Public Courses</h2>
