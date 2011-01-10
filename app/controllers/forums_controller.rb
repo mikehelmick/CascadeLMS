@@ -177,8 +177,8 @@ class ForumsController < ApplicationController
     
     if ( params[:id] ) 
       @post = ForumPost.find( params[:id] )
-      
-      unless @user.id != @post.user_id || @user.instructor_in_course?( @course.id ) || @user.assistant_in_course_with_privilege?( @course.id, 'ta_course_blog_edit')
+    
+      unless @user.id == @post.user_id || @user.instructor_in_course?( @course.id ) || @user.assistant_in_course_with_privilege?( @course.id, 'ta_course_blog_edit')
         flash[:badnotice] = "You don't have permission to edit this post."
         redirect_for_post( @post )
         return
