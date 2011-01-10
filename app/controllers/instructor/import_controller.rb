@@ -44,6 +44,9 @@ class Instructor::ImportController < Instructor::InstructorBase
     return unless load_course( params[:course] )
     return unless ensure_course_instructor_on_assistant( @course, @user )
     
+    # before importing, the course must have rubric levels
+    RubricLevel.for_course(@course)
+    
     @import_from = Course.find(params[:id].to_i)
     @course_share = @user.course_share(@import_from.id)
     
