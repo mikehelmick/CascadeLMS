@@ -225,6 +225,7 @@ Last Updated: <%= @display_turnin.updated_at.to_formatted_s(:friendly_date) %><b
 	<div class="submit">
 	  <div id="button">
 		 <%= submit_tag "Skip and Go to Next Student" %>
+		 <%= submit_tag "Save Grade and Go to Previous Student" %>
 	     <%= submit_tag "Save Grade" %>
 	     <%= submit_tag "Save Grade and Go to Next Student" %>	     
 	  </div>
@@ -301,6 +302,7 @@ function update_rubric_<%=rubric.id%>_to( newValue ) {
   	<div class="submit">
 	  <div id="button">
 	  	 <%= submit_tag "Skip and Go to Next Student" %>
+	     <%= submit_tag "Save Grade and Go to Previous Student" %>
 	     <%= submit_tag "Save Grade" %>
 	     <%= submit_tag "Save Grade and Go to Next Student" %>
 	  </div>

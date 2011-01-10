@@ -572,11 +572,14 @@ class Instructor::TurninsController < Instructor::InstructorBase
     
     student_id = @student.id
     begin
-      unless params[:commit].index("Next Student").nil?
+      if !(params[:commit].index("Next Student").nil? && params[:commit].index("Previous Student").nil?)
+        students = @course.students
+        students.reverse! unless params[:commit].index("Previous Student").nil?
+        
         ## get all students from the class, advance to the one after @student
         student_id = nil
         next_student = false
-        @course.students.each do |student|
+        students.each do |student|
           if next_student 
             student_id = student.id
             next_student = false
