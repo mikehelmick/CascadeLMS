@@ -95,6 +95,19 @@ class Instructor::CourseDocsController < Instructor::InstructorBase
     end
   end
 
+  def toggle_published
+    return unless load_course( params[:course] )
+    return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_documents' )
+    return unless course_open( @course, :action => 'index' )
+    
+    @document = Document.find(params[:id])
+    return unless doc_in_course( @course, @document )
+    
+    @document.toggle_published
+    @document.save
+    render(:partial => 'published', :locals => {:document => @document}, :layout => false)
+  end
+
   def edit
     return unless load_course( params[:course] )
     return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_documents' )

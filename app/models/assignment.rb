@@ -140,7 +140,11 @@ class Assignment < ActiveRecord::Base
     
     return dup
   end
-  
+
+  def toggle_visibility
+    self.visible = !self.visible
+  end
+
   def default_dates
     self.open_date = Time.now
     self.due_date = self.open_date + 1.day

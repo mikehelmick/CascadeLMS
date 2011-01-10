@@ -9,7 +9,7 @@ Instructor(s): <% for instructor in  @course.instructors %><%= instructor.displa
 <div id="form_area">
 <% form_tag( :action => 'import_data', :course => @course, :id => @import_from.id ) do %>
 	
- <div class="blockintro">Select assignments to import.</div>
+ <div class="blockintro">Select assignments to import. <em>All assignments are imported as NOT visible.</em></div>
  <div class="block">	 
 	<% if @import_from.assignments.size == 0 %>
 	  <p><i>There are no assignments to import.</i></p>
@@ -70,7 +70,7 @@ Instructor(s): <% for instructor in  @course.instructors %><%= instructor.displa
  	<p><em>Course outcomes cannot be copied directly between courses. For this functionality, please use the program mapping and course template functionality.</em></p>
  </div>
 
- <div class="blockintro">Select documents to import.</div>
+ <div class="blockintro">Select documents to import. <em>All documents are imported as NOT published.</em></div>
  <div class="block">
 	<% if @import_from.documents.size == 0 %>
 	  <p><i>There are no documents to import.</i></p>

@@ -55,10 +55,8 @@
 	        <%= h count %>
 	      <% end %>
 	    </td>
-	    <td valign="top" nowrap="nowrap">
-		  <% if assignment.visible %><%= image_tag 'accept.png', :align => 'absmiddle' %>
-		  <% else %><%= image_tag 'cancel.png', :align => 'absmiddle' %>
-		  <% end %>
+	    <td valign="top" nowrap="nowrap" id="visibility_<%= assignment.id %>">
+		  <%= render :partial => 'visibility', :locals => { :assignment => assignment } %>
 		</td>
 	    <td valign="top" nowrap="nowrap">
 	      <% if @user.instructor_in_course?(@course.id) || (@user.assistant_in_course?(@course.id) && @course.course_setting.ta_course_assignments) %>

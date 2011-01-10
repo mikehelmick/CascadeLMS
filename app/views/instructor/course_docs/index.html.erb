@@ -62,7 +62,7 @@
 	    <%=h document.title %>
 	  <% end %></td>
     <td><% unless document.folder %><%=h document.size_text %><% end %>&nbsp;</td>
-    <td><%=h document.published %></td>
+    <td id="published_<%= document.id %>"><%= render(:partial => 'published', :locals => {:document => document}) %></td>
     <td><%=h document.created_at.to_formatted_s(:long) %></td>
 
     <td>

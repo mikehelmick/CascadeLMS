@@ -1,0 +1,10 @@
+<% 
+if assignment.visible 
+  img_url = image_tag('accept.png', :align => 'absmiddle')
+  status = 'yes'
+else
+  img_url = image_tag('cancel.png', :align => 'absmiddle')
+  status = 'no'
+end 
+%>
+<%= link_to_remote( "#{img_url} #{status}", :update => "visibility_#{assignment.id}", :url => { :action => 'toggle_visibility', :id => assignment.id }, :complete => "new Effect.Highlight( 'visibility_#{assignment.id}' )" ) %>

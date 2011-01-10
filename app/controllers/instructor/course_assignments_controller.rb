@@ -42,6 +42,18 @@ class Instructor::CourseAssignmentsController < Instructor::InstructorBase
     
     render :nothing => true
   end
+
+  def toggle_visibility
+    return unless load_course( params[:course] )
+    return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_assignments' )
+    return unless course_open( @course, :action => 'index' )
+    @assignment = Assignment.find( params['id'] )
+    return unless assignment_in_course( @course, @assignment )
+    
+    @assignment.toggle_visibility  
+    @assignment.save
+    render(:partial => 'visibility', :locals => {:assignment => @assignment}, :layout => false)
+  end
   
   def new
     return unless load_course( params[:course] )

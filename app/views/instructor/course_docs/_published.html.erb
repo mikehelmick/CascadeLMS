@@ -1,0 +1,10 @@
+<% 
+if document.published 
+  img_url = image_tag('accept.png', :align => 'absmiddle')
+  status = 'yes'
+else
+  img_url = image_tag('cancel.png', :align => 'absmiddle')
+  status = 'no'
+end 
+%>
+<%= link_to_remote( "#{img_url} #{status}", :update => "published_#{document.id}", :url => { :action => 'toggle_published', :id => document.id }, :complete => "new Effect.Highlight( 'published_#{document.id}' )" ) %>

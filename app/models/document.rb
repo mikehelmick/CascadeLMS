@@ -169,7 +169,11 @@ class Document < ActiveRecord::Base
       FileManager.icon(self.extension)
     end
   end
-  
+
+  def toggle_published
+    self.published = !self.published
+  end
+
   def transform_markup
 	  self.comments_html = HtmlEngine.apply_textile( self.comments )
 	  
