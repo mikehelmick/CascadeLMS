@@ -548,6 +548,11 @@ class Instructor::TurninsController < Instructor::InstructorBase
                  rubric_entry.full_credit    = params["rubric_#{rubric.id}"].eql?("full")
                  rubric_entry.partial_credit = params["rubric_#{rubric.id}"].eql?("partial")
                  rubric_entry.no_credit      = params["rubric_#{rubric.id}"].eql?("no")
+                 rubric_entry.custom_score   = !params["rubric_#{rubric.id}_custom_score"].nil?
+                 rubric_entry.score          = 0
+                 if rubric_entry.custom_score
+                   rubric_entry.score = params["rubric_#{rubric.id}_score"].to_f
+                 end
                  rubric_entry.comments       = params["rubric_#{rubric.id}_comments"]
                  @success = rubric_entry.save && @success
                end
