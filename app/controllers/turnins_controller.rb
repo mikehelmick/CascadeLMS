@@ -242,18 +242,18 @@ class TurninsController < ApplicationController
     return unless assignment_available( @assignment )
     return unless assignment_available_for_students_team( @course, @assignment, @user.id )
     
-    # check extension - we won't check open date if extension is allowd
-    @extension = @assignment.extension_for_user( @user )
-    if @extension.nil? || (@extension.nil? && !extension.past?)
-      return unless assignment_open( @assignment )
-    end
-    
     return unless load_team( @course, @assignment, @user )
     
     # load turnin sets
     load_turnins
     @current_turnin = nil
     @current_turnin = @turnins[0] if @turnins.size > 0
+
+    # check extension - we won't check open date if extension is allowd
+    @extension = @assignment.extension_for_user( @user )
+    if @extension.nil? || (@extension.nil? && !extension.past?)
+      return unless assignment_open( @assignment, true, @current_turnin.nil? )
+    end
     
     if !@current_turnin.nil?
       if @current_turnin.user_turnin_files.size == 1
@@ -781,10 +781,16 @@ private
     true
   end
   
-  def assignment_open( assignment, redirect = true  ) 
+  def assignment_open( assignment, redirect = true, back_to_assignment = false ) 
     unless assignment.close_date > Time.now
       flash[:badnotice] = "The requisted assignment is closed, no more files may be submitted."
-      redirect_to :action => 'index' if redirect
+      if redirect
+        if back_to_assignment 
+          redirect_to :controller => '/assignments', :action => 'view', :id => assignment, :course => @course
+        else
+          redirect_to :action => 'index' 
+        end
+      end
       return false
     end
     true    
