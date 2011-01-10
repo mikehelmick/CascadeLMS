@@ -33,7 +33,7 @@ Last Updated: <%= @display_turnin.updated_at.to_formatted_s(:friendly_date) %><b
 	<th>Auto Added?</th>
 	<% if @assignment.programming %>
 	  <th>Main?</th>
-	  <% if any_java %>
+	  <% if any_java && @assignment.auto_grade %>
 	    <th>Clean Java?</th>
 	  <% end %>
 	<% end %>
@@ -85,7 +85,7 @@ Last Updated: <%= @display_turnin.updated_at.to_formatted_s(:friendly_date) %><b
 	    <% end %>
 	  </td>
 	 
-	  <% if any_java %>
+	  <% if any_java && @assignment.auto_grade %>
 	    <td>
 		  <% if @tif.extension.eql?('java') ## will need to expand later w/ other languages %>
 		    <% if @tif.gradable %>
