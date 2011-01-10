@@ -100,7 +100,14 @@ class IndexController < ApplicationController
   end
   
   def confirm_reset
-    return unless reset_password
+    return unless ensure_basic_auth
+
+    @act_user = User.find(:first, :conditions => ['id = ? and forgot_token = ?', params[:id], params[:seq] ] ) rescue @act_user = nil
+    if @act_user.nil?
+      flash[:badnotice] = 'The information you requested is invalid or does not exist, please verify the password reset link in your email.'
+      redirect_to :controller => '/', :action => nil, :id => nil
+      return false
+    end
     
     unless @act_user.email.eql?(params[:email])
       flash[:badnotice] = "Email address is invalid, your password has not been changed."
@@ -115,12 +122,14 @@ class IndexController < ApplicationController
         flash[:notice] = "Your password has been set, you may now log in."
         redirect_to :controller => '/', :action => nil, :id => nil
         
+        
         begin
           @act_user.forgot_token = User.gen_token
           @act_user.save 
         rescue
           # if this fails - no big deal
         end
+        return 
       
       else
         flash[:badnotice] = "There was an error setting your password, please try again."
