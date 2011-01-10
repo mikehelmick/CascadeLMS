@@ -1,4 +1,5 @@
 <p><%= link_to 'Back to Assignment', :controller => '/instructor/course_assignments', :action => 'edit', :course => @course, :id => @assignment, :assignment => nil %> |
+   <%= link_to 'Turnins for this Assignment', :controller => '/instructor/turnins', :action => nil, :course => @course, :id => nil, :assignment => @assignment %> |
    <%= link_to 'View All Assignments', :controller => '/instructor/course_assignments', :action => nil, :course => @course, :id => nil, :assignment => nil %></p>
 
 <div class="SectionHeader"><div class="Full">

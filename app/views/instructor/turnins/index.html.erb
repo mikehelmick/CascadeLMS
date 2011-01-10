@@ -1,7 +1,9 @@
 <h2>Student turn-ins for '<%= @assignment.title %>'</h2>
 <h3>Course: <%= @course.title %> (<%= @course.term.semester%>)</h3>
 
-<p><%= link_to 'Back to all assignments', :course => @course, :assignment => nil, :controller => '/instructor/course_assignments' %>
+<p>
+<%= link_to "Edit Rubrics for this assignment", :controller => '/instructor/rubrics', :course => @course, :assignment => @assignment %> |
+<%= link_to 'Back to all assignments', :course => @course, :assignment => nil, :controller => '/instructor/course_assignments' %>
 
 <% unless @grade_item %>
 <p><i>Warning - this assignment is not connected with an entry in the GradeBook.</i></p>
