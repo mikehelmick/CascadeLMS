@@ -28,7 +28,7 @@
 	       <p><i><%= course.short_description %></i> | 
 		   <%= link_to "Start import of content from #{course.title} (#{course.term.semester})", :action => 'start', :id => course %></p>
 	  
-	    <p>This course contains <%= pluralize(@blog_count[course.id], 'blog post' ) %>, <%= pluralize(@document_count[course.id], 'document') %>, <%= pluralize(@assignment_count[course.id], 'assignment') %>, and <%= pluralize(@rubric_count[course.id], 'rubric') %>.</p>
+	    <p>This course contains <%= pluralize(@blog_count[course.id], 'blog post' ) %>, <%= pluralize(@document_count[course.id], 'document') %>, <%= pluralize(@assignment_count[course.id], 'assignment') %>, <%= pluralize(@rubric_count[course.id], 'rubric') %>, and <%= pluralize(@wiki_count[course.id], 'wiki page') %>.</p>
 	    <% end %>
 	  </td>
     </tr>

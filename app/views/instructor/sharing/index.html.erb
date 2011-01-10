@@ -22,7 +22,8 @@
 	  <%= check_box_tag "u_#{share.user_id}_a", true, share.assignments %> assignments |
 	  <%= check_box_tag "u_#{share.user_id}_d", true, share.documents %> documents |
 	  <%= check_box_tag "u_#{share.user_id}_b", true, share.blogs %> blogs |
-	  <%= check_box_tag "u_#{share.user_id}_r", true, share.rubrics %> rubrics
+	  <%= check_box_tag "u_#{share.user_id}_r", true, share.rubrics %> rubrics |
+	  <%= check_box_tag "u_#{share.user_id}_w", true, share.wiki %> wikis
 	</td>
   </tr>
  <% end %>

@@ -9,6 +9,7 @@
   <li>Imported <%= pluralize( @imported_documents.size, 'document' ) %></li>
   <li>Imported <%= pluralize( @imported_assignments.size, 'assignment' ) %></li>
   <li>Imported <%= pluralize( @imported_rubrics.size, 'rubric' ) %></li>
+  <li>Imported <%= pluralize( @imported_wikis.size, 'wiki page' )%></li>
 </ul>
 
 <% if @imported_assignments.size > 0 %>
@@ -56,6 +57,18 @@
 	 <li><b>Published:</b> <%= post.published %></li>
 	 <li><b>Content:</b> <%= post.body_html %></li>
    </ul>
+ <% end %>
+</ul>
+<% end %>
+
+
+<% if @imported_wikis.size > 0 %>
+<div class="SectionHeader"><div class="Full">
+<h2>Imported Wiki Pages</h2>
+</div></div>
+<ul>	
+ <% for wikiPage in @imported_wikis %>
+   <li><%= wikiPage.page %></li>
  <% end %>
 </ul>
 <% end %>

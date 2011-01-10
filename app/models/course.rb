@@ -168,6 +168,10 @@ class Course < ActiveRecord::Base
   def toggle_open
     self.open = ! self.open
   end
+
+  def wiki_page_count
+    Wiki.count_by_sql("select count(distinct(page)) from wikis where course_id=#{self.id};")    
+  end
   
   def student_count
     count = 0

@@ -18,12 +18,14 @@ class Instructor::ImportController < Instructor::InstructorBase
     @assignment_count = Hash.new
     @document_count = Hash.new
     @rubric_count = Hash.new
+    @wiki_count = Hash.new
     
     @courses.each do |course|
       @blog_count[course.id] = course.posts.size
       @document_count[course.id] = course.documents.size
       @assignment_count[course.id] = course.assignments.size
       @rubric_count[course.id] = course.rubrics.size
+      @wiki_count[course.id] = course.wiki_page_count
     end
     
     @shares = @user.course_shares
@@ -76,6 +78,7 @@ class Instructor::ImportController < Instructor::InstructorBase
     @imported_documents = Array.new
     @imported_assignments = Array.new
     @imported_rubrics = Array.new
+    @imported_wikis = Array.new
     
     @errorMessages = Array.new
     
@@ -189,6 +192,26 @@ class Instructor::ImportController < Instructor::InstructorBase
             new_rubric = cloneFromRubric.copy_to_course(@course)
             new_rubric.save
             @imported_rubrics << new_rubric
+          end
+        end
+
+      ## WIKI IMPORTS
+      elsif key.eql?("wiki_import")
+        wikis = Wiki.find(:all, :conditions => ["course_id = ?", @import_from.id])
+        wikis.sort! do |a,b|
+          result = a.page <=> b.page
+          if result == 0
+            result = b.revision <=> a.revision
+          end
+          result
+        end
+
+        pagesCloned = Hash.new
+        wikis.each do |wikiPage|
+          if pagesCloned[wikiPage.page].nil?
+            newPage = wikiPage.clone_to_course(@course, @user)
+            @imported_wikis << newPage
+            pagesCloned[wikiPage.page] = true
           end
         end
       end

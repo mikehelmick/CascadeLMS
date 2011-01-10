@@ -55,6 +55,7 @@ class Instructor::SharingController < Instructor::InstructorBase
         share.blogs = params["u_#{share.user_id}_b"].eql?("true")
         share.outcomes = params["u_#{share.user_id}_o"].eql?("true")
         share.rubrics = params["u_#{share.user_id}_r"].eql?("true")
+        share.wiki = params["u_#{share.user_id}_w"].eql?("true")
         
         share.save
       end

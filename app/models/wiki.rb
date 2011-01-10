@@ -22,6 +22,25 @@ class Wiki < ActiveRecord::Base
     
     return cur_page
   end
+
+  def clone_to_course(course, user)
+    prevWiki = Wiki.find(:first, :conditions => ["course_id = ? and page = ?", course.id, self.page], :order => 'revision desc')
+    revision = 1
+    revision = prevWiki.revision + 1 unless prevWiki.nil?
+    
+    new_page = Wiki.new
+    new_page.course_id = course.id
+    new_page.page = self.page        
+    new_page.content = self.content
+    new_page.content_html = self.content_html
+    new_page.created_at = self.created_at
+    new_page.updated_at = self.updated_at
+    new_page.user_id = user.id
+    new_page.revision = revision
+    new_page.user_editable = self.user_editable 
+    new_page.save
+    return new_page
+  end
   
   def transform_markup
 	  self.content_html = HtmlEngine.apply_textile( self.content )

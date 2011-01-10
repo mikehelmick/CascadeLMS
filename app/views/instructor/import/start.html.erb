@@ -111,6 +111,20 @@ Instructor(s): <% for instructor in  @course.instructors %><%= instructor.displa
     <% end %>
  </div>
 
+ <div class="blockintro">Import wiki? <em>If you import the wiki, all pages and their history are imported. To preserve student identity as much as possible, the author of all pages will be switched to you, and all page history will be removed.</em></div>
+ <div class="block">
+	<% if @import_from.wiki_page_count == 0 %>
+	  <p><i>There are no wiki pages to import.</i></p>
+	<% else %>
+	  <% if @user.instructor_in_course?(@import_from.id) || 
+		 (!@course_share.nil? && @course_share.wiki) %>
+  	    <ul><li><%= check_box_tag "wiki_import", true %>Import wiki pages. <p><strong>Any identically named wiki pages currently in this course will saved as an older revision.</strong></p></li></ul>
+	  <% else %>
+	    <p><i>Wiki pages for this course have not been shared.</i></p>
+	  <% end %>
+	<% end %>
+ </div>
+
 
  <div class="submit">
   <div id="button"><%= submit_tag "Import" %></div>
