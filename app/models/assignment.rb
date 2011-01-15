@@ -84,10 +84,20 @@ class Assignment < ActiveRecord::Base
       new_gi.assignment_id = dup.id
       new_gi.date = Time.at( new_gi.date.to_time + time_offset ).to_date
       new_gi.visible = false
+      new_gi.grade_category_id = category_map[self.grade_category_id]
+      new_gi.grade_category_id = defaultCategory if dup.grade_category_id.nil?
       dup.grade_item = new_gi
       dup.save
     end
-    
+
+    # Copy journal fields if needed
+    unless self.journal_field.nil?
+      new_jf = JournalField.new
+      new_jf.copy_from(self.journal_field)
+      new_jf.assignment_id = dup.id
+      new_jf.save
+    end
+
     ## if it is a quiz
     if self.quiz
       new_quiz = Quiz.new
