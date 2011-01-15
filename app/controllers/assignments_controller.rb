@@ -52,21 +52,23 @@ class AssignmentsController < ApplicationController
     if @assignment.enable_journal
       @journals = @user.assignment_journals( @assignment )
       
-      if @assignment.journal_field.start_time && @assignment.journal_field.end_time
-        elapsed = 0;
-        @journals.each do |journal|
-          interruption = journal.interruption_time
-          interruption = 0 if interruption.nil?
-          elapsed += journal.end_time - journal.start_time - interruption*60
+      unless @assignment.journal_field.nil?
+        if @assignment.journal_field.start_time && @assignment.journal_field.end_time
+          elapsed = 0;
+          @journals.each do |journal|
+            interruption = journal.interruption_time
+            interruption = 0 if interruption.nil?
+            elapsed += journal.end_time - journal.start_time - interruption*60
+          end
+          elapsed = (elapsed / 60).truncate #down to minutes
+          @minutes = elapsed % 60
+          elapsed -= @minutes
+
+          @days = (elapsed / 1440).truncate
+          elapsed -= @days * 1440
+
+          @hours = (elapsed / 60).truncate
         end
-        elapsed = (elapsed / 60).truncate #down to minutes
-        @minutes = elapsed % 60
-        elapsed -= @minutes
-
-        @days = (elapsed / 1440).truncate
-        elapsed -= @days * 1440
-
-        @hours = (elapsed / 60).truncate
       end
     end
     

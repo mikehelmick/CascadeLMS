@@ -30,6 +30,7 @@ class Instructor::CourseDocsController < Instructor::InstructorBase
     
     return unless load_folder( params[:id].to_i )
     
+    @title = "Upload new document: #{@course.title}"
     @document = Document.new
   end
 
@@ -39,7 +40,17 @@ class Instructor::CourseDocsController < Instructor::InstructorBase
     return unless course_open( @course, :action => 'index' )
     return unless load_folder( params[:id].to_i )
     
+    # Load the new doc, so they can stay
     @document = Document.new(params[:document])
+
+    # Check that a file was uploaded
+    file_field = params[:file]
+    if file_field.nil? || file_field.eql?('') || file_field.class.to_s.eql?('String')
+      flash[:badnotice] = "You must select a file for upload."
+      render :action => 'new'
+      return
+    end
+    
     @document.course = @course
     @document.set_file_props( params[:file] ) unless params[:file].class.to_s.eql?('String')
     @document.document_parent = @folder_id
