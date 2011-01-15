@@ -46,6 +46,7 @@ class Instructor::CourseDocsController < Instructor::InstructorBase
     # Check that a file was uploaded
     file_field = params[:file]
     if file_field.nil? || file_field.eql?('') || file_field.class.to_s.eql?('String')
+      @title = "Upload new document: #{@course.title}"
       flash[:badnotice] = "You must select a file for upload."
       render :action => 'new'
       return
