@@ -72,6 +72,19 @@
 			  <% end %>
 		  </td>
 		</tr>
+		<tr class="<%=odd%> hover" id="rubric_<%=rubric.id%>_custom_score">
+		  <td align="right" valign="top" colspan="1"><i>Points:</i></td>
+		  <td align="left" valign="top" colspan="4">
+			<% if @rubric_entry_map[rubric.id].custom_score %>
+			  <%= @rubric_entry_map[rubric.id].score %>
+			<% else %>
+			  <%= rubric.above_credit_points if @rubric_entry_map[rubric.id].above_credit %>
+			  <%= rubric.full_credit_points if @rubric_entry_map[rubric.id].full_credit %>
+			  <%= rubric.part_credit_points if @rubric_entry_map[rubric.id].partial_credit %>
+			  <%= rubric.no_credit_points if @rubric_entry_map[rubric.id].no_credit %>
+			<% end %>
+		  </td>
+	    </tr>
 		<tr class="<%=odd%> hover" id="rubric_<%=rubric.id%>_comments">
 		  <td align="right" valign="top" colspan="1"><i>Instructor comments:</i></td>
 		

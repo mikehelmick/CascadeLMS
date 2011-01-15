@@ -411,7 +411,7 @@ class Instructor::TurninsController < Instructor::InstructorBase
       @turnins.each { |x| @display_turnin = x if x.id == params[:ut].to_i }
     end
     
-    if @assignment.enable_journal
+    if @assignment.enable_journal && !@assignment.journal_field.nil?
      if @assignment.journal_field.start_time && @assignment.journal_field.end_time
       # calculate time
       elapsed = 0;
