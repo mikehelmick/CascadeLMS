@@ -103,6 +103,8 @@ class Rubric < ActiveRecord::Base
   end
   
   def normalize_point_value( value )
+    value = 0 if value.nil?
+    
     as_s = sprintf("%.2f", value)
     if as_s[-2..-1].eql?("00") 
       return value.to_i
