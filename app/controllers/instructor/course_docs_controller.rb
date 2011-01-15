@@ -179,34 +179,35 @@ class Instructor::CourseDocsController < Instructor::InstructorBase
         render :action => 'edit_folder'
       end
   end
-
   
-  def move_up
-      return unless load_course( params[:course] )
-      return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_documents' )
-      return unless course_open( @course, :action => 'index' )
-      return unless load_folder( params[:folder].to_i )
-
-      @document = Document.find(params[:id])
-      return unless doc_in_course( @course, @document )
- 
-      (@course.documents.to_a.find {|s| s.id == @document.id}).move_higher
-      set_highlight "document_#{@document.id}"
-	    redirect_to :action => 'index', :id => @folder_id
-  end
-  
-  def move_down
+  def reorder
     return unless load_course( params[:course] )
     return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_documents' )
-    return unless course_open( @course, :action => 'index' )
-    return unless load_folder( params[:folder].to_i )
 
-    @document = Document.find(params[:id])
-    return unless doc_in_course( @course, @document )
+    return unless load_folder( params[:id].to_i )
+   
+    @documents = Document.find(:all, :conditions => ['course_id = ? and document_parent = ?', @course.id, @folder_id], :order => 'position')  
+     
+    @title = "Reorder documents : #{@course.title}"
+  end
 
-    (@course.documents.to_a.find {|s| s.id == @document.id}).move_lower
-    set_highlight "document_#{@document.id}"
-    redirect_to :action => 'index', :id => @folder_id
+  def sort
+    return unless load_course( params[:course] )
+    return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_documents', 'ta_grade_individual', 'ta_view_student_files' )
+    
+    return unless load_folder( params[:id].to_i )
+    
+    @documents = Document.find(:all, :conditions => ['course_id = ? and document_parent = ?', @course.id, @folder_id], :order => 'position')
+
+    # reorder...
+    Document.transaction do
+      @documents.each do |document|
+        document.position = params['document-order'].index( document.id.to_s ) + 1
+        document.save
+      end
+    end
+    
+    render :nothing => true
   end
   
   def download
