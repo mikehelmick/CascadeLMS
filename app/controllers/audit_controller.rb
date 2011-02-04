@@ -107,8 +107,11 @@ class AuditController < ApplicationController
     @assignments = @course.assignments
     # Filter out quizzes and surveys
     @assignments = @assignments.delete_if do |a|
-      return true unless a.quiz.nil?
-      false
+      if a.quiz.nil?
+        false
+      else
+        true
+      end
     end
     
     load_audit_students()
