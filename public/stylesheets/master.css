@@ -673,7 +673,17 @@ div#right .rightbox {
 	padding-bottom: 5px;
 }
 
+.SectionSubHeader {
+	margin: 15px 0 0px 0;
+	border-bottom: 1px solid #426479;
+	padding-bottom: 1px;
+}
+
 .SectionHeader h2 {
+	margin: 0 0 0 0;
+}
+
+.SectionSubHeader h3 {
 	margin: 0 0 0 0;
 }
 
@@ -829,6 +839,48 @@ a img {
 #Assignment .required {
   font-weight: bold;
 }
+
+.descriptionArea {
+	font-family: verdana, sans-serif;
+}
+
+.descriptionArea br {
+	clear: left;
+}
+
+.descriptionArea div.blockintro {
+	color: #333;
+    margin: 5px 0 0 0;
+    border-bottom: 1px solid #1463B4;
+}
+
+.descriptionArea div.blockintro p {
+	margin: 0;
+	padding: 0;
+}
+
+.descriptionArea div.block {
+	color: #333;
+	background: #DCDDDE;
+	margin: 3px 0 25px 0;
+	padding: 5px 5px 5px 5px;
+	font-size: 11px;
+	font-weight: normal;
+}
+
+.descriptionArea div.block table {
+	border: 0;
+}
+
+.descriptionArea div.block td.label {
+	text-align: right;
+	font-weight: bold;
+}
+
+.descriptionArea .required {
+  font-weight: bold;
+}
+
 
 .fixedWidth {
 	font-family:  times, verdana, sans-serif;
@@ -1024,4 +1076,18 @@ a img {
   visibility: visible;
   top: 0;
   left: 60px; /*position where enlarged image should offset horizontally */
+}
+
+.spaceOut {
+  margin-left: 25px;
+}
+
+.filelist ul {
+ padding: 0 0 0 5px;
+ margin: 0 0 0 5px;
+}
+
+.filelist li {
+  margin: 0 0 0 5px;
+  padding: 0;
 }

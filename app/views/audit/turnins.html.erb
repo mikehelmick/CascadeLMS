@@ -1,0 +1,244 @@
+<p><%= link_to "Back", :controller => '/audit', :action => 'assignments', :id => @program, :course => @course, :assignment => nil %></p>
+
+<div class="SectionHeader"><div class="Full">
+<h2>Assignment Details</h2>
+</div></div>
+<div id="Assignment">
+ <div class="blockintro"><p><b>Assignment Information</b> <%= link_to_function "#{image_tag 'eye.png', :align => 'absmiddle'}", visual_effect(:toggle_slide, 'assignment_information' ) %></p></div>
+ <div class="block" id="assignment_information">
+    <table width="100%">
+      <tr><td class="label" width="15%" nowrap="nowrap" valign="top">Name:</td>
+          <td valign="top"><%= @assignment.title %></td>
+          <td rowspan="15" width="15%" align="right" valign="top">
+              <%= render :partial => '/assignments/duecalendar' %>
+	          <% unless @assignment.past? %>due in <%= distance_of_time_in_words_to_now( @assignment.due_date, true ) %><% end %>
+          </td>
+      </tr>
+      <tr><td class="label" width="15%" nowrap="nowrap" valign="top">Type:</td>
+          <td valign="top"><%= @assignment.grade_category.category %></td></tr>
+      <tr><td class="label" width="15%" nowrap="nowrap" valign="top">Date Available:</td>
+          <td valign="top"><%= @assignment.open_date.to_formatted_s(:friendly_date) %></td></tr>
+      <tr><td class="label" width="15%" nowrap="nowrap" valign="top">Due Date:</td>
+          <td valign="top"><%= @assignment.due_date.to_formatted_s(:friendly_date) %></td></tr>
+      <tr><td class="label" width="15%" nowrap="nowrap" valign="top">Last Submission Date:</td>
+          <td valign="top"><%= @assignment.close_date.to_formatted_s(:friendly_date) %></td></tr>
+      <tr><td class="label" width="15%" nowrap="nowrap" valign="top">Journals Required:</td>
+	      <td valign="top"><%=  @assignment.enable_journal.yes_no %></td></tr>
+	  <% unless @assignment.grade_item.nil? %>
+	    <tr><td class="label" width="15%" nowrap="nowrap" valign="top">Grade Category:</td>
+		    <td valign="top"><%=  @assignment.grade_item.grade_category.category %></td></tr>
+		<tr><td class="label" width="15%" nowrap="nowrap" valign="top">Possible Points:</td>
+		    <td valign="top"><%=  @assignment.grade_item.points %></td></tr>
+		<tr><td class="label" width="15%" nowrap="nowrap" valign="top">Assignment Graded:</td>
+			<td valign="top">
+			  <% if @assignment.released %>
+			    <%= link_to 'Yes', :controller => '/turnins', :course => @course, :assignment => @assignment, :action => 'feedback' %><%= image_tag 'lightbulb.png' %>
+			  <% else %>
+			    No <%= image_tag 'lightbulb_off.png' %>
+			  <% end %>
+			</td></tr>
+	  <% end %>
+      <% unless @assignment.description.nil? or @assignment.description.size == 0 %>
+	  <tr><td class="label" width="15%" nowrap="nowrap" valign="top">Assignment Description:</td>
+		  <td valign="top"><%=  @assignment.description_html %></td></tr>
+      <% end %>
+      <% if @assignment.file_uploads %>
+	  <tr><td class="label" width="15%" nowrap="nowrap" valign="top">Assignment Files:</td>
+		  <td valign="top"> 
+		  
+		  <ul>
+	      <% for asgn_doc in @assignment.assignment_documents %>
+	        <% if asgn_doc.add_to_all_turnins && asgn_doc.keep_hidden %>
+	            <li><%= image_tag asgn_doc.icon_file %> <%=h asgn_doc.filename %>  - <i>Will be automatically added to your turnin.</i></li>
+	        <% elsif !asgn_doc.keep_hidden %>
+	            <li><%= link_to "#{image_tag asgn_doc.icon_file, :align => 'absmiddle'} #{h asgn_doc.filename}", :action => 'download', :id => @assignment, :course => @course, :document => asgn_doc.id, :file => asgn_doc.without_extension, :extension => asgn_doc.extension %> (Size: <%=h asgn_doc.size_text %>)
+			    <% if @assignment.enable_upload  && asgn_doc.add_to_all_turnins %><i>Will be automatically added to turnins</i><% end %> </li>
+			<% end %>
+		  <% end %>
+		  </ul>
+		
+		  </td></tr>    
+      <% end %>
+    </table>
+  </div>
+</div>
+
+<div id="Assignment">
+ <div class="blockintro"><p><b>Grading Rubrics</b> <%= link_to_function "#{image_tag 'eye.png', :align => 'absmiddle'}", visual_effect(:toggle_slide, 'rubric_information' ) %></p></div>
+ <div class="block" id="rubric_information">
+	<table class="fancy" width="99%">
+	  <tr class="header">
+		<th width="18%">Rubric</th>
+		<th width="18%"><%= @course.rubric_level.l4_name %></th>
+		<th width="18%"><%= @course.rubric_level.l3_name %></th>
+		<th width="18%"><%= @course.rubric_level.l2_name %></th>
+  	    <th width="18%"><%= @course.rubric_level.l1_name %></th>
+	  </tr>
+
+	  <% row_count = 0 %>
+	  <% for rubric in @assignment.rubrics %>
+		 <% row_count = row_count.next 
+		    odd = "odd"
+	        odd = "even" if row_count.even? %>
+	    <tr class="<%=odd%> hover" id="rubric_<%=rubric.id%>">
+		  <td align="left" valign="top"><%=h rubric.primary_trait %></td>
+		  <td align="left" valign="top"><%=h rubric.no_credit_criteria %></td>
+		  <td align="left" valign="top"><%=h rubric.part_credit_criteria %></td>
+		  <td align="left" valign="top"><%=h rubric.full_credit_criteria %></td>
+		  <td align="left" valign="top"><%=h rubric.above_credit_criteria %></td>
+		</tr>
+		<tr class="<%=odd%> hover" id="rubric_<%=rubric.id%>_summary">
+		  <td align="right" valign="top">Students assigned level:</td>
+		  <td align="left" valign="top"><%= @rubricAssignment[rubric.id][1] %> / <%= @rubricAssignment[rubric.id][5] %></td>
+		  <td align="left" valign="top"><%= @rubricAssignment[rubric.id][2] %> / <%= @rubricAssignment[rubric.id][5] %></td>
+		  <td align="left" valign="top"><%= @rubricAssignment[rubric.id][3] %> / <%= @rubricAssignment[rubric.id][5] %></td>
+		  <td align="left" valign="top"><%= @rubricAssignment[rubric.id][4] %> / <%= @rubricAssignment[rubric.id][5] %></td>
+	    </tr>
+		<tr class="<%=odd%> hover" id="rubric_<%=rubric.id%>_outcomes">
+		  <td align="right" valign="top" colspan="1"><i>Course outcomes:</i></td>
+		  <td align="left" valign="top" colspan="4">
+			<% if rubric.course_outcomes.size == 0 %>
+			  <i>No course outcomes mapped to this rubric.</i>
+		    <% else %>
+		      <ul>
+			    <% for co in rubric.course_outcomes %>
+			      <li><%= @numbers[co.id] %>) <%= co.outcome %></li>
+			    <% end %>
+			  </ul>
+		    <% end %>
+		  </td>
+		</tr>
+	  <% end %>
+	</table>
+ </div>
+</div>
+
+<script>
+var loadedJournals = new Array();
+var loadedFiles = new Array();
+
+function loadJournals(id, loadFunc) {
+  backgroundLoad(loadedJournals, id, loadFunc);
+}
+
+function loadFile(id, loadFunc) {
+  backgroundLoad(loadedFiles, id, loadFunc);
+}
+
+function backgroundLoad(refArray, id, loadFunc) {
+  if (refArray[id] == null) {
+    refArray[id] = true;
+    loadFunc(); 
+  }
+}
+</script>
+
+<div class="SectionHeader"><div class="Full">
+<h2>Students - Student Work Review</h2>
+</div></div>
+
+<% for cu in @course.students_courses_users %>
+ <div class="SectionSubHeader"><h3>
+  <% if cu.audit_opt_in %><%= cu.user.display_name %> :: Toggle:
+    <%= link_to_function "Files", visual_effect(:toggle_slide, "f#{cu.user_id}" ) %> |
+    <%= link_to_function "Rubrics", visual_effect(:toggle_slide, "r#{cu.user_id}") %> |
+    <%= link_to_function "Journals", "#{visual_effect(:toggle_slide, "j#{cu.user_id}")}; loadJournals(#{cu.user_id}, #{remote_function(:update => "jD#{cu.user_id}", :url => {:action => 'journals', :id => @program, :course => @course, :assignment => @assignment, :student => cu.user_id})});", :href => "#j#{cu.user_id}" %>
+  <% else %><strike><%= cu.user.display_name %></strike><% end %>
+ </h3></div>
+
+ <div id="f<%= cu.user_id %>" style="display: none;">
+  <p><strong>Files turned in</strong> by <%= cu.user.display_name %> | <em><%= link_to_function "hide", visual_effect(:toggle_slide, "f#{cu.user_id}" ) %></em></p>
+  <% if @userTurnins[cu.user_id].nil? || @userTurnins[cu.user_id].user_turnin_files.length == 0 %>	
+    <p><em>This student did not turn in any files electronically.</em></p>
+  <% else %>
+   <% parent_spaces = Hash.new 
+      parent_spaces[0.to_s] = 0 
+   %>
+<div class="filelist">
+<ul>
+<% parents = Array.new %>
+<% turnin = @userTurnins[cu.user_id] %>
+<% for tif in turnin.user_turnin_files %>
+ <% while !parents[-1].nil? && parents[-1] != tif.directory_parent 
+    parents.pop %>
+   </ul>
+ <% end %>
+ <li><%= image_tag "#{tif.icon}", :align => 'absmiddle' %> <a name="file<%= tif.id %>"><%=h tif.filename %></a>
+  <% if tif.directory_entry 
+   parents.push(tif.id)
+  %><ul>
+  <% else %>
+    <% if tif.is_text_file? %>
+        <span class="spaceOut"><%= link_to_function "View", "#{visual_effect(:toggle_slide, "utf#{tif.id}")};  loadFile(#{tif.id}, #{remote_function(:update => "utf#{tif.id}", :url => {:action => 'view_file', :id => @program, :course => @course, :assignment => @assignment, :student => cu.user_id, :tif => tif.id})})", :href => "#file#{tif.id}" %></span>
+        <div id="utf<%= tif.id %>" style="display: none;"><span class="GoodMessage"><%= image_tag 'spinner.gif', :align => 'absmiddle' %> Loading</span></div>
+    <% else %>
+        <span class="spaceOut"><%= link_to 'Download', :action => 'download_file', :course => @course, :assignment => @assignment, :student => cu.user_id, :id => @program, :tif => tif.id %></span>
+    <% end %>
+  <% end %>
+
+<% end %>
+</ul>
+</div>
+  <% end %>
+ </div>
+
+ <div id="r<%= cu.user_id %>" style="display: none;">
+  <p><strong>Rubrics</strong> for <%= cu.user.display_name %> | <em><%= link_to_function "hide", visual_effect(:toggle_slide, "r#{cu.user_id}" ) %></em></p>
+  <div id="rD<%= cu.user_id %>">
+	<table class="fancy">
+	  <tr>
+	   <th width="20%">Primary Trait</th>
+	   <th width="20%"><%= @course.rubric_level.l4_name %></th>
+	   <th width="20%"><%= @course.rubric_level.l3_name %></th>
+	   <th width="20%"><%= @course.rubric_level.l2_name %></th>
+	   <th width="20%"><%= @course.rubric_level.l1_name %></th>
+	  </tr>	
+		
+	  <% row_count = 0 %>
+	  <% for rubric in @assignment.rubrics %>
+		 <% row_count = row_count.next 
+		    odd = "odd"
+	        odd = "even" if row_count.even? %>
+		    <tr class="<%=odd%> hover">
+			  <td align="left" valign="top"><%=h rubric.primary_trait %></td>
+			  <td align="left" valign="top">
+			     <% if !@userRubrics[cu.user_id].nil? && !@userRubrics[cu.user_id][rubric.id].nil? && @userRubrics[cu.user_id][rubric.id].no_credit %>
+			       <b><%= image_tag "accept.png", :align => 'absmiddle' %><%=h rubric.no_credit_criteria %></b>
+			     <% else %>
+			       <i><%=h rubric.no_credit_criteria %></i>
+			     <% end %>
+			  </td>
+			  <td align="left" valign="top">
+			    <% if !@userRubrics[cu.user_id].nil? && !@userRubrics[cu.user_id][rubric.id].nil? && @userRubrics[cu.user_id][rubric.id].partial_credit %>
+				  <b><%= image_tag "accept.png", :align => 'absmiddle' %><%=h rubric.part_credit_criteria %></b>
+			    <% else %>
+			       <i><%=h rubric.part_credit_criteria %></i>
+			    <% end %>	
+			  </td>
+			  <td align="left" valign="top">
+			    <% if !@userRubrics[cu.user_id].nil? && !@userRubrics[cu.user_id][rubric.id].nil? && @userRubrics[cu.user_id][rubric.id].full_credit %>
+				  <b><%= image_tag "accept.png", :align => 'absmiddle' %><%=h rubric.full_credit_criteria %></b>
+			    <% else %>
+			      <i><%=h rubric.full_credit_criteria %></i>
+			    <% end %>	
+			  </td>
+			  <td>
+				  <% if !@userRubrics[cu.user_id].nil? && !@userRubrics[cu.user_id][rubric.id].nil? && @userRubrics[cu.user_id][rubric.id].above_credit %>
+				     <b><%= image_tag "accept.png", :align => 'absmiddle' %><%=h rubric.above_credit_criteria %></b>
+				  <% else %>
+				     <i><%=h rubric.above_credit_criteria %></i>
+				  <% end %>
+			  </td>
+			</tr>	
+      <% end %>
+    </table>
+  </div>
+ </div>
+
+ <div id="j<%= cu.user_id %>" style="display: none;">
+  <p><a name="j<%= cu.user_id %>"><strong>Journals</strong></a> for <%= cu.user.display_name %> | <em><%= link_to_function "hide", visual_effect(:toggle_slide, "j#{cu.user_id}" ) %></em></p>
+  <div id="jD<%= cu.user_id %>">
+    <div class="GoodMessage"><%= image_tag 'spinner.gif', :align => 'absmiddle' %> Loading...</div>	
+  </div>
+ </div>
+<% end %>

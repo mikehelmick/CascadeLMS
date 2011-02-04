@@ -73,7 +73,7 @@ class Post < ActiveRecord::Base
 	  this_post = this_post.apply_code_tag
 	  this_post = this_post.apply_quote_tag
 	  
-	  self.body_html = HtmlEngine.apply_textile( this_post )
+	  self.body_html = HtmlEngine.apply_textile(this_post)
   end
   
   protected :transform_markup

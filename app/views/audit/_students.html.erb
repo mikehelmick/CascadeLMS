@@ -1,0 +1,17 @@
+<p><strong>Select students whose work should be included when viewing samples of student work</strong>. <em>Please work with the appropriate personnel to determine which students should be included and which should excluded.</em></p>
+
+<table class="fancy">
+<% 0.upto( @column1.size-1) do |i| %>
+  <% odd = "odd"
+	 odd = "even" if i.even?
+	  %>
+  <tr class="<%=odd%> hover">
+	<td width="50%" id="user_<%=@column1[i].user.id%>"><%= render :partial => 'student', :locals => {:user => @column1[i], :course => @course, :program => @program, :error => nil } %></td>
+	<td width="50%" id="user_<%=@column2[i].user.id rescue '0' %>">
+	   <% unless @column2[i].nil? %>
+	    <%= render :partial => 'student', :locals => {:user => @column2[i], :course => @course, :program => @program, :error => nil } %>
+	   <% else%>&nbsp;
+	   <% end %></td>
+  </tr>
+<% end %>
+</table>

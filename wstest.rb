@@ -1,7 +1,11 @@
 require 'net/http'
+require 'net/https'
 
-Net::HTTP.start('localhost', 3000) do |http|
-  response = http.get('/index/login?user[uniqueid]=USERNAME&user[password]=PASSWORD', 'Accept' => 'text/xml')
+http_sess = Net::HTTP.new('my.csi.muohio.edu', 443)
+http_sess.use_ssl = true
+
+http_sess.start do |http|
+  response = http.get('/index/login?user[uniqueid]=UNIQUEID&user[password]=PASSWORD', 'Accept' => 'text/xml')
 
   cookie = response['Set-Cookie']
   session = cookie.split(/;/)[0]
@@ -13,7 +17,7 @@ Net::HTTP.start('localhost', 3000) do |http|
   #puts "Cookie: #{session}"
   
   #Do something with the response.
-  response = http.get('/course/1/grades', {'Accept' => 'text/xml', 'Cookie' => cookie} )
+  response = http.get('https://my.csi.muohio.edu/course/COURSE_ID/assignments/view/ASSIGNMENT_ID', {'Accept' => 'text/xml', 'Cookie' => cookie} )
 
   puts "Code: #{response.code}" 
   puts "Headers: #{response.header}"
