@@ -144,11 +144,7 @@ class AuditController < ApplicationController
     
     @title = "Student work for '#{@assignment.title}', course '#{@course.title}', program: #{@program.title}"
 
-    # Build a hash of opt-in students
-    @optInIds = Hash.new
-    @course.students_courses_users.each do |cu|
-      @optInIds[cu.user_id] = cu.user if cu.course_student && cu.audit_opt_in
-    end
+    build_opt_in_hash()
 
     # Load the last turnin for student that have are opt in
     @userTurnins = Hash.new
@@ -209,6 +205,121 @@ class AuditController < ApplicationController
     end
     
     render(:layout => false)
+  end
+
+  def download_all
+    return unless load_program( params[:id] )
+    return unless allowed_to_manage_program( @program, @user )
+    return unless load_course( params[:course] )
+    return unless course_in_program?( @course, @program )
+    return unless load_assignment(params[:assignment])
+    return unless assignment_in_course(@assignment, @course)
+
+    build_opt_in_hash()
+    
+    if @optInIds.size == 0
+      flash[:badnotice] = "No students are opted in, no files to download."
+      redirect_to :action => 'turnins', :id => @program, :course => @course, :assignment => @assignment
+      return
+    end
+
+    ## create temp file for the archive
+    tf = TempFiles.new
+    tf.filename = "#{@app['temp_dir']}/#{@user.uniqueid}_assignment_#{@assignment.id}_all_files.zip"
+    tf.save_until = Time.now + 60*24*24
+    tf.save
+
+    ## copy each of the latest turnins to a central point
+    temp_dir = "#{@app['temp_dir']}/"
+    file_tmp_dir = "#{Time.now.to_i}_#{@user.uniqueid}_assignment_#{@assignment.id}"
+    
+    FileUtils.mkdir_p( "#{temp_dir}#{file_tmp_dir}" )
+    
+    if @assignment.team_project
+      teams = @course.project_teams
+      # copy turnins for each team
+      teams.each do |t|
+        all_opt_in = true
+        t.team_members.each do |tm|
+          all_opt_in = all_opt_in && !@optInIds[tm.user.id].nil?
+        end
+        
+        if all_opt_in
+          uts = UserTurnin.find(:first, :conditions => ["project_team_id=? and assignment_id=?", t.id, @assignment.id ], :order => "created_at desc" )
+          FileUtils.mkdir_p( "#{temp_dir}#{file_tmp_dir}/#{t.team_id}" )
+          unless uts.nil?
+            dir = uts.get_team_dir("#{@app['external_dir']}", t )
+            command = "cd #{dir}; cp -R * #{temp_dir}#{file_tmp_dir}/#{t.team_id}"
+            result = `#{command} 2>&1`
+          end
+        end
+      end
+    
+    else
+      students = @course.students
+      # copy turnins
+      students.each do |s|
+        unless @optInIds[s.id].nil?
+          uts = UserTurnin.find(:first, :conditions => ["user_id=? and assignment_id=?", s.id, @assignment.id ], :order => "created_at desc" )
+          FileUtils.mkdir_p( "#{temp_dir}#{file_tmp_dir}/#{s.uniqueid}" )
+          unless uts.nil?
+            dir = uts.get_dir("#{@app['external_dir']}")
+            command = "cd #{dir}; cp -R * #{temp_dir}#{file_tmp_dir}/#{s.uniqueid}"
+            result = `#{command} 2>&1`
+          end
+        end
+      end
+    end
+    
+    #directory = @turnin.get_dir( @app['external_dir'] )
+    #last_part = directory[directory.rindex('/')+1...directory.size]
+    #first_part = directory[0...directory.rindex('/')]
+    
+    tar_cmd = "cd #{temp_dir}#{file_tmp_dir}; zip -q #{tf.filename} *"
+    puts "#{tar_cmd}"
+    result = `#{tar_cmd} 2>&1`
+  
+    if result.size > 0 
+      flash[:badnotice] = "There was an error creating the download file, please try again later."
+      redirect_to :action => 'turnins', :id => @program, :course => @course, :assignment => @assignment
+      return
+    end
+  
+    begin  
+      send_file tf.filename, :filename => "#{@user.uniqueid}_assignment_#{@assignment.id}_all_files.zip"
+      rescue
+        flash[:badnotice] = "There was an error creating the download file, please try again later."
+        redirect_to :action => 'turnins', :id => @program, :course => @course, :assignment => @assignment
+    end
+    
+    # cleanup 
+    #result = `cd #{temp_dir}; rm -r #{file_tmp_dir}`
+  end
+
+  # For downloading an assignment description file
+  def download
+    return unless load_program( params[:id] )
+    return unless allowed_to_manage_program( @program, @user )
+    return unless load_course( params[:course] )
+    return unless course_in_program?( @course, @program )
+    return unless load_assignment(params[:assignment])
+    return unless assignment_in_course(@assignment, @course)
+
+    @document = AssignmentDocument.find(params[:document]) rescue @document = AssignmentDocument.new
+    return unless document_in_assignment( @document, @assignment )
+    
+    if @document.keep_hidden
+      flash[:badnotice] = 'The requested document cannot be downloaded at this time.'
+      redirect_to :action => 'view', :id => @assignment, :course => @course
+      return
+    end   
+       
+    begin  
+      send_file @document.resolve_file_name(@app['external_dir']), :filename => @document.filename, :type => "#{@document.content_type}", :disposition => 'inline'  
+    rescue
+      flash[:badnotice] = "Sorry - the requested document has been deleted or is corrupt.  Please notify your instructor of the problem and mention 'assignment document id #{@document.id}'."
+      redirect_to :action => 'view', :id => @assignment, :course => @course
+    end
   end
 
   def view_file
@@ -296,6 +407,23 @@ class AuditController < ApplicationController
 private
   def set_tab
     @tab = 'audit'
+  end
+
+  def build_opt_in_hash()
+    # Build a hash of opt-in students
+    @optInIds = Hash.new
+    @course.students_courses_users.each do |cu|
+      @optInIds[cu.user_id] = cu.user if cu.course_student && cu.audit_opt_in
+    end
+  end
+
+  def document_in_assignment( document, assignment )
+    unless document.assignment_id == assignment.id 
+      flash[:badnotice] = "The requested document could not be found."
+      redirect_to :action => 'turnins', :assignment => assignment, :course => @course, :id => @program
+      return false
+    end
+    true
   end
   
   def load_team( course, assignment, user )

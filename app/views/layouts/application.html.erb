@@ -73,6 +73,11 @@
  						  %>						
 						  <option value="<%= url_for( :controller => '/overview', :course => cu.course, :id => nil, :action => nil, :only_path => false ) %>" <%= selected %>><%= cu.course.title[0..50] %></option>
 						<% end %>
+						<% if @user.auditor? %>
+						  <% selected = "" 
+							 selected = "selected=\"selected\"" unless @tab.nil? || !@tab.eql?('audit') %>
+						  <option value="<%= url_for :controller => '/audit', :course => nil, :id => nil, :only_path => false %>" <%= selected %>>* Audit</option>
+					    <% end %>
 						<% if @user.program_manager? %>
 						  <% selected = "" 
 							 selected = "selected=\"selected\"" unless @tab.nil? || !@tab.eql?('programs') %>
