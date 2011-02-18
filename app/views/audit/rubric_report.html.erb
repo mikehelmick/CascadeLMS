@@ -1,5 +1,5 @@
 <p><%= link_to "Back", :controller => '/audit', :action => 'program', :id => @program, :course => nil %> |
-   <%= link_to "#{image_tag 'page_white_excel.png', :align => 'absmiddle'} Export this report as a spreadsheet", :course => @course, :action => 'rubric_report', :id => @program, :format => 'csv' %>
+   <%= link_to "#{image_tag 'page_white_excel.png', :align => 'absmiddle'} Export this report as a spreadsheet", :course => @course, :controller => '/audit', :action => 'rubric_report', :id => @program, :format => 'csv' %>
 </p>
 
 <%= render :partial => '/instructor/outcomes/rubrics_report_part' %>

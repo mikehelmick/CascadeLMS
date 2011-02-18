@@ -20,7 +20,7 @@ Program: <%= @program.title %></h2>
 <% else %>
  <div id="assignments"><ul>
   <% for assignment in @assignments %>
-    <li><%= link_to "#{assignment.title}", :course => @course, :assignment => assignment, :id => @program, :action => 'turnins' %> - <em>Category: <%= assignment.grade_category.category %>, Due: <%= assignment.due_date.to_formatted_s(:short) %></em></li>
+    <li><%= link_to "#{assignment.title}", :controller => '/audit', :course => @course, :assignment => assignment, :id => @program, :action => 'turnins' %> - <em>Category: <%= assignment.grade_category.category %>, Due: <%= assignment.due_date.to_formatted_s(:short) %></em></li>
   <% end %>
  </ul></div>
 <% end %>

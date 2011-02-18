@@ -32,7 +32,7 @@
 		<tr><td class="label" width="15%" nowrap="nowrap" valign="top">Assignment Graded:</td>
 			<td valign="top">
 			  <% if @assignment.released %>
-			    <%= link_to 'Yes', :controller => '/turnins', :course => @course, :assignment => @assignment, :action => 'feedback' %><%= image_tag 'lightbulb.png' %>
+			    Yes <%= image_tag 'lightbulb.png' %>
 			  <% else %>
 			    No <%= image_tag 'lightbulb_off.png' %>
 			  <% end %>
@@ -51,7 +51,7 @@
 	        <% if asgn_doc.add_to_all_turnins && asgn_doc.keep_hidden %>
 	            <li><%= image_tag asgn_doc.icon_file %> <%=h asgn_doc.filename %>  - <i>Will be automatically added to your turnin.</i></li>
 	        <% elsif !asgn_doc.keep_hidden %>
-	            <li><%= link_to "#{image_tag asgn_doc.icon_file, :align => 'absmiddle'} #{h asgn_doc.filename}", :action => 'download', :id => @program, :assignment => @assignment, :course => @course, :document => asgn_doc.id, :file => asgn_doc.without_extension, :extension => asgn_doc.extension %> (Size: <%=h asgn_doc.size_text %>)
+	            <li><%= link_to "#{image_tag asgn_doc.icon_file, :align => 'absmiddle'} #{h asgn_doc.filename}", :controller => '/audit', :action => 'download', :id => @program, :assignment => @assignment, :course => @course, :document => asgn_doc.id, :file => asgn_doc.without_extension, :extension => asgn_doc.extension %> (Size: <%=h asgn_doc.size_text %>)
 			    <% if @assignment.enable_upload  && asgn_doc.add_to_all_turnins %><i>Will be automatically added to turnins</i><% end %> </li>
 			<% end %>
 		  <% end %>
@@ -136,7 +136,7 @@ function backgroundLoad(refArray, id, loadFunc) {
 <div class="SectionHeader"><div class="Full">
 <h2>Students - Student Work Review</h2>
 </div></div>
-<p><%= link_to 'Download all student work.', :action => 'download_all', :assignment => @assignment, :course => @course, :id => @program %> </p>
+<p><%= link_to 'Download all student work.', :controller => '/audit', :action => 'download_all', :assignment => @assignment, :course => @course, :id => @program %> </p>
 
 <% for cu in @course.students_courses_users %>
  <div class="SectionSubHeader"><h3>

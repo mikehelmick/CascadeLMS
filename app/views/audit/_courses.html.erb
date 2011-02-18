@@ -19,10 +19,10 @@
 	  </td>
       <td valign="top" align="left" nowrap="nowrap" width="35%">
 	    <ul>
-	    <li><%= link_to 'Course outcomes', :action => 'course_outcomes', :course => course, :id => @program %></li>
-	    <li><%= link_to 'Entry and exit surveys', :action => 'surveys', :course => course, :id => @program %></li>
-	    <li><%= link_to 'Course rubrics report', :action => 'rubric_report', :course => course, :id => @program %></li>
-	    <li><%= link_to 'Review student work', :action => 'assignments', :course => course, :id => @program %></li>
+	    <li><%= link_to 'Course outcomes', :controller => '/audit', :action => 'course_outcomes', :course => course, :id => @program %></li>
+	    <li><%= link_to 'Entry and exit surveys', :controller => '/audit', :action => 'surveys', :course => course, :id => @program %></li>
+	    <li><%= link_to 'Course rubrics report', :controller => '/audit', :action => 'rubric_report', :course => course, :id => @program %></li>
+	    <li><%= link_to 'Review student work', :controller => '/audit', :action => 'assignments', :course => course, :id => @program %></li>
 	    </ul>
 	  </td>
 	</tr>
