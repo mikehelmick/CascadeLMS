@@ -76,7 +76,7 @@ class AuditController < ApplicationController
 
   def rubric_report
     return unless load_program( params[:id] )
-    return unless allowed_to_manage_program( @program, @user )
+    return unless allowed_to_audit_program(@program, @user)
     return unless load_course( params[:course] )
     return unless course_in_program?( @course, @program )
     
@@ -98,7 +98,7 @@ class AuditController < ApplicationController
 
   def assignments
     return unless load_program( params[:id] )
-    return unless allowed_to_manage_program( @program, @user )
+    return unless allowed_to_audit_program(@program, @user)
     return unless load_course( params[:course] )
     return unless course_in_program?( @course, @program )
     
@@ -119,7 +119,7 @@ class AuditController < ApplicationController
 
   def toggle_opt_in
     return unless load_program( params[:id] )
-    return unless allowed_to_manage_program( @program, @user )
+    return unless allowed_to_audit_program(@program, @user)
     return unless load_course( params[:course] )
     return unless course_in_program?( @course, @program )
     
@@ -136,7 +136,7 @@ class AuditController < ApplicationController
 
   def turnins
     return unless load_program( params[:id] )
-    return unless allowed_to_manage_program( @program, @user )
+    return unless allowed_to_audit_program(@program, @user)
     return unless load_course( params[:course] )
     return unless course_in_program?( @course, @program )
     return unless load_assignment(params[:assignment])
@@ -188,7 +188,7 @@ class AuditController < ApplicationController
 
   def journals
     return unless load_program( params[:id] )
-    return unless allowed_to_manage_program( @program, @user )
+    return unless allowed_to_audit_program(@program, @user)
     return unless load_course( params[:course] )
     return unless course_in_program?( @course, @program )
     return unless load_assignment(params[:assignment])
@@ -209,7 +209,7 @@ class AuditController < ApplicationController
 
   def download_all
     return unless load_program( params[:id] )
-    return unless allowed_to_manage_program( @program, @user )
+    return unless allowed_to_audit_program(@program, @user)
     return unless load_course( params[:course] )
     return unless course_in_program?( @course, @program )
     return unless load_assignment(params[:assignment])
@@ -299,7 +299,7 @@ class AuditController < ApplicationController
   # For downloading an assignment description file
   def download
     return unless load_program( params[:id] )
-    return unless allowed_to_manage_program( @program, @user )
+    return unless allowed_to_audit_program(@program, @user)
     return unless load_course( params[:course] )
     return unless course_in_program?( @course, @program )
     return unless load_assignment(params[:assignment])
@@ -324,7 +324,7 @@ class AuditController < ApplicationController
 
   def view_file
     return unless load_program( params[:id] )
-    return unless allowed_to_manage_program( @program, @user )
+    return unless allowed_to_audit_program(@program, @user)
     return unless load_course( params[:course] )
     return unless course_in_program?( @course, @program )
     return unless load_assignment(params[:assignment])
@@ -361,7 +361,7 @@ class AuditController < ApplicationController
 
   def download_file
     return unless load_program( params[:id] )
-    return unless allowed_to_manage_program( @program, @user )
+    return unless allowed_to_audit_program(@program, @user)
     return unless load_course( params[:course] )
     return unless course_in_program?( @course, @program )
     return unless load_assignment(params[:assignment])
