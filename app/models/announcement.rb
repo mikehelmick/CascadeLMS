@@ -1,4 +1,6 @@
 class Announcement < ActiveRecord::Base
+  INVALID_START_TIME_MSG = 'must be before the end time.'
+  
   validates_presence_of :text
   
   has_one :user
@@ -6,7 +8,7 @@ class Announcement < ActiveRecord::Base
   before_save :transform_markup
 	
 	def validate
-    errors.add( 'start_time', 'must be before the end time.' ) unless self.end > self.start
+    errors.add( :start, INVALID_START_TIME_MSG) unless self.end > self.start
   end
 	
 	def future?
