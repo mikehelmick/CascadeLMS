@@ -275,7 +275,7 @@ class AuditController < ApplicationController
     #last_part = directory[directory.rindex('/')+1...directory.size]
     #first_part = directory[0...directory.rindex('/')]
     
-    tar_cmd = "cd #{temp_dir}#{file_tmp_dir}; zip -q #{tf.filename} *"
+    tar_cmd = "cd #{temp_dir}#{file_tmp_dir}; zip -q -r #{tf.filename} *"
     puts "#{tar_cmd}"
     result = `#{tar_cmd} 2>&1`
   

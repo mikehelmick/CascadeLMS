@@ -108,8 +108,8 @@ class Admin::ProgramsController < ApplicationController
       p.program = @program
       p.user = user
       p.program_manager = false
-      p.program_manager = true if @utype.eql?('manager') && (user.instructor || user.admin || u.user.program_coordinator)
-      p.program_auditor = true if @utype.eql?('auditor') && (user.instructor || user.admin || u.user.program_coordinator || user.auditor)
+      p.program_manager = true if @utype.eql?('manager') && (user.instructor || user.admin || user.program_coordinator)
+      p.program_auditor = true if @utype.eql?('auditor') && (user.instructor || user.admin || user.program_coordinator || user.auditor)
       @program.programs_users << p
       @program.save   
     end
