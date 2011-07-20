@@ -27,7 +27,7 @@ The HTML view will automatically generate comparison graphs.
 	<% end %>
 	</ul>
 	<% if has_hidden_surveys > 0 %>
-	  <p><em>This course has <%= pluralize(pluralize, 'hidden survey') %>. Please contact the instructor, program manager, or department chair to get access to hidden surveys or to find out why these surveys are not available to auditors.</em></p>
+	  <p><em>This course has <%= pluralize(has_hidden_surveys, 'hidden survey') %>. Please contact the instructor, program manager, or department chair to get access to hidden surveys or to find out why these surveys are not available to auditors.</em></p>
 	<% end %>
   </div> 
 
