@@ -49,7 +49,7 @@ class ApplicationController < ActionController::Base
                       'X-HTTP_AUTHORIZATION', 'HTTP_AUTHORIZATION',
                       'Authorization','AUTHORIZATION']                      
      
-  @@app = nil            
+  @@app = nil
   @@external_dir = nil   
   @@last_update = nil
   

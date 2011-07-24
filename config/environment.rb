@@ -69,6 +69,8 @@ my_formats = {
   :compact_date => '%m/%d/%Y %I:%M %p %Z'
 }
 
+ENABLE_LDAP_MODULE = false
+
 SITE_NAME = 'my.csi.muohio.edu'
 
 ActiveSupport::CoreExtensions::Time::Conversions::DATE_FORMATS.merge!(my_formats)

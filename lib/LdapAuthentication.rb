@@ -1,5 +1,8 @@
-require 'ldap'
-require 'ldap/control'
+## Allow these items to be bypassed if ldap isn't in use
+if ENABLE_LDAP_MODULE
+  require 'ldap'
+  require 'ldap/control'
+end
 require 'CourseCreator'
 require 'AutoEnrollment'
 
