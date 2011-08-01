@@ -34,7 +34,7 @@ require 'MyString'
 # Likewise, all the methods added will be available for all controllers.
 class ApplicationController < ActionController::Base
   ## CSCW Application version
-  @@VERSION = '1.4.81 (Rainier) 20110317'
+  @@VERSION = '1.4.82 (Rainier) 20110731'
   
   ## Supress password logging
   filter_parameter_logging :password
@@ -172,6 +172,7 @@ class ApplicationController < ActionController::Base
       redirect_to :controller => '/home'
       return false
     end
+    @isMuohio = !request.host.index("muohio.edu").nil?
     return true
   end
   

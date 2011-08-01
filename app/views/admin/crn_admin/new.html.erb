@@ -1,0 +1,10 @@
+<h2>New Course Registration Number (CRN)</h2>
+<div id="form_area">
+<% form_tag( :action => 'create' ) do %>
+  <%= render :partial => 'form' %>
+<div class="submit">
+  <%= submit_tag "Create" %>
+</div>
+<% end %>
+</div>
+<%= link_to 'Back', :action => 'index' %>

@@ -1,0 +1,12 @@
+<h2>Editing CRN '<%= @crn.crn %>' / '<%= @crn.title %>'</h2>
+
+<div id="form_area">
+<% form_tag( :action => 'update', :id => @crn ) do %>
+  <%= render :partial => 'form' %>
+<div class="submit">
+  <%= submit_tag 'Save Changes' %>
+</div>
+<% end %>
+
+</div>
+<%= link_to 'Back', :action => 'index' %>

@@ -12,7 +12,7 @@ class Admin::TermsController < ApplicationController
          :redirect_to => { :action => :list }
 
   def list
-    @terms = Term.find( :all, :order => ["term asc"] )
+    @terms = Term.find( :all, :order => ["term desc"] )
     @title = "All Terms"
   end
 

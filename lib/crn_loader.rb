@@ -64,14 +64,12 @@ class CrnLoader
       section = ''
       title = ''
 
-      res.body.each_line do |line|
-
+      res.body.each_line do |line|    
             case step
               when 0
-                unless line.index('<A HREF="http://www.ucm.muohio.edu/').nil?
-                  from = line.index('<A HREF="http://www.ucm.muohio.edu/') + 1
-                  crn = line[line.index('>', from )+1...line.index('<', from )].strip
-                  
+                unless line.index('"colCrn"').nil?
+                  from = line.index('colCrn') + 1
+                  crn = line[line.index('>', from )+1...line.index('<', from )].strip 
                   step = 1
                 end
               when 1

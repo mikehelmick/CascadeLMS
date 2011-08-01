@@ -1,6 +1,7 @@
 <h2>CRN Admin</h2>
 
-<p><b>Current Term:</b> <%= @term.semester %> (<%= @term.term %>)</p>
+<p><b>Current Term:</b> <%= @term.semester %> (<%= @term.term %>) |
+<%= link_to "Create new CRN", :action => 'new' %></p>
 
 <% if @crns.size == 0 %>
 	<p><i>There are no CRNs in this term.</i></p>
@@ -8,7 +9,9 @@
 
  <table class="fancy">
 	<tr>
-	  <th>ID</th><th>CRN</th><th>Name</th><th>Title</th>
+	  <th><%= link_to "CRN", :action => 'index', :sort => 'crn' %></th>
+	  <th><%= link_to "Name", :action => 'index', :sort => 'name' %></th>
+	  <th><%= link_to "Title", :action => 'index', :sort => 'title' %></th>
 	</tr>
 	
 	<% count = 0 %>
@@ -19,18 +22,18 @@
 	%>
 
 	  <tr class="<%=odd%> hover" id="item_<%=crn.id%>">
-	    <td><%= crn.id %></td>
-	    <td><%= crn.crn %></td>
+	    <td><%= link_to "#{image_tag('pencil.png', :align => 'absmiddle')} #{h crn.crn}", :action => 'edit', :id => crn.id %>
+		<%= link_to_remote( "#{image_tag('pencil_delete.png', :align => 'absmiddle')} Delete", :url => { :action => 'destroy', :id => @crn }, :confirm => "Delete CRN for course: '#{h crn.title}'?", :success => "new Effect.Puff( 'item_#{crn.id}' )", :failure => "alert('There was an error deleting the CRN.');" ) %>
+		</td>
 	    <td><%= crn.name %></td>
 	    <td><%= crn.title %></td>
 	  </tr>
 	<% end %>
  </table>
-
 <% end %>
 	
+<% if @isMuohio %>
 <hr/>
-
 <div id="form_area">
 <% form_tag( :action => 'load_crns' ) do %>
 <h2>Load new CRNs from external source</h2>
@@ -49,3 +52,4 @@ The subjects to load are a space separated list of the subjects areas to load CR
 </div>
 <% end %>
 </div>
+<% end %>
