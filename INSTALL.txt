@@ -379,19 +379,6 @@ configure this and make it a secure location, we suggest
 
 You can now create users and courses from the administration tab
 
-Part 6 - AutoGrader Server
-
-You will want to add the grading server command to the crontab for the mongrel user
-
-sudo crontab -u mongrel -e
-
-0 2,14 * * * /usr/local/bin/ruby /srv/www/rails/cscourseware/current/script/backgroundrb stop; /usr/local/bin/ruby /srv/www/rails/cscourseware/current/script/backgroundrb start
-
-And then start the server for the first time 
-** You will need to manually restart the server after a reboot - or configure a startup process
-
-sudo -u mongrel /usr/local/bin/ruby /srv/www/rails/cscourseware/current/script/backgroundrb start
-
 
 Part 7 - Upgrading to new Releases
 
