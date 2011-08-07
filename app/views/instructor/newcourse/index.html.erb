@@ -1,0 +1,67 @@
+<% form_tag( :action => 'change_term' ) do  %>
+<p class="blockintro">Select the term for your new course.
+<% if @isLdap %>
+Selecting the appropriate term will allow you to pick from any available CRNs in the system.
+You can enter a new CRN if the one for your course is not available.
+<% end %></p>
+<div id="block">
+<label for="id">Term:</label>
+ <%= select_tag 'id', options_from_collection_for_select(@terms, "id", "semester", @term.id ) %> 
+<%= submit_tag( 'Change Term' ) %><br/>
+</div>
+<% end %><br/>
+
+<div id="form_area">
+<h2>Create a new course</h2>
+<% form_tag( :action => 'create' ) do %>
+<%= hidden_field_tag('term', @term.id) %>
+<%= error_messages_for 'course' %>
+<p class="blockintro">Course title is the short title (course number).  For example, 'CSA101'.</p>
+  <div class="block">
+  <label for='course_title' class="required">Title:</label>
+  <%= text_field 'course', 'title'  %><br/>
+  </div>
+<p class="blockintro">Description is a more formal course title. For example 'Introduction to Computer Science'.</p>
+  <div class="block">
+  <label for='course_short_description'>Description:</label>
+  <%= text_field 'course', 'short_description' %> <br/>
+  </div>
+
+<% if @isLdap %>
+<p class="blockintro">The CRN number is used for auto-enrollment. 
+A course can exist without one entered, but it is recommended to enter one.   Use the full CRN number, for example '20063012345' to represent course number '12345' in term '200630'.  If a course has multiple CRN numbers, you should create a course with each, and then combine the courses (for example a cross-listed graduate/undergraduate course) as this will preserve  both course numbers.
+<strong>If there are CRNs below that match your course, it is better to select them instead.</strong>
+</p>
+  <div class="block">
+  <label for='crn'>CRN:</label>
+  <%= text_field_tag 'crn', @crn %> <br/>    
+  </div>
+
+<table class="fancy"> 
+ <% 0.upto(@column1.size-1) do |i| %>
+ <% odd = "odd"
+	odd = "even" if i.even?
+  %>
+  <tr class="<%=odd%> hover">
+	<td>
+	  <% if @column1[i].courses.empty? %><%= check_box_tag("crn_#{@column1[i].id}") %><% end %>
+	  <%= @column1[i].crn %> / <%= @column1[i].name %> - <%= @column1[i].title %></td>
+	<td><% unless @column2[i].nil? %>
+	  <% if @column2[i].courses.empty? %><%= check_box_tag("crn_#{@column2[i].id}") %><% end %>
+	  <%= @column2[i].crn %> / <%= @column2[i].name %> - <%= @column2[i].title %>
+	<% end %></td>
+  </tr>
+ <% end %>
+</table>
+<% end %>
+
+
+<div class="submit">
+  <%= submit_tag "Create" %>
+</div>
+<% end %>
+</div>
+
+<%= link_to 'Cancel', :controller => '/home', :action => nil, :id => nil, :course => nil %>
+
+  

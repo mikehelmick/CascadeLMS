@@ -312,6 +312,41 @@ class Course < ActiveRecord::Base
     end
     return rtnArr
   end
+
+  ## May create a CRN, which does get saved down.
+  def self.create_course(courseParams, termParams, crnParams, createNoneCrn)  
+    course = Course.new(courseParams)
+    term = Term.find(termParams)    
+    course.term = term
+    
+    # if a CRN was provided...
+    crn = Crn.find(:first, :conditions => ["crn = ?", crnParams] ) rescue crn = nil
+    
+    if crn
+      course.crns << crn
+      
+    elsif !crnParams.nil? && !crnParams.eql?('')
+      crn = Crn.new()
+      crn.crn = crnParams
+      crn.name = @course.title
+      crn.save
+      course.crns << crn
+      
+    elsif createNoneCrn
+      begin
+        course.crns << Crn.find(:first, :conditions => ["crn = ?", 'NONE'] ) 
+      rescue
+        crn = Crn.new
+        crn.crn='NONE'
+        crn.name='NONE'
+        crn.title='NONE'
+        crn.save
+        course.crns << crn
+      end
+    end
+
+    return course
+  end
  
   private
   

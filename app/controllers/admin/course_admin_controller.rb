@@ -34,37 +34,8 @@ class Admin::CourseAdminController < ApplicationController
   end
   
   def create
-    @course = Course.new(params[:course])
-    @term = Term.find(params[:term])
-    @course.term = @term
-    
-    # if a CRN was provided...
-    crn = Crn.find(:first, :conditions => ["crn = ?", params[:crn] ] ) rescue crn = nil
-    
-    if crn
-      @course.crns << crn
-      
-    elsif !params[:crn].nil? && !params[:crn].eql?('')
-      crn = Crn.new()
-      crn.crn = params[:crn]
-      crn.name = @course.title
-      crn.save
-      @course.crns << crn
-      
-    else
-      begin
-        @course.crns << Crn.find(:first, :conditions => ["crn = ?", 'NONE'] ) 
-      rescue
-        crn = Crn.new
-        crn.crn='NONE'
-        crn.name='NONE'
-        crn.title='NONE'
-        crn.save
-        @course.crns << crn
-      end
-      
-    end
-  
+    @course = Course.create_course(params[:course], params[:term], params[:crn], true)
+
     if @course.save
       flash[:notice] = "New course '#{@course.title}' has been created.  Please edit this course to add an instructor to it."
       redirect_to :action => 'index'

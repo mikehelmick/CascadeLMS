@@ -1,5 +1,11 @@
 <h2><%= @user.display_name %>'s Dashboard</h2>
-<p><b>Current Term: </b> <%= image_tag 'calendar.png', :align => 'absmiddle' %><%= @term.semester %></p>
+<p><b>Current Term: </b> <%= image_tag 'calendar.png', :align => 'absmiddle' %><%= @term.semester %>
+<% if @user.instructor || @user.admin %>
+<br/>
+ <%= link_to "#{image_tag 'add.png', :align => 'absmiddle'} Create a new course", :controller => 'instructor/newcourse', :action => nil %>
+<% end %>	
+</p>
+
 
 
 <% if @app['enable_portfolios'].eql?('true') %>

@@ -34,7 +34,7 @@ require 'MyString'
 # Likewise, all the methods added will be available for all controllers.
 class ApplicationController < ActionController::Base
   ## CSCW Application version
-  @@VERSION = '1.4.82 (Rainier) 20110731'
+  @@VERSION = '1.4.83 (Rainier) 20110806'
   
   ## Supress password logging
   filter_parameter_logging :password
@@ -273,6 +273,15 @@ class ApplicationController < ActionController::Base
     redirect_to :controller => '/overview', :course => course.id
     return false    
   end
+
+  def ensure_instrctur_or_admin
+    unless session[:user].instructor || session[:user].admin
+      redirect_to :controller => '/home', :action => 'nil', :id => nil
+      flash[:badnotice] = "Unrecgonized request."
+      return false
+    end
+    return true
+  end
   
   def ensure_course_instructor( course, user )
     user.courses_users.each do |cu|
@@ -432,6 +441,10 @@ class ApplicationController < ActionController::Base
   
   def set_highlight( dom_id )
     flash[:highlight] = dom_id
+  end
+
+  def is_using_ldap()
+    return @app['authtype'].downcase.eql?('ldap')
   end
   
   def authenticate( user, redirect = true, force_basic = false )
