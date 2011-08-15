@@ -1,0 +1,85 @@
+<% if @assignment.rubrics.size > 0 %>
+  <p><b>Rubrics for this assignment</b><br/>
+  <ul><% for rubric in @assignment.rubrics %>
+    <li><b><%=h rubric.primary_trait %></b></li>
+
+<% pointValue = 0
+   pointValue = rubric.no_credit_points if @rubric_entry_map[rubric.id].no_credit
+   pointValue = rubric.part_credit_points if @rubric_entry_map[rubric.id].partial_credit
+   pointValue = rubric.full_credit_points if @rubric_entry_map[rubric.id].full_credit
+   pointValue = rubric.above_credit_points if @rubric_entry_map[rubric.id].above_credit
+%>
+
+<% javascript_tag :defer => 'defer' do %>
+var selected_radio_rubric<%=rubric.id%> = <%= pointValue %>;
+<% if @rubric_entry_map[rubric.id].custom_score %>
+  var cur_rubric<%=rubric.id%>_value = <%= @rubric_entry_map[rubric.id].score %>;
+<% else %>
+  var cur_rubric<%=rubric.id%>_value = <%= pointValue %>;
+<% end %>
+var custom_score_enabled_<%= rubric.id %> = <%= @rubric_entry_map[rubric.id].custom_score %>;
+
+function update_rubric_<%=rubric.id%>_to( newValue, fromRadio ) {
+  if (fromRadio) {
+	selected_radio_rubric<%=rubric.id%> = newValue;
+  }
+  if (custom_score_enabled_<%= rubric.id %> && fromRadio) {
+    return;	
+  }
+
+  var oldValue = cur_rubric<%=rubric.id%>_value;
+  var curTotalValue = parseFloat( document.getElementById("grade_entry_points").value )
+  if (isNaN( curTotalValue )) {
+    document.getElementById("grade_entry_points").value = newValue;
+  } else {
+    document.getElementById("grade_entry_points").value = curTotalValue - oldValue + newValue;
+  }
+  cur_rubric<%=rubric.id%>_value = newValue;
+
+  if (!custom_score_enabled_<%= rubric.id %>) {
+	document.getElementById("rubric_<%= rubric.id %>_score").value = newValue;
+  }
+}
+
+function custom_score_change_rubric<%= rubric.id %>() {
+  element = document.getElementById("rubric_<%= rubric.id %>_score");
+  newValue = parseFloat(element.value);
+
+  if (isNaN(newValue)) {
+    alert("Invalid custom score entered for '<%=h rubric.primary_trait %>'");	
+  } else {
+	update_rubric_<%=rubric.id%>_to( newValue, false );
+  }
+}
+
+function toggle_custom_score_rubric_<%=rubric.id%>() {
+  element = document.getElementById("rubric_<%= rubric.id %>_score");
+	
+  custom_score_enabled_<%= rubric.id %> = !custom_score_enabled_<%= rubric.id %>;
+  element.disabled = !custom_score_enabled_<%= rubric.id %>;
+
+  if (!custom_score_enabled_<%= rubric.id %>) {
+	element.value = "";
+  }
+  update_rubric_<%=rubric.id%>_to(selected_radio_rubric<%=rubric.id%>, false);
+}
+<% end %>
+
+    <ul>
+	  <li><%= radio_button_tag( "rubric_#{rubric.id}", 'above', @rubric_entry_map[rubric.id].above_credit, :onclick => "update_rubric_#{rubric.id}_to( #{rubric.above_credit_points}, true ); set_form_needs_checked();" )%><b><%= @course.rubric_level.l1_name %>:</b> 
+			  <%=h rubric.above_credit_criteria %> (<%=h rubric.above_credit_points%> points)
+	  <li><%= radio_button_tag( "rubric_#{rubric.id}", 'full', @rubric_entry_map[rubric.id].full_credit, :onclick => "update_rubric_#{rubric.id}_to( #{rubric.full_credit_points}, true ); set_form_needs_checked();" )%><b><%= @course.rubric_level.l2_name %>:</b>
+		  <%=h rubric.full_credit_criteria %> (<%=h rubric.full_credit_points%> points)</li>
+	  <li><%= radio_button_tag( "rubric_#{rubric.id}", 'partial', @rubric_entry_map[rubric.id].partial_credit, :onclick => "update_rubric_#{rubric.id}_to( #{rubric.part_credit_points}, true ); set_form_needs_checked();" )%><b><%= @course.rubric_level.l3_name %>:</b>
+	      <%=h rubric.part_credit_criteria %> (<%=h rubric.part_credit_points%> points)</li>
+	  <li><%= radio_button_tag( "rubric_#{rubric.id}", 'no', @rubric_entry_map[rubric.id].no_credit, :onclick => "update_rubric_#{rubric.id}_to( #{rubric.no_credit_points}, true ); set_form_needs_checked();" )%><b><%= @course.rubric_level.l4_name %>:</b>
+	      <%=h rubric.no_credit_criteria %> (<%=h rubric.no_credit_points%> points)</li>
+	  <li><%= check_box_tag( "rubric_#{rubric.id}_custom_score", "true", @rubric_entry_map[rubric.id].custom_score, :onclick => "toggle_custom_score_rubric_#{rubric.id}();" ) %> Use custom score: <%= text_field_tag( "rubric_#{rubric.id}_score", @rubric_entry_map[rubric.id].score, {:disabled => !@rubric_entry_map[rubric.id].custom_score, :size => 10, :onchange => "custom_score_change_rubric#{rubric.id}(); set_form_needs_checked();" }) %> <span id="rubric_<%= rubric.id %>_warning"></span></li>
+	  <li>Comments:<br/>
+		 <%= text_area_tag("rubric_#{rubric.id}_comments", @rubric_entry_map[rubric.id].comments, { "cols" => 80, "rows" => 7, :onchange => 'set_form_needs_checked();'} ) %>
+		 </li>
+	</ul>
+  <% end %></ul>
+  </b></p>	
+  <hr/>
+<% end %>

@@ -339,6 +339,7 @@ class Instructor::OutcomesController < Instructor::InstructorBase
     return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_edit_outcomes' )
     
     @numbers = load_outcome_numbers( @course )
+    @title = "Assignment to outcomes report."
     
     render :layout => 'noright'
   end

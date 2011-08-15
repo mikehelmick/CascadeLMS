@@ -151,6 +151,31 @@ class Assignment < ActiveRecord::Base
     return dup
   end
 
+  ## Builds a map of rubric_id to rubric_entry instance for a specific user.
+  def rubric_map_for_user(user_id, create_missing = true)
+    rubric_entry_map = Hash.new
+    user_rubrics = RubricEntry.find(:all, :conditions => ["assignment_id = ? and user_id=?", self.id, user_id])
+    self.rubrics.each do |rubric|
+      this_rubric_entry = nil
+      user_rubrics.each do |user_rubric|
+        this_rubric_entry = user_rubric if user_rubric.rubric_id == rubric.id  
+      end  
+      # if there isn't a rubric entry for this, we'll create one now
+      if this_rubric_entry.nil? && create_missing
+        this_rubric_entry = RubricEntry.create_rubric_entry( @assignment, @student, rubric )
+        this_rubric_entry.above_credit = false
+        this_rubric_entry.full_credit = false
+        this_rubric_entry.partial_credit = false
+        this_rubric_entry.no_credit = false
+        # this save may not work -- but it should, if it fails, it is for a duplicate key issue, race condition
+        this_rubric_entry.save rescue true == true
+      end      
+      
+      rubric_entry_map[rubric.id] = this_rubric_entry
+    end
+    return rubric_entry_map
+  end
+
   def toggle_visibility
     self.visible = !self.visible
   end

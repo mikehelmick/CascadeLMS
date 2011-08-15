@@ -198,7 +198,8 @@ class Instructor::ResultsController < Instructor::InstructorBase
     all_attempts.each do |attempt|
       @attempts[attempt.user_id] = attempt
     end
-    
+
+    @title = "Results for #{@quiz.assignment.title}"
   end
   
   def for_student
@@ -232,6 +233,9 @@ class Instructor::ResultsController < Instructor::InstructorBase
       @grade_entry = GradeEntry.find(:first, :conditions => ["grade_item_id=? and user_id=?", @assignment.grade_item.id, @student.id ] )
       @grade_entry = GradeEntry.new if @grade_entry.nil?
     end
+
+    # load any existing rubric entries
+    @rubric_entry_map = @quiz.assignment.rubric_map_for_user(@student.id)
         
     @attempt = QuizAttempt.find(:first, :conditions => ["quiz_id = ? and user_id = ?", @quiz.id, @student.id], :order => "created_at desc")    
     @answer_map = map_existing_quiz_attempt( @attempt ) unless @attempt.nil?

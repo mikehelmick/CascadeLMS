@@ -93,9 +93,15 @@ class QuizController < ApplicationController
     end 
     
     if @assignment.released && @assignment.grade_item
+      @grade_item = GradeItem.find( :first, :conditions => ['assignment_id = ?', @assignment.id] )
       @grade_entry = GradeEntry.find(:first, :conditions => ["grade_item_id=? and user_id=?", @assignment.grade_item.id, @user.id ] )
       @grade_entry = GradeEntry.new if @grade_entry.nil?
       @feedback_html = @grade_entry.comment.to_html rescue @feedback_html = ''
+
+      # load any existing rubric entries
+      if @assignment.rubrics.size > 0
+         @rubric_entry_map = @assignment.rubric_map_for_user(@user.id, false)
+      end
     end   
     
     @title = "Quiz Results"

@@ -18,13 +18,10 @@
 	<% end %>
   </tr>
 
-
-
  <% row_count = 0 
     parent_stack = [-1]
 	count_stack = [0] %>
  <% for assignment in @course.assignments %>
-  <% if !assignment.quiz %>
 	 <% row_count = row_count.next 
 	    odd = "odd"
         odd = "even" if row_count.even? %> 
@@ -44,7 +41,6 @@
 	    </td>
 	  <% end %>
 	</tr>
-   <% end %>
   <% end %>
 </table>
 

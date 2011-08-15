@@ -52,6 +52,11 @@
     
 	<p class="blockintro">You can enter comments here, which will be available to the student. (A score for any multiple choice questions has already been calculated.)</p>
 	<div class="block">
+<% if @assignment.rubrics.size > 0 %>
+<p><strong>Be cautious when adjusting rubric on a quiz. Selecting or changing a rubric level will adjust the student's score on the quiz.</strong></p>
+<% end %>		
+<%= render :partial => '/instructor/turnins/rubric_area' %>
+		
 	  <p><label for="document_title">Points:</label>
 	    <%= text_field 'grade_entry', 'points', :size => 10  %> / <%= sprintf("%0.1f", @assignment.grade_item.points ) %>
       </p>

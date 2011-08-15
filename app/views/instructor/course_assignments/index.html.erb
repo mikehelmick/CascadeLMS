@@ -72,9 +72,6 @@
 	      <% end %>
 	    </td>
 	    <td valign="top">
-	      <% if assignment.is_quiz? %>
-	         &nbsp;
-	      <% else %>
 	        <% if assignment.rubrics.size > 0 %>
 	          <% if @user.instructor_in_course?(@course.id) || (@user.assistant_in_course?(@course.id) && @course.course_setting.ta_course_assignments) %>    
 	             <%= link_to "#{image_tag 'pencil.png', :align => 'absmiddle'} Edit", :controller => '/instructor/rubrics', :course => @course, :assignment => assignment %>
@@ -88,7 +85,6 @@
 	             <s><%= image_tag 'add.png' %> Define</s>
 	          <% end %>
 	        <% end %>
-	      <% end %>
 	    </td>
 	    <% if @course.course_setting.enable_project_teams %>
 	     <td valign="top">

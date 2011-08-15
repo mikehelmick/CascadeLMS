@@ -432,27 +432,7 @@ class Instructor::TurninsController < Instructor::InstructorBase
     count_todays_turnins( @app["turnin_limit"].to_i )
     
     # load any existing rubric entries
-    @rubric_entry_map = Hash.new
-    user_rubrics = RubricEntry.find(:all, :conditions => ["assignment_id = ? and user_id=?", @assignment.id, @student.id])
-    @assignment.rubrics.each do |rubric|
-      this_rubric_entry = nil
-      user_rubrics.each do |user_rubric|
-        this_rubric_entry = user_rubric if user_rubric.rubric_id == rubric.id  
-      end  
-      # if there isn't a rubric entry for this, we'll create one now
-      if this_rubric_entry.nil?
-        this_rubric_entry = create_rubric_entry( @assignment, @student, rubric )
-        this_rubric_entry.above_credit = false
-        this_rubric_entry.full_credit = false
-        this_rubric_entry.partial_credit = false
-        this_rubric_entry.no_credit = false
-        # this save may not work -- but it should, if it fails, it is for a duplicate key issue, race condition
-        this_rubric_entry.save rescue true == true
-      end      
-      
-      @rubric_entry_map[rubric.id] = this_rubric_entry
-    end
-    
+    @rubric_entry_map = @assignment.rubric_map_for_user(@student.id)
     
     @title = "#{@student.display_name} (#{@student.uniqueid}) - #{@assignment.title}"
     @checkForm = true
@@ -1469,12 +1449,5 @@ private
     @remaining_count = 0 if @remaining_count < 0
   end
   
-  def create_rubric_entry( assignment, student, rubric )
-    this_rubric_entry = RubricEntry.new
-    this_rubric_entry.assignment = assignment
-    this_rubric_entry.user = student
-    this_rubric_entry.rubric = rubric
-    return this_rubric_entry
-  end
   
 end
