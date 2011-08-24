@@ -72,7 +72,7 @@
      <% if @assignment.journal_field.comments %>
      <tr class="<%=odd%> hover">
 	   <td>Comments:</td>
-	   <td colspan="<%= width  %>"><%= journal.comments.to_html %></td>
+	   <td colspan="<%= width  %>"><%= journal.comments.to_html rescue "" %></td>
 	 </tr>
      <% end %>
    <% end %>
