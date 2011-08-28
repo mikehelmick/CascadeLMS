@@ -8,6 +8,7 @@ class ForumTopicNotifier
   end
   
   def execute    
+    puts "Doing forum notifications for topic: #{@topidId}, #{@postId}"
     @topic = ForumTopic.find(@topicId)
     @post = ForumPost.find(@postId)
     

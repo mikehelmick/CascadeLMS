@@ -2,6 +2,7 @@ class Notifier < ActionMailer::Base
   
   ## This should be a single user
   def send_forum_email( to_user, text, subject, from_user )
+    puts "TEST"
     @recipients = to_user.email
     @subject = subject
     @from = "#{from_user.display_name} <#{from_user.email}>"
