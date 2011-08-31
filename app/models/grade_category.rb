@@ -3,7 +3,7 @@ class GradeCategory < ActiveRecord::Base
   validates_presence_of :category
   
   ## Ensures that the categories in the first course are a superset
-  ## of the second course
+  ## of the second course, based on category name.
   ##
   ## returns a map, mapping IDs from the second course to the first
   def GradeCategory.ensure_super_set_of( course, otherCourse )
@@ -20,15 +20,12 @@ class GradeCategory < ActiveRecord::Base
         newCategory.category = cat.category
         newCategory.course_id = course.id
         newCategory.save
+        # the newly created category into the map for this course.
+        my_map[newCategory.category] = newCategory.id
       end
     end
     
-    category_map = Hash.new
-    other_categories.each do |cat|
-      category_map[cat.id] = my_map[cat.category]
-    end
-    
-    return category_map
+    return my_map
   end
   
   def GradeCategory.for_course( course )

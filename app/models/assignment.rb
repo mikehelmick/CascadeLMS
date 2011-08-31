@@ -59,7 +59,7 @@ class Assignment < ActiveRecord::Base
     dup.subversion_release_path = self.subversion_release_path
     dup.auto_grade = self.auto_grade
     
-    dup.grade_category_id = category_map[self.grade_category_id]
+    dup.grade_category_id = category_map[self.grade_category.category]
     dup.grade_category_id = defaultCategory if dup.grade_category_id.nil?
     
     dup.released = false
