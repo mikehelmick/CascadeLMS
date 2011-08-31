@@ -227,11 +227,13 @@ class ForumsController < ApplicationController
         
         link = ""
         if ( @post.parent_post == 0 ) 
-          link = url_for :controller => '/forums', :action => 'read', :id => @post.id, :course => @course, :only_path => false
+          link = url_for(:controller => '/forums', :action => 'read', :id => @post.id, :course => @course, :only_path => false)
         else
-          link = url_for :controller => '/forums', :action => 'read', :id => @post.parent_post, :course => @course, :only_path => false
+          link = url_for(:controller => '/forums', :action => 'read', :id => @post.parent_post, :course => @course, :only_path => false)
         end
-        Bj.submit "./script/runner ./jobs/forum_topic_notifier.rb #{@topic.id} #{@post.id} \"#{link}\""
+        reply_link = url_for(:controller => '/forums', :action => 'reply', :id => @post.id, :parent => @post.parent_post, :course => @course, :only_path => false)
+        unwatch_link = url_for(:controller => 'forums', :action => 'stop_watch', :id => @topic.id, :course => @course, :only_path => false)
+        Bj.submit "./script/runner ./jobs/forum_topic_notifier.rb #{@topic.id} #{@post.id} \"#{link}\" \"#{reply_link}\" \"#{unwatch_link}\""
         redirect_for_post( @post )
       else
         render :action => 'new_post' 

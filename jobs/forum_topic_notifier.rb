@@ -1,10 +1,13 @@
+require "redcloth_formatters_plain"
 
 class ForumTopicNotifier 
   
-  def initialize( topic_id, post_id, link)
+  def initialize( topic_id, post_id, link, replyLink, unwatchLink)
     @topicId = topic_id
     @postId = post_id
     @link = link
+    @replyLink = replyLink
+    @unwatchLink = unwatchLink
   end
   
   def execute    
@@ -26,13 +29,23 @@ class ForumTopicNotifier
                  else
                    "posted a reply: '#{@post.headline}'.\n"
                  end
+          post_plaintext = RedCloth.new(@post.body).to_plain
           
           emailBody = "Hello #{user.display_name}\nYou are currently watching the forum '#{@topic.topic}' in the class #{@topic.course.title}.\n\n" +
                       "#{@post.user.display_name} has #{part} at #{@post.created_at.to_formatted_s(:long)}\n" +
-                      "To view the full thread, please click here\n" +
-                      "    #{@link}\n" +
                       "\n" +
-                      "If you no longer wish to watch this topic, please unwatch this topic in CascadeLMS.\n\n"
+                      "To view the full thread, please click here: #{@link}\n" +
+                      "To reply click here: #{@replyLink}\n" +
+                      "--------------------------------------------------------------" +
+                      "Post by :#{@post.user.display_name} at #{post.created_at.to_formatted_s(:long)}\n" +
+                      "\n" +
+                      "#{post_plaintext}" +
+                      "\n--------------------------------------------------------------" +
+                      "To view the full thread, please click here: #{@link}\n" +
+                      "To reply click here: #{@replyLink}\n" +
+                      "\n" +
+                      "If you no longer wish to watch this topic, click here: #{@unwatchLink}.\n\n"
+                      
  
           # send each user an email
           Notifier::deliver_send_forum_email( user, emailBody, subject, user )
@@ -47,7 +60,12 @@ class ForumTopicNotifier
 end
 
 if ARGV.size == 3
-  job = ForumTopicNotifier.new( ARGV[0].to_i, ARGV[1].to_i, ARGV[2] )
+  # In case there are any jobs in the queue when the upgrade happens
+  job = ForumTopicNotifier.new( ARGV[0].to_i, ARGV[1].to_i, ARGV[2],  "Visit CascadeLMS",  "Visit CascadeLMS" )
+  job.execute
+  exit(0)
+elsif ARGV.size == 5
+  job = ForumTopicNotifier.new( ARGV[0].to_i, ARGV[1].to_i, ARGV[2],  ARGV[3],  ARGV[4] )
   job.execute
   exit(0)
 else
