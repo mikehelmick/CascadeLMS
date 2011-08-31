@@ -36,11 +36,12 @@ class ForumTopicNotifier
                       "\n" +
                       "To view the full thread, please click here: #{@link}\n" +
                       "To reply click here: #{@replyLink}\n" +
-                      "--------------------------------------------------------------" +
+                      "--------------------------------------------------------------\n" +
                       "Post by :#{@post.user.display_name} at #{@post.created_at.to_formatted_s(:long)}\n" +
                       "\n" +
                       "#{post_plaintext}" +
-                      "\n--------------------------------------------------------------" +
+                      "\n" +
+                      "--------------------------------------------------------------" +
                       "To view the full thread, please click here: #{@link}\n" +
                       "To reply click here: #{@replyLink}\n" +
                       "\n" +
