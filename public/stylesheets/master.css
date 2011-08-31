@@ -330,7 +330,7 @@ div#right .rightbox {
 }
 
 .errorExplanation {
-	border: 2px solid #red;
+	border: 2px solid #ff0000;
 	padding: 7px;
 	padding-bottom: 12px;
 	margin-bottom: 20px;
