@@ -64,7 +64,7 @@ class Instructor::CourseGradebookController < Instructor::InstructorBase
     return unless load_course( params[:course] )
     return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_gradebook' )
     return unless course_open( @course, :action => 'index' )
-    
+
     # either the existing - or a new one
     @grade_item = GradeItem.find(params[:id]) rescue @grade_item = nil
     unless @grade_item.nil?
@@ -73,6 +73,14 @@ class Instructor::CourseGradebookController < Instructor::InstructorBase
     
     @grade_item = GradeItem.new if @grade_item.nil? # for some reason above isn't working
     @categories = GradeCategory.for_course( @course )
+
+    @assignments = @course.assignments.select do |assignment|
+      if @grade_item.assignment_id == assignment.id
+        true
+      else
+        assignment.grade_item.nil?
+      end
+    end
   end
   
   def delete_item

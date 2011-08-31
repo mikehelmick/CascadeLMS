@@ -37,7 +37,8 @@
 </p>
 
 <p><label for="grade_item_assignment">Link to Assignment (optional):</label>
-<%= select("grade_item", "assignment_id", @course.assignments.collect {|a| [ a.title, a.id ] }, { :include_blank => true }) %></p>
+<%= select("grade_item", "assignment_id", @assignments.collect {|a| [ a.title, a.id ] }, { :include_blank => true }) %><br/>
+<em>Assignments can only be linked to a single gradebook item. Assignments already mapped to other gradebook items are not shown.</em></p>
 </div>
  
 <div class="submit">
