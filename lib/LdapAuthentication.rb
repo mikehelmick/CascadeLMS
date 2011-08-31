@@ -12,7 +12,7 @@ class LdapAuthentication
     @settings = settings
   end
   
-  def authenticate( username, password ) 
+  def authenticate( username, password, logger = nil ) 
     check_settings()
     
     begin
@@ -31,6 +31,7 @@ class LdapAuthentication
       ## if bind isn't successful a LDAP exception is raised
       # search for the users record
       page = conn.search2( bind_string, LDAP::LDAP_SCOPE_SUBTREE, '(objectclass=*)', "*" )
+      logger.info("Ldap bind: #{username} result: #{page.inspect}") unless logger.nil?
     
       user = User.find(:first, :conditions => ['uniqueid = ?', username ] )
       if user.nil?

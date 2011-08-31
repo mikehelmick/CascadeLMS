@@ -34,7 +34,7 @@ require 'MyString'
 # Likewise, all the methods added will be available for all controllers.
 class ApplicationController < ActionController::Base
   ## CSCW Application version
-  @@VERSION = '1.4.87 (Rainier) 20110830'
+  @@VERSION = '1.4.89 (Rainier) 20110830'
   
   ## Supress password logging
   filter_parameter_logging :password
@@ -461,7 +461,7 @@ class ApplicationController < ActionController::Base
     end    
     
     begin
-      @user = auth.authenticate( user.uniqueid, user.password )
+      @user = auth.authenticate( user.uniqueid, user.password, logger )
       
       unless @user.enabled
         flash[:badnotice] = 'Your account has been suspended, please contact your instructor or system administrator.'
@@ -483,6 +483,7 @@ class ApplicationController < ActionController::Base
       end
       return @user
     rescue SecurityError => doh
+      logger.info("Security error, uniqueid: #{user.uniqueid}, error => #{doh}")
       if !force_basic && @app['allow_fallback_auth'].eql?(true.to_s)
         return authenticate( user, redirect, true )
       else

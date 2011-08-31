@@ -7,7 +7,8 @@ class BasicAuthentication
   
   # takes in a username and password and
   # returns a user object if valid or raises a SecurityError
-  def authenticate( username, password ) 
+  def authenticate( username, password, logger = nil )
+    logger.info("Using basic auth for #{username}.") unless logger.nil?
     u = User.find(:first, :conditions => ['uniqueid = ?', username ] )
     raise SecurityError, "Username/Password combination invalid", caller unless !u.nil? && u.valid_password?(password) 
     return u
