@@ -323,6 +323,10 @@ class Instructor::CourseAssignmentsController < Instructor::InstructorBase
             @assignment.grade_item.points = @points.to_i
             @assignment.grade_item.save
           end
+          unless @assignment.title.eql?(@assignment.grade_item.name)
+            @assignment.grade_item.name = @assignment.title
+            @assignment.grade_item.save
+          end
         end
 
         flash[:notice] = 'Assignment has been updated.'

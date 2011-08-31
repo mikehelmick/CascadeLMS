@@ -10,7 +10,11 @@
 <!--[form:course_settings]-->
 <div class="block">
 <p><label for="grade_item_name" class="required">Name:</label>
-<%= text_field 'grade_item', 'name' %></p>
+<%= text_field 'grade_item', 'name' %>
+<% unless @grade_item.assignment.nil? %>
+<em>Updates to the name here will also be reflected on the associated assignment.</em>
+<% end %>
+</p>
 
 <p><label for="grade_item_date" class="required">Date:</label>
 <%= date_select("grade_item", "date") %></p>

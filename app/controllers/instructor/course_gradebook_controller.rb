@@ -103,6 +103,13 @@ class Instructor::CourseGradebookController < Instructor::InstructorBase
       end
       
       if @grade_item.update_attributes(params[:grade_item])
+        unless @grade_item.assignment.nil?
+          unless @grade_item.name.eql?(@grade_item.assignment.title)
+            @grade_item.assignment.title = @grade_item.name
+            @grade_item.assignment.save
+          end
+        end
+        
         flash[:notice] = "Grade item '#{@grade_item.name}' was successfully updated."
         redirect_to :controller => '/instructor/course_gradebook', :course => @course
       else

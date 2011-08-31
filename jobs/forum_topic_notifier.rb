@@ -29,7 +29,7 @@ class ForumTopicNotifier
                  else
                    "posted a reply: '#{@post.headline}'.\n"
                  end
-          post_plaintext = RedCloth.new(@post.body).to_plain
+          post_plaintext = RedCloth.new(@post.post).to_plain
           
           emailBody = "Hello #{user.display_name}\nYou are currently watching the forum '#{@topic.topic}' in the class #{@topic.course.title}.\n\n" +
                       "#{@post.user.display_name} has #{part} at #{@post.created_at.to_formatted_s(:long)}\n" +
@@ -37,7 +37,7 @@ class ForumTopicNotifier
                       "To view the full thread, please click here: #{@link}\n" +
                       "To reply click here: #{@replyLink}\n" +
                       "--------------------------------------------------------------" +
-                      "Post by :#{@post.user.display_name} at #{post.created_at.to_formatted_s(:long)}\n" +
+                      "Post by :#{@post.user.display_name} at #{@post.created_at.to_formatted_s(:long)}\n" +
                       "\n" +
                       "#{post_plaintext}" +
                       "\n--------------------------------------------------------------" +

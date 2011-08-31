@@ -15,7 +15,11 @@
 
 <div class="block">
 <p><label for="assignment[title]" class="required">Assignment name:</label>
-<%= text_field 'assignment', 'title'  %></p>
+<%= text_field 'assignment', 'title'  %><br/>
+<% unless @assignment.grade_item.nil? %>
+<em>Changes to the assignment name will be reflected in the gradebook.</em>
+<% end %>
+</p>
 <p><label for="term" class="required">Category:</label> <%= select_tag 'grade_category_id', options_from_collection_for_select(@categories, "id", "category", @assignment.grade_category_id ) %></p>
 </div>
 
