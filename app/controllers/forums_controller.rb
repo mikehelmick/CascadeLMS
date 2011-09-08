@@ -231,7 +231,13 @@ class ForumsController < ApplicationController
         else
           link = url_for(:controller => '/forums', :action => 'read', :id => @post.parent_post, :course => @course, :only_path => false)
         end
-        reply_link = url_for(:controller => '/forums', :action => 'reply', :id => @post.id, :parent => @post.parent_post, :course => @course, :only_path => false)
+        reply_parent =
+          if @post.parent_post == 0
+            @post.id
+          else
+            @post.parent_post
+          end
+        reply_link = url_for(:controller => '/forums', :action => 'reply', :id => @post.id, :parent => reply_parent, :course => @course, :only_path => false)
         unwatch_link = url_for(:controller => 'forums', :action => 'stop_watch', :id => @topic.id, :course => @course, :only_path => false)
         Bj.submit "./script/runner ./jobs/forum_topic_notifier.rb #{@topic.id} #{@post.id} \"#{link}\" \"#{reply_link}\" \"#{unwatch_link}\""
         redirect_for_post( @post )
