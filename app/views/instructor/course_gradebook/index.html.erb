@@ -22,7 +22,7 @@
 	    <b><acronym title="<%=h gi.assignment.description %>"><%= gi.name %></acronym></b>
 	  <% end %>
 	  <br/>
-	  <i><%= gi.grade_category.category %></i><br/>
+	  <i><%= gi.grade_category.category rescue "no category" %></i><br/>
 	  Points: <%= gi.points %><br/>
 	   <acronym title="Delete Item"><%= link_to "#{image_tag 'cross.png'}", { :action => 'delete_item', :course => @course, :id => gi.id}, :confirm => "Are you sure you want to delete the item '#{gi.name}'?  All entered student grade will be deleted.  This action can not be undone." %></acronym>
 	   <% if gi.visible %>
@@ -186,7 +186,7 @@
 		<% else %>
 		  <acronym title="<%=h gi.assignment.description %>"><%= gi.name %></acronym>
 		<% end %><br/>
-		<i><%= gi.grade_category.category %></i><br/>
+		<i><%= gi.grade_category.category rescue "no category" %></i><br/>
 		Points: <%= gi.points %><br/>
 	  </td>
 	<% end %>

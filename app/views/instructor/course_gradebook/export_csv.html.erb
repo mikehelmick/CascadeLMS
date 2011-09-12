@@ -4,6 +4,6 @@ Created for <%= @user.display_name %> (<%= @user.email %>)
 <% if @course.gradebook.weight_grades %>,,<% for gi in @grade_items %>Cat Weight: <%= sprintf("%.2f", @weight_map[gi.grade_category.id] ) %>,<% end %><% end %>
  ,Item Names->,<% for gi in @grade_items %><%= gi.name %>,<% end %>
  ,Categories->,<% for gi in @grade_items %><%= gi.grade_category.category %>,<% end %>Total
-ID,Students,<% for gi in @grade_items %>Points: <%= gi.points %>,<% end %>Points (<%=@total_points%>),<%= 'Average' unless @course.gradebook.weight_grades %><%= 'Weighted Average' if @course.gradebook.weight_grades %>
+ID,Students,<% for gi in @grade_items %><%= gi.points %>,<% end %>Points (<%=@total_points%>),<%= 'Average' unless @course.gradebook.weight_grades %><%= 'Weighted Average' if @course.gradebook.weight_grades %>
 <% for student in @students %><%= student.uniqueid %>,<%= student.display_name %>,<% for gi in @grade_items %><% if !@grade_matrix[student.id][gi.id].nil? %><%= sprintf( "%.1f", @grade_matrix[student.id][gi.id] ) %><% end %>,<% end %><%= @student_totals[student.id] %>,<% if @course.gradebook.weight_grades %><%= sprintf( "%.2f", @student_weighted[student.id] ) %><% else %><% if @total_points > 0 %><%= sprintf( "%.2f", @student_totals[student.id] / @total_points * 100 )%>%<% else %>?%<% end %><% end %>
 <%end%>
