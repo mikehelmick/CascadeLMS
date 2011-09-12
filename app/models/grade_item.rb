@@ -29,6 +29,10 @@ class GradeItem < ActiveRecord::Base
 
       return 's'
     end
+
+  def export_name
+    self.name.gsub(',',';')
+  end
   
   def clone
     dup = GradeItem.new
