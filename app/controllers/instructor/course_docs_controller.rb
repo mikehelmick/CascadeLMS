@@ -209,6 +209,18 @@ class Instructor::CourseDocsController < Instructor::InstructorBase
     
     render :nothing => true
   end
+
+  def accesses
+    return unless load_course( params[:course] )
+    return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_documents' )
+    
+    @document = Document.find(params[:id])
+    return unless doc_in_course( @course, @document )
+
+    @access_map = DocumentAccess.user_map_for_document(@document)
+    @students = @course.students
+    @title = "Document access report for '#{@document.title}'"
+  end
   
   def download
     return unless load_course( params[:course] )

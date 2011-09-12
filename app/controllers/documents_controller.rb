@@ -43,6 +43,7 @@ class DocumentsController < ApplicationController
             return
           end
           if doc_in_course( @course, @document )
+            @document.log_access(@user)
             send_file @document.resolve_file_name(@app['external_dir']), :filename => @document.filename, :type => "#{@document.content_type}", :disposition => 'inline'  
           end
         end
@@ -98,7 +99,8 @@ class DocumentsController < ApplicationController
     return unless doc_in_course( @course, @document )
   
     
-    begin  
+    begin
+      @document.log_access(@user)
       send_file @document.resolve_file_name(@app['external_dir']), :filename => @document.filename, :type => "#{@document.content_type}", :disposition => 'inline'  
     rescue
       flash[:badnotice] = "Sorry - the requested document has been deleted or is corrupt.  Please notify your instructor of the problem and mention 'document id #{@document.id}'."

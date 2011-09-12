@@ -42,6 +42,7 @@
 	<th>Size</th>
     <th>Published</th>
 	<th>Date</th>
+	<th>Accesses</th>
 	<th>Controls</th>
   </tr>
  
@@ -66,6 +67,10 @@
     <td id="published_<%= document.id %>"><%= render(:partial => 'published', :locals => {:document => document}) %></td>
     <td><%=h document.created_at.to_formatted_s(:long) %></td>
 
+    <td>
+	  <% if document.folder %>N/A<% else %>
+	  <%= link_to 'Accesses', :action => 'accesses', :id => document, :course => @course %><% end %>
+	</td>
     <td>
 	  <% if document.folder %>
 	    <%= link_to 'Open', :action => 'index', :id => document %>

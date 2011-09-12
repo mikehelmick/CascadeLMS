@@ -1,14 +1,14 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
 first:
   id: 1
-  course: first
+  course_id: 1
   position: 0
   title: "first"
   filename: "first"
   content_type: "text"
 another:
   id: 2
-  course: another
+  course_id: 1
   position: 1
   title: "another"
   filename: "another"

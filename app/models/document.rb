@@ -8,6 +8,14 @@ class Document < ActiveRecord::Base
   validates_presence_of :title
   
   before_save :transform_markup
+
+  def log_access(user)
+    da = DocumentAccess.new
+    da.document = self
+    da.course_id = course_id
+    da.user = user
+    da.save
+  end
   
   def clone_to_course( course_id, user_id, time_offset = nil )
     dup = Document.new
