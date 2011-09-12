@@ -86,12 +86,17 @@ class QuizController < ApplicationController
     
     load_quiz_dependencies( true )
     
-    if !@quiz_attempt.completed
+    if !@quiz_attempt.completed && quiz_open(@assignment, false)
       flash[:badnotice] = "You cannot view the results for this quiz, becuase your most recent attempt hasn't been completed."
       redirect_to :action => 'start', :course => @course, :id => @assignment
       return
-    end 
-    
+    end
+
+    if !@quiz_attempt.completed
+      flash[:notice] = nil
+      flash[:badnotice] = "You did not submit any answers for this quiz."
+    end
+  
     if @assignment.released && @assignment.grade_item
       @grade_item = GradeItem.find( :first, :conditions => ['assignment_id = ?', @assignment.id] )
       @grade_entry = GradeEntry.find(:first, :conditions => ["grade_item_id=? and user_id=?", @assignment.grade_item.id, @user.id ] )
@@ -355,13 +360,15 @@ class QuizController < ApplicationController
     return true
   end
   
-  def quiz_open( assignment )
+  def quiz_open( assignment, redirect = true )
     # check extension - we won't check open date if extension is allowd
     @extension = assignment.extension_for_user( @user )
     if @extension.nil? || (@extension.nil? && !extension.past?)
       unless assignment.current?
-        flash[:badnotice] = "Selected quiz is not available at this time."
-        redirect_to :controller => '/assignments', :course => @course
+        if redirect
+          flash[:badnotice] = "Selected quiz is not available at this time."
+          redirect_to :controller => '/assignments', :course => @course
+        end
         return false
       end
     end
