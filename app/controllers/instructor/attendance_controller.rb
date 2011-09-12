@@ -143,7 +143,8 @@ class Instructor::AttendanceController < Instructor::InstructorBase
     return unless ensure_course_instructor_on_assistant( @course, @user )
     
     common_report
-    
+
+    @title = "Attendance report for #{@course.title}"
     render :layout => 'noright'
   end
   
