@@ -24,6 +24,10 @@ class String
     html = self.to_html
     html.gsub(/<span&nbsp;class=/,"<span class=")
   end
+
+  def newlines_to_space
+    return self.gsub(/\n/,' ').gsub(/\r/,'')
+  end
   
   def newline_to_break
      html = ""

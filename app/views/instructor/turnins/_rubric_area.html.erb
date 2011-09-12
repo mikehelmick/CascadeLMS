@@ -46,7 +46,7 @@ function custom_score_change_rubric<%= rubric.id %>() {
   newValue = parseFloat(element.value);
 
   if (isNaN(newValue)) {
-    alert("Invalid custom score entered for '<%=h rubric.primary_trait %>'");	
+    alert("Invalid custom score entered for '<%=h rubric.primary_trait.newlines_to_space %>'");	
   } else {
 	update_rubric_<%=rubric.id%>_to( newValue, false );
   }
