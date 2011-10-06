@@ -54,6 +54,7 @@
   <tr class="header">
     <th valign="bottom">&nbsp;</th>
     <th valign="bottom">Student</th>
+    <th valign="bottom">ID</th>
     <% if @assignment.team_project %>
       <th valign="bottom">Team</th>
     <% end %>
@@ -70,9 +71,7 @@
     <% end %>
 
 	<% if @grade_item %>
-	  <th valign="bottom" colspan="2">Grades<br/>
-	  <%= @grade_item.points %> points
-	  </th>
+	  <th valign="bottom">Grades (<%= @grade_item.points %> points)</th>
 	<% end %>
 	<% if @assignment.auto_grade %>
 	  <th>AutoGrade Results</th>
@@ -80,7 +79,7 @@
 
     <th valign="bottom">View / Grade</th>
     <th valign="bottom">
-		Due: <%= @assignment.due_date.to_formatted_s(:long) %><br/>
+		Assignment Due:<br/> <%= @assignment.due_date.to_formatted_s(:long) %><br/>
 		<% if @assignment.due_date !=   @assignment.close_date %>
 		  Late Turnin Date:<%= @assignment.close_date.to_formatted_s(:long) %><br/>
 		<% end %>
@@ -104,7 +103,8 @@
 
 	<tr class="<%=odd%> hover" id="student_<%=student.id%>">
       <td><img src="<%=student.gravatar_url(request.ssl?) %>" /></td>
-      <td align="left"><%=h student.display_name %><br/><%=h student.uniqueid %></td>
+      <td align="left" nowrap="nowrap"><%=h student.display_name %></td>
+      <td align="left"><%=h student.uniqueid %></td>
 
       <% if block 
          colspan = 2
@@ -134,7 +134,7 @@
       <% if (@assignment.use_subversion && @assignment.programming) || @assignment.enable_upload %>
         <td nowrap="nowrap"><% if @turnin_sets[student.id].nil? %>No
 	        <% else %>
-	          <%= @turnin_sets[student.id].updated_at.to_formatted_s(:long) %>
+	          <%= @turnin_sets[student.id].updated_at.to_formatted_s(:short) %>
 	        <% end %>
         </td>
       <% end %>
@@ -143,29 +143,24 @@
       <% end %>
 
 	  <% if @grade_item %>
-	    <td align="right">
-	      <% if @grades[student.id] %>
-	        <%= sprintf("%0.1f", @grades[student.id] ) %>
-	      <% else %>
-	        <acronym title="no grade entered"><%= image_tag 'bullet_error.png' %></acronym>
-	      <% end %>
-	    </td>
-		
 		<td align="right">
+		  <% unless @grades[student.id] %>
+		    <acronym title="no grade entered"><%= image_tag 'bullet_error.png' %></acronym>
+	      <% end %>
 		  <% value = '' 
 		     value = sprintf("%0.1f", @grades[student.id]) unless @grades[student.id].nil?
 		   %>
-	 	  <%= text_field_tag "grade_#{student.id}", value, :size => 5 %>
+	 	  <%= text_field_tag "grade_#{student.id}", value, :size => 5 %> / <%= @grade_item.points %>
 	 	</td>
 	  <% end %>
 	  <% if @assignment.auto_grade %>
-	    <td><b>AutoGrade</b><br/>
+	    <td>
 		<% if !@assignment.auto_grade_setting.nil? && @assignment.auto_grade_setting.io_check? %>
 		  <%= link_to_remote( "Summary", :update => "agsummary_#{student.id}",
-		    :url => { :action => "agsummary", :id => student.id, :course => @course, :assignment => @assignment }, :success => visual_effect(:toggle_slide, "agsummary_#{student.id}" ) ) %>
+		    :url => { :action => "agsummary", :id => student.id, :course => @course, :assignment => @assignment }, :success => visual_effect(:toggle_slide, "agsummary_#{student.id}" ) ) %><br/>
 		<% end %>
 		<% if !@assignment.auto_grade_setting.nil? && (@assignment.auto_grade_setting.io_check? || @assignment.auto_grade_setting.check_style?) %>
-		  <br/><%= link_to 'Full Report', { :controller => '/instructor/turnins', :action => 'view_io_tests', :course => @course, :assignment => @assignment, :student => student.id }, :popup => true %>
+		  <%= link_to 'Full Report', { :controller => '/instructor/turnins', :action => 'view_io_tests', :course => @course, :assignment => @assignment, :student => student.id }, :popup => true %>
 		<% end %>
 		</td>
 	  <% end %>
