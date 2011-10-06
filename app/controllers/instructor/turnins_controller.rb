@@ -518,7 +518,7 @@ class Instructor::TurninsController < Instructor::InstructorBase
                else
                  if rubric_entry.nil?
                    rubric_entry = RubricEntry.new
-                   rubric_entry.assignment = @assignment
+                   rubric_entry.assignment_id = @assignment.id
                    rubric_entry.user_id = key
                    rubric_entry.rubric = rubric
                  end

@@ -74,7 +74,7 @@ function toggle_custom_score_rubric_<%=rubric.id%>() {
 	      <%=h rubric.part_credit_criteria %> (<%=h rubric.part_credit_points%> points)</li>
 	  <li><%= radio_button_tag( "rubric_#{rubric.id}", 'no', @rubric_entry_map[rubric.id].no_credit, :onclick => "update_rubric_#{rubric.id}_to( #{rubric.no_credit_points}, true ); set_form_needs_checked();" )%><b><%= @course.rubric_level.l4_name %>:</b>
 	      <%=h rubric.no_credit_criteria %> (<%=h rubric.no_credit_points%> points)</li>
-	  <li><%= check_box_tag( "rubric_#{rubric.id}_custom_score", "true", @rubric_entry_map[rubric.id].custom_score, :onclick => "toggle_custom_score_rubric_#{rubric.id}();" ) %> Use custom score: <%= text_field_tag( "rubric_#{rubric.id}_score", @rubric_entry_map[rubric.id].score, {:disabled => !@rubric_entry_map[rubric.id].custom_score, :size => 10, :onchange => "custom_score_change_rubric#{rubric.id}(); set_form_needs_checked();" }) %> <span id="rubric_<%= rubric.id %>_warning"></span></li>
+	  <li><%= check_box_tag( "rubric_#{rubric.id}_custom_score", "true", @rubric_entry_map[rubric.id].custom_score, :onclick => "toggle_custom_score_rubric_#{rubric.id}();" ) %> Use custom score: <%= text_field_tag( "rubric_#{rubric.id}_score", @rubric_entry_map[rubric.id].score, {:disabled => !@rubric_entry_map[rubric.id].custom_score, :size => 10, :onchange => "custom_score_change_rubric#{rubric.id}(); set_form_needs_checked();", :onkeypress => "return handleEnter(event);"}) %> <span id="rubric_<%= rubric.id %>_warning"></span></li>
 	  <li>Comments:<br/>
 		 <%= text_area_tag("rubric_#{rubric.id}_comments", @rubric_entry_map[rubric.id].comments, { "cols" => 80, "rows" => 7, :onchange => 'set_form_needs_checked();'} ) %>
 		 </li>

@@ -221,7 +221,18 @@ Last Updated: <%= @display_turnin.updated_at.to_formatted_s(:friendly_date) %><b
 <% unless @grade_item %>
 <p><i>Warning - this assignment is not connected with an entry in the GradeBook.</i></p>
 <% else %>
-  <% form_tag( {:controller => 'instructor/turnins', :action => 'submit_grade', :id => @student, :course => @course, :assignment => @assignment}, {:name=>"gradeForm", :onsubmit=>"set_form_submitted();"} ) do %>
+  <script language="javascript">
+function handleEnter(event)
+{
+  var keyCode = event.keyCode ? event.keyCode : event.which ? event.which : event.charCode;
+  if (keyCode == 13) {
+	return false;
+  }
+  return true;
+}
+  </script>
+
+  <% form_tag( {:controller => 'instructor/turnins', :action => 'submit_grade', :id => @student, :course => @course, :assignment => @assignment}, {:name=>"gradeForm", :onsubmit=>"set_form_submitted();", :id => "grade_form"} ) do %>
 	<div class="submit">
 	  <div id="button">
 		 <%= submit_tag "Skip and Go to Next Student" %>
@@ -243,7 +254,7 @@ Last Updated: <%= @display_turnin.updated_at.to_formatted_s(:friendly_date) %><b
 <%= render :partial => 'rubric_area' %>
 
 	  <p><label for="document_title">Points:</label>
-	  <%= text_field 'grade_entry', 'points', :size => 10, :onchange => 'set_form_needs_checked();'  %> / <%= sprintf("%0.1f", @grade_item.points ) %>
+	  <%= text_field 'grade_entry', 'points', {:size => 10, :onchange => 'set_form_needs_checked();', :onkeypress => "return handleEnter(event);"}  %> / <%= sprintf("%0.1f", @grade_item.points ) %>
           <% if @assignment.team_project && !@team.nil? %>
              <br/><%= check_box_tag( 'apply_to_team', true, @apply_to_team )%> Apply grade and comments to all team members.
           <% end %> 
