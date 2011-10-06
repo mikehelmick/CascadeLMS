@@ -38,9 +38,11 @@ class WaitController < ApplicationController
       end
       
     elsif @queue.acknowledged
+      @title = "Grading in progress..."
       flash[:notice] = "Your assignment is currently being graded by the server."
     
     else
+      @title = "Waiting for grading to start..."
       flash[:notice] = "Your assignment is in the queue to be graded, please wait."
       
     end
@@ -51,6 +53,7 @@ class WaitController < ApplicationController
     if ! @queue.failed
       redirect_to :action => 'grade', :id => params[:id]
     end
+    @title = "Automatic grading failed"
   end
   
   def retry

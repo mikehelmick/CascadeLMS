@@ -932,14 +932,15 @@ a img {
 }
 
 .codecomment {
-	background: #FFFFCC;
-	border: 1px dashed #009900;
+	background: #6BBA70;
+	border: 2px dashed #009900;
 	margin: 1px 1px 1px 1px;
 	padding: 1px 10px 1px 10px;	
+	font-size: 12pt;
 }
 
 .codestyle {
-	background: #C3D9FF;
+	background: #FFFF88;
 	border: 1px dashed #009900;
 	margin: 1px 1px 1px 1px;
 	padding: 1px 10px 1px 10px;
@@ -1091,3 +1092,4 @@ a img {
   margin: 0 0 0 5px;
   padding: 0;
 }
+

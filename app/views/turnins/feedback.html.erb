@@ -138,7 +138,19 @@
  <% for utf in @current_turnin.user_turnin_files %>
   <% unless utf.directory_entry? || utf.auto_added? %>
     <% if FileManager.is_text_file( utf.extension ) %>
-      <li><a href="#file_<%=utf.id%>"> <%= image_tag utf.icon %> <%= utf.full_filename( @directories ) %></a></li>
+      <li><a href="#file_<%=utf.id%>"> <%= image_tag utf.icon %> <%= utf.full_filename( @directories ) %></a>
+	  <% comment_hash = Hash.new
+	     comment_hash = utf.file_comments_hash if @assignment.released %>
+	  <% if comment_hash.size > 0 %>
+	   <ul>
+		<li><em>Instructor comments:</em></li>
+		<% keys = comment_hash.keys.sort %>
+		<% for key in keys %>
+		  <li><a href="#<%= utf.id %>_<%= key %>">Line #<%= key %></a>: <%=h comment_hash[key].comments[0..50] %><% if comment_hash[key].comments.size >= 50 %>...<% end %></li>
+		<% end %>
+	   </ul>
+	  <% end %>
+	  </li>
     <% else %>
       <li><%= image_tag utf.icon %> <%= utf.full_filename( @directories ) %> (<%= link_to "download", :action => 'download_file', :id => utf.id %>)</li>
     <% end %>
@@ -175,7 +187,7 @@
 	       <% line_num = line_num.next %>
 	       <% numbers = line_num.to_s 
 	          numbers.size.upto(8) { |x| numbers = "&nbsp;#{numbers}" } %>
-	       <%= numbers %>: <%= line %><br/>
+	       <%= numbers %> <a name="<%= utf.id %>_<%= line_num %>">:</a> <%= line %><br/>
 	
 	       <% if comment_hash[line_num] %>
 	          <div class="codecomment">

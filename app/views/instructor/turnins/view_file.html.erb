@@ -52,11 +52,11 @@
 <% else %>
   <p><%= link_to "Collapse all comments / style guides", :action => 'view_file', :course => @course, :assignment => @assignment, :student => @student, :id => @utf, :expand => nil %></p>
 <% end %>
-<table class="codetable" cellpadding="0" cellspacing="0">
+<table class="codetable" cellpadding="0" cellspacing="0" width="99%">
   <tr class="header">
-   <th nowrap="nowrap">Line#</th>
-   <th class="has_comment" nowrap="nowrap">Comments</th>
-   <th class="has_style" nowrap="nowrap">Style</th>
+   <th nowrap="nowrap" width="30px">Line#</th>
+   <th class="has_comment" nowrap="nowrap" width="50px">Comments</th>
+   <th class="has_style" nowrap="nowrap" width="50px">Style</th>
    <th align="center" nowrap="nowrap">Line from file</th>
   </tr>
 
@@ -99,14 +99,12 @@
     <tr id="comments_line_<%=line_num%>" style="<%= comment_style %>">
       <td colspan="4" class="formcell">
  		<% form_remote_tag( :url => { :controller => "/instructor/turnins", :action => "file_comment", :course => @course, :assignment => @assignment, :student => @student, :id => @utf.id }, :success => "new Effect.Highlight( 'line_#{line_num}' );", :failure => "alert('There was an error saving the comment for line #{line_num}, please refresh the page.');", :update => "status_#{line_num}" ) do %>
-<!-- 
-        <% form_tag( :controller => "/instructor/turnins", :action => "file_comment", :course => @course, :assignment => @assignment, :student => @student, :id => @utf.id ) %> -->
            <%= hidden_field_tag 'line', line_num.to_s %>
            <% if @comments[line_num] %>
              <i>Comment by <%= @comments[line_num].user.display_name %></i><br/>
-             <%= text_area_tag 'comments', @comments[line_num].comments, "cols" => 120, "rows" => 8 %> 
+             <%= text_area_tag 'comments', @comments[line_num].comments, "cols" => 80, "rows" => 4 %> 
            <% else %>
-             <%= text_area_tag 'comments', '', "cols" => 120, "rows" => 8 %>
+             <%= text_area_tag 'comments', '', "cols" => 80, "rows" => 4 %>
            <% end %>
            <%= submit_tag "Save Comments for line #{line_num}" %>
         <% end %>
