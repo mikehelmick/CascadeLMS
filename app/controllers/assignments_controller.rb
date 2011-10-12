@@ -40,8 +40,10 @@ class AssignmentsController < ApplicationController
     end
 
     return unless assignment_in_course( @assignment, @course )
-    return unless assignment_available( @assignment )
-    return unless assignment_available_for_students_team( @course, @assignment, @user.id )
+    if !@instructor
+      return unless assignment_available( @assignment )
+      return unless assignment_available_for_students_team( @course, @assignment, @user.id )
+    end
     return unless load_team( @course, @assignment, @user )
     
       

@@ -4,7 +4,7 @@
 
 <%= render :partial => 'group' %>
 
-<% if !@assignment.closed? && @assignment.enable_upload %>
+<% if (!@assignment.closed? && @assignment.enable_upload) || @instructor %>
   <% if @turnins.size == 0 %> 
     <p><%= link_to "#{image_tag 'add.png'} Create First Turn-in Set.", :action => 'create_set', :course => @course, :assignment => @assignment %></p>
   <% else %>
@@ -56,7 +56,7 @@
 <% if @current_turnin.sealed %>
 <p><b>This turn-in set has been submitted for grading, no changes can be made.</b></p>
 
-<% elsif @assignment.closed? && (@extension.nil? || @extension.past?)%>
+<% elsif (@assignment.closed? && (@extension.nil? || @extension.past?)) && !@instructor %>
 
 <% else %>
 <div id="form_area">
@@ -93,7 +93,7 @@
 </div>
 <% end %>
 
-<% if @assignment.auto_grade && @assignment.enable_upload && !@current_turnin.sealed && (!@assignment.closed? || (!@extension.nil? && !@extension.past?)) %>
+<% if @assignment.auto_grade && @assignment.enable_upload && ((!@current_turnin.sealed && (!@assignment.closed? || (!@extension.nil? && !@extension.past?))) || @instructor) %>
 <div id="form_area">
   <% form_tag( { :action => "finalize" }, :onsubmit => "new Element.toggle('finalize_button');new Element.toggle( 'finalize_spinner');" ) do %>
   <p class="blockintro">Submit files for grading:</p>

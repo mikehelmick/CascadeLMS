@@ -6,6 +6,10 @@
 <% end %>	
 </h2>
 
+<% if @instructor && !@assignment.visible %>
+<div class="errorExplanation">This assignment is not yet published to students. You are able to see it since you are an instructor in this course.</div>
+<% end %>
+
 <p><%= link_to 'Back', :action => 'index' %></p>
 
 <div id="Assignment">

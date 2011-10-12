@@ -232,11 +232,19 @@ class Course < ActiveRecord::Base
     end
     sort_c_users users
   end
+
+  def is_instructor(user_id)
+    self.instructors.each do |i|
+      return true if i.id == user_id
+    end
+    return false
+  end
   
   def assignments_for_user( user_id )
+    instructor = is_instructor(user_id)
     published_asgn = Array.new
     self.assignments.each do |asgn|
-      published_asgn << asgn if asgn.visible
+      published_asgn << asgn if asgn.visible || instructor
     end
     # if there are no project teams, you get all assignments
     return published_asgn unless self.course_setting.enable_project_teams

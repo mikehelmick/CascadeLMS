@@ -13,6 +13,9 @@
   <div class="errorExplanation">This is not your current turn-in set.</div>
 <% end %>
 
+<% if @instructor && (@assignment.closed? || !@assignment.visible) %>
+<div class="errorExplanation">This assignment is either not available to students due to date restrictions or because it hasn't been published yet. You are able to turn in files since you are logged in as an instructor for this course.</div>
+<% end %>
 
 <p><b>Turn-in set</b><br/>
 Originally Created: <%= @display_turnin.created_at.to_formatted_s(:friendly_date) %><br/>

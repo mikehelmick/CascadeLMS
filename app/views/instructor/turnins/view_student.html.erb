@@ -190,14 +190,13 @@ Last Updated: <%= @display_turnin.updated_at.to_formatted_s(:friendly_date) %><b
 <% end %>
 
 <!-- AutoGrade area -->
-<% if !@assignment.auto_grade_setting.nil? && @assignment.auto_grade_setting.io_check? ## Only kind of autograde supported %>
+<% if !@assignment.auto_grade_setting.nil? && @assignment.auto_grade_setting.io_check? %>
  <div class="SectionHeader"><div class="Full"> 
    <h2>AutoGrade Results</h2>
  </div></div>
 
  <div class="Section">
-    <p><%= link_to "View I/O Check results for #{@student.display_name}.", :course => @course, :assignment => @assignment, :student => @student, :action => 'view_io_tests', :controller => 'instructor/turnins' %> 
-	<b>From this screen you can also re-run the automatic tests.</b></p>
+    <p><ul><li><%= link_to "View I/O Check results for #{@student.display_name}.", :course => @course, :assignment => @assignment, :student => @student, :action => 'view_io_tests', :controller => 'instructor/turnins' %> <b>From this screen you can also re-run the automatic tests.</b></li></ul></p>
  </div>
 
 <% elsif @assignment.auto_grade && !@assignment.auto_grade_setting.nil? && @assignment.auto_grade_setting.check_style? %>

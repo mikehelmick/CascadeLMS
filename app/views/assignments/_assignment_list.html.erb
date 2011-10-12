@@ -18,13 +18,12 @@ function resizeContent() {
 
 </script>
 
-  <p>
-	<a href="#" onclick="javascript:resizeContent();">click here</a>
-  </p>
-
   <table class="fancy" id="assignments">
     <tr class="header">
-	  <% if @instructor %><th>&nbsp;</th><% end %>
+	  <% if @instructor %>
+	    <th>&nbsp;</th>
+	    <th>Published</th>
+	  <% end %>
 	 
       <!-- <th>#</th> -->
       <th>Title</th>
@@ -43,6 +42,18 @@ function resizeContent() {
 	  <tr class="<%=odd%> hover" id="assignment_<%=assignment.id%>">
 		<% if @instructor %>
 		  <td nowrap="nowrap"><%= link_to "#{image_tag 'page_edit.png', :align=>'absmiddle'}", :course => @course, :id => assignment, :controller => '/instructor/course_assignments', :action => 'edit' %></td>	
+		  <td>
+		  	<% 
+			if assignment.visible 
+			  img_url = image_tag('accept.png', :align => 'absmiddle')
+			  status = 'yes'
+			else
+			  img_url = image_tag('cancel.png', :align => 'absmiddle')
+			  status = 'no'
+			end 
+			%>
+			<%= img_url %>
+		  </td>
 		<% end %>
 		
 		 <% user_completed_quiz = false 
