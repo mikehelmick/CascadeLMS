@@ -12,17 +12,18 @@ class DocumentsController < ApplicationController
     
     @instructor = @user.instructor_in_course?(@course.id)
     
+    time = Time.now
     respond_to do |format|
       format.html {
         @page = params[:page].to_i
         @page = 1 if @page.nil? || @page == 0
-        @document_pages = Paginator.new self, Document.count(:conditions => ["course_id = ? and published = ? and document_parent = ?", @course.id, true, @folder_id]), 25, @page
-        @documents = Document.find(:all, :conditions => ['course_id = ? and published = ? and document_parent = ?', @course.id, true, @folder_id], :order => 'position', :limit => 25, :offset => @document_pages.current.offset)  
+        @document_pages = Paginator.new self, Document.count(:conditions => ["course_id = ? and published = ? and document_parent = ? and created_at < ?", @course.id, true, @folder_id, time]), 50, @page
+        @documents = Document.find(:all, :conditions => ['course_id = ? and published = ? and document_parent = ? and created_at < ?', @course.id, true, @folder_id, time], :order => 'position', :limit => 50, :offset => @document_pages.current.offset)  
 
         set_title        
       }
       format.xml { 
-        @documents = Document.find(:all, :conditions => ['course_id = ? and published = ? and document_parent = ?', @course.id, true, @folder_id], :order => 'position') 
+        @documents = Document.find(:all, :conditions => ['course_id = ? and published = ? and document_parent = ? and created_at < ?', @course.id, true, @folder_id, time], :order => 'position') 
         render :layout => false
       }
     end
@@ -38,7 +39,7 @@ class DocumentsController < ApplicationController
     
           begin 
             @document = Document.find(params[:id])
-            raise 'unpublished' unless @document.published
+            raise 'unpublished' unless @document.visible_to_students()
           rescue
             return
           end
@@ -68,9 +69,10 @@ class DocumentsController < ApplicationController
               end
               
               params[:format] = 'xml'
+              time = Time.now
               respond_to do |format| 
                 format.xml {
-                  @documents = Document.find(:all, :conditions => ['course_id = ? and published = ? and document_parent = ?', @course.id, true, @folder_id], :order => 'created_at desc' )               
+                  @documents = Document.find(:all, :conditions => ['course_id = ? and published = ? and document_parent = ? and time < ?', @course.id, true, @folder_id, time], :order => 'created_at desc' )               
                   @fresh_date = @documents[0].created_at rescue @fresh_date = Time.now
                 }
               end
@@ -90,7 +92,7 @@ class DocumentsController < ApplicationController
     
     begin
       @document = Document.find(params[:id])
-      raise 'unpublished' unless @document.published
+      raise 'unpublished' unless @document.visible_to_students()
     rescue
       flash[:badnotice] = 'Sorry, the requested document could not be found.'
       redirect_to :action => 'index'

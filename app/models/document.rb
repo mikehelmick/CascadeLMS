@@ -9,6 +9,10 @@ class Document < ActiveRecord::Base
   
   before_save :transform_markup
 
+  def visible_to_students
+    return self.published && self.created_at < Time.now
+  end
+
   def log_access(user)
     da = DocumentAccess.new
     da.document = self

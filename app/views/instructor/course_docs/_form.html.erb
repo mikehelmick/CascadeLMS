@@ -11,11 +11,14 @@
 
 <p><label for="document_comments">Comments:</label>
 <%= text_area 'document', 'comments'  %></p>
+</div>
 
-<p><label for="document_created_at" class="required">Created at:</label>
+<p class="blockintro">Publication control. <em>Visible after</em> allows you to schedule documents for future publication, as long as the <em>Visible</em> setting is set to <strong>Yes</strong>.</p>
+<div class="block">
+<p><label for="document_created_at" class="required">Visible after:</label>
 <%= datetime_select 'document', 'created_at'  %></p>
 
-<p><label for="document_published" class="required">Published:</label>
+<p><label for="document_published" class="required">Visible:</label>
 	<%= radio_button 'document', 'published', true %> Yes
 	<%= radio_button 'document', 'published', false %> No</p>
 </div>
