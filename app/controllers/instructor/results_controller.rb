@@ -101,7 +101,7 @@ class Instructor::ResultsController < Instructor::InstructorBase
   end
   
   def quiz_export
-    quiz_summary( params )
+    internal_quiz_summary( params )
     
     response.headers['Content-Type'] = 'text/csv; charset=iso-8859-1; header=present'
     response.headers['Content-Disposition'] = "inline; filename=quiz_results_#{@assignment.id}.csv"
@@ -363,7 +363,7 @@ private
      @title = "Quiz - #{@course.title}"
   end
   
-  def quiz_summary(params)
+  def internal_quiz_summary(params)
     return unless load_course( params[:course] )
     return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_view_survey_results' )
     return unless quiz_enabled( @course )
