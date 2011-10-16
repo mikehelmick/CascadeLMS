@@ -3,6 +3,8 @@ require 'action_controller'
 class Feed < ActiveRecord::Base
 
   has_many :items, :through => :feeds_items
+  
+  has_many :feed_subscriptions
 
   # Gets one page of items for this feed
   def load_items(limit = 25, page = 1)

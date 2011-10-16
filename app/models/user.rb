@@ -32,6 +32,7 @@ class User < ActiveRecord::Base
 
   has_one :user_profile, :dependent => :destroy
   has_one :feed
+  has_many :feed_subscriptions
   
   attr_accessor :notice
 
