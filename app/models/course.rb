@@ -33,7 +33,20 @@ class Course < ActiveRecord::Base
   # rubrics are destroyed through the destruction of assignments
   has_many :rubrics
   
+  has_one :feed
+  
   before_create :solidify
+
+  def create_feed
+    if self.feed.nil?
+      self.feed = Feed.new
+      self.feed.user_id = self.id
+      self.feed.save
+
+      # TODO(helmick): Pre-populate the feed for legacy systems and courses.
+    end
+    return self.feed
+  end
   
   def share_with_user(user)
     new_share = CourseShare.new
@@ -224,6 +237,14 @@ class Course < ActiveRecord::Base
     end
     sort_c_users inst
   end
+
+  def non_dropped_users
+    users = Array.new
+    self.courses_users.each do |u|
+      users << u.user unless u.dropped
+    end
+    sort_c_users users
+  end
   
   def drops
     users = Array.new
@@ -353,6 +374,7 @@ class Course < ActiveRecord::Base
       end
     end
 
+    course.create_feed
     return course
   end
  

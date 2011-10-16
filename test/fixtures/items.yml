@@ -1,0 +1,24 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+item_one:
+  id: 1
+  user_id: 1
+  course_id: null
+  body: "post"
+  body_html: "<p>post</p>"
+  enable_comments: true
+  enable_reshare: true
+  public: true
+  created_at: 2011-10-14 21:00:00
+  updated_at: 2011-10-14 21:00:00
+item_two:
+  id: 2
+  user_id: 1
+  course_id: null
+  body: "post 2"
+  body_html: "<p>post 2</p>"
+  enable_comments: true
+  enable_reshare: true
+  public: true
+  created_at: 2011-10-14 21:00:00
+  updated_at: 2011-10-14 21:00:00

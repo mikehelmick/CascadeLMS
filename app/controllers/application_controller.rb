@@ -404,6 +404,7 @@ class ApplicationController < ActionController::Base
   def load_course( course_id, redirect = true )
     begin
       @course = Course.find( course_id )
+      @course.create_feed
     rescue
       flash[:badnotice] = "Requested course could not be found."
       redirect_to :controller => '/home' if redirect
@@ -481,6 +482,8 @@ class ApplicationController < ActionController::Base
       elsif redirect
         redirect_to :controller => 'home' 
       end
+      # Ensures that there is a feed for each user
+      @user.create_feed
       return @user
     rescue SecurityError => doh
       logger.info("Security error, uniqueid: #{user.uniqueid}, error => #{doh}")

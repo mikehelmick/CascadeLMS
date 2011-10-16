@@ -29,8 +29,20 @@ class User < ActiveRecord::Base
   has_many :notifications, :dependent => :destroy
   
   has_many :project_teams
+
+  has_one :user_profile, :dependent => :destroy
+  has_one :feed
   
   attr_accessor :notice
+
+  def create_feed
+    if self.feed.nil?
+      self.feed = Feed.new
+      self.feed.user_id = self.id
+      self.feed.save
+    end
+    return self.feed
+  end
   
   def gravatar_url(ssl = false)
     email_address = self.email.downcase

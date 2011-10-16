@@ -24,3 +24,16 @@ instructor:
   affiliation: Faculty
   personal_title: Mr.
   email: instructor@system.com
+student2:
+  id: 3
+  uniqueid: testuser2
+  password: testuser2
+  preferred_name: T.U.
+  first_name: Test
+  middle_name: A.
+  last_name: User
+  instructor: false
+  admin: false
+  affiliation: Student
+  personal_title: Mr.
+  email: testuser2@system.com
