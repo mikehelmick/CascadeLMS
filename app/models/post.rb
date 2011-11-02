@@ -7,6 +7,17 @@ class Post < ActiveRecord::Base
   
   before_save :transform_markup
   
+  def create_item()
+    item = Item.new
+    item.user_id = self.user_id
+    item.course_id = self.course.id
+    item.body = self.body
+    item.enable_comments = false
+    item.enable_reshare = false
+    item.post_id = self.id
+    return item
+  end
+  
   def clone_to_course( course_id, user_id, time_offset = nil? )
     dup = Post.new
     dup.course_id = course_id

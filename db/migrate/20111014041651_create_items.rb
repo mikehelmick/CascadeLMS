@@ -18,11 +18,11 @@ class CreateItems < ActiveRecord::Migration
       # Links! Posts can be associated with many things in CascadeLMS
       t.column :course_id, :integer, :null => true
       t.column :assignment_id, :integer, :null => true
-      t.column :graded_assignment_id, :integer, :null => false
+      t.column :graded_assignment_id, :integer, :null => true
       t.column :post_id, :integer, :null => true
-      t.column :document_id, :integer, :null => false
-      t.column :wiki_id, :integer, :null => false
-      t.column :forum_post_id, :integer, :null => false
+      t.column :document_id, :integer, :null => true
+      t.column :wiki_id, :integer, :null => true
+      t.column :forum_post_id, :integer, :null => true
       
       # Timestamps.
       # updated_at will be used to pump posts

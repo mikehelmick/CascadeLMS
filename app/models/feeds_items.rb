@@ -2,11 +2,11 @@ class FeedsItems < ActiveRecord::Base
   belongs_to :feed
   belongs_to :item
 
-  def self.create(feed_id, item_id)
+  def self.create(feed_id, item_id, timestamp = Time.now)
     fi = FeedsItems.new
     fi.feed_id = feed_id
     fi.item_id = item_id
-    fi.timestamp = Time.now
+    fi.timestamp = timestamp
     fi.save
   end
 

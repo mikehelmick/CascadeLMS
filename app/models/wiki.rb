@@ -23,6 +23,19 @@ class Wiki < ActiveRecord::Base
     return cur_page
   end
 
+  def create_item()
+    item = Item.new
+    item.user_id = self.user_id
+    item.course_id = self.course.id
+    action = "Created"
+    action = "Updated" if self.revision > 0
+    item.body = "#{action} the wiki page '#{self.page}' in #{self.course.short_description}."
+    item.enable_comments = true
+    item.enable_reshare = false
+    item.wiki_id = self.id
+    return item
+  end
+
   def clone_to_course(course, user)
     prevWiki = Wiki.find(:first, :conditions => ["course_id = ? and page = ?", course.id, self.page], :order => 'revision desc')
     revision = 1

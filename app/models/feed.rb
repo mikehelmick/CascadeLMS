@@ -6,6 +6,14 @@ class Feed < ActiveRecord::Base
   
   has_many :feed_subscriptions
 
+  def subscribe_user(user)
+    subscription = FeedSubscription.new
+    subscription.feed = self
+    subscription.user = user
+    subscription.send_email = true
+    subscription.save
+  end
+
   # Gets one page of items for this feed
   def load_items(limit = 25, page = 1)
     pages = ActionController::Base::Paginator.new(self, FeedsItems.count(:conditions => ["feed_id = ?", self.id]), limit, page)

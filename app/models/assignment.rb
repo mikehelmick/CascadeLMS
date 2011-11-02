@@ -34,6 +34,35 @@ class Assignment < ActiveRecord::Base
   # if a SVN path is given, that is is appropriate 
   
   before_save :transform_markup
+
+  def create_item()
+    instructors = self.course.instructors[0]
+    inst_id = instructors[0].user_id rescue inst_id = 0
+    
+    item = Item.new
+    item.user_id = inst_id
+    item.course_id = self.course.id
+    item.body = "A new assignment '#{self.title}' is now available for #{self.course.short_description}. " +
+        "This assignment is due at #{self.close_date.to_formatted_s(:compact_date)}."
+    item.enable_comments = true
+    item.enable_reshare = false
+    item.assignment_id = self.id
+    return item
+  end
+
+  def create_graded_item()
+    instructors = self.course.instructors[0]
+    inst_id = instructors[0].user_id rescue inst_id = 0
+    
+    item = Item.new
+    item.user_id = inst_id
+    item.course_id = self.course.id
+    item.body = "Greates for '#{self.title}' are now available (#{self.course.short_description}). See how you did!"
+    item.enable_comments = true
+    item.enable_reshare = false
+    item.assignment_id = self.id
+    return item  
+  end
   
   def clone_to_course( course_id, user_id, time_offset, external_dir )    
     cloneToCourse = Course.find(course_id)

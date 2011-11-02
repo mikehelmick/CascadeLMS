@@ -8,6 +8,17 @@ class ForumPost < ActiveRecord::Base
   validates_presence_of :headline, :post
   
   before_save :transform_markup
+  
+  def create_item()
+    item = Item.new
+    item.user_id = self.user_id
+    item.course_id = self.forum_topic.course_id
+    item.body = self.post
+    item.enable_comments = false
+    item.enable_reshare = false
+    item.forum_post_id = self.id
+    return item
+  end
 
   def last_user
     if ! self.last_user_id.nil?

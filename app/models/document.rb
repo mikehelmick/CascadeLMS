@@ -9,6 +9,20 @@ class Document < ActiveRecord::Base
   
   before_save :transform_markup
 
+  def create_item()
+    instructors = self.course.instructors[0]
+    inst_id = instructors[0].user_id rescue inst_id = 0
+    
+    item = Item.new
+    item.user_id = inst_id
+    item.course_id = self.course_id
+    item.body = "New document, '#{self.title}' published in #{self.course.short_description}. #{self.comments}"
+    item.enable_comments = true
+    item.enable_reshare = false
+    item.document_id = self.id
+    return item
+  end
+
   def visible_to_students
     return self.published && self.created_at < Time.now
   end
