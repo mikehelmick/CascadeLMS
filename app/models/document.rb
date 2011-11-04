@@ -34,6 +34,7 @@ class Document < ActiveRecord::Base
     dup.size = self.size
     dup.published = self.published
     dup.folder = self.folder
+    dup.document_parent = 0
     if time_offset.nil?
       dup.created_at = self.created_at
     else

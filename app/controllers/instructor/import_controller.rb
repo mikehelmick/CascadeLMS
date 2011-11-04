@@ -148,7 +148,12 @@ class Instructor::ImportController < Instructor::InstructorBase
             
             # parentFolder is now the appropriate parent folder, or nil (zero)
             new_doc = cloneFromDoc.clone_to_course(@course.id, @user.id)
-            new_doc.document_parent = parentFolder.id rescue new_doc.document_parent = 0
+            new_doc.document_parent =
+              if parentFolder.nil?
+                0
+              else
+                new_doc.document_parent = parentFolder.id 
+              end
             new_doc.published = false
             new_doc.save
             new_doc.ensure_directory_exists(@app['external_dir'])
