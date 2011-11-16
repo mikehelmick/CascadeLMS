@@ -1,6 +1,7 @@
 class GradeCategory < ActiveRecord::Base
   
   validates_presence_of :category
+  has_one :grade_weight, :dependent => :destroy
   
   ## Ensures that the categories in the first course are a superset
   ## of the second course, based on category name.
