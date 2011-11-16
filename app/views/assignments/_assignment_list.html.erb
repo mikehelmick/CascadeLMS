@@ -1,24 +1,9 @@
-<h2>Assignments for <%= @course.title %></h2>
-
-<% if @assignments.size == 0 %>
+<% if assignments.size == 0 %>
   <p><i>There are no assignments at this time, please check back later.</i></p>
 <% else %>
 
-<script type="text/javascript">
-function resizeContent() {
-	width = document.getElementById('assignments').offsetWidth;
-	alert( "starting width: " + width );
-	newWidth = width + 50;
-	alert( "div width" + document.getElementById('content').offsetWidth );
-	document.getElementById('content').style.minWidth = newWidth + "px";
-	alert( "div width" + document.getElementById('content').offsetWidth );
-	marginLeft = newWidth + 25;
-	document.getElementById('right').style.marginLeft = marginLeft + "px";
-}
 
-</script>
-
-  <table class="fancy" id="assignments">
+  <table class="fancy" id="assignments" width="100%">
     <tr class="header">
 	  <% if @instructor %>
 	    <th>&nbsp;</th>
@@ -34,7 +19,7 @@ function resizeContent() {
      </tr>
 
     <% count = 0 %>
-    <% for assignment in @assignments %>
+    <% for assignment in assignments %>
       <% count = count.next 
 	     odd = "odd"
 	     odd = "even" if count.even?

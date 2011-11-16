@@ -18,6 +18,8 @@
 <%= link_to 'Back', :controller => '/instructor/index', :course => @course %>
 </p>
 
+<p><em>Students will see this list in 3 groups: current assignments, upcoming assignments, and past assignments. <%= link_to 'See how students see the assignment list.', :course => @course, :id => nil, :assignment => nil, :controller => '/assignments', :action => nil %></em></p>
+
  <table class="fancy" id="asignment_table"> 
    <tr class="header"> 
 	<th align="left" valign="bottom">#</th>

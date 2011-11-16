@@ -16,6 +16,20 @@ class AssignmentsController < ApplicationController
     
     @assignments = @course.assignments_for_user( @user.id )
     
+    @current_assignments = Array.new
+    @upcoming_assignments = Array.new
+    @complete_assignments = Array.new
+
+    @assignments.each do |a|
+      if a.current?
+        @current_assignments << a
+      elsif a.upcoming?
+        @upcoming_assignments << a
+      else
+        @complete_assignments << a
+      end
+    end
+    
     RubricLevel.for_course(@course)
     @public = false
     
