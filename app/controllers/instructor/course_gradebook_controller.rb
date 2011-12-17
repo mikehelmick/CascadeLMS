@@ -384,9 +384,11 @@ class Instructor::CourseGradebookController < Instructor::InstructorBase
     @crn_students = Hash.new 
     @crn_averages[0] = Hash.new
     @crn_students[0] = Hash.new 
+    @crns = Hash.new
     course.crns.each do |crn|
       @crn_averages[crn.id] = Hash.new
       @crn_students[crn.id] = Hash.new
+      @crns[crn.id] = crn
     end
     
     # get the grade items and students
