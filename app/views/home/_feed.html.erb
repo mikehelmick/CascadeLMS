@@ -1,0 +1,22 @@
+<% day_ago = Time.now - 60*60*24 %>
+<% for feed_item in @feed_items %>
+<div class="feed_item">
+ <div class="feed_portrait">
+	<% unless feed_item.item.user.nil? %>
+	  <img id="avatar" src="<%= feed_item.item.user.gravatar_url(request.ssl?) %>" />
+	<% end %>
+ </div>
+ <div class="item_content">
+    <p>Posted by:
+    <% unless feed_item.item.user.nil? %>
+      <%= link_to "#{feed_item.item.user.display_name}", :controller => '/profile', :id => feed_item.item.user.id, :course => nil, :assignment => nil %>
+    <% end %> -
+    <% if feed_item.item.created_at > day_ago %>
+      <%= link_to "#{feed_item.item.created_at.to_formatted_s(:social_time)}", :controller => '/post', :id => feed_item.item.id, :course => nil, :assignment => nil %>
+	<% else %>
+	  <%= link_to "#{feed_item.item.created_at.to_formatted_s(:social_date)}", :controller => '/post', :id => feed_item.item.id, :course => nil, :assignment => nil %>
+	<% end %>
+    </p>
+ </div>
+</div>
+<% end %>
