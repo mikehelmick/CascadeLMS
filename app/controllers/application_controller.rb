@@ -34,6 +34,7 @@ require 'MyString'
 # Likewise, all the methods added will be available for all controllers.
 class ApplicationController < ActionController::Base
   ## CSCW Application version
+
   @@VERSION = '1.5.0a (Jefferson) 20111101'
   
   ## Supress password logging

@@ -79,7 +79,12 @@ Instructor(s): <% for instructor in  @course.instructors %><%= instructor.displa
 		 (!@course_share.nil? && @course_share.documents) %>
         <ul><% for document in @import_from.documents %>
 	     <% if !document.folder %>
-          <li><%= check_box_tag "document_#{document.id}", true %><a class="hover_more" href="#hover"><%= document.title %> (<%= document.filename %>)<span><ul>
+          <li><%= check_box_tag "document_#{document.id}", true %>
+           <% for parent_doc in document.get_parent_folders() %>
+            <%= parent_doc.title %> /
+           <% end %>
+           <a class="hover_more" href="#hover">
+           <%= document.title %> (<%= document.filename %>)<span><ul>
 	        <li><strong>Date: </strong><%= document.created_at.to_formatted_s(:long) %></li>
 	        <li><strong>Comments: </strong></li>
 	      </ul>

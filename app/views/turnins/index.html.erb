@@ -66,12 +66,13 @@
 
    <p class="blockintro">Upload a new file.  <i>Files can not be deleted or updated, if the need arises please create a new turn-in set.</i></p>
    <div class="block">
-	<p><label for="file" class="required">Upload File:</label> <%= file_field_tag "file" %></p>
+	<p><label for="file" class="required">Upload File:</label> <%= file_field_tag("file", :onchange => "new Element.toggle('press_button'); new Effect.Highlight('f_button');") %></p>
 	<p><label for="nested" class="required">Nested In:</label>
 	  <%= select_tag("directory", options_from_collection_for_select(@directories, "id", "filename") ) %>
 	</p>
 	
-	<div id="f_button"><%= submit_tag "Upload File" %></div>
+	<div id="f_button"><%= submit_tag "Upload File" %>
+	  <span id="press_button" style="display: none; color: red;"><strong><- Press to upload</strong></span></div>
 	<div id="f_spinner" style="display: none;"><%= image_tag 'spinner.gif' %></div>
    </div>
   <% end %>
@@ -86,7 +87,7 @@
 	  <%= select_tag("directory", options_from_collection_for_select(@directories, "id", "filename") ) %>
 	</p>
 
-	<div id="f_button"><%= submit_tag "Create Directory" %></div>
+	<div id="d_button"><%= submit_tag "Create Directory" %></div>
   </div>
   <% end %>
  <% end %>

@@ -72,7 +72,7 @@ class DocumentsController < ApplicationController
               time = Time.now
               respond_to do |format| 
                 format.xml {
-                  @documents = Document.find(:all, :conditions => ['course_id = ? and published = ? and document_parent = ? and time < ?', @course.id, true, @folder_id, time], :order => 'created_at desc' )               
+                  @documents = Document.find(:all, :conditions => ['course_id = ? and published = ? and document_parent = ? and created_at < ?', @course.id, true, @folder_id, time], :order => 'created_at desc' )               
                   @fresh_date = @documents[0].created_at rescue @fresh_date = Time.now
                 }
               end

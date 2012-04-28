@@ -1,3 +1,5 @@
 <%= render :partial => '/public/enrolled' %>
 
-<%= render :partial => '/assignments/assignment_list', :locals => { :public => true } %>
+<h2>Assignments for <%= @course.title %></h2>
+
+<%= render :partial => '/assignments/assignment_list', :locals => { :assignments => @assignments, :public => true } %>
