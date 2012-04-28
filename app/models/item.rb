@@ -2,6 +2,9 @@ class Item < ActiveRecord::Base
   has_many :feeds, :through => :feeds_items
   has_many :item_shares, :dependent => :destroy
   
+  belongs_to :course
+  belongs_to :user
+  
   belongs_to :assignment
   belongs_to :post
   belongs_to :document

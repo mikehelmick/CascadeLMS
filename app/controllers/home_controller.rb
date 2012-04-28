@@ -27,6 +27,9 @@ class HomeController < ApplicationController
     @title = "Home for #{@user.display_name}"
     @announcements = Announcement.current_announcements
     @courses = @user.courses_in_term( @term )
+
+    @feed_id = @user.feed.id
+    @feed_items = @user.feed.load_items
     
     @notifications = Notification.find(:all, :conditions => ["user_id = ? and acknowledged = ? and view_count < ?", @user, false, 5] )
     begin

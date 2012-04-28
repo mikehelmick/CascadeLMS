@@ -67,7 +67,9 @@ ActionMailer::Base.smtp_settings = {
 my_formats = {
   :friendly_date => '%A %B %d, %Y %I:%M:%S %p %Z',
   :friendly_time => '%I:%M:%S %p %Z',
-  :compact_date => '%m/%d/%Y %I:%M %p %Z'
+  :compact_date => '%m/%d/%Y %I:%M %p %Z',
+  :social_time => '%I:%M %p',
+  :social_date => '%b %d, %Y'
 }
 
 SITE_NAME = 'my.csi.muohio.edu'
