@@ -32,10 +32,14 @@ class BlogController < ApplicationController
     @post = Post.find(params[:id])
     return unless post_in_course( @course, @post )  
     
-    @comment = Comment.new  
+    @comment = Comment.new
     
     respond_to do |format|
-      format.html
+      format.html {
+        set_title()
+        @breadcrumb.post = @post
+        @breadcrumb.text = nil
+      }
       format.xml { render :layout => false }
     end
   end
@@ -73,6 +77,9 @@ class BlogController < ApplicationController
   
   def set_title
     @title = "#{@course.title} (Course Blog)"
+    @breadcrumb = Breadcrumb.for_course(@course)
+    @breadcrumb.text = "Blog"
+    @breadcrumb.link = url_for(:action => nil, :course => @course, :id => nil)
   end
   
   def post_in_course( course, post )

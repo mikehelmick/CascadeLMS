@@ -1,0 +1,155 @@
+<div class="navbar navbar-fixed-top">
+  <div class="navbar-inner">
+    <div class="container-fluid">
+      <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </a>
+      <a class="brand" href="#">CascadeLMS</a>
+      <div class="nav-collapse">
+        <ul class="nav">
+          <li <%= 'class="active"' if !@tab.nil? && @tab.eql?('home') %>>
+	        <%= link_to '<i class="icon-home icon-white"></i> Home', :controller => '/home', :course => nil, :assignment => nil %>
+          </li>
+          <li class="divider-vertical"></li>
+
+	      <% for cu in @user.courses_in_term( @term ) %>
+	        <li class="dropdown <%= 'active' if !@course.nil? && @course.id == cu.course_id %>">
+	          <a href="#" class="dropdown-toggle" data-toggle="dropdown"><%= h cu.course.title[0..30] %><b class="caret"></b></a>
+	         <ul class="dropdown-menu">
+		       <li><%= link_to "<i class=\"icon-picture\"></i> #{h cu.course.title}", :controller => '/overview', :course => cu.course %></li>
+		       <% if cu.course.course_setting.enable_blog %>
+			     <li><%= link_to '<i class="icon-list-alt"></i> Course Blog', :controller => '/blog', :course => cu.course, :assignment => nil %></li> 
+	           <% end %>
+               <li><%= link_to '<i class="icon-folder-open"></i> Documents', :controller => '/documents', :course => cu.course, :assignment => nil %></li>
+               <li><%= link_to '<i class="icon-calendar"></i> Assignments', :controller => '/assignments', :course => cu.course, :assignment => nil %></li>
+               <% if cu.course.course_setting.enable_project_teams %>
+			     <li><%= link_to '<i class="icon-magnet"></i> Team Center', :controller => '/team', :course => cu.course, :assignment => nil %></li> 
+			   <% end %>
+               <% if cu.course.course_setting.enable_wiki %>
+			     <li><%= link_to '<i class="icon-edit"></i> Wiki', :controller => '/wiki', :course => cu.course, :assignment => nil %></li> 
+			   <% end %>
+               <% if cu.course.course_setting.enable_forum %>
+			     <li><%= link_to '<i class="icon-comment"></i> Forums', :controller => '/forums', :course => cu.course, :assignment => nil %></li> 
+			   <% end %>
+               <% if !@user.nil? && @user.student_in_course?(cu.course.id) && cu.course.course_setting.enable_gradebook %>
+		  	     <li><%= link_to '<i class="icon-signal"></i> Grades', :controller => '/grades', :course => cu.course, :assignment => nil %></li>
+		       <% end %>
+               <% if !@user.nil? && @user.student_in_course?(cu.course.id) && cu.course.course_setting.enable_attendance %>
+		  	     <li><%= link_to '<i class="icon-check"></i> Attendance', :controller => '/attendance', :course => cu.course, :assignment => nil %></li>
+		       <% end %>
+               <% if !@user.nil? && (@user.instructor_in_course?(cu.course.id) || @user.assistant_in_course?(cu.course.id)) %>
+		         <li><%= link_to '<i class="icon-barcode"></i> Instructor', { :controller => '/instructor/index', :course => @course, :assignment => nil } %></li>
+		       <% end %>		
+		
+		     </ul>
+		    </li>
+		  <% end %>
+        </ul>
+
+        <% if @user.nil? %>
+          <ul class="nav pull-right">
+	        <li><%= link_to 'Login', {:controller => '/'} %></li>
+	      </ul>
+	    <% else %>
+		<ul class="nav pull-right">
+		  <% unless @user.nil? %>
+		    <% if @user.auditor? %>
+			   <li <%= 'class="active"' if !@tab.nil? && @tab.eql?('audit') %>>
+			     <%= link_to 'Audit', {:controller => '/audit', :action => 'index', :id => nil} %></li> 
+			<% end %>
+			<% if @user.program_manager? %>
+			   <li <%= 'class="active"' if !@tab.nil? && @tab.eql?('programs') %>>
+			     <%= link_to 'Programs', {:controller => '/program', :course => nil, :assignment => nil, :id => nil} %></li>
+			<% end %>
+			<% if @user.admin %>
+			   <li <%= 'class="active"' if !@tab.nil? && @tab.eql?('administration') %>>
+			     <%= link_to 'Administration', {:controller => '/admin', :course => nil, :assignment => nil} %></li>
+			<% end %>
+		  <% end %>
+		  <li class="divider-vertical"></li>
+		  <li>
+		    <div class="btn-group">
+			  <span class="btn <%= 'btn-success' if @notificationCount != 0 %>" data-toggle="modal" href="#notificationBox" id="notificationButton"><%= @notificationCount %></span>
+			</div>
+		  </li>
+		  <li class="divider-vertical"></li>
+		  <li><img src="<%= @user.gravatar_url(request.ssl?, 40) %>"></li>
+		  <li class="dropdown">
+		    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+		      <%=session[:user].display_name%>
+			  <b class="caret"></b>
+		    </a>
+		    <ul class="dropdown-menu">
+	          <li><% unless @app['dir_link'].nil? || @app['authtype'].eql?('basic') %> 
+			    <a href="<%=@app['dir_link']%><%= session[:user].uniqueid %>" target="_blank">Change Directory Information</a>
+			  <% else %>
+			    <%= link_to 'Account Settings <i class="icon-cog"></i>', :controller => '/home', :action => 'account' %>
+			  <% end %></li>
+			  <li><a href="https://en.gravatar.com/site/signup/" target="_blank">Change Profile Picture <i class="icon-user"></i></a></li>
+			  <li><%= link_to 'log out <i class="icon-lock"></i>', :controller => '/index', :action => 'logout' %></li>
+		    </ul>
+		  </li>
+		</ul>
+        <% end %>
+
+      </div><!--/.nav-collapse -->
+    </div>
+  </div>
+  <% unless @breadcrumb.nil? %>
+  <ul class="breadcrumb">
+   <li>
+	 <%= link_to 'Home', :controller => '/home', :action => nil, :id => nil, :course => nil %> <span class="divider">/</span>
+	 <% unless @breadcrumb.course.nil? %>
+	   Course <span class="divider">/</span>
+	   <%= link_to "#{h @course.title}", :controller => '/overview', :course => @breadcrumb.course, :id => nil %>
+	   <span class="divider">/</span>
+	 <% end %>
+	 <% unless @breadcrumb.post.nil? %>
+	   <%= link_to 'Blog', :controller => '/blog', :course => @course, :id => nil, :action => nil %> <span class="divider">/</span>
+	   <%= link_to "#{h @breadcrumb.post.title}", :controller => '/blog', :course => @course, :id => @breadcrumb.post.id, :action => 'post' %> <span class="divider">/</span>
+	 <% end %>
+	 <% unless @breadcrumb.assignment.nil? %>
+	    <%= link_to 'Assignments', :controller => '/assignments', :course => @course, :id => nil, :action => nil %> <span class="divider">/</span>
+	    <%= link_to "#{h @breadcrumb.assignment.title[0..40]}", :controller => 'assignments', :course => @course, :id => @breadcrumb.assignment, :action => 'view' %> <span class="divider">/</span>
+	 <% end%>
+	 <% unless @breadcrumb.team.nil? %>
+		<%= link_to 'Team', :controller => '/team', :course => @course, :id => nil, :action => nil %> <span class="divider">/</span>
+		<%=h @team.name %> <span class="divider">/</span>
+     <% end %>
+     <% unless @breadcrumb.wiki.nil? %>
+        Wiki <span class="divider">/</span>
+        <%= link_to "#{h @breadcrumb.wiki.page}", :controller => '/wiki', :course => @course, :action => 'page', :id => @breadcrumb.wiki.page %> <span class="divider">/</span>
+     <% end %>
+     <% unless @breadcrumb.forum.nil? %>
+        <%= link_to "Forums", :controller => '/forums', :course => @course, :action => nil, :id => nil %> <span class="divider">/</span>
+        <%= link_to "#{h @breadcrumb.forum.topic}", :controller => '/forums', :course => @course, :action => 'view_topic', :id => @breadcrumb.forum.id %> <span class="divider">/</span>
+     <% end %>
+	
+	 <% unless @breadcrumb.text.nil? %>
+	   <% if @breadcrumb.link.nil? %>
+  	     <%= @breadcrumb.text %> <span class="divider">/</span>
+       <% else %>
+         <a href="<%= @breadcrumb.link %>"><%= @breadcrumb.text %></a> <span class="divider">/</span>
+       <% end %>
+	 <% end %>
+   </li>
+  </ul>
+  <% end %>
+</div>
+
+<div class="modal fade" id="notificationBox" style="display: none;">
+  <div class="modal-header">
+    <a class="close" data-dismiss="modal">×</a>
+    <h3>Your Recent Notifactions</h3>
+  </div>
+  <div class="modal-body" id="notificationsArea">
+    <p>Loading...</p>
+  </div>
+  <div class="modal-footer">
+    <a href="javascript:closeModal('notificationBox');" class="btn">Close</a>
+    <%= link_to 'All Notifications', {:controller => '/notifications', :action => nil, :id => nil, :course => nil}, {:class => 'btn btn-success'} %>
+    <%= link_to 'Mark All As Read', {:controller => '/notifications', :action => 'mark_read', :id => nil, :course => nil}, {:confirm => 'Are you sure you want to mark all notifications as read?', :class => 'btn btn-danger'} %>
+  </div>
+</div>

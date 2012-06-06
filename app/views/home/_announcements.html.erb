@@ -1,11 +1,9 @@
 <% if @announcements.size > 0 %>
-<p><b>System Announcements:</b><br/></p>
 <% for announcement in @announcements %>
-<b>Posted <%= announcement.start.to_date.to_formatted_s(:long )%>:</b> <%= link_to_function( "#{announcement.headline} #{image_tag('email_open.png')}", "blindToggle('announcement_#{announcement.id}')" ) %>
-<div id="announcement_<%=announcement.id%>" class="announcement" style="display: none;">
-<%= link_to_function( "#{image_tag('email.png')} Dismiss ", "blindToggle('announcement_#{announcement.id}')" ) %>
-<%= announcement.text_html %>
+<div class="alert alert-info">
+  <a class="close" data-dismiss="alert">×</a>
+<p><strong>Posted <%= announcement.start.to_date.to_formatted_s(:long )%>:</strong><br/>
+<%= announcement.text_html %></p>
 </div>
 <% end %>
-
 <% end %>

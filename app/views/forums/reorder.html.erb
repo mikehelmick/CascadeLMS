@@ -1,0 +1,18 @@
+<h2>Reorder Forum for <%= @course.title %></h2>
+
+<div id="reorder">
+  <p>Drag and Drop the forums to order.</p>
+  <ul id="topic-order">
+    <% for topic in @topics %>
+      <li id="topic_<%= topic.id %>"><i class="icon-random"></i>
+        <strong><%= topic.topic %></strong>
+      </li>
+    <% end %>
+  </ul>
+  <%= link_to "Done Reordering", {:controller => '/forums', :course => @course, :action => nil, :id => nil}, {:class => "btn btn-success"} %>
+</div>
+
+<%= sortable_element 'topic-order', 
+    :url => { :action => 'sort_topics' },
+    :complete => visual_effect(:highlight, 'topic-order')
+%>

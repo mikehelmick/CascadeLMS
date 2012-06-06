@@ -1,0 +1,5 @@
+<div class="btn-group">
+  <%= link_to '<i class="icon-list-alt"></i> Team Wiki', {:action => 'wiki', :id => @team.id, :page => 'Home'}, {:class => 'btn btn-small'} %>
+  <%= link_to '<i class="icon-folder-open"></i> Team Files', {:action => 'files', :id => @team.id}, {:class => 'btn btn-small'} %>
+  <%= link_to '<i class="icon-envelope"></i> Team Email', {:action => 'email', :id => @team.id}, {:class => 'btn btn-small'} %>
+</div>

@@ -38,7 +38,7 @@ class Post < ActiveRecord::Base
   end
   
   def icon
-    'pencil.png'
+    'icon-pencil'
   end
   
   def summary_action

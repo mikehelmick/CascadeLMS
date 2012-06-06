@@ -1,17 +1,12 @@
-<table class="FadeTable" cellspacing="0" cellpadding="0">
-
+<table class="table">
   <% if @recent_activity.size == 0 %>
-    <tr class="row1"><td colspan="5"><i>No recent activity.</i></td></tr>
+    <tr><td colspan="5"><i>No recent activity.</i></td></tr>
   <% else %>
-  
-    <% count = 0 %>
-    <% for item in @recent_activity %>
-      <% count = count.next %>
-
-      <tr class="row<%=count%>">
-        <td nowrap="nowrap"><acronym title="<%= item.acronym %>"><%= image_tag "#{item.icon}" %></a></td>
-	    <td nowrap="nowrap"><b><%= item.summary_date %></b></td>
-		<td nowrap="nowrap">
+  <% for item in @recent_activity %>
+    <tr>
+       <td nowrap="nowrap"><a href="#" rel="tooltip" title="<%= item.acronym %>"><i class="<%= item.icon %>"></i></a></td>
+	   <td nowrap="nowrap"><strong><%= item.summary_date %></strong></td>
+	   <td nowrap="nowrap">
 		  <% if public.nil? || !public %>
 		    <%= link_to "#{item.summary_title}", :controller => '/redirect', :type => "#{item.class.to_s}", :id => item.id %>
 		  <% else %>
@@ -20,9 +15,8 @@
 		</td>
 	    <td nowrap="nowrap" align="right"><i><%= item.summary_action %></i></td>
 		<td width="75%"><%= item.summary_actor %></td>
-      </tr>
+    </tr>
     
-    <% end %>
   <% end %>
-
+<% end %>
 </table>

@@ -1,25 +1,19 @@
-<div class="SectionHeader"><div class="Full">
-<h2>
-  Results for quiz: <%= @assignment.title %></h2>
-</div></div>
-
+<h2>Results for quiz: <%= @assignment.title %></h2>
 
 <% if @assignment.released && @assignment.grade_item %>
   <% if @grade_entry.nil? %>
-    <p><i>No grade has been submitted.</i></p>
+    <div class='alert alert-info'>No grade has been submitted.</div>
   <% else %> 
     <%= render :partial => '/turnins/grade_entry' %>
   <% end %>
 <% end %>
 
-<div id="form_area">
   <% count = 0 %>
   <% for question in @questions do %>  
     <% count = count.next %>
-
-    <p class="blockintro"><b>Question #<%=count %> of <%= @questions.length %></b></p>
+    <div class="well"><h3>Question #<%=count %> of <%= @questions.length %></h3>
     <div class="block">
-	   <p><label for="" class="required"><%= question.question_html %></label><br/>
+       <em><%= question.question_html %></em>
 	
 	   <% if question.text_response %>
 		  <% answer = ""
@@ -31,12 +25,12 @@
 	         answer_id = @answer_map[question.id].quiz_question_answer_id unless @answer_map[question.id].nil? %>
 	      <ul style="list-style-type: upper-latin;">
 	        <% for quiz_answer in question.quiz_question_answers %>      
-	          <li><% if quiz_answer.correct && quiz_answer.id == answer_id %>
-		             <b><font color="green">Correct! <%= image_tag 'accept.png' %></font></b>
+	          <li><%= quiz_answer.answer_text_html %>
+	              <% if quiz_answer.correct && quiz_answer.id == answer_id %>
+		             <span class="label label-success">Correct!</span>
 	  	          <% elsif quiz_answer.id == answer_id %>
-	                 <b><font color="red">Incorrect <%= image_tag 'cancel.png' %></font></b>
+	                 <span class="label label-important">Incorrect <%= image_tag 'cancel.png' %></span>
 	              <% end %>
-	              <%= quiz_answer.answer_text_html %>
 		      </li>
 	        <% end %>
 	
@@ -60,17 +54,15 @@
 		      end %>
 		
 	       <% for quiz_answer in question.quiz_question_answers %>
-	         <li><% if quiz_answer.correct && answer_ids[quiz_answer.id] && total_correct == possible_correct %>
-		             <b><font color="green">Correct! <%= image_tag 'accept.png' %></font></b>
+	         <li><%= quiz_answer.answer_text_html %>
+	             <% if quiz_answer.correct && answer_ids[quiz_answer.id] && total_correct == possible_correct %>
+		             <span class="label label-success">Correct!</span>
 		         <% elsif answer_ids[quiz_answer.id] && total_correct == possible_correct %>
-	                 <b><font color="red">Incorrect <%= image_tag 'cancel.png' %></font></b>
+	                 <span class="label label-important">Incorrect</span>
 	             <% end %>
-	 
 	             <% if answer_ids[quiz_answer.id] && total_correct != possible_correct %>
-	                <b>Selected:</b>                                                     
+	                <span class="label label-warning">Selected:</span>
 	             <% end %> 
-	
-	             <%= quiz_answer.answer_text_html %>
 		     </li>
 	       <% end %>
 	     </ul>
@@ -83,10 +75,6 @@
 	      <br/><b>NO INPUT METHOD SPECIFIED FOR THIS QUESTION.</b>
 	   <% end %>
 	
-	   </p>
+      </div> 
 	</div>
-
   <% end %>
-
-
-</div>

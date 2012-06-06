@@ -1,19 +1,15 @@
-<div class="SectionHeader"><div class="Full">
 <h2>Reorder Courses for <%= @term.semester %></h2>
-</div></div>
 
 <div id="reorder">
   <p>Drag and Drop the course to order.</p>
-
-  <p><b><%= link_to "I'm done reordering my courses.", :controller => '/home', :action => nil, :id => nil %></b></p>
-
   <ul id="course-order">
     <% for course in @courses %>
-      <li id="course_<%= course.id %>"><%= image_tag 'arrow_switch.png', :align => 'absmiddle' %>
+      <li id="course_<%= course.id %>"><i class="icon-random"></i>
         <b><%= course.course.title %>  -  (Instructor(s): <%= course.course.instructors.join(', ') %>)</b>
       </li>
     <% end %>
   </ul>
+  <%= link_to "Done Reordering", {:controller => '/home', :action => nil, :id => nil}, {:class => "btn btn-success"} %>
 </div>
 
 <%= sortable_element 'course-order', 

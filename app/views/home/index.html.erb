@@ -1,15 +1,11 @@
-<%= render :partial => 'notifications' %>
-
 <%= render :partial => 'announcements' %>
 
+<div class="hero-unit">
+ <h2>Welcome to CascadeLMS</h2>
+ <p>Get started by selecting the appropriate course from the navigation bar. If you don't see a course that you expect to, please contact your instructor.</p>
 
-<%= render :partial => 'courses' %>
+ <% for cu in @user.courses_in_term( @term ) %>
+   
+ <% end %>
 
-<% if @user.auditor %>
-<%= render :partial => 'auditor' %>
-<% end %>
-
-<div class="SectionHeader"><div class="Full">
-<h2>Browse Public Courses</h2>
-</div></div>
-<p>Some courses provide public access to the course material, please <%= link_to "take look at the list of courses offering public access. #{image_tag 'world.png'}", :controller => '/public', :couse => nil, :assignment => nil %></p>
+</div>

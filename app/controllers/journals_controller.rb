@@ -9,6 +9,7 @@ class JournalsController < ApplicationController
     
     @assignment = Assignment.find(params[:assignment]) rescue @assignment = Assignment.new
     return unless assignment_in_course( @assignment, @course )
+    create_breadcrumb()
     
     redirect_to :controller => 'assignments', :action => 'view', :course => @course.id, :id => @assignment.id, :assignment => nil
   end
@@ -25,6 +26,7 @@ class JournalsController < ApplicationController
     @assignment = Assignment.find(params[:assignment]) rescue @assignment = Assignment.new
     return unless assignment_in_course( @assignment, @course )
     return unless assignment_has_journals( @assignment )
+    create_breadcrumb()
     
     @journal = Journal.new
     @journal.interruption_time = 0
@@ -73,6 +75,7 @@ class JournalsController < ApplicationController
     return unless assignment_in_course( @assignment, @course )
     return unless assignment_has_journals( @assignment )
     return unless assignment_open( @assignment, true )
+    create_breadcrumb()
     
     @journal = Journal.find(params[:id]) 
     
@@ -111,10 +114,16 @@ class JournalsController < ApplicationController
   end
   
 private
-  def set_tab
+  def set_tab()
     @show_course_tabs = true
     @tab = "course_assignments"
     @title = "Assignment Journals"
+  end
+
+  def create_breadcrumb()
+    @breadcrumb = Breadcrumb.for_course(@course)
+    @breadcrumb.assignment = @assignment
+    @breadcrumb.text = "Journal Entry"
   end
   
   def assignment_open( assignment, redirect = true  ) 

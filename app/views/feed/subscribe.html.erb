@@ -1,10 +1,8 @@
 <h2>Subscribe to this course's RSS feed</h2>
 
-<div class="standout">
-<p>
-<B>RSS Feed URL:</b>
+<div class="well">
+<strong>RSS Feed URL:</strong>
 <%= link_to "#{url_for :controller => 'feed', :course => @course, :only_path => false}", :controller => 'feed', :course => @course, :only_path => false %>
-</p>
 </div>
 
 <h3>RSS Information</h3>

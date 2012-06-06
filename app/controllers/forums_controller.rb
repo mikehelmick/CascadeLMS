@@ -1,14 +1,9 @@
-require 'ziya'
-
 class ForumsController < ApplicationController
-  include Ziya
   
   before_filter :ensure_logged_in
   before_filter :set_tab
   
-  layout 'noright'
-  
-  ziya_theme 'default'
+  layout 'application'
   
   def index
     return unless load_course( params[:course] )
@@ -17,6 +12,7 @@ class ForumsController < ApplicationController
     @topics = ForumTopic.find(:all, :conditions => ["course_id =?", @course.id], :order => "position asc")
     
     set_title
+    init_breadcrumb('Forums')
   end
   
   def toggle_open
@@ -36,33 +32,35 @@ class ForumsController < ApplicationController
       flash[:badnotice] = "Error changing forum status."
       redirect_to :action => 'index'
     end
-    
   end
-  
-  def move_up
+
+  def reorder
     return unless load_course( params[:course] )
     return unless ensure_course_instructor( @course, @user )
     return unless course_open( @course, :action => 'index' )
     
-    @topic = ForumTopic.find(params[:id])
-    return unless topic_in_course( @course, @topic )
+    @topics = ForumTopic.find(:all, :conditions => ["course_id =?", @course.id], :order => "position asc")
     
-    (@course.forum_topics.to_a.find {|s| s.id == @topic.id}).move_higher
-    set_highlight "topic_#{@topic.id}"
-    redirect_to :action => 'index'
+    set_title('Reorder')
+    init_breadcrumb('Forums')
   end
-  
-  def move_down
+
+  def sort_topics
     return unless load_course( params[:course] )
     return unless ensure_course_instructor( @course, @user )
     return unless course_open( @course, :action => 'index' )
     
-    @topic = ForumTopic.find(params[:id])
-    return unless topic_in_course( @course, @topic )
+    @topics = ForumTopic.find(:all, :conditions => ["course_id =?", @course.id], :order => "position asc")
+
+    # get the outcomes at this level
+    ForumTopic.transaction do
+      @topics.each do |topic|
+        topic.position = params['topic-order'].index( topic.id.to_s ) + 1
+        topic.save
+      end
+    end
     
-    (@course.forum_topics.to_a.find {|s| s.id == @topic.id}).move_lower
-    set_highlight "topic_#{@topic.id}"
-    redirect_to :action => 'index'    
+    render :nothing => true
   end
   
   def new_post
@@ -75,6 +73,9 @@ class ForumsController < ApplicationController
     return unless topic_open( @course, @topic )
     
     @post = ForumPost.new
+    set_title
+    init_breadcrumb()
+    @breadcrumb.forum = @topic    
   end
   
   def delete
@@ -257,6 +258,7 @@ class ForumsController < ApplicationController
     return unless course_open( @course, :action => 'index' )
     
     @topic = ForumTopic.new
+    init_breadcrumb('Forums')
   end
   
   def post_report
@@ -278,57 +280,7 @@ class ForumsController < ApplicationController
     end
         
     @title = "Forum Post Report for #{@course.title}"
-  end
-  
-  def post_report_graph
-    return unless load_course( params[:course] )
-    return unless ensure_course_instructor_or_assistant( @course, @user )
-    
-    @count_map = Hash.new
-    @course.courses_users.each do |u|
-      @count_map[u.user.id] = 0
-    end
-    
-    @topics = ForumTopic.find(:all, :conditions => ["course_id = ?", @course.id] )
-    @topics.each do |topic|
-      @posts = ForumPost.find(:all, :conditions => ["forum_topic_id = ?", topic.id] )
-      
-      @posts.each do |post|
-        @count_map[post.user_id] = @count_map[post.user_id].next rescue @count_map[post.user_id] = 0
-      end
-    end
-    
-    ## do exclude items
-    @exclude = Hash.new
-    @course.instructors.each do |inst|
-      @exclude[inst.id] = true
-    end
-    
-    setup_ziya
-    
-    graph = Ziya::Charts::PieThreed.new( @license, "Forum Post Pie Chart (Students Only)", "pie_forums" )      
-    
-    @categories = Array.new
-    @series = Array.new
-    @explode = Array.new
-    
-    @course.students.each do |student|
-      if @exclude[student.id].nil?
-        @categories << "#{student.display_name} (#{@count_map[student.id]})"
-        @series << @count_map[student.id] 
-       
-        @explode << @count_map[student.id] * 3
-      end
-    end
-        
-    graph.add :axis_category_text, @categories
-    graph.add :series, 'Students', @series
-    graph.add( :user_data, :explode, @explode )
-    graph.add( :user_data, :colors, colors( @categories.size ) )
-    
-    graph.add :theme, 'default' 
-    
-    render :xml => graph.to_xml
+    init_breadcrumb("Forums")
   end
   
   def create_forum
@@ -394,6 +346,9 @@ class ForumsController < ApplicationController
     @page = 1 if @page.nil? || @page == 0
     @post_pages = Paginator.new self, ForumPost.count(:conditions => ["forum_topic_id = ? and parent_post = ?", @topic.id, 0]), 25, @page
     @posts = ForumPost.find(:all, :conditions => ["forum_topic_id = ? and parent_post = ?", @topic.id, 0 ], :order => 'updated_at DESC', :limit => 25, :offset => @post_pages.current.offset)
+
+    init_breadcrumb()
+    @breadcrumb.forum = @topic
   end
   
   def read
@@ -416,6 +371,10 @@ class ForumsController < ApplicationController
     @posts = ForumPost.find(:all, :conditions => ["forum_topic_id = ? and parent_post = ?", @topic.id, @parent_post.id ], :order => 'created_at ASC', :limit => 15, :offset => @post_pages.current.offset)
     
     @title = @parent_post.headline
+
+    init_breadcrumb()
+    @breadcrumb.forum = @topic
+    @breadcrumb.text = h @parent_post.headline
   end
   
   def edit
@@ -434,6 +393,10 @@ class ForumsController < ApplicationController
         flash[:notice] = "You are editing some else's post as a instrcutor or TA.  Any edit you make will be appended to the end of the post with your name on it."
       end     
     end
+
+    init_breadcrumb()
+    @breadcrumb.forum = @topic
+    @breadcrumb.text = 'Edit Post'
   end
   
   def reply
@@ -450,6 +413,10 @@ class ForumsController < ApplicationController
     @post = ForumPost.new
     @post.headline = "RE: #{@reply_to.headline}"
     @post.post = "[quote]_posted by #{@reply_to.user.display_name} at #{@reply_to.created_at.to_formatted_s(:short)}_ \n\n #{@reply_to.post}\n[/quote]"
+    
+    init_breadcrumb()
+    @breadcrumb.forum = @topic
+    @breadcrumb.text = 'Reply'
   end
   
   private
@@ -487,8 +454,17 @@ class ForumsController < ApplicationController
     @title = "Course Forum"
   end
   
-  def set_title
-    @title = "#{@course.title} (Course Forum)"
+  def set_title(extra = nil)
+    if extra.nil?
+      @title = "#{@course.title} (Course Forum)"
+    else
+      @title = "#{extra} #{@course.title} (Forums)"
+    end
+  end
+
+  def init_breadcrumb(extra_text = nil)
+    @breadcrumb = Breadcrumb.for_course(@course)
+    @breadcrumb.text = extra_text unless extra_text.nil?
   end
   
   def redirect_for_post( post )

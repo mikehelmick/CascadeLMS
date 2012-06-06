@@ -1,22 +1,7 @@
+<h3>Edit Post</h3>
 
-<h2>Course: <%= @course.title %></h2>
-<h3>Forum: <%= @topic.topic %></h3>
-
-<p><b>Editing your post</b> | <%= link_to 'Cancel', :action => 'read', :id => @parent %></p>
-
-<% nowT = Time.now
-   since_post = (nowT - @post.created_at).to_i
- %>
-
-<div id="form_area">
-<% form_tag( :action => 'submit_post', :topic => @topic.id, :id => @post.id ) do %>
+<% form_tag( {:action => 'submit_post', :topic => @topic.id, :id => @post.id}, {:class => 'form-horizontal'} ) do %>
   <%= render :partial => 'post_form' %>
-<div class="submit">
-  <%= submit_tag "Submit Post" %>
-</div>
+  <%= submit_tag("Submit Post", {:class => 'btn btn-primary'}) %>
+  <%= link_to 'Cancel', {:action => 'read', :id => @topic.id}, {:class => 'btn'} %>
 <% end %>
-
-</div>
-
-
-<p><%= link_to 'Cancel', :action => 'read', :id => @topic.id %></p>

@@ -1,4 +1,4 @@
-# Copyright (c) 2006-2009, Mike Helmick - mike.helmick@gmail.com
+# Copyright (c) 2006-2012, Mike Helmick - mike.helmick@gmail.com
 # All rights reserved.
 # 
 # Redistribution and use in source and binary forms, with or without modification, 
@@ -29,12 +29,13 @@ require 'BasicAuthentication'
 require 'LdapAuthentication'
 require 'yaml'
 require 'MyString'
+require 'MyActiveRecordHelper'
 
 # Filters added to this controller will be run for all controllers in the application.
 # Likewise, all the methods added will be available for all controllers.
 class ApplicationController < ActionController::Base
   ## CSCW Application version
-  @@VERSION = '1.4.105 (Rainier) 20111217'
+  @@VERSION = '2.0.0 <em>alpha</em> (Jefferson) 20120517'
   
   ## Supress password logging
   filter_parameter_logging :password
@@ -53,10 +54,6 @@ class ApplicationController < ActionController::Base
   @@external_dir = nil   
   @@last_update = nil
   
-  
-  def setup_ziya    
-     @ziya_license = nil   
-  end
      
   ## Collor array for charting/graphig
   @@colors = ['0000ff','00ff7f','ff007f','ffff00',
@@ -75,7 +72,10 @@ class ApplicationController < ActionController::Base
     0.upto( amount - 1 ) { |i| colors << @@colors[i] }
     return colors
   end
-          
+
+  def init_breadcrumb
+    @breadcrumb = Breadcrumb.new
+  end     
                     
   def browser_check
     if request.env['HTTP_USER_AGENT'] && request.env['HTTP_USER_AGENT'].include?('MSIE')
@@ -96,7 +96,7 @@ class ApplicationController < ActionController::Base
     end
   end
   
-  def session_valid?
+  def session_valid?(update_time = true)
      creation_time = session[:creation_time] || Time.now
      if !session[:expiry_time].nil? and session[:expiry_time] < Time.now
         # Session has expired. Clear the current session.
@@ -104,8 +104,11 @@ class ApplicationController < ActionController::Base
         return false
      end
 
-     # Assign a new expiry time, whether the session has expired or not.
-     session[:expiry_time] = (@app['session_limit'].to_i).seconds.from_now
+     # unless update time suppressed
+     if (update_time)
+       # Assign a new expiry time, whether the session has expired or not.
+       session[:expiry_time] = (@app['session_limit'].to_i).seconds.from_now
+     end
 
      return true
   end
@@ -234,10 +237,11 @@ class ApplicationController < ActionController::Base
  	def load_user_if_logged_in
  	  unless session[:user].nil?
  	    @user = User.find(session[:user].id)
+ 	    @notificationCount = @user.notification_count
     end
  	end
  	
- 	def ensure_logged_in
+ 	def ensure_logged_in(update_time = true)
  	  redirect_uri = "#{request.protocol()}#{request.host()}#{request.port_string}#{request.request_uri()}"
  	
  	  if session[:user].nil?
@@ -247,7 +251,7 @@ class ApplicationController < ActionController::Base
  	    return false
     end
     
-    if !session_valid?
+    if !session_valid?(update_time)
       redirect_to :controller => '/index', :action => 'expired'
       # don't want to accidently clobber post data
       session[:post_login] = "#{request.protocol()}#{request.host()}#{request.port_string}/home"
@@ -258,6 +262,7 @@ class ApplicationController < ActionController::Base
     
     # duplicate user - to keep session down
     @user = User.find(session[:user].id)
+    @notificationCount = @user.notification_count
     return true
   end
   

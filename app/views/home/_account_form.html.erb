@@ -1,43 +1,74 @@
-<%= error_messages_for 'user' %>
+<%= error_messages_for('user', :class => 'alert alert-error') %>
 
-<p class="blockintro">Change your user information:</p>
-  <div class="block">
-	<p><b>Your name</b>: <%= @user.first_name %> <%= @user.middle_name %> <%= @user.last_name %></p>
-	
-    <label for='preferred_name' class="required">Preferred Name:</label>
-      <%= text_field_tag 'preferred_name', @user.preferred_name  %><br/>
-
-	<label for='phone_number' class="required">Phone Number:</label>
-      <%= text_field_tag 'phone_number', @user.phone_number, :size => 30  %><br/>
-
-	<label for='office_hours' class="required">Office Hours:</label>
-      <%= text_field_tag 'office_hours', @user.office_hours, :size => 45  %><br/>
-
-    <p>
-	  <b>Institution Affiliation</b>: <%= @user.affiliation %> <br/>
-	  <% if @user.instructor %>
-	    <b>You have instructor access</b><br/>
-	  <% end %>
-	  <% if @user.admin %>
-        <b>You have admin access</b><br/>
-      <% end %>
-      
-	</p>
+<fieldset>
+ <div class="control-group">
+  <label for="fixed_your_name" class="control-label">Your Name:</label>
+  <div class="controls">
+   <%= text_field_tag 'fixed_your_name', "#{@user.first_name} #{@user.middle_name} #{@user.last_name}", {:disabled => true}  %>
   </div>
-
-<p class="blockintro">Change your password/email:</p>
-  <div class="block">
-    <label for='email'>Email:</label>
-      <%= text_field_tag 'email', @user.email, :size => 40 %><br/>
-
-	<label for='password'>Current Password:</label>
-      <%= password_field_tag 'password' %><br/>
-      * You must enter your current password to change your email address<br/>
-
-	<label for='new_password'>New Password:</label>
-      <%= password_field_tag 'new_password' %><br/>
-
-	<label for='new_password_confirm'>New Password Confirm:</label>
-      <%= password_field_tag 'new_password_confirm' %><br/>
+ </div>
+ <div class="control-group">
+  <label for="preferred_name" class="control-label">Preferred Name:</label>
+  <div class="controls">
+   <%= text_field_tag 'preferred_name', @user.preferred_name, :class => 'input-large', :autofocus => 'autofocus'  %>
   </div>
-
+ </div>
+ <div class="control-group">
+  <label for="phone_number" class="control-label">Phone Number:</label>
+  <div class="controls">
+   <%= text_field_tag 'phone_number', @user.phone_number, :class => 'input-large'  %>
+  </div>
+ </div>
+ <div class="control-group">
+  <label for="office_hours" class="control-label">Office Hours:</label>
+  <div class="controls">
+   <%= text_field_tag 'office_hours', @user.office_hours, :class => 'input-large'  %>
+  </div>
+ </div>
+ <div class="control-group">
+  <label for="fixed_affiliation" class="control-label">Institution Affiliation:</label>
+  <div class="controls">
+   <%= text_field_tag 'fixed_affiliation', @user.affiliation, {:disabled => true}  %>
+  </div>
+ </div>
+ <% if @user.instructor %>
+ <div class="control-group">
+  <label for="fixed_instructor" class="control-label">Instructor Access:</label>
+  <div class="controls">
+   <%= text_field_tag 'fixed_instructor', @user.affiliation, {:disabled => true}  %>
+  </div>
+ </div>
+ <% end %>
+ <% if @user.admin %>
+ <div class="control-group">
+  <label for="fixed_admin" class="control-label">Admin Access:</label>
+  <div class="controls">
+   <%= check_box_tag 'fixed_admin', true, true, {:disabled => true}  %> Yes - You have admin access.
+  </div>
+ </div>
+ <% end %>
+ <div class="control-group">
+  <label for="email" class="control-label">Email:</label>
+  <div class="controls">
+   <%= text_field_tag 'fixed_affiliation', @user.email, :class => 'input-large' %>
+  </div>
+ </div>
+ <div class="control-group">
+  <label for="password" class="control-label">Current Password:</label>
+  <div class="controls">
+   <%= password_field_tag 'password' %><br/>
+   <p class="help-block">You must enter your current password to change your email address</p>
+  </div>
+ </div>
+ <div class="control-group">
+  <label for="new_password" class="control-label">New Password:</label>
+  <div class="controls">
+   <%= password_field_tag 'new_password' %>
+  </div>
+ </div>
+ <div class="control-group">
+  <label for="new_password_confirm" class="control-label">New Password Confirm:</label>
+  <div class="controls">
+   <%= password_field_tag 'new_password_confirm' %>
+  </div>
+ </div>

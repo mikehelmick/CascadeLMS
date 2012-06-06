@@ -1,15 +1,18 @@
-<%= error_messages_for 'topic' %>
+<%= error_messages_for('topic', :class => 'alert alert-error') %>
 
-<!--[form:post]-->
-<p class="blockintro">Creating a new topic will allow users to create sub-topics (posts) and replies to those sub-topics.</p>
-<div class="block">
-<p><label for="forum_topic"  class="required">Topic Name:</label>
-<%= text_field 'topic', 'topic'  %></p>
-
-<p><label for="topic_allow_posts" class="required">Allow Posts:</label>
-	<%= radio_button 'topic', 'allow_posts', true %> Yes
-	<%= radio_button 'topic', 'allow_posts', false %> No</p>
-
-
-</div>
-<!--[eoform:post]-->
+<fieldset>
+  <legend>Creating a new topic will allow users to create sub-topics (posts) and replies to those sub-topics.</legend>
+  <div class="control-group">
+    <label for="forum_topic"  class="control-label">Topic Name:</label>
+    <div class="controls">
+	  <%= text_field 'topic', 'topic', {:class => 'input-large'}  %>
+    </div>
+  </div>
+  <div class="control-group">
+	<label for="topic_allow_posts" class="control-label">Allow Posts:</label>
+	<div class="controls">
+	  <%= radio_button 'topic', 'allow_posts', true %> Yes
+	  <%= radio_button 'topic', 'allow_posts', false %> No
+	</div>
+  </div>
+</fieldset>

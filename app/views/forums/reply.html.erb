@@ -1,29 +1,21 @@
-<h2>Course: <%= @course.title %></h2>
-<h3>Forum: <%= @topic.topic %></h3>
+<h3>Reply to post</h3>
 
-<p><b>Replying to...</b> | <%= link_to 'Cancel', :action => 'read', :id => @parent.id %></p>
-
-<table class="forum" cellpadding="0" cellspacing="0">
+<table class="table table-compact">
   <%= render :partial => "post", :locals => { :post => @reply_to, :parent => @parent, :controls => false } %> 
 </table>
 
 <% if @reply_to.id != @parent.id %>
-<p><b>In the forum</b></p>
-<table class="forum" cellpadding="0" cellspacing="0">
+<h3>In the forum</h3>
+<table class="table table-compact">
   <%= render :partial => "post", :locals => { :post => @parent, :parent => @parent, :controls => false } %> 
 </table>
 <% end %>
 
-<div id="form_area">
-<% form_tag( :action => 'submit_post' ) do %>
+<h3>Your Reply</h3>
+<% form_tag( {:action => 'submit_post'}, {:class => 'form-horizontal'} ) do %>
   <%= hidden_field_tag 'topic', @topic.id %>
   <%= hidden_field_tag 'parent', @parent.id %>
   <%= render :partial => 'post_form' %>
-<div class="submit">
-  <%= submit_tag "Submit Reply" %>
-</div>
+  <%= submit_tag "Submit Reply", :class => 'btn btn-primary' %>
+  <%= link_to 'Cancel', {:action => 'read', :id => @parent.id}, {:class => 'btn'} %>
 <% end %>
-
-</div>
-
-<p> <%= link_to 'Cancel', :action => 'read', :id => @parent.id %></p>

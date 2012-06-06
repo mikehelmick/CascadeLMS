@@ -1,0 +1,10 @@
+<div class="row-fluid">
+ <div class="span12">
+	<div class="btn-toolbar">	
+	<div class="btn-group">
+     <%= link_to '<i class="icon-upload"></i> Upload a new file.', {:action => 'file_new', :id => @team.id}, {:class => 'btn btn-small' } %>
+    </div>
+    <%= render :partial => 'buttons' %>
+    </div>
+ </div>
+</div>

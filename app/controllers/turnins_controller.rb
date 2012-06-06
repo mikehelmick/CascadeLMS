@@ -35,15 +35,10 @@ class TurninsController < ApplicationController
         @directories << utf if utf.directory_entry?
         @has_files = @has_files || !utf.directory_entry?
       end
-      @directory = ""
-      
-      
-      
+      @directory = ""    
     else
-      
       redirect_to :action => 'create_set'
       return
-      
     end
   
     count_todays_turnins( @app["turnin_limit"].to_i )
@@ -648,68 +643,7 @@ class TurninsController < ApplicationController
     
     if  @assignment.auto_grade_setting && (@assignment.auto_grade_setting.student_io_check || @assignment.released)
       @student_io_check = Hash.new
-      @assignment.io_checks.each do |check|
-         student_check = IoCheckResult.find(:first, :conditions => ["io_check_id = ? && user_turnin_id = ?", check.id, @current_turnin.id ] )
-         unless student_check.nil?
-           @student_io_check[check.id] = student_check
-         end
-      end
-    end
-    
-    # load any existing rubric entries
-    if @assignment.rubrics.size > 0
-       @rubric_entry_map = @assignment.rubric_map_for_user(@user.id, false)
-    end
-    
-    
-    @now = Time.now
-    set_title
-    
-    
-    respond_to do |format|
-      format.html { render :layout => 'noright' }
-      format.xml { render :layout => false }
-    end
-  end
-  
-  ## Similar to feedback, but line by line difs
-  def feedback_line
-    return unless load_course( params[:course] )
-    return unless allowed_to_see_course( @course, @user )
-    
-    @assignment = Assignment.find(params[:assignment]) rescue @assignment = Assignment.new
-    return unless assignment_in_course( @assignment, @course )
-    @instructor = @user.instructor_in_course?(@course.id)
-    if !@instructor
-      return unless assignment_available( @assignment )
-      return unless assignment_available_for_students_team( @course, @assignment, @user.id )
-    end
-    
-    return unless load_team( @course, @assignment, @user )
-    load_turnins
-    @current_turnin = nil
-    @current_turnin = @turnins[0] if @turnins.size > 0
-    
-    if @current_turnin
-      @directories = Hash.new
-      @current_turnin.user_turnin_files.each do |utf|
-        @directories[utf.id] = utf if utf.directory_entry?
-      end
-    end
-    
-    if @assignment.released
-      @grade_item = GradeItem.find( :first, :conditions => ['assignment_id = ?', @assignment.id] )
-      if ( @grade_item )
-        @grade_entry = GradeEntry.find( :first, :conditions => ['grade_item_id = ? and user_id = ?', @grade_item.id, @user.id] )
-        @feedback_html = @grade_entry.comment.to_html rescue @feedback_html = ''
-      end
-    end
-    
-    if  @assignment.auto_grade_setting && (@assignment.auto_grade_setting.student_io_check || @assignment.released)
-      @student_io_check = Hash.new
-      
       @student_io_check_lines = Hash.new
-      
       @assignment.io_checks.each do |check|
          student_check = IoCheckResult.find(:first, :conditions => ["io_check_id = ? && user_turnin_id = ?", check.id, @current_turnin.id ] )
          unless student_check.nil?
@@ -719,17 +653,24 @@ class TurninsController < ApplicationController
            @student_io_check_lines[check.id][:EXPECTED] = check.output.split("\n")
            @student_io_check_lines[check.id][:STUDENT] = student_check.output.split("\n")
            @student_io_check_lines[check.id][:DIFF] = student_check.diff_report.split("\n")
-           
          end
       end
     end
     
+    # load any existing rubric entries
+    if @assignment.rubrics.size > 0
+       @rubric_entry_map = @assignment.rubric_map_for_user(@user.id, false)
+    end
+
     @now = Time.now
     set_title
-    
-    render :layout => 'noright'   
+        
+    respond_to do |format|
+      format.html { }
+      format.xml { render :layout => false }
+    end
   end
-  
+
 private
 
   def load_turnins
@@ -833,6 +774,10 @@ private
 
   def set_title
     @title = "Submitted Files for #{@assignment.title} - #{@course.title}" 
+    @breadcrumb = Breadcrumb.for_course(@course)
+    @breadcrumb.assignment = @assignment
+    @breadcrumb.text = "Your Turnins"
+    @breadcrumb.link = url_for(:action => 'index')
   end
   
   def count_todays_turnins( max = 3 )

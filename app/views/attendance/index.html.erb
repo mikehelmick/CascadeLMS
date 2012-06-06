@@ -1,39 +1,47 @@
-<h2>Your attendance for <%= @course.title %></h2>
+<div class="alert alert-info">
+ <a class="close" data-dismiss="alert">×</a>
+ <strong>Attendance Key:</strong> When attendance recording is open, your instructor will provide the attendance key in the classroom.
+</div>
 
 
 <% unless @current_period.nil? %>
 <% unless @attending_current %>
-<h2>Record You Attendance</h2>
-<div id="form_area">
-<% form_tag( :action => 'record_attendance' ) do %>
-<p><label for="key"  class="required">Class Key: </label>
-<%= text_field_tag 'key'  %> (<i>Key is only available in the classroom.</i>)</p>
-<div class="submit">
-  <%= submit_tag "I'm Here!" %>
-</div>
+<div class="well">
+<h2>Class is in session - Record You Attendance</h2>
+<% form_tag( {:action => 'record_attendance'}, {:class => 'form-horizontal'} ) do %>
+ <fieldset>
+  <div class="control-group">
+   <label for="key"  class="control-label">Class Key</label>
+   <div class="controls">
+     <%= text_field_tag 'key' %>
+     <p class="help-block">Key is only available in the classroom.</p>
+   </div>
+  </div>
+ </fieldset>
+ <%= submit_tag "I'm Here!", :class => 'btn btn-primary' %>
 <% end %>
 </div>
 <% end %>
 <% end %>
 
+<h2>Your attendance for <%= @course.title %></h2>
 <% num_att = 0 %>
 <% num_miss = 0 %>
 <% if @periods.size > 0 %>
-	<table class="fancy">
-	  <tr class="header">
+	<table class="table table-striped table-compact">
+	 <thead>
+	  <tr>
 	    <th>#</th>
 		<th>Class Date</th>
 	    <th>Did you attend?</th>
 	  </tr>
+	 </thead>
 
 	<% count = 0%> 
 	<% for period in @periods %>
-	<% count = count.next 
-	   odd = "odd"
-	   odd = "even" if count.even?
-	%>
-	  <tr class="<%=odd%> hover" id="period_<%=period.id%>">
-		<td><%= period.position %></td>
+	<% count = count.next %>
+	  <tr id="period_<%=period.id%>">
+		<th><%= period.position %></th>
 		<td><%= Date::MONTHNAMES[period.created_at.mon] %>
 			<%= period.created_at.mday %>, <%= period.created_at.year %>
 			</td>
@@ -51,19 +59,19 @@
 	<% end %>
 	
 	<tr>
-	  <td>##</td>
+	  <th>##</th>
 	  <td align="right"># Attending</td>
 	  <td><%= num_att %></td>
 	</tr>
 	
 	<tr>
-	  <td>##</td>
+	  <th>##</th>
 	  <td align="right"># Missed</td>
 	  <td><%= num_miss %></td>
 	</tr>	
 	
 	<tr>
-	  <td>##</td>
+	  <th>##</th>
 	  <td align="right">Attendance Percentage</td>
 	  <td><%= sprintf("%.2f", num_att.to_f / (num_att + num_miss) * 100 ) %>%</td>
 	</tr>

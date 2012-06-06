@@ -1,0 +1,11 @@
+<%= render :partial => 'notifications' %>
+
+<div class="pagination">
+ <ul>
+	<% 1.upto(@note_pages.page_count) do |i| %>
+	<li <%= 'class="active"' if i == @page %>>
+	  <%= link_to i, { :page => i } %>
+	</li>
+	<% end %>
+ </ul>
+</div>

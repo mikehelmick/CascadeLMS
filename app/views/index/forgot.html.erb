@@ -1,16 +1,15 @@
 <h2>Recover Password</h2>
-
-
 <div id="form_area">
-<% form_tag( :controller => "/index", :action => "send_forgot" ) do %>
-
-<p class="blockintro">Enter your username to start the password recovery process.</p>  
-  <div class="block">
-    <label for='uniqueid' class="required">Username:</label>
-      <%= text_field_tag 'uniqueid', '', :size => 20  %><br/>
-  </div>
-  <div class="submit">
-    <%= submit_tag "Recover Password" %>
-  </div>
+<% form_tag( {:controller => "/index", :action => "send_forgot"}, {:class => 'form-horizontal'} ) do %>
+ <fieldset>
+    <legend>Enter your username to start the password recovery process:</legend>
+    <div class="control-group">
+      <label for="uniqueid" class="control-label">Username:</label>
+      <div class="controls">
+	    <%= text_field_tag 'uniqueid', '', :class => 'input-large', :autofocus => 'autofocus' %>
+      </div>
+    </div>
+  </fieldset>
+  <%= submit_tag("Recover Password", :class => 'btn-large btn-primary') %>
 <% end %>
 </div>

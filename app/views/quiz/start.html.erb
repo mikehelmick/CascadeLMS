@@ -2,14 +2,10 @@
   item_type = "Quiz"
   item_type = "Survey" if @quiz.survey
 %> 
+<h2><%= item_type %> <%= @assignment.title %></h2>
 
-<div class="SectionHeader"><div class="Full">
-<h2>
-  <%= item_type %> <%= @assignment.title %></h2>
-</div></div>
-
-<% unless @assignment.description.nil? %>
- <div class="standout">
+<% unless @assignment.description.nil? || ''.eql?(@assignment.description) %>
+ <div class="well">
   <%= @assignment.description_html %>
  </div>
 <% end %>
@@ -21,33 +17,31 @@
 <% end %>
 
 <% if request.path_parameters['action'].eql?('take') and @quiz.random_questions %>
-  <div class="GoodMessage">
+  <div class="alert">
 	The order of the quiz questions has been randomized, make sure you answer all questions.
   </div>
 <% end %>
 
 <% if !@quiz.survey && (@allAttempts.length > 1 || (@allAttempts.length == 1 && @allAttempts[0].completed)) %>
-<p><b><%= link_to "#{image_tag 'cancel.png'} Abort this quiz attempt, and use my previously completed version.", :action => 'abort', :course => @course, :id => @assignment %></b></p>
+<%= link_to "#{image_tag 'cancel.png'} Abort this quiz attempt, and use my previously completed version.", {:action => 'abort', :course => @course, :id => @assignment}, {:class => 'btn btn-danger'} %>
 <% end %>
 
-<div id="form_area">
-  <%= error_messages_for 'quiz_attempt' %>	
-  <% form_tag( :action => 'take', :course => @course, :id => @assignment, :qa => @quiz_attempt ) do %>
+  <%= error_messages_for('quiz_attempt', :class => 'alert alert-error') %>	
+  <% form_tag( {:action => 'take', :course => @course, :id => @assignment, :qa => @quiz_attempt}, {:class => 'form-vertical'} ) do %>
 
   <% count = 0 %>
   <% for question in @questions do %>  
     <% count = count.next %>
 
-    <p class="blockintro"><b>Question #<%=count %> of <%= @questions.length %></b></p>
-    <div class="block">
-	   <p><label for="" class="required">
-	     <% if !question.score_question %><i>This question does not count against your score.</i><br/><hr/><% end %>
-	     <%= question.question_html %></label><br/>
-	
+    <fieldset><div class="well">
+	  <legend>Question #<%=count %> of <%= @questions.length %></legend>
+	  <label>
+	     <% if !question.score_question %><em>This question does not count against your score.</em><br/><% end %>
+	     <%= question.question_html %></label>
 	   <% if question.text_response %>
 	      <% answer = ""
 	         answer = @answer_map[question.id].text_answer unless @answer_map[question.id].nil? %>
-	      <%= text_area_tag( "answer_#{question.id}", answer, {"cols" => 80, "rows" => 5} ) %>
+	      <%= text_area_tag( "answer_#{question.id}", answer, {:rows => 5, :cols => 80, :class => 'input-xlarge'} ) %><br/>
 	   <% elsif question.multiple_choice %>
 	      <% answer_id = 0
 	         answer_id = @answer_map[question.id].quiz_question_answer_id unless @answer_map[question.id].nil? %>
@@ -57,7 +51,6 @@
 		          <%= quiz_answer.answer_text_html %>
 		      </li>
 	        <% end %>
-	
 	      </ul>
 	   <% elsif question.checkbox %>
 	     <% answer_ids = Hash.new
@@ -74,19 +67,15 @@
 	     </ul>
 	
 	   <% else %>
-	      <br/><b>NO INPUT METHOD SPECIFIED FOR THIS QUESTION.</b>
+	      <b>NO INPUT METHOD SPECIFIED FOR THIS QUESTION.</b>
 	   <% end %>
-	
-	   <br/>
-	   <%= submit_tag "Save Answers and Continue Taking #{item_type}" %>
-	   </p>
-	</div>
-
+	 <%= submit_tag "Save Answers and Continue Taking #{item_type}", :class => 'btn btn-warning' %>
+	 </div>
+	</fieldset>
   <% end %>
 
  
   <div class="submit">
-	<%= submit_tag "Save Answers - Complete #{item_type}", {:confirm => 'Are you sure you want to submit your final answers?' } %>
+	<%= submit_tag "Save Answers - Complete #{item_type}", {:class => 'btn btn-primary', :confirm => 'Are you sure you want to submit your final answers?' } %>
   </div>
   <% end %>	
-</div>

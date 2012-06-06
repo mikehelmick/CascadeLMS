@@ -1,3 +1,5 @@
+require 'FileManager'
+
 class TeamController < ApplicationController
   
   before_filter :ensure_logged_in
@@ -18,6 +20,10 @@ class TeamController < ApplicationController
     if @user.instructor_in_course?( @course.id )
       @all_teams = ProjectTeam.find(:all, :conditions => ["course_id = ?", @course.id] )
     end
+
+    @breadcrumb = Breadcrumb.for_course(@course)
+    @breadcrumb.team = @team unless @team.nil?
+    @breadcrumb.text = 'Team Center'
   end
   
   #### WIKI
@@ -260,7 +266,8 @@ class TeamController < ApplicationController
     return unless on_team_or_instructor( @course, @team, @user )
     return unless team_enable_documents( @course )
       
-    @documents = TeamDocument.find(:all, :conditions => ["project_team_id = ?", @team.id], :order => "created_at DESC")  
+    @documents = TeamDocument.find(:all, :conditions => ["project_team_id = ?", @team.id], :order => "created_at DESC")
+    file_breadcrumb()
   end
   
   def file_new
@@ -273,6 +280,7 @@ class TeamController < ApplicationController
     return unless instructor_documents_filter( @course, @user )
     
     @document = TeamDocument.new  
+    file_breadcrumb()
   end
   
   def file_upload
@@ -328,9 +336,18 @@ class TeamController < ApplicationController
   end
   
   private
+
+  def file_breadcrumb
+    @breadcrumb = Breadcrumb.for_course(@course)
+    @breadcrumb.team = @team
+    @breadcrumb.text = 'Team Files'
+  end
   
   def wiki_title
     @title = "Wiki for team #{@team.name} in #{@course.title}"
+    @breadcrumb = Breadcrumb.for_course(@course)
+    @breadcrumb.team = @team
+    @breadcrumb.text = 'Team Wiki'
   end
   
   def wiki_links( html, team, course )

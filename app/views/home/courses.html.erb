@@ -1,21 +1,19 @@
-<div class="SectionHeader"><div class="Full">
 <h2>All Of Your Courses</h2>
-</div></div>
-
+<table class="table table-striped table-condensed">
+ <tr>
+  <th>Course</th>
+  <th>Term</th>
+  <th>Instructor</th>
+ </tr>
 <% for course in @courses %>
-<table class="FadeTable" cellspacing="0">
-  <tr class="header">
-	<th colspan="3">
-	  <%= link_to "<b>#{course.title}</b> #{course.short_description}#{' (Archived)' unless course.course_open }", :controller => "/overview", :course => course %>  (<%= course.term.semester %>)
-	  <br/>
-	  <b>Instructor: </b>
-	  <% inst = course.instructors %>
-	  <% if inst.size == 0 %>
-	    <i>No instructor is currently assigned to this course.</i>
-	  <% else %>
-	    <%= inst.join(', ') %>
+ <tr>
+  <td><%= link_to "<b>#{course.title}</b> #{course.short_description}#{' (Archived)' unless course.course_open }", :controller => "/overview", :course => course %>
+  </td>
+  <td><%= course.term.semester %></td>
+  <td><% if course.instructors.size == 0 %> <em>unknown</em>
+	  <% else %> <%= course.instructors.join(', ') %>
 	  <% end %>
-  </th>
+  </td>
 </tr>
-</table>
 <% end %>
+</table>

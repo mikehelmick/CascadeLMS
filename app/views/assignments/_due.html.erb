@@ -1,11 +1,11 @@
 <% if @assignment.close_date <= @now %>
    <% if !@extension.nil? && !@extension.past? %>
-      <div class="GoodMessage"><%= image_tag 'clock.png' %> <b>This assignment is past due, but you have been granted an extension.  Your submission is due in <%= distance_of_time_in_words_to_now( @extension.extension_date, true ) %></b></div>
+      <div class="alert alert-success"><strong>This assignment is past due, but you have been granted an extension.  Your submission is due in <%= distance_of_time_in_words_to_now( @extension.extension_date, true ) %></strong></div>
    <% else %>
-      <div class="errorExplanation"><%= image_tag 'clock_red.png' %> <b>This assignment is past due and late submissions are not being accepted.</b></div>
+      <div class="alert alert-error"><strong>This assignment is past due and late submissions are not being accepted.</strong></div>
    <% end %>
 <% elsif @assignment.due_date <= @now and @assignment.close_date >= @now %>
-  <div class="errorExplanation"><%= image_tag 'clock_red.png' %> <b>This assignment is past due and late submissions are still being accepted.</b></div>
+  <div class="alert alert-error"><strong>This assignment is past due and late submissions are still being accepted.</strong></div>
 <% else %>
-  <div class="GoodMessage"><%= image_tag 'clock.png' %> <b>This assignment is due in <%= distance_of_time_in_words_to_now( @assignment.due_date, true ) %></b></div>
+  <div class="alert alert-success"><strong>This assignment is due in <%= distance_of_time_in_words_to_now( @assignment.due_date, true ) %></strong></div>
 <% end %>

@@ -1,0 +1,67 @@
+
+     <% io_count = 0  %>
+     <table class="table">
+     <% for check in @assignment.io_checks %>     
+       <% if check.student_level || @assignment.released %>
+         <% show_input = check.show_input && @assignment.released 
+            span = 2
+            span += 1 if show_input
+          %>
+
+		 
+		   <tr><th colspan="<%=span%>"><i class="icon-list-alt"></i> I/O Check: '<%= check.name %>'</th></tr>
+           <tr>
+	         <% if show_input %>
+	           <th><b>Test Input</b></th>
+	         <% else %>	        
+	           <th><b>Expected Output</b></th>
+	         <% end %>
+	         <th><B>Your Output</b>
+		       <% unless @student_io_check[check.id].nil? %>
+		       :: Match Percentage <b><%= sprintf( "%.2f", @student_io_check[check.id].match_percent ) %>%</b>
+		 
+		         <% if 100 - @student_io_check[check.id].match_percent < check.tolerance %>
+		           <i class="icon-ok-sign"></i> Pass
+		         <% else %> 
+		           <i class="icon-remove-sign"></i> Failure
+		         <% end %>
+		 
+		         (<%= link_to_function( "toggle raw/diff", "Element.toggle('student_check_#{check.id}_diff');Element.toggle('student_check_#{check.id}_raw');" ) %>)
+		
+		       <% end %>
+		     </th>
+		   </tr>
+		
+		   <tr>
+			 <% if show_input %>
+	           <td class="diffReport" valign="top"><%= check.input.to_html %></td>
+	         <% else %>
+			   <td class="diffReport" valign="top">
+			       <%= check.output.to_html %>
+			   </td>
+	         <% end %>
+	         <td class="diffReport<%= '2' if show_input %>" colspan="1" valign="top">
+			  <div id="student_check_<%=check.id%>_diff">
+				 <% if @student_io_check[check.id].nil? %>
+				   <b><i class="icon-remove-sign"></i>>No output found for this test.</b>
+				 <% else %>
+		  		    <%= @student_io_check[check.id].diff_report.non_span_space_convert %>
+				 <% end %>
+				<hr/>
+				<div class="alert alert-info">Viewing Diff Output.</div>
+			  </div>
+			  <div id="student_check_<%=check.id%>_raw" style="display:none;">
+				 <% if @student_io_check[check.id].nil? %>
+				   <b><%= image_tag 'flag_red.png' %>No output found for this test.</b>
+				 <% else %>
+		  		    <%= @student_io_check[check.id].output.to_html %>
+				 <% end %>				
+				<hr/>
+				<div class="alert alert-info">Viewing Raw Output.</div>
+			  </div>
+             </td>
+		   </tr>
+		
+       <% end %>
+     <% end %>
+     </table>

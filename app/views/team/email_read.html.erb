@@ -1,18 +1,10 @@
 <%= render :partial => 'emailhead' %>
 
-<hr/>
-
 <h3>Email for team '<%= @team.name %>'</h3>
 
+<div class="well">
+<h2><%=h @email.subject %></h2>
+<em>Sent by: <%= @email.user.display_name %> @ <%= @email.created_at.to_formatted_s(:long) %> (<%= distance_of_time_in_words_to_now( @email.created_at ) %>)</em>
 <hr/>
-
-<h2>Reading message '<%= @email.subject %></h2>
-<p>Sent by: <%= @email.user.display_name %> @ <%= @email.created_at.to_formatted_s(:long) %> (<%= distance_of_time_in_words_to_now( @email.created_at ) %>)</p>
-
-<div class="SectionHeader"><div class="Full">
-	<b><%= @email.subject %></b>
-</div></div>
-
-<div class="Section" width="90%"><p>
-<%= @email.message.newline_to_break %>
-</p></div>
+<%=h @email.message.newline_to_break %>
+</div>

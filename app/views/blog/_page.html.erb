@@ -1,9 +1,15 @@
-<%
-public = false if public.nil?
-%>
+<% public = false if public.nil? %>
+
+<% if @featured.size > 0 %>
+  <div class="hero-unit"><h2>Sticky Announcements</h2>
+  <% for post in @featured %>
+    <%= render :partial => "/blog/article", :locals => { :post => post, :single => false, :public => public } %> 
+  <% end %>
+  </div>
+<% end %>
 
 <% if @user && @user.instructor_in_course?(@course.id) %>
- <%= link_to 'New Blog Post', :controller => '/instructor/blog', :action => 'new' %>
+ <i class="icon-plus-sign"></i><%= link_to 'New Blog Post', :controller => '/instructor/blog', :action => 'new' %>
 <% end %>
 
 <% if @posts.size == 0 %>
@@ -11,28 +17,18 @@ public = false if public.nil?
 
 <% else %>
 
-<% if @featured.size > 0 %>
-  <div id="featured"><h2>Sticky Announcements</h2>
-  <% for post in @featured %>
-    <%= render :partial => "/blog/article", :locals => { :post => post, :single => false, :public => public } %> 
-  <% end %>
-
-  </div>
-<% end %>
-
-
 <% for post in @posts %>
 <%= render :partial => "/blog/article", :locals => { :post => post, :single => false, :public => public } %> 
 <% end %>
 
-<% if @post_pages.page_count > 1 %><p>Page: 
-<% 1.upto(@post_pages.page_count) do |i| %>
- <% if i == @page %>
-   <%= i %>
- <% else %>
-     <%= link_to i, { :page => i } %>
- <% end %>
-<% end %></p>
-<% end %>
+<div class="pagination">
+ <ul>
+	<% 1.upto(@post_pages.page_count) do |i| %>
+	<li <%= 'class="active"' if i == @page %>>
+	  <%= link_to i, { :page => i } %>
+	</li>
+	<% end %>
+ </ul>
+</div>
 
 <% end %>

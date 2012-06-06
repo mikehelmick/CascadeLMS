@@ -1,26 +1,24 @@
 <%= render :partial => 'emailhead' %>
-
-<hr/>
-
-<div id="form_area">
 <h2>Send new email to team '<%= @team.name %>'</h2>
-<p><%= link_to 'Cancel', :course => @course, :action => 'email', :id => @team %></p>
+<% form_tag( {:action => 'email_send', :id => @team}, {:class => 'form-horizontal'} ) do %>
+ <%= error_messages_for('email', :class => 'alert alert-error') %>
 
-<% form_tag( :action => 'email_send', :id => @team ) do %>
- 
-<%= error_messages_for 'email' %>
+  <fieldset>
+	<div class="control-group">
+	  <label for="email_subject" class="control-label">Email Subject:</label>
+	  <div class="controls">
+        <%= text_field 'email', 'subject', :class => 'input-xlarge' %>        
+      </div>
+    </div>
+    <div class="control-group">
+      <label for="email_message" class="control-label">Email Body:</label>
+      <div class="controls">
+       <%= text_area 'email', 'message', :class => 'input-xlarge'  %>
+      </div>
+    </div>
+  </fieldset>
 
-<p><label for="email_subject" class="required">Email Subject:</label>
-<%= text_field 'email', 'subject' %></p>
-
-<p><label for="email_message" class="required">Email Body:</label><br/>
-  <%= text_area 'email', 'message', "cols" => 90, "rows" => 12, :class=>'short'  %><br/>
-  <%= link_to_function "More room to type", "Form.Element.toggleHeight(this, 'email_message'); return false;", :class => 'bottab more' %>
-</p>
-
-<div class="submit">
-  <%= submit_tag 'Send Email' %>
-</div>
+  <%= submit_tag 'Send Email', :class => 'btn btn-primary' %>
+  <%= link_to 'Cancel', {:course => @course, :action => 'email', :id => @team}, :class => 'btn' %>
 <% end %>
 
-</div>

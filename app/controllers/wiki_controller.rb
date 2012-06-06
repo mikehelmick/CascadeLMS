@@ -167,6 +167,12 @@ class WikiController < ApplicationController
   
   def wiki_title
     @title = "Wiki #{@course.title}"
+    @breadcrumb = Breadcrumb.for_course(@course)
+    if @page.nil?
+      @breadcrumb.text = 'Wiki'
+    else
+      @breadcrumb.wiki = @page
+    end
   end
   
   def set_tab

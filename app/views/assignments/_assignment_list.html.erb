@@ -1,16 +1,11 @@
 <% if assignments.size == 0 %>
-  <p><i>There are no assignments at this time, please check back later.</i></p>
+  <div class="alert alert-info">There are no assignments at this time, please check back later.</div>
 <% else %>
-
-
-  <table class="fancy" id="assignments" width="100%">
+  <table class="table table-striped">
     <tr class="header">
 	  <% if @instructor %>
 	    <th>&nbsp;</th>
-	    <th>Published</th>
 	  <% end %>
-	 
-      <!-- <th>#</th> -->
       <th>Title</th>
       <th>Category</th>
       <% if !@public %><th colspan="2">Graded?</th><% end %>
@@ -26,18 +21,12 @@
 	   %>
 	  <tr class="<%=odd%> hover" id="assignment_<%=assignment.id%>">
 		<% if @instructor %>
-		  <td nowrap="nowrap"><%= link_to "#{image_tag 'page_edit.png', :align=>'absmiddle'}", :course => @course, :id => assignment, :controller => '/instructor/course_assignments', :action => 'edit' %></td>	
-		  <td>
-		  	<% 
-			if assignment.visible 
-			  img_url = image_tag('accept.png', :align => 'absmiddle')
-			  status = 'yes'
-			else
-			  img_url = image_tag('cancel.png', :align => 'absmiddle')
-			  status = 'no'
-			end 
-			%>
-			<%= img_url %>
+		  <td nowrap="nowrap"><%= link_to '<i class="icon-edit"></i>', {:course => @course, :id => assignment, :controller => '/instructor/course_assignments', :action => 'edit'}, {:rel => "tooltip", :title => "Edit '#{h assignment.title}'"} %>
+		  	<% if assignment.visible %>	
+	   	    <i class="icon-ok-sign" rel="tooltip" title="Visible to students"></i>
+		    <% else %>
+		    <i class="icon-exclamation-sign" rel="tooltip" title="Not visible to students"></i>
+		    <% end %>
 		  </td>
 		<% end %>
 		
@@ -45,23 +34,7 @@
 	        if !@public && assignment.quiz 
 	          user_completed_quiz = assignment.quiz.user_has_completed_attempt?(@user) 
             end %>
-	<!--
-	   <td align="right" valign="top">
-          <% if assignment.quiz %>
-            <% if @public %>
-               <%= h count %>
-            <% else %>
-	          <% if user_completed_quiz %>
-	            <%= link_to "#{h count}", {:controller => '/quiz', :action => 'start', :course => @course, :id => assignment}, :confirm => "You have already completed this quiz, are you sure you want to take it again?" %>
-	          <% else %>
-	            <%= link_to "#{h count}", :controller => '/quiz', :action => 'start', :course => @course, :id => assignment %>
-	          <% end %>
-	        <% end %>
-		  <% else %>
-		    <%= link_to "#{h count}", :action => 'view', :id => assignment %>
-		  <% end %>
-		</td>
-	-->
+
 	    <td valign="top" align="left" nowrap="nowrap">
 	      <% if assignment.quiz %>
 	        <% if @public %>
@@ -84,19 +57,19 @@
 	    <td valign="top" nowrap="nowrap" align="right">
 	      <% if assignment.released && !assignment.grade_item.nil? %>
 	        <% if assignment.quiz.nil? %>
-  	           <%= link_to 'Yes', :controller => '/turnins', :course => @course, :assignment => assignment, :action => 'feedback' %><%= image_tag 'lightbulb.png' %>
+  	           <%= link_to 'Yes <i class="icon-ok-sign "></i>', {:controller => '/turnins', :course => @course, :assignment => assignment, :action => 'feedback'}, {:class => '', :rel => "tooltip", :title => "This assignment has graded"} %>
             <% elsif assignment.quiz.survey %>
                -N/A-
             <% else %>
-               <%= link_to 'Yes', :controller => '/quiz', :action => 'results', :course => @course, :id => assignment %><%= image_tag 'lightbulb.png' %>
+               <%= link_to 'Yes <i class="icon-ok-sign "></i>', {:controller => '/quiz', :action => 'results', :course => @course, :id => assignment}, {:class => '', :rel => "tooltip", :title => "This assignment has graded"} %>
             <% end %>
 	      <% else %>
 	        <% if assignment.quiz.nil? %>
-	          <%= link_to 'No', :controller => '/turnins', :course => @course, :assignment => assignment, :action => 'feedback' %> <%= image_tag 'lightbulb_off.png' %>
+	          <%= link_to 'No <i class="icon-exclamation-sign "></i>', {:controller => '/turnins', :course => @course, :assignment => assignment, :action => 'feedback'}, {:class => '', :rel => "tooltip", :title => "Not yet graded"} %>
 	        <% elsif assignment.quiz.survey %>
-               -N/A-
+               
 	        <% else %>
-	          <%= link_to 'No', :controller => '/quiz', :action => 'results', :course => @course, :id => assignment %><%= image_tag 'lightbulb_off.png' %>
+	          <%= link_to 'No <i class="icon-exclamation-sign "></i>', {:controller => '/quiz', :action => 'results', :course => @course, :id => assignment}, {:class => '', :rel => "tooltip", :title => "Not yet graded"} %>
 	        <% end %>
 	      <% end %>
 	    </td>
@@ -116,18 +89,17 @@
 	    </td>
 	    <% end %>
 	    <td nowrap="nowrap" valign="top" align="left" >
-	      <% if assignment.upcoming? %><%= image_tag 'clock_error.png', :align => 'absmiddle' %>
-	      <% elsif assignment.current? %><%= image_tag 'clock.png', :align => 'absmiddle' %>
-	      <% else %><%= image_tag 'clock_red.png', :align => 'absmiddle' %>
-	      <% end %>
-	      <%= assignment.open_date.to_formatted_s(:long) %>
+		  <span class="">
+	      <%= assignment.open_date.to_formatted_s(:long) %></span>
 	    </td>
 	    <td nowrap="nowrap" valign="top" align="left" >
-	      <%= assignment.due_date.to_formatted_s(:long) %><br/>
+		  <% dataClazz = 'badge-success' 
+		     dataClazz = 'badge-error' if assignment.past? %>
+	      <span class="badge <%= dataClazz %>"><%= assignment.due_date.to_formatted_s(:long) %></span><br/>
 	      <% unless assignment.past? %>
-	        (<i><%= distance_of_time_in_words_to_now( assignment.due_date, true )%> from now</i>)
+	        (<em><%= distance_of_time_in_words_to_now( assignment.due_date, true )%> from now</em>)
 	      <% else %>
-	        (<b><%= distance_of_time_in_words_to_now( assignment.due_date, true )%> ago</b>)
+	        (<strong><%= distance_of_time_in_words_to_now( assignment.due_date, true )%> ago</strong>)
 	      <% end %>
 	
 	      <% extension = nil
@@ -135,17 +107,15 @@
 	      <% unless extension.nil? %>
 	        <br/><b>EXTENSION GRANTED:</b><br/>
 	        <% unless extension.past? %>
-	          <%= image_tag 'clock.png', :align => 'absmiddle' %> <%= extension.extension_date.to_formatted_s(:long) %>
-	          (<i><%= distance_of_time_in_words_to_now( extension.extension_date, true )%> from now</i>)
+	          <span class="badge badge-success"><%= extension.extension_date.to_formatted_s(:long) %></span><br/>
+	          (<em><%= distance_of_time_in_words_to_now( extension.extension_date, true )%> from now</em>)
 		    <% else %>
-		      <%= image_tag 'clock_red.png', :align => 'absmiddle' %> <%= extension.extension_date.to_formatted_s(:long) %>
-		      (<b><%= distance_of_time_in_words_to_now( extension.extension_date, true )%> ago</b>)
+		      <span class="badge badge-error"><%= extension.extension_date.to_formatted_s(:long) %></span><br/>
+		      (<strong><%= distance_of_time_in_words_to_now( extension.extension_date, true )%> ago</strong>)
 		    <% end %> 
 	      <% end %>
-	
 	    </td>
 	  </tr>
     <% end %>
   </table>
-
 <% end %>

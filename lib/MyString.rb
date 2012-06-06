@@ -49,9 +49,9 @@ class String
 	  code_e = output.index(/\[\/code\]/, code_s ) unless code_s.nil?
 	  while ( !code_s.nil? && !code_e.nil? && code_e > code_s )
 	    # convert newlines to breaks
-	    temp = output[0...code_s] + '<div class="code">'
-	    temp = temp + output[code_s+6...code_e].gsub(/\t/,'&nbsp;&nbsp;').gsub(/  /,'&nbsp; ').gsub(/\n/,"<br/>\n")
-	    temp = temp + '</div>' + output[code_e+7..-1] 
+	    temp = output[0...code_s] + '<pre class="prettyprint linenums">'
+	    temp = temp + output[code_s+6...code_e].gsub(/\t/,'    ') #.gsub(/  /,'&nbsp; ') #.gsub(/\n/,"<br/>\n")
+	    temp = temp + '</pre>' + output[code_e+7..-1] 
 	    output = temp
 	    
 	    code_s = output.index(/\[code\]/)

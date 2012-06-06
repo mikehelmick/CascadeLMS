@@ -2,7 +2,7 @@ require 'FreshItems'
 
 class FeedController < ApplicationController
   
-  layout 'noright', :except => :index
+  layout 'application', :except => :index
   
   before_filter :ensure_logged_in, :except => :index
   before_filter :set_tab, :except => :index

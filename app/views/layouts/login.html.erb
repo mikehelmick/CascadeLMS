@@ -1,30 +1,98 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
    "http://www.w3.org/TR/html4/loose.dtd">
-
 <html lang="en">
 <head>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-	<title><%= @title %></title>
+ <meta charset="utf-8">
+ <title><%= @title %></title>
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <meta name="description" content="CascadeLMS - The Rails Learning Management System.">
+ <title><%= @title %></title>
 
-    <%= stylesheet_link_tag "master", :media => "all" %>	
-	<%= stylesheet_link_tag "login", :media => "all" %>
-	
-	<style type="text/css">
-		body {
-	    	background: url(<%= image_path('cascade_bg_short.jpg') %>) repeat-x top center #426479;
-	    }
-	</style>
+ <%= stylesheet_link_tag "bootstrap", :media => "all" %>
+ <%= stylesheet_link_tag "bootstrap-responsive", :media => "all" %>
+ <%= stylesheet_link_tag "application", :media => "all" %>
+ <%= stylesheet_link_tag "prettify", :media => "all" %>
 </head>
 
 <body>
-	
-	<div id="content">
-		<% if flash[:notice] %><div id="GoodMessage"><%= flash[:notice] %></div><% end %>
-		<% if flash[:badnotice] %><div class="errorExplanation"><%= flash[:badnotice] %></div><% end %>
+  <%= render :partial => '/layouts/login_menu' %>
+
+  <div class="container">
+    <!-- Main hero unit for a primary marketing message or call to action -->
+    <div class="hero-unit">
+		<% if flash[:notice] %><div class="alert alert-success"><a class="close" data-dismiss="alert">×</a><%= flash[:notice] %></div><% end %>
+		<% if flash[:badnotice] %><div class="alert alert-error"><a class="close" data-dismiss="alert">×</a><%= flash[:badnotice] %></div><% end %>
 
 		<%= @content_for_layout %>
-
     </div>
 
+<% if !@showAds.nil? && @showAds %>
+ <div class="row">
+   <div class="span4">
+    <h2>Public Access</h2>
+    <p>Some courses provide public access to the course material, please <%= link_to 'take look at the list of courses offering public access.', :controller => '/public', :course => nil, :assignment => nil %></p>
+
+    <h2>Developer API</h2>
+    <p>CascadeLMS has an easy to use <%= link_to 'developer api', :controller => 'index', :action => 'api' %></p>
+   </div>
+   <div class="span8">
+     <% if @publicCourses.size > 0 %>
+       <h2>Some of the Courses Available This Term</h2>
+
+	<ul class="nav nav-tabs">
+	  <% 0.upto(3) do |i| %>
+	    <% unless @publicCourses[i].nil? %>
+	      <li <%= 'class="active"' if i == 0 %>>
+		    <a href="#c<%= @publicCourses[i].id %>" data-toggle="tab"><%= @publicCourses[i].title %></a></li>
+		<% end %>
+	  <% end %>
+	</ul>
+	<div class="tab-content">
+	 <% 0.upto(3) do |i| %>
+	  <% unless @publicCourses[i].nil? %>
+	   <div class="tab-pane<%= " active" if i == 0 %>" id="c<%= @publicCourses[i].id %>">
+		 <dl class="dl-horizontal">
+		  <dt><%= @publicCourses[i].title %></dt>
+		  <dd><%= link_to "#{@publicCourses[i].short_description}", :controller => '/public', :action => 'overview', :course => @publicCourses[i].id %></dd>
+		  <dt>Instructor</dt>
+		  <dd><ul><% for instructor in  @publicCourses[i].instructors %>
+		       <li><%= instructor.to_s %></li>
+		      <% end %></ul>
+		  </dd>
+		 </dl>
+	   </div>
+	  <% end %>
+	 <% end %>
+	</div>
+     <% end %>
+   </div>
+ </div>
+<% end %>
+
+<footer class="footer">
+CascadeLMS, Copyright &copy; 2006 - 2012 <a href="http://www.cascadelms.org/">Mike Helmick</a> -
+<a href="http://www.cascadelms.org/">CascadeLMS v<%=@app['version']%></a>
+    <div style="float: right">
+      <a href="http://www.cascadelms.org/"><%= image_tag 'cascadeLMS_logo_small.png' %></a>
+    </div>
+</footer>
+  </div>
+
+  <!-- scripts -->
+  <%= javascript_include_tag "jquery" %>
+  <%= javascript_include_tag "bootstrap-transition" %>
+  <%= javascript_include_tag "bootstrap-alert" %>
+  <%= javascript_include_tag "bootstrap-modal" %>
+  <%= javascript_include_tag "bootstrap-dropdown" %>
+  <%= javascript_include_tag "bootstrap-scrollspy" %>
+  <%= javascript_include_tag "bootstrap-tab" %>
+  <%= javascript_include_tag "bootstrap-tooltip" %>
+  <%= javascript_include_tag "bootstrap-popover" %>
+  <%= javascript_include_tag "bootstrap-button" %>
+  <%= javascript_include_tag "bootstrap-collapse" %>
+  <%= javascript_include_tag "bootstrap-carousel" %>
+  <%= javascript_include_tag "bootstrap-typeahead" %>
+  <%= javascript_include_tag "prettify" %>
+  <%= javascript_include_tag :defaults %>
 </body>
 </html>

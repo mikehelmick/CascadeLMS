@@ -1,53 +1,58 @@
-
 <% if @user.instructor_in_course?(@course.id) || @user.assistant_in_course?(@course.id) || @course.course_setting.enable_forum_topic_create %>
-<p><%= link_to "#{image_tag 'layout_add.png'} Create new forum", :course => @course, :action => 'new_forum' %> |
-<%= link_to "#{image_tag 'chart_pie.png'} View post report", :course => @course, :action => 'post_report' %>
-</p>
+<div class="row-fluid">
+ <div class="span12">
+  <div class="btn-toolbar">	
+	<div class="btn-group">
+<%= link_to '<i class="icon-plus-sign"></i> Create New Forum', {:course => @course, :action => 'new_forum'}, {:class => 'btn btn-small'} %>
+  <% if @user.instructor_in_course?(@course.id) || @user.assistant_in_course?(@course.id) %>
+<%= link_to '<i class="icon-signal"></i> View Post Report', {:course => @course, :action => 'post_report'}, {:class => 'btn btn-small'} %>
+<%= link_to '<i class="icon-random"></i> Reorder Forumns', {:course => @course, :action => 'reorder'}, {:class => 'btn btn-small'} %>
+  <% end %>
+    </div>
+   </div>
+ </div>
+</div>
 <% end %>
 
 <% if @topics.size == 0 %>
-	<p><i>There are no forum topics in this course.</i></p>
+ <div class="alert alert-info">There are no forum topics in this course.</div>
 <% else %>
 
-<table class="fancy" width="99%">
-  <tr class="header">
-	  <th width="65%">Topic</th>
+<table class="table table-striped">
+ <thead>
+  <tr>
+	  <th width="35%">Topic</th>
 	  <th>Last Poster</th>
 	  <th>When</th>
 	  <th>Posts</th>
-	  <th>Watching?</th>
+	  <th>Subscribed?</th>
 	
 	  <% if @user.instructor_in_course?(@course.id) %>
 	    <th>Controls</th>
 	  <% end %>
 	</tr>
+ </thead>
 
-  <% count = 0 %>
   <% for topic in @topics %>
-    <% count = count.next 
-	     odd = "odd"
-	     odd = "even" if count.even? %> 
-    <tr class="<%=odd%> hover" id="topic_<%=topic.id%>">
+    <tr id="topic_<%=topic.id%>">
 	  <td nowrap="nowrap" align="left"><%= link_to "#{h topic.topic}", :action => 'view_topic', :course => @course, :id => topic.id %>
-	    <% unless topic.allow_posts %> <i> <%= image_tag 'door.png' %> forum closed</i><% end %>	
+	    <% unless topic.allow_posts %> <span class="label label-important">forum closed</span><% end %>	
 	  </td>
 	  <td nowrap="nowrap" align="left"><%=h topic.user.display_name %></td>
 	  <td nowrap="nowrap" align="left"><%= distance_of_time_in_words_to_now( topic.last_post, true ) %> ago</td>
-	  <td nowrap="nowrap" align="left"><%= topic.post_count %></td>
+	  <td nowrap="nowrap" align="left"><span class="badge badge-info"><%= topic.post_count %></span></td>
 	  <td nowrap="nowrap" align="left">
-		<% if topic.is_watching(@user) %><b>Watching</b>
+		<% if topic.is_watching(@user) %>Yes
 		<% else %>
-		  Not Watching
+		  No
 		<% end %>
 	  </td>
 	  <% if @user.instructor_in_course?(@course.id) %>
 	    <td nowrap="nowrap" align="left">
-		  <%= link_to "#{image_tag 'arrow_up.png', :align => 'absmiddle'} Move Up", :action => 'move_up', :id => topic %> |
-		  <%= link_to "#{image_tag 'arrow_down.png', :align => 'absmiddle'} Move Down", :action => 'move_down', :id => topic %> |
 		  <% if topic.allow_posts %>
-		    <%= link_to "#{image_tag 'door_open.png', :align => 'absmiddle'} Close Topic", :action => 'toggle_open', :id => topic %>
+		    <%= link_to 'Close Topic', {:action => 'toggle_open', :id => topic}, {:class => "btn btn-danger btn-mini"} %>
 		  <% else %>
-		    <%= link_to "#{image_tag 'door.png', :align => 'absmiddle'} Open Topic", :action => 'toggle_open', :id => topic %>
+		    <%= link_to 'Open Topic', {:action => 'toggle_open', :id => topic}, {:class => "btn btn-success btn-mini"} %>
 		  <% end %>
 	    </td>
 	  <% end %>

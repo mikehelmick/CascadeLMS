@@ -1,20 +1,15 @@
-<div class="SectionHeader"><div class="Full">
 <h2>Program Auditor's Dashboard</h2>
-</div></div>
-
 <% if @programs.size == 0 %>
  <p><i>You are not an auditor for any programs. Please contact the appropriate program managers for access.</i></p>
 <% else %>
-
  <% for prog_user in @programs %>
- <table class="FadeTable" cellspacing="0">
-  <tr class="header">
-	<th align="left" valign="top">
+ <table class="table table-striped">
+  <tr>
+	<td align="left" valign="top">
 	  <%= link_to "<b>#{prog_user.program.title}</b>", :controller => "/audit", :action => 'program', :id => prog_user.program_id %><br/>
 	  Courses in the current term: <%= prog_user.program.courses_in_term(@audit_term).map {|x| x.title}.join(", ") %>
-   </th>
+   </td>
   </tr>
  </table>
  <% end %>
-
 <% end %>

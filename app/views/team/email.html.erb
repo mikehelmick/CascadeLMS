@@ -1,17 +1,8 @@
 <%= render :partial => 'emailhead' %>
-<div class="menuout">
-  <%= image_tag 'email_edit.png', :align => 'middle' %> <%= link_to 'Send new email', :action => 'email_compose', :id => @team, :course => @course %>
-</div>
-<hr/>
-
 <h2>Email for team '<%= @team.name %>'</h2>
-
-
 <% if @emails.size == 0 %>
- <p><i>There are no past emails for this team.</i></p>
+ <div class="alert alert-info">There are no past emails for this team.</div>
 <% else %>
-
-Viewing Email Archive 
   <% if @email_pages.page_count > 1 %><p>Page: 
     <% 1.upto(@email_pages.page_count) do |i| %>
       <% if i == @page %>
@@ -21,12 +12,20 @@ Viewing Email Archive
      <% end %>
     <% end %></p>
   <% end %>
-
- <ul>
+ <table class="table table-striped table-compact">
+   <thead>
+	 <tr>
+	   <td>Subject</td>
+	   <td>Author</td>
+	   <td>Date</td>
+	 </tr>
+   </thead>
   <% for email in @emails %>
-    <li><b><%= link_to "#{email.subject}", :action => 'email_read', :id => @team, :email => email.id %></b> by <%= email.user.display_name %> at <i><%= email.created_at.to_formatted_s(:long) %></i></li>
+    <tr>
+	 <td><%= link_to "#{email.subject}", :action => 'email_read', :id => @team, :email => email.id %></td>
+	 <td><%= email.user.display_name %></td>
+	 <td><%= email.created_at.to_formatted_s(:long) %></td>
+	</tr>
   <% end %>
- </ul>
-
+ </table>
 <% end %>
-

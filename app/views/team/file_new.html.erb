@@ -1,20 +1,21 @@
-<%= render :partial => 'emailhead' %>
-<hr/>
-
+<%= render :partial => 'filehead' %>
 <h2>Upload a new file for team <%= @team.name %></h2>
 
 <%= error_messages_for 'document' %>
 
-<div id="form_area">
-<% form_tag( { :action => 'file_upload', :id => @team.id }, :multipart => true, :onsubmit => "new Element.toggle('button');new Element.toggle( 'spinner');" ) do %>
-
-<p><label for="file">File:</label>
-<%= file_field_tag "file" %></p>
-
-<div class="submit">
-  <div id="button"><%= submit_tag "Upload File" %></div>
+<% form_tag( { :action => 'file_upload', :id => @team.id }, :class => 'form-horizontal', :multipart => true, :onsubmit => "new Element.toggle('button');new Element.toggle( 'spinner');" ) do %>
+ <fieldset>
+  <div class="control-group">
+   <label for="file" class="control-label">File:</label>
+   <div class="controls">
+     <%= file_field_tag "file" %>
+   </div>
+  </div>
+ </fieldset>
+  <div id="button">
+    <%= submit_tag("Upload File", :class => 'btn btn-primary') %>
+    <%= link_to 'Cancel', {:course => @course, :action => 'files', :id => @team}, {:class => 'btn'} %>
+  </div>
   <div id="spinner" style="display: none;"><%= image_tag 'spinner.gif' %></div>
-</div>
 <% end %>
 
-</div>

@@ -1,0 +1,94 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+ <title><%= @title if @title %></title>
+ <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+ <%= stylesheet_link_tag "bootstrap", :media => "all" %>
+ <style type="text/css">
+   body {
+     padding-top: 60px;
+     padding-bottom: 40px;
+   }
+   .sidebar-nav {
+     padding: 9px 0;
+   }
+ </style>
+ <%= stylesheet_link_tag "bootstrap-responsive", :media => "all" %>
+ <%= stylesheet_link_tag "application", :media => "all" %>
+
+ <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+ <!--[if lt IE 9]>
+   <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+ <![endif]-->
+
+ <%= stylesheet_link_tag "calendar/red/style", :media => "all" %>
+			
+ <% if @course %>
+ <%= auto_discovery_link_tag(:rss, {:controller => 'feed', :course => @course }) %>
+ <% end %>
+
+ <!-- scripts -->
+ <%= javascript_include_tag "jquery" %>
+ <%= javascript_include_tag "bootstrap-transition" %>
+ <%= javascript_include_tag "bootstrap-alert" %>
+ <%= javascript_include_tag "bootstrap-modal" %>
+ <%= javascript_include_tag "bootstrap-dropdown" %>
+ <%= javascript_include_tag "bootstrap-scrollspy" %>
+ <%= javascript_include_tag "bootstrap-tab" %>
+ <%= javascript_include_tag "bootstrap-tooltip" %>
+ <%= javascript_include_tag "bootstrap-popover" %>
+ <%= javascript_include_tag "bootstrap-button" %>
+ <%= javascript_include_tag "bootstrap-collapse" %>
+ <%= javascript_include_tag "bootstrap-carousel" %>
+ <%= javascript_include_tag "bootstrap-typeahead" %>
+ <%= javascript_include_tag "prettify" %>
+ <%= javascript_include_tag :defaults %>
+ <%= render :partial => '/layouts/google' %>
+</head>
+
+<% if !@checkForm.nil? && @checkForm == true %>
+<body>
+	<script language="JavaScript">
+	  window.onbeforeunload = check_form_submitted
+	</script>
+<% else %>
+<body>
+<% end %>
+
+<%= render :partial => '/layouts/navbar' %>
+
+<div class="container-fluid">
+ <div class="row-fluid">
+  <div class="span3">
+   <div class="well sidebar-nav">
+	<ul class="nav nav-list">
+	<%= render :partial => "right" %>
+	<%= render :partial => '/layouts/common_left' %>
+	</ul>	
+   </div>
+  </div>
+  <div class="span9">
+	<div class="row-fluid">
+      <%= render :partial => "top" %>
+	</div>
+	
+    <% if flash[:notice] %><div class="alert alert-success"><%= flash[:notice] %></div><% end %>
+	<% if flash[:badnotice] %><div class="alert alert-error"><%= flash[:badnotice] %></div><% end %>
+		
+	<%= @content_for_layout %>
+  </div>
+</div>	
+
+<%= render :partial => '/layouts/footer' %>  
+<div>	
+
+ <% if flash[:highlight] %> 
+  <%= javascript_tag visual_effect(:highlight, "#{flash[:highlight]}", :duration => 3.5 )  %>
+ <% end %>
+ <%= javascript_include_tag "notifyme" %>
+</body>
+</html>
+

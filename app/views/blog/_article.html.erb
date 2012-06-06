@@ -1,8 +1,7 @@
-<div class="BlogPost">
-	
+<div class="well">
 <h2><%= link_to "#{h post.title}", :action => 'post', :course => @course, :id => post %>
 <% if session[:user] && post.user_id == session[:user].id %>
- <%= link_to "#{image_tag('page_edit.png')}", :controller => "/instructor/blog", :action => 'edit', :course => @course, :id => post %>
+ <%= link_to '<i class="icon-edit"></i>', :controller => "/instructor/blog", :action => 'edit', :course => @course, :id => post %>
 <% end %>
 </h2>	
 <p class="author">Posted by: <%=h post.user.display_name %> on 
@@ -15,7 +14,7 @@
   <% if post.enable_comments && @course.course_setting.blog_comments %>
     <% if single %>
       <% count = post.number_of_comments %>
-        <%= link_to_function( "Leave a comment #{image_tag 'comment_add.png'}", "blindToggle( 'leave_comment' )" ) %>
+        <%= link_to_function( "Leave a comment <i class=\"icon-comment\"></i>", "blindToggle( 'leave_comment' )" ) %>
     <% else %>
       <% count = post.number_of_comments %>
       <%= link_to "#{pluralize(count, 'Comment')}", :action => 'post', :course => @course, :id => post %>
@@ -24,5 +23,4 @@
     <i>Comments disabled for this post</i>
   <% end %>
 </p>
-
 </div>

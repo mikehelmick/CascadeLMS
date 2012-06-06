@@ -1,24 +1,12 @@
-<h2>Assignment: <%= @assignment.title %></h2>
-<h3>Course: <%= @course.title %></h3>
-
-<h3>Feedback for <%= @user.display_name %></h3>
-
-<p><%= link_to 'Back to my turn-ins', :controller => '/turnins', :course => @course, :assignment => @assignment %> | 
-   <%= link_to 'Back to assignment', :controller => '/assignments', :course => @course, :id => @assignment, :action => 'view', :assignment => nil %> |
-   <%= link_to 'All Assignments', :controller => '/assignments', :course => @course, :assignment => nil, :id => nil, :action => nil %> |
-   <%= link_to 'My Grades', :controller => '/grades', :course => @course, :id => nil, :action => nil %>
-</p> 
 
 <% if @grade_item %>
  <%= render :partial => 'grade_entry' %>
 
 <% elsif !@assignment.released%>
-  <div class="standout">
-  <p><%= image_tag 'flag_red.png' %><i>Grades and instructor feedback are not yet available.</i>
+  <div "alert alert-error">Grades and instructor feedback are not yet available.
     <% if @assignment.auto_grade && !@assignment.auto_grade_setting.nil? && @assignment.auto_grade_setting.any_student_grade? %>	
       <br/>Scroll down for results from the AutoGrader.
     <% end%>
-  </p>
   </div>
 <% end %>
 
@@ -31,114 +19,44 @@
   %>
 
  <% if anyVisibleAutoGradeResults && @assignment.auto_grade && !@assignment.auto_grade_setting.nil? && @assignment.auto_grade_setting.io_check? %>
-   <div class="SectionHeader"><div class="Full"><b>AutoGrade Results</b></div></div>
-   <div class="Section">
+   <h2>AutoGrade Results</h2>
 	
    <% if ! @current_turnin.safe_for_autograde? %>
-   <div class="standout"><%= image_tag 'flag_red.png' %> This turn-in set is not considered safe for automatic execution, an instructor needs to review the files first.</div>
+   <div class="standout"><i class="icon-exclamation-sign"></i> This turn-in set is not considered safe for automatic execution, an instructor needs to review the files first.</div>
    <% end %>
 	
-	<table>
-	 <tr>
-	 <td width="50%" valign="top">
-	<p><ul><b>Output diff key:</b>
+	<ul><strong>Output diff key:</strong>
 	 <li><span class="diffAdd">This is extra text you have in your output that should not be there.</span></li>
 	 <li><span class="diffSub">Your output does not actually contain this text, but it should.</span></li>
 	 <li><span class="diffChange">Your output has this text, rather than the expected text.</span></li>
-   </ul></p>
-    </td>
-    <td width="50%" valign="top">
-	   <ul><b>Test Output Views:</b>
-		 <li><b>Side-by-side Diff View</b></li>
-		 <li><%= link_to 'Line by line view', :action => 'feedback_line', :course => @course, :assignment => @assignment %></li>
-	   <ul>
-	 </td>
-	 </tr>
-	</table>
-	
-   <% if @assignment.auto_grade && !@assignment.auto_grade_setting.nil? && (@assignment.auto_grade_setting.student_io_check || @assignment.released) %>
-     
-     <% io_count = 0  %>
-     <table width="100%">
-     <% for check in @assignment.io_checks %>     
-       <% if check.student_level || @assignment.released %>
-         <% show_input = check.show_input && @assignment.released 
-            span = 2
-            span += 1 if show_input
-          %>
+   </ul>
 
-		 
-		   <tr><th colspan="<%=span%>"><%= image_tag 'map.png' %> I/O Check: '<%= check.name %>'</th></tr>
-           <tr>
-	         <% if show_input %>
-	           <th><b>Test Input</b></th>
-	         <% else %>	        
-	           <th><b>Expected Output</b></th>
-	         <% end %>
-	         <th><B>Your Output</b>
-		       <% unless @student_io_check[check.id].nil? %>
-		       :: Match Percentage <b><%= sprintf( "%.2f", @student_io_check[check.id].match_percent ) %>%</b>
-		 
-		         <% if 100 - @student_io_check[check.id].match_percent < check.tolerance %>
-		           <%= image_tag 'accept.png' %>Pass
-		         <% else %> 
-		           <%= image_tag 'cancel.png' %>Failure
-		         <% end %>
-		 
-		         (<%= link_to_function( "toggle raw/diff", "Element.toggle('student_check_#{check.id}_diff');Element.toggle('student_check_#{check.id}_raw');" ) %>)
-		
-		       <% end %>
-		     </th>
-		   </tr>
-		
-		   <tr>
-			 <% if show_input %>
-	           <td class="diffReport" valign="top"><%= check.input.to_html %></td>
-	         <% else %>
-			   <td class="diffReport" valign="top">
-			       <%= check.output.to_html %>
-			   </td>
-	         <% end %>
-	         <td class="diffReport<%= '2' if show_input %>" colspan="1" valign="top">
-			  <div id="student_check_<%=check.id%>_diff">
-				 <% if @student_io_check[check.id].nil? %>
-				   <b><%= image_tag 'flag_red.png' %>No output found for this test.</b>
-				 <% else %>
-		  		    <%= @student_io_check[check.id].diff_report.non_span_space_convert %>
-				 <% end %>
-				
-				<div class="standout">Viewing Diff Output.</div>
-			  </div>
-			  <div id="student_check_<%=check.id%>_raw" style="display:none;">
-				 <% if @student_io_check[check.id].nil? %>
-				   <b><%= image_tag 'flag_red.png' %>No output found for this test.</b>
-				 <% else %>
-		  		    <%= @student_io_check[check.id].output.to_html %>
-				 <% end %>				
-				
-				<div class="standout">Viewing Raw Output.</div>
-			  </div>
-             </td>
-		   </tr>
-		
-       <% end %>
-     <% end %>
-     </table>
-   <% else %>
-     <p><%= image_tag 'flag_yellow.png' %><i>Automatic grading by way of output verification is enabled for this assignment, but the results are hidden until the grades and instructor comments are released.</i></p>
-   <% end %>  
-   </div>
- <% end %>
+  <ul id="tabs" class="nav nav-tabs">
+    <li class="active"><a href="#sideBySide" data-toggle="tab">Side-by-side Diff View</a></li>
+	<li><a href="#lineByLine" data-toggle="tab">Line by line view</a></li>
+  </ul>
+
+<div class="tab-content">
+  <div class="tab-pane fade in active" id="sideBySide">	
+    <%= render :partial => 'side_by_side' %>
+  </div>
+  <div class="tab-pane fade" id="lineByLine">
+    <%= render :partial => 'line_by_line' %>
+  </div>
+</div>
+
+<% else %>
+ <span class="alert alert-info">Automatic grading by way of output verification is enabled for this assignment, but the results are hidden until the grades and instructor comments are released.</span>
+<% end %>
 
 <!-- FILES -->
- <div class="SectionHeader"><div class="Full"><b>Turned in files</b><br/>
+ <h2>Turned in files</h2>
  <a name="contents">Jump to file</a>
- </div></div>
  <ul>
  <% for utf in @current_turnin.user_turnin_files %>
   <% unless utf.directory_entry? || utf.auto_added? %>
     <% if FileManager.is_text_file( utf.extension ) %>
-      <li><a href="#file_<%=utf.id%>"> <%= image_tag utf.icon %> <%= utf.full_filename( @directories ) %></a>
+      <li><a href="#file_<%=utf.id%>"> <i class="<%= utf.icon %>"></i> <%= utf.full_filename( @directories ) %></a>
 	  <% comment_hash = Hash.new
 	     comment_hash = utf.file_comments_hash if @assignment.released %>
 	  <% if comment_hash.size > 0 %>
@@ -152,7 +70,7 @@
 	  <% end %>
 	  </li>
     <% else %>
-      <li><%= image_tag utf.icon %> <%= utf.full_filename( @directories ) %> (<%= link_to "download", :action => 'download_file', :id => utf.id %>)</li>
+      <li><i class="<%= utf.icon %>"></i> <%= utf.full_filename( @directories ) %> (<%= link_to "download", :action => 'download_file', :id => utf.id %>)</li>
     <% end %>
   <% end %>
  <% end %>
@@ -162,7 +80,7 @@
    <% if !utf.auto_added? %> 
    <% if FileManager.is_text_file( utf.extension ) %>
     <div class="SectionHeader"><div class="Full">
-    <%= image_tag utf.icon %>
+    <i class="<%= utf.icon %>"></i>
     <% if utf.directory_entry? %>Directory:
     <% else %>File:
     <% end %><a name="file_<%=utf.id%>"><b><%= utf.full_filename( @directories ) %></b></a>

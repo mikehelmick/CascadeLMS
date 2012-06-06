@@ -2,6 +2,8 @@ class Instructor::IndexController < Instructor::InstructorBase
   
   before_filter :ensure_logged_in
   before_filter :set_tab
+
+  layout 'application_right'
   
   def index
     return unless load_course( params[:course] )

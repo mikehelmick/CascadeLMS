@@ -1,14 +1,13 @@
 <% if @journals.size == 0 %>
-  <p><i>You have no journals for this assignment.</i></p>
+  <div class="alert alert-info">You have no journals for this assignment.</div>
 <% else %>
-
 <% if @assignment.journal_field.start_time && @assignment.journal_field.end_time %>
- <p>According to your journals, you have spent <%= pluralize( @days, 'day') %>, <%= pluralize( @hours, 'hour') %>, <%= pluralize( @minutes, 'minute') %> on this assignment.</p>
+ <div class="alert alert-info">According to your journals, you have spent <%= pluralize( @days, 'day') %>, <%= pluralize( @hours, 'hour') %>, <%= pluralize( @minutes, 'minute') %> on this assignment.</div>
 <% end %>
 
 <% width = 0 %>
-
- <table width="100%" cellpadding="0" cellspacing="0" class="fancy">
+ <table class="table">
+  <thead>
    <tr>
 	 <th>Entry</th>
      <% if @assignment.journal_field.start_time 
@@ -33,15 +32,12 @@
 	      width += 1
       %><th>Edit</th><% end %>
    </tr>
-
+ </thead>
    <% count = 0 %>
    <% for journal in @journals %>
-	<% count = count.next 
-	     odd = "odd"
-	     odd = "even" if count.even?
-	   %>
-     <tr class="<%=odd%> hover" id="journal_<%=journal.id%>">
-	   <td><%= count %></td>
+	<% count = count.next %>
+     <tr id="journal_<%=journal.id%>">
+	   <th><%= count %></th>
        <% if @assignment.journal_field.start_time %><td nowrap="nowrap"><%=h journal.start_time.to_formatted_s(:short) %></td><% end %>
        <% if @assignment.journal_field.end_time %><td nowrap="nowrap"><%=h journal.end_time.to_formatted_s(:short) %></td><% end %>
        <% if @assignment.journal_field.interruption_time %><td nowrap="nowrap"><%=h journal.interruption_time %></td><% end %>
@@ -70,7 +66,7 @@
      </tr>
    
      <% if @assignment.journal_field.comments %>
-     <tr class="<%=odd%> hover">
+     <tr>
 	   <td>Comments:</td>
 	   <td colspan="<%= width  %>"><%= journal.comments.to_html rescue "" %></td>
 	 </tr>

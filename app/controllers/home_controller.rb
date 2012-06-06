@@ -158,6 +158,7 @@ class HomeController < ApplicationController
   
   def set_tab
     @tab = 'home'
+    @breadcrumb = Breadcrumb.new
   end
   
 end
