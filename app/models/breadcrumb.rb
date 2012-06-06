@@ -1,15 +1,16 @@
 class Breadcrumb
   
-  attr_accessor :course, :assignment, :document, :forum, :post, :team, :wiki
+  attr_accessor :course, :assignment, :document, :forum, :post, :team, :wiki, :instructor
   # text to display at the end
   attr_accessor :text, :link
 
-  def initialize(course = nil)
+  def initialize(course = nil, instructor = false)
     @course = course
+    @instructor = instructor
   end
 
-  def self.for_course(course)
-    Breadcrumb.new(course)
+  def self.for_course(course, instructor = false)
+    Breadcrumb.new(course, instructor)
   end
 
   def self.for_assignment(assignment)

@@ -1,8 +1,9 @@
-class Instructor::CourseInfoController < Instructor::InstructorBase
- 
+class Instructor::CourseInfoController < Instructor::InstructorBase 
   before_filter :ensure_logged_in
   before_filter :set_tab
-  
+
+  layout 'application_right'
+
   def index
     return unless load_course( params[:course] )
     return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_information' )
@@ -12,6 +13,9 @@ class Instructor::CourseInfoController < Instructor::InstructorBase
       @course_information = CourseInformation.new
     end
     @courseo = @course
+
+    @breadcrumb = Breadcrumb.for_course(@course, true)
+    @breadcrumb.text = "Edit Course Information"
   end
   
   def update
