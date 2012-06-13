@@ -1,199 +1,295 @@
-<%= error_messages_for 'course_settings' %>
-
+<%= error_messages_for('course_settings', :class => 'alert alert-error') %>
 <!--[form:course_settings]-->
-<p class="blockintro">A course blog is similar to announcements.  It allows you to post information for your students, and (if you allow comments) allows students to respond and interact with each other.</p>
-<div class="block">
-<p><label for="course_settings_enable_blog" class="required">Enable Blog:</label>
-<%= radio_button 'course_settings', 'enable_blog', true %> Yes
-<%= radio_button 'course_settings', 'enable_blog', false %> No</p>
+<fieldset>
+  <div class="control-group">
+	<label for="course_settings_enable_blog" class="control-label">Enable Blog:</label>
+	<div class="controls">
+	 <%= radio_button 'course_settings', 'enable_blog', true %> Yes
+     <%= radio_button 'course_settings', 'enable_blog', false %> No
+	 <p class="help-block">A course blog is similar to announcements.  It allows you to post information for your students, and (if you allow comments) allows students to respond and interact with each other.</p>
+	</div>
+  </div>
 
-<p><label for="course_settings_blog_comments" class="required">Enable Blog comments:</label>
-	<%= radio_button 'course_settings', 'blog_comments', true %> Yes
-	<%= radio_button 'course_settings', 'blog_comments', false %> No</p>
-</div>
+  <div class="control-group">
+    <label for="course_settings_blog_comments" class="control-label">Enable Blog comments:</label>
+    <div class="controls">
+  	  <%= radio_button 'course_settings', 'blog_comments', true %> Yes
+	  <%= radio_button 'course_settings', 'blog_comments', false %> No
+	</div>
+  </div>
 
-<p class="blockintro">Discussion forums allow users in the course to communicate with you and each other.   This is a threaded style discussion forum.</p>
-<div class="block"> 
-<p><label for="course_settings_enable_forum" class="required">Enable Forum:</label>
- <%= radio_button 'course_settings', 'enable_forum', true %> Yes
- <%= radio_button 'course_settings', 'enable_forum', false %> No</p>
+  <div class="control-group">
+    <label for="course_settings_enable_forum" class="control-label">Enable Forum:</label>
+    <div class="controls">
+      <%= radio_button 'course_settings', 'enable_forum', true %> Yes
+      <%= radio_button 'course_settings', 'enable_forum', false %> No
+      <p class="help-block">Discussion forums allow users in the course to communicate with you and each other.   This is a threaded style discussion forum.</p>
+    </div>
+  </div>
 
-<p><label for="course_settings_enable_forum_topic_create" class="required">All users to create new topics:</label>
- <%= radio_button 'course_settings', 'enable_forum_topic_create', true %> Yes
- <%= radio_button 'course_settings', 'enable_forum_topic_create', false %> No</p>
-</div>
+  <div class="control-group">
+    <label for="course_settings_enable_forum_topic_create" class="control-label">Let students create new forum topics:</label>
+    <div class="controls">
+     <%= radio_button 'course_settings', 'enable_forum_topic_create', true %> Yes
+     <%= radio_button 'course_settings', 'enable_forum_topic_create', false %> No
+    </div>
+  </div>
 
-<p class="blockintro">This system offers a fully functional gradebook.  If you are going to keep track of your grades in a different application (Blackboard, Excel, etc...) then you should disable the gradebook in this application.</p>
-<div class="block">
-<p><label for="course_settings_enable_gradebook" class="required">Enable gradebook:</label>
-	<%= radio_button 'course_settings', 'enable_gradebook', true %> Yes
-	<%= radio_button 'course_settings', 'enable_gradebook', false %> No</p>
-</div>
+  <div class="control-group">
+	<label for="course_settings_enable_gradebook" class="control-label">Enable gradebook:</label>
+	<div class="controls">
+	  <%= radio_button 'course_settings', 'enable_gradebook', true %> Yes
+	  <%= radio_button 'course_settings', 'enable_gradebook', false %> No
+	  <p class="help-block">This system offers a fully functional gradebook.  If you are going to keep track of your grades in a different application (Blackboard, Excel, etc...) then you should disable the gradebook in this application.</p>
+    </div>
+  </div>
 
-<p class="blockintro">This system is capable of defining course outcomes and objectives, including tracking these outcomes and integrating them with assignments.</p>
-<div class="block">
-<p><label for="course_settings_enable_outcomes" class="required">Enable Course Outcomes:</label>
-	<%= radio_button 'course_settings', 'enable_outcomes', true %> Yes
-	<%= radio_button 'course_settings', 'enable_outcomes', false %> No</p>
-</div>
+  <div class="control-group">
+	<label for="course_settings_enable_outcomes" class="control-label">Enable Course Outcomes:</label>
+	<div class="controls">
+	  <%= radio_button 'course_settings', 'enable_outcomes', true %> Yes
+	  <%= radio_button 'course_settings', 'enable_outcomes', false %> No
+	  <p class="help-block">This system is capable of defining course outcomes and objectives, including tracking these outcomes and integrating them with assignments.</p>
+    </div>
+  </div>
 
-<p class="blockintro">Enable quizzes.   Quizzes allow for multiple choice, true/false, and short answer questions (checking for an exact response).   This module allows you to define a bank of quiz questions, giving each student a random quiz.   Quizzes can also be used as a survey tool, aggregating responses.</p>
-<div class="block">
-  <p><label for="course_settings_enable_quizzes" class="required">Enable quizzes:</label>
-  <%= radio_button 'course_settings', 'enable_quizzes', true %> Yes
-  <%= radio_button 'course_settings', 'enable_quizzes', false %> No</p>
-</div>
+  <div class="control-group">
+	<label for="course_settings_enable_quizzes" class="control-label">Enable quizzes:</label>
+	<div class="controls">
+	  <%= radio_button 'course_settings', 'enable_quizzes', true %> Yes
+	  <%= radio_button 'course_settings', 'enable_quizzes', false %> No
+      <p class="help-block">Enable quizzes.   Quizzes allow for multiple choice, true/false, and short answer questions (checking for an exact response).   This module allows you to define a bank of quiz questions, giving each student a random quiz.   Quizzes can also be used as a survey tool, aggregating responses.</p>
+    </div>
+  </div>
 
-<p class="blockintro">Project teams allow you to group students together for the duration of a class (you can still have individual assignments).  The grouping provides students with a 'team center' and allows them to have a common turn-in, even with Subversion.</p>
-<div class="block">
-	<p><label for="course_settings_enable_project_teams" class="required">Enable Project Teams:</label>
-		<%= radio_button 'course_settings', 'enable_project_teams', true %> Yes
-		<%= radio_button 'course_settings', 'enable_project_teams', false %> No</p>	
-</div>
-
-<p class="blockintro">When project teams are enabled, the following settings may take effect.   You can use these to enable/disable certain parts of the project "team center."   If you want to hide team membership for experimental purposes, then you should disable the team wiki and email and set the documents to only allow instructor document uploads.</p>
-<div class="block">
-	<p><label for="course_settings_team_enable_wiki" class="required">Enable team wiki:</label>
+  <div class="control-group">
+    <label for="course_settings_enable_project_teams" class="control-label">Enable Project Teams:</label>
+    <div class="controls">
+	  <%= radio_button 'course_settings', 'enable_project_teams', true %> Yes
+	  <%= radio_button 'course_settings', 'enable_project_teams', false %> No
+      <p class="help-block">Project teams allow you to group students together for the duration of a class (you can still have individual assignments).  The grouping provides students with a 'team center' and allows them to have a common turn-in, even with Subversion. When project teams are enabled, the following settings may take effect.   You can use these to enable/disable certain parts of the project "team center."   If you want to hide team membership for experimental purposes, then you should disable the team wiki and email and set the documents to only allow instructor document uploads.</p>
+    </div>
+  </div>
+  <div class="control-group">
+    <label for="course_settings_team_enable_wiki" class="control-label">Enable team wiki:</label>
+    <div class="controls">
 		<%= radio_button 'course_settings', 'team_enable_wiki', true %> Yes
-		<%= radio_button 'course_settings', 'team_enable_wiki', false %> No</p>	
-	<p><label for="course_settings_team_enable_email" class="required">Enable team email:</label>
+		<%= radio_button 'course_settings', 'team_enable_wiki', false %> No
+	</div>
+  </div>
+  <div class="control-group">
+    <label for="course_settings_team_enable_email" class="control-label">Enable team email:</label>
+    <div class="controls">
 		<%= radio_button 'course_settings', 'team_enable_email', true %> Yes
-		<%= radio_button 'course_settings', 'team_enable_email', false %> No</p>	
-	<p><label for="course_settings_team_enable_documents" class="required">Enable team documents:</label>
-		<%= radio_button 'course_settings', 'team_enable_documents', true %> Yes
-		<%= radio_button 'course_settings', 'team_enable_documents', false %> No</p>	
-	<p><label for="course_settings_team_documents_instructor_upload_only" class="required">Only let instructor upload documents:</label>
+		<%= radio_button 'course_settings', 'team_enable_email', false %> No
+	</div>
+  </div>
+  <div class="control-group">
+	<label for="course_settings_team_enable_documents" class="control-label">Enable team documents:</label>
+	<div class="controls">
+	  <%= radio_button 'course_settings', 'team_enable_documents', true %> Yes
+	  <%= radio_button 'course_settings', 'team_enable_documents', false %> No
+	</div>
+  </div>
+  <div class="control-group">
+	<label for="course_settings_team_documents_instructor_upload_only" class="control-label">Only let instructor upload documents:</label>
+	<div class="controls">
 		<%= radio_button 'course_settings', 'team_documents_instructor_upload_only', true %> Yes
-		<%= radio_button 'course_settings', 'team_documents_instructor_upload_only', false %> No</p>	
-	<p><label for="course_settings_team_show_members" class="required">Show team membership:</label>
-		<%= radio_button 'course_settings', 'team_show_members', true %> Yes
-		<%= radio_button 'course_settings', 'team_show_members', false %> No</p>	
-</div>
+		<%= radio_button 'course_settings', 'team_documents_instructor_upload_only', false %> No
+	</div>
+  </div>
+  <div class="control-group">
+    <label for="course_settings_team_show_members" class="control-label">Show team membership:</label>
+    <div class="controls">
+	  <%= radio_button 'course_settings', 'team_show_members', true %> Yes
+	  <%= radio_button 'course_settings', 'team_show_members', false %> No
+      <p class="help-block">Normally, you want to show team membership. Hiding is provided for conducting experiments within cascade based on groups unknown to students. For example, presenting a different survey to different groups.</p>
+	</div>
+  </div>
+  <div class="control-group">
+    <label for="course_settings_enable_attendance" class="control-label">Enable Attendance</label>
+    <div class="controls">
+	  <%= radio_button 'course_settings', 'enable_attendance', true %> Yes
+	  <%= radio_button 'course_settings', 'enable_attendance', false %> No
+      <p class="help-block">The attendance feature is suited for classes that take place in a computer lab or a room where each student has access to a terminal during the class.</p>
+    </div>
+  </div>
 
+  <div class="control-group">
+	<label for="course_settings_enable_rss" class="control-label">Enable RSS Feed:</label>
+	<div class="controls">
+	  <%= radio_button 'course_settings', 'enable_rss', true %> Yes
+	  <%= radio_button 'course_settings', 'enable_rss', false %> No
+	  <p class="help-block">Enabling RSS will allow your students to receive notification of new assignments and blog posts in their web browser or news aggregator. RSS feeds are fully password protected and are only readable by users associated with your course. <%= link_to 'More information on RSS.', "http://www.feedburner.com/fb/a/aboutrss", :popup => true %></p>
+	</div>
+  </div>
 
-<p class="blockintro">The attendance feature is suited for classes that take place in a computer lab or a room where each student has access to a terminal during the class.</p>
-<div class="block">
-<p><label for="course_Settings_enable_attendance" class="required">Enable Attendance</label>
-	<%= radio_button 'course_settings', 'enable_attendance', true %> Yes
-	<%= radio_button 'course_settings', 'enable_attendance', false %> No</p>
-</div>
+  <div class="control-group">
+    <label for="course_settings_enable_documents" class="control-label">Enable documents:</label>
+    <div class="controls">
+  	  <%= radio_button 'course_settings', 'enable_documents', true %> Yes
+	  <%= radio_button 'course_settings', 'enable_documents', false %> No
+	  <p class="help-block">The 'documents' section allows you to post other documents (syllabus, lecture notes, etc.) for students to download and read.   It also allows you to create slide shows that are visible and presented through this site.   You must enable the documents module to use podcasts in this course.</p>
+	</div>
+  </div>
 
-<p class="blockintro">Enabling RSS will allow your students to receive notification of new assignments and blog posts in their web browser or news aggregator. RSS feeds are fully password protected and are only readable by users associated with your course. <%= link_to "More information on RSS. #{image_tag 'feed.png'}", "http://www.feedburner.com/fb/a/aboutrss", :popup => true %></p>
-<div class="block">
-	<p><label for="course_settings_enable_rss" class="required">Enable RSS Feed:</label>
-		<%= radio_button 'course_settings', 'enable_rss', true %> Yes
-		<%= radio_button 'course_settings', 'enable_rss', false %> No</p>
-</div>
+  <div class="control-group">
+	<label for="course_settings_enable_wiki" class="control-label">Enable course Wiki:</label>
+	<div class="controls">
+  	  <%= radio_button 'course_settings', 'enable_wiki', true %> Yes
+	  <%= radio_button 'course_settings', 'enable_wiki', false %> No
+	  <p class="help-block">Enabling this feature allows for all users in the course to participate in a collaborative Wiki environment.  <%= link_to 'More information on Wiki sites.', 'http://en.wikipedia.org/wiki/Wiki', :popup => true %></p>
+	</div>
+  </div>
 
-<p class="blockintro">The 'documents' section allows you to post other documents (syllabus, lecture notes, etc.) for students to download and read.   It also allows you to create slide shows that are visible and presented through this site.   You must enable the documents module to use podcasts in this course.</p>
-<div class="block">
-<p><label for="course_settings_enable_documents" class="required">Enable documents:</label>
-	<%= radio_button 'course_settings', 'enable_documents', true %> Yes
-	<%= radio_button 'course_settings', 'enable_documents', false %> No</p>
-</div>
+  <div class="control-group">
+    <label for="course_settings_enable_wiki" class="control-label">Course email signature:</label>
+    <div class="controls">
+  	  <%= text_area 'course_settings', 'email_signature', {:class => 'input-large', :rows => '5'} %>
+      <p class="help-block">An email signature is appended to emails that are sent by instructors or TAs for the course (if TAs are allowed to send email).  Leave blank to not have a signature.</p>
+    </div>
+  </div>
 
-<p class="blockintro">Enabling this feature allows for all users in the course to participate in a collaborative Wiki environment.  <%= link_to 'More information on Wiki sites.', 'http://en.wikipedia.org/wiki/Wiki', :popup => true %></p>
-<div class="block">
-<p><label for="course_settings_enable_wiki" class="required">Enable course Wiki:</label>
-	<%= radio_button 'course_settings', 'enable_wiki', true %> Yes
-	<%= radio_button 'course_settings', 'enable_wiki', false %> No</p>
-</div>
+  <div class="control-group">
+    <label for="course_settings_enable_prog_assignments" class="control-label">Enable programming assignments:</label>
+    <div class="controls">
+  	  <%= radio_button 'course_settings', 'enable_prog_assignments', true %> Yes
+	  <%= radio_button 'course_settings', 'enable_prog_assignments', false %> No
+	  <p class="blockintro">Enable the programming assignments capability of this system for this course.  If your course does not involve programming assignments, it is recommended that you turn this off.  The programming assignments allow for full integration with Subversion using http(s). The SVN server location must follow the pattern <code>http://svnserver.com/uniqueid</code>, a more comprehensive path to an individual assignment's files can be entered for each assignment.</p>
+	</div>
+  </div>
+  <div class="control-group">
+    <label for="course_settings_enable_svn" class="control-label">Enable Subversion:</label>
+    <div class="controls">
+	  <%= radio_button 'course_settings', 'enable_svn', true %> Yes
+	  <%= radio_button 'course_settings', 'enable_svn', false %> No
+	</div>
+  </div>
+  <div class="control-group">
+    <label for="course_settings_svn_server" class="control-label">Subversion Server:</label>
+    <div class="controls">
+	  <%= text_field 'course_settings', 'svn_server', :class => 'input-large' %>
+    </div>
+  </div>
 
-<p class="blockintro">An email signature is appended to emails that are sent by instructors or TAs for the course (if TAs are allowed to send email).  Leave blank to not have a signature.</p>
-<div class="block">
-<p><label for="course_settings_enable_wiki" class="required">Course email signature:</label>
-	<%= text_area 'course_settings', 'email_signature', :cols => 60, :rows => 7  %></p>
-</div>
-
-
-
-<p class="blockintro">Enable the programming assignments capability of this system for this course.  If your course does not involve programming assignments, it is recommended that you turn this off.  The programming assignments allow for full integration with Subversion using http(s). The SVN server location must follow the pattern <code>http://svnserver.com/uniqueid</code>, a more comprehensive path to an individual assignment's files can be entered for each assignment.</p>
-<div class="block">
-<p><label for="course_settings_enable_prog_assignments" class="required">Enable programming assignments:</label>
-	<%= radio_button 'course_settings', 'enable_prog_assignments', true %> Yes
-	<%= radio_button 'course_settings', 'enable_prog_assignments', false %> No</p>
-<p><label for="course_settings_enable_svn" class="required">Enable Subversion:</label>
-	<%= radio_button 'course_settings', 'enable_svn', true %> Yes
-	<%= radio_button 'course_settings', 'enable_svn', false %> No</p>	
-<p><label for="course_settings_svn_server" class="required">Subversion Server:</label>
-	<%= text_field 'course_settings', 'svn_server', "size" => 50 %>
-	</p>
-</div>
-
-<p class="blockintro">These settings allow you to specify exactly what responsibilities are are going to assign to teaching assistants.</p>
-<div class="block">
-<p><label for="course_settings_ta_course_information" class="required">TA can edit course information:</label>
-	<%= radio_button 'course_settings', 'ta_course_information', true %> Yes
-	<%= radio_button 'course_settings', 'ta_course_information', false %> No</p>
-
-<p><label for="course_settings_ta_course_documents" class="required">TA can edit course documents:</label>
-	<%= radio_button 'course_settings', 'ta_course_documents', true %> Yes
-	<%= radio_button 'course_settings', 'ta_course_documents', false %> No</p>
-
-<p><label for="course_settings_ta_course_assignments" class="required">TA can edit course assignments:</label>
-	<%= radio_button 'course_settings', 'ta_course_assignments', true %> Yes
-	<%= radio_button 'course_settings', 'ta_course_assignments', false %> No</p>
-
-	<p><label for="course_settings_ta_create_quizzes" class="required">TA can create quizzes:</label>
-		<%= radio_button 'course_settings', 'ta_create_quizzes', true %> Yes
-		<%= radio_button 'course_settings', 'ta_create_quizzes', false %> No</p>
-
-<p><label for="course_settings_ta_course_gradebook" class="required">TA can edit full gradebook:</label>
-	<%= radio_button 'course_settings', 'ta_course_gradebook', true %> Yes
-	<%= radio_button 'course_settings', 'ta_course_gradebook', false %> No</p>
-
-<p><label for="course_settings_ta_manage_attendance" class="required">TA can manage attendance:</label>
-	<%= radio_button 'course_settings', 'ta_manage_attendance', true %> Yes
-	<%= radio_button 'course_settings', 'ta_manage_attendance', false %> No</p>
-
-<p><label for="course_settings_ta_course_users" class="required">TA can manage course users:</label>
-	<%= radio_button 'course_settings', 'ta_course_users', true %> Yes
-	<%= radio_button 'course_settings', 'ta_course_users', false %> No</p>
-
-<p><label for="course_settings_ta_course_blog_post" class="required">TA can post to course blog:</label>
-	<%= radio_button 'course_settings', 'ta_course_blog_post', true %> Yes
-	<%= radio_button 'course_settings', 'ta_course_blog_post', false %> No</p>
-
-<p><label for="course_settings_ta_course_blog_edit" class="required">Ta can edit comments on the course blog:</label>
-	<%= radio_button 'course_settings', 'ta_course_blog_edit', true %> Yes
-	<%= radio_button 'course_settings', 'ta_course_blog_edit', false %> No</p>
-
-<p><label for="course_settings_ta_course_settings" class="required">TA can edit course settings:</label>
-	<%= radio_button 'course_settings', 'ta_course_settings', true %> Yes
-	<%= radio_button 'course_settings', 'ta_course_settings', false %> No</p>
-
-
-<p><label for="course_settings_ta_view_student_files" class="required">TA can view student files:</label>
-	<%= radio_button 'course_settings', 'ta_view_student_files', true %> Yes
-	<%= radio_button 'course_settings', 'ta_view_student_files', false %> No</p>
-
-<p><label for="course_settings_ta_view_quiz_results" class="required">TA can view quiz results:</label>
-	<%= radio_button 'course_settings', 'ta_view_quiz_results', true %> Yes
-	<%= radio_button 'course_settings', 'ta_view_quiz_results', false %> No
-</p>
-
-<p><label for="course_settings_ta_view_survey_results" class="required">TA can view survey results:</label>
-	<%= radio_button 'course_settings', 'ta_view_survey_results', true %> Yes
-	<%= radio_button 'course_settings', 'ta_view_survey_results', false %> No
-</p>
-
-<p><label for="course_settings_ta_view_already_graded_assignments" class="required">TA can view already graded assignments:</label>
-	<%= radio_button 'course_settings', 'ta_view_already_graded_assignments', true %> Yes
-	<%= radio_button 'course_settings', 'ta_view_already_graded_assignments', false %> No
-</p>
-	
-<p><label for="course_settings_ta_grate_individual" class="required">TA can ender grades for individual assignments:</label>
-	<%= radio_button 'course_settings', 'ta_grade_individual', true %> Yes
-	<%= radio_button 'course_settings', 'ta_grade_individual', false %> No</p>
-
-<p><label for="course_settings_ta_send_email" class="required">TA can send email:</label>
-    <%= radio_button 'course_settings', 'ta_send_email', true %> Yes
-    <%= radio_button 'course_settings', 'ta_send_email', false %> No</p>
-	
-<p><label for="course_settings_ta_edit_outcomes" class="required">TA can edit course outcomes:</label>
-		<%= radio_button 'course_settings', 'ta_edit_outcomes', true %> Yes
-		<%= radio_button 'course_settings', 'ta_edit_outcomes', false %> No</p>	
-		
-</div>
+  <div class="cotrol-group">
+    <label for="course_settings_ta_course_information" class="control-label">TA can edit course information:</label>
+    <div class="controls">
+ 	  <%= radio_button 'course_settings', 'ta_course_information', true %> Yes
+	  <%= radio_button 'course_settings', 'ta_course_information', false %> No
+	</div>
+  </div>
+  <div class="control-group">
+    <label for="course_settings_ta_course_documents" class="control-label">TA can edit course documents:</label>
+    <div class="controls">
+	  <%= radio_button 'course_settings', 'ta_course_documents', true %> Yes
+	  <%= radio_button 'course_settings', 'ta_course_documents', false %> No
+	</div>
+  </div>
+  <div class="control-group">
+    <label for="course_settings_ta_course_assignments" class="control-label">TA can edit course assignments:</label>
+    <div class="controls">
+	  <%= radio_button 'course_settings', 'ta_course_assignments', true %> Yes
+	  <%= radio_button 'course_settings', 'ta_course_assignments', false %> No
+	</div>
+  </div>
+  <div class="control-group">
+	<label for="course_settings_ta_create_quizzes" class="control-label">TA can create quizzes:</label>
+	<div class="controls">
+      <%= radio_button 'course_settings', 'ta_create_quizzes', true %> Yes
+	  <%= radio_button 'course_settings', 'ta_create_quizzes', false %> No
+	</div>
+  </div>
+  <div class="control-group">
+    <label for="course_settings_ta_course_gradebook" class="control-label">TA can edit full gradebook:</label>
+	<div class="controls">
+	  <%= radio_button 'course_settings', 'ta_course_gradebook', true %> Yes
+	  <%= radio_button 'course_settings', 'ta_course_gradebook', false %> No
+	</div>
+  </div>
+  <div class="control-group">
+    <label for="course_settings_ta_manage_attendance" class="control-label">TA can manage attendance:</label>
+	<div class="controls">
+	  <%= radio_button 'course_settings', 'ta_manage_attendance', true %> Yes
+	  <%= radio_button 'course_settings', 'ta_manage_attendance', false %> No
+	</div>
+  </div>
+  <div class="control-group">
+    <label for="course_settings_ta_course_users" class="control-label">TA can manage course users:</label>
+    <div class="controls">
+	  <%= radio_button 'course_settings', 'ta_course_users', true %> Yes
+	  <%= radio_button 'course_settings', 'ta_course_users', false %> No
+	</div>
+  </div>
+  <div class="control-group">
+    <label for="course_settings_ta_course_blog_post" class="control-label">TA can post to course blog:</label>
+    <div class="controls">
+	  <%= radio_button 'course_settings', 'ta_course_blog_post', true %> Yes
+	  <%= radio_button 'course_settings', 'ta_course_blog_post', false %> No
+	</div>
+  </div>
+  <div class="control-group">
+    <label for="course_settings_ta_course_blog_edit" class="control-label">Ta can edit comments on the course blog:</label>
+    <div class="controls">
+  	  <%= radio_button 'course_settings', 'ta_course_blog_edit', true %> Yes
+	  <%= radio_button 'course_settings', 'ta_course_blog_edit', false %> No
+	</div>
+  </div>
+  <div class="control-group">
+    <label for="course_settings_ta_course_settings" class="control-label">TA can edit course settings:</label>
+    <div class="controls">
+	  <%= radio_button 'course_settings', 'ta_course_settings', true %> Yes
+	  <%= radio_button 'course_settings', 'ta_course_settings', false %> No
+	</div>
+  </div>
+  <div class="control-group">
+    <label for="course_settings_ta_view_student_files" class="control-label">TA can view student files:</label>
+    <div class="controls">
+	  <%= radio_button 'course_settings', 'ta_view_student_files', true %> Yes
+	  <%= radio_button 'course_settings', 'ta_view_student_files', false %> No
+    </div>
+  </div>
+  <div class="control-group">
+    <label for="course_settings_ta_view_quiz_results" class="control-label">TA can view quiz results:</label>
+    <div class="controls">
+	  <%= radio_button 'course_settings', 'ta_view_quiz_results', true %> Yes
+ 	  <%= radio_button 'course_settings', 'ta_view_quiz_results', false %> No
+    </div>
+  </div>
+  <div class="control-group">
+	<label for="course_settings_ta_view_survey_results" class="control-label">TA can view survey results:</label>
+	<div class="controls">
+	  <%= radio_button 'course_settings', 'ta_view_survey_results', true %> Yes
+	  <%= radio_button 'course_settings', 'ta_view_survey_results', false %> No
+	</div>
+  </div>
+  <div class="control-group">
+    <label for="course_settings_ta_view_already_graded_assignments" class="control-label">TA can view already graded assignments:</label>
+    <div class="controls">
+	  <%= radio_button 'course_settings', 'ta_view_already_graded_assignments', true %> Yes
+	  <%= radio_button 'course_settings', 'ta_view_already_graded_assignments', false %> No
+	</div>
+  </div>
+  <div class="control-group">
+    <label for="course_settings_ta_grate_individual" class="control-label">TA can ender grades for individual assignments:</label>
+    <div class="controls">
+	  <%= radio_button 'course_settings', 'ta_grade_individual', true %> Yes
+	  <%= radio_button 'course_settings', 'ta_grade_individual', false %> No
+	</div>
+  </div>
+  <div class="control-group">
+    <label for="course_settings_ta_send_email" class="control-label">TA can send email:</label>
+    <div class="controls">
+      <%= radio_button 'course_settings', 'ta_send_email', true %> Yes
+      <%= radio_button 'course_settings', 'ta_send_email', false %> No
+    </div>
+  </div>
+  <div class="control-group">
+    <label for="course_settings_ta_edit_outcomes" class="control-label">TA can edit course outcomes:</label>
+    <div class="controls">
+      <%= radio_button 'course_settings', 'ta_edit_outcomes', true %> Yes
+      <%= radio_button 'course_settings', 'ta_edit_outcomes', false %> No
+    </div>
+  </div>
+</fieldset>
 <!--[eoform:course_settings]-->
-

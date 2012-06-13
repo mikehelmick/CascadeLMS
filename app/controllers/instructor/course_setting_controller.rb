@@ -8,6 +8,8 @@ class Instructor::CourseSettingController < Instructor::InstructorBase
     return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_settings' )
     
     @course_settings = @course.course_setting
+    @breadcrumb = Breadcrumb.for_course(@course, true)
+    @breadcrumb.text = "Course Settings"
   end
 
   # GETs should be safe (see http://www.w3.org/2001/tag/doc/whenToUseGet.html)

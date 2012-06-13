@@ -1,10 +1,10 @@
-<p><%= link_to "#{image_tag 'arrow_left.png' } Back", :controller => '/instructor/index', :course => @course.id %> |
+<div class="btn-group">
 <% if @show_images %>
-  <%= link_to "Hide user pictures", :controller => '/instructor/course_users', :action => nil, :course => @course, :id => nil %>
+  <%= link_to("Hide user pictures", {:controller => '/instructor/course_users', :action => nil, :course => @course, :id => nil}, {:class => 'btn btn-info btn-small'}) %>
 <% else %>
-  <%= link_to "Show user pictures", :controller => '/instructor/course_users', :action => nil, :course => @course, :id => nil, :show_images => true %>
+  <%= link_to("Show user pictures", {:controller => '/instructor/course_users', :action => nil, :course => @course, :id => nil, :show_images => true}, {:class => 'btn btn-info btn-small'}) %>
 <% end %>
-</p>	
+</div>
 
 <h2>Instructor(s) for <%= @course.title %></h2>
 <div id="instructor_error"> </div>
@@ -53,11 +53,3 @@
 <% @utype = 'dropped' %>
 <%= render :partial => 'userlist' %>
 </div>
-
-<hr/>
-<p><%= link_to "#{image_tag 'arrow_left.png' } Back", :controller => '/instructor/index', :course => @course.id %></p>
-
-
-<script language="javascript">
-  prepareOverlayForm();
-</script>

@@ -2,13 +2,20 @@ class Instructor::CourseUsersController < Instructor::InstructorBase
   
   before_filter :ensure_logged_in
   before_filter :set_tab
+
+  layout 'application_right'
   
   def index
     return unless load_course( params[:course] )
     return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_users' )
     
+    @show_images = false
     @show_images = true if params[:show_images]
     @showCRN = false
+
+    @breadcrumb = Breadcrumb.for_course(@course, true)
+    @breadcrumb.text = 'Course Users'
+    @breadcrumb.link = url_for(:action => 'index', :show_images => @show_images)
   end
   
   def set_tab

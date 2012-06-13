@@ -1,14 +1,7 @@
-<div id="form_area">
-
-<% form_tag( :action => 'update', :id => @course ) do %>
 <h2>Edit Settings for <%= @course.title %></h2>
-
+<% form_tag( {:action => 'update', :id => @course}, {:class => 'form-horizontal'} ) do %>
   <%= render :partial => 'form' %>
  
-<div class="submit">
-  <%= submit_tag 'Save Settings' %>
-</div>
+  <%= submit_tag 'Save Settings', :class => 'btn btn-primary' %>
+  <%= link_to 'Cancel', {:controller => '/instructor/index', :course => @course, :action => 'index'}, {:class => 'btn'} %>
 <% end %>
-</div>
-
-<%= link_to 'Cancel', :controller => '/instructor/index', :course => @course, :action => 'index' %>

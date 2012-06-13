@@ -1,6 +1,3 @@
-<div id="form_area">
-	<div class="block">
-
 <% if @users.nil? || @users.size == 0 %>
   <ul><li>No users in this category</li></ul>
 <% else %>	
@@ -11,22 +8,22 @@
 	     user = user.user 
      end 
   %>
-  <div id="<%=@utype%>_user_<%=user.id%>" style="margin-left: 20px" class="clear">
+  <div id="<%=@utype%>_user_<%=user.id%>">
+	<% form_tag( {:action => 'change_student_crn', :id => user}, {:class => 'form-inline'} ) do %> 
 	<label>
     <% if @course.course_open %>
       <% unless @utype.eql?('dropped') %>
        <% if @utype.eql?('student') %>
-        <%= link_to_remote( image_tag('delete.png', :align => 'absmiddle' ), :url => { :action => 'deluser', :type => @utype, :course => @course.id, :id => user }, :confirm => "Are you sure you want to remove the student '#{user.display_name}' from this course? The user will not be automatically enrolled in this course again.", :success => "new Effect.Puff( '#{@utype}_user_#{user.id}' )", :failure => "alert('There was an error removing the selected user from this course.');" ) %>
+        <%= link_to_remote( '<i class="icon-remove"></i>', :url => { :action => 'deluser', :type => @utype, :course => @course.id, :id => user }, :confirm => "Are you sure you want to remove the student '#{user.display_name}' from this course? The user will not be automatically enrolled in this course again.", :success => "new Effect.Puff( '#{@utype}_user_#{user.id}' )", :failure => "alert('There was an error removing the selected user from this course.');" ) %>
        <% else %>
-	    <%= link_to_remote( image_tag('delete.png', :align => 'absmiddle' ), :url => { :action => 'deluser', :type => @utype, :course => @course.id, :id => user }, :confirm => "Remove user #{user.display_name} from this course?", :success => "new Effect.Puff( '#{@utype}_user_#{user.id}' )", :failure => "alert('There was an error removing the selected user from this course.');" ) %>
+	    <%= link_to_remote( '<i class="icon-remove"></i>', :url => { :action => 'deluser', :type => @utype, :course => @course.id, :id => user }, :confirm => "Remove user #{user.display_name} from this course?", :success => "new Effect.Puff( '#{@utype}_user_#{user.id}' )", :failure => "alert('There was an error removing the selected user from this course.');" ) %>
 	   <% end %>
 	  <% end %>
 	<% end %>
+	</label>
 	   <% if @show_images %><img src="<%= user.gravatar_url(request.ssl?) %>" align="top" /><% end %> 
 		 <%=h user.display_name %> (<%=h user.email%>) 
-	   <% if @showCRN && !course_user.nil? %> 
-    </label>
-		  <% form_tag( :action => 'change_student_crn', :id => user ) do %> 
+	   <% if @showCRN && !course_user.nil? %> 		  
 			<select id="course_select_top" name="crn" onchange="this.form.submit();">
 		       <% selected = ""
 		          selected = 'selected="selected"' if (course_user.crn_id == 0) %>
@@ -37,12 +34,9 @@
 		         <option value="<%= crn.id %>" <%= selected %>>Section: <%= crn.name %>, <%= crn.crn %></option>     
 		       <% end %>
 		     </select>
-      	 <% end %> 	  
+      <% end %> 	  
 	   
-	   <% end %>
+	  <% end %>
 	</div>
 <% end %>
 <% end %>
-
- </div>
-</div>
