@@ -5,12 +5,18 @@ class Instructor::SharingController < Instructor::InstructorBase
   
   verify :method => :post, :only => [ :add_share ],
          :redirect_to => { :action => :index }
+
+  layout 'application_right'
   
   def index
     return unless load_course( params[:course] )
     return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_users' )
     
     @title = "Sharing : #{@course.title}"
+
+    @breadcrumb = Breadcrumb.for_course(@course, true)
+    @breadcrumb.text = "Asset Sharing"
+    @breadcrumb.link = url_for(:action => 'index')
   end
   
   def add_share

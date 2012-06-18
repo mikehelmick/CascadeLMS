@@ -14,8 +14,6 @@ class Instructor::CourseAssignmentsController < Instructor::InstructorBase
     RubricLevel.for_course( @course )
   
     set_title
-    
-    render :layout => 'noright'
   end
   
   def reorder
@@ -23,8 +21,6 @@ class Instructor::CourseAssignmentsController < Instructor::InstructorBase
     return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_assignments', 'ta_grade_individual', 'ta_view_student_files' )
   
     set_title
-    
-    render :layout => 'noright'
   end
   
   def sort
@@ -596,6 +592,7 @@ private
   
   def set_title
     @title = "Course Assignments - #{@course.title}"
+    @breadcrumb = Breadcrumb.for_course(@course, true)
   end
 
   

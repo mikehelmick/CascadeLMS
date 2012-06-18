@@ -1,31 +1,25 @@
-<%= link_to_function(image_tag("arrow_up.png"), "new Effect.BlindUp('search_results')") %>
+<%= link_to_function('<i class="icon-arrow-up"></i> Dismiss', "new Effect.BlindUp('search_results')") %>
 <% if @invalid %>
-<div id="ErrorExplanation">You must enter at least 4 characters in your search term.</div>
+<div class="alert alert-error">You must enter at least 4 characters in your search term.</div>
 <% else %>
 
 <% if @users.size == 0 %>
 <div id="ErrorExplanation">No users matched your search term.</div>
 <% else %>
 
-<table class="fancy" width="100%" style="display: block;">
+<table class="table table-compact table-striped">
 
-<% count = 0 %>
 <% for user in @users %>
-<% count = count.next 
-   odd = "odd"
-   odd = "even" if count.even?
-%>
-
-  <tr class="<%=odd%> hover" id="item_<%=user.id%>">
+  <tr id="item_<%=user.id%>">
     <td><img src="<%= user.gravatar_url(request.ssl?) %>"><br/>
 		<%=h user.display_name %><br/> 
 		(<em>'<%=h user.uniqueid %>'</em>)
 		</td>
 	  <td align="left" nowrap="nowrap">
 		<% if user.instructor_in_course?(@course.id) || user.sharing_for_course?(@course.id) %>
-		  <s><acronym title="This use is already an instructor, this course is already being shared with them.">Share Course</acronym></s>
+		  <s><i class="icon-retweet"></i> <acronym title="This use is already an instructor, this course is already being shared with them.">Share Course</acronym></s>
 		<% else %>
-		  <%= link_to( "Share Course", {:action => 'add_share', :course => @course, :add_user => user.id}, :method => :post ) %>
+		  <%= link_to( '<i class="icon-retweet"></i> Share Course', {:action => 'add_share', :course => @course, :add_user => user.id}, :method => :post ) %>
 		<% end %>
 	  </td>
   </tr>

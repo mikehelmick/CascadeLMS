@@ -1,7 +1,7 @@
 <h2>Assignments for <%= @course.title %></h2>
 
 <% if @course.assignments.size == 0 %>
- <p><i>There are no assignments in this course.</i></p>
+ <div class="alert alert-info">There are no assignments in this course.</div>
 <% else %>
 
 <p>
@@ -20,7 +20,7 @@
 
 <p><em>Students will see this list in 3 groups: current assignments, upcoming assignments, and past assignments. <%= link_to 'See how students see the assignment list.', :course => @course, :id => nil, :assignment => nil, :controller => '/assignments', :action => nil %></em></p>
 
- <table class="fancy" id="asignment_table"> 
+ <table class="table table-compact table-striped" id="asignment_table"> 
    <tr class="header"> 
 	<th align="left" valign="bottom">#</th>
 	<th align="left" valign="bottom">Visible</th>
