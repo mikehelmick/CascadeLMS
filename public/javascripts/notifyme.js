@@ -74,6 +74,7 @@ jQuery(document).ready(
 
 		$("a[rel=tooltip]").tooltip();
 		$("i[rel=tooltip]").tooltip();
+		$("a[rel=popover]").popover();
 		$('.tabs a:first').tab('show');
 		
 		prettyPrint();

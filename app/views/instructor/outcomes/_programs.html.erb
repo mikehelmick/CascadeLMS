@@ -1,36 +1,31 @@
-<div class="SectionHeader"><div class="Full">
 <h2>Programs for Course '<%=h @course.title%>' </h2>
-</div></div>
 
 <% if @course.programs.length == 0 %>
-	<p><i>This course is not in any programs.</i></p>
+	<div class="alert alert-info">This course is not in any programs.</div>
 <% else %>
-    <p>This course is part of the following programs:
+    <h4>This course is part of the following programs</h4>
 	<ul>
 	  <% for cprogram in @course.programs %>
 	    <li id="program_<%=cprogram.id%>"><%=h cprogram.title %></span>
 		
-		<%= link_to_remote( image_tag('delete.png', :align => 'absmiddle' ), :url => { :action => 'unmap_program', :program => cprogram.id, :course => @course }, :confirm => "Remove this course from the program '#{cprogram.title}'?.   This will destroy any mappings from course objectives to program objectives.", :success => "new Effect.Puff( 'program_#{cprogram.id}' )",  :failure => "alert('There was an error unmapping this program.');" ) %>
+		<%= link_to_remote( '<i class="icon-minus-sign"></i>', :url => { :action => 'unmap_program', :program => cprogram.id, :course => @course }, :confirm => "Remove this course from the program '#{cprogram.title}'?.   This will destroy any mappings from course objectives to program objectives.", :success => "new Effect.Puff( 'program_#{cprogram.id}' )",  :failure => "alert('There was an error unmapping this program.');" ) %>
 		
 		</li>
 	  <% end %>
 	</ul>
 	<br/>
-	<%= link_to "#{image_tag('report_link.png', :align => 'absmiddle')} View course outcomes to program outcomes report.", :controller => 'instructor/outcomes', :course => @course, :action => 'course_program_report' %>
-	</p>
+	<%= link_to '<i class="icon-book"></i> View course outcomes to program outcomes report.', :controller => 'instructor/outcomes', :course => @course, :action => 'course_program_report' %>
 <% end %>
 
 <% if @programs.length > 0 %>
-<p><%= link_to_function( "#{image_tag('add.png', :align => 'absmiddle' )} Map to additional programs:", "blindToggle( 'form_area' )" ) %></p>
+<p><%= link_to_function( '<i class="icon-plus-sign"></i> Map to additional programs', "blindToggle( 'form_area' )" ) %></p>
 <div id="form_area" style="display: none;">
-  <%= error_messages_for 'course_program' %>	
-  <% form_tag( :action => 'map_program', :course => @course ) do %>
+  <%= error_messages_for('course_program', :class => 'alert alert-error') %>	
+  <% form_tag( {:action => 'map_program', :course => @course}, {:class => 'form-horizontal'} ) do %>
 
   <%= render :partial => 'program_form' %>
- 
-  <div class="submit">
-	<%= submit_tag "Map Course to Program" %>
-  </div>
+
+  <%= submit_tag "Map Course to Program", :class => 'btn btn-primary' %>
   <% end %>	
 </div>
 <% end %>

@@ -1,4 +1,8 @@
-<div class="block">
-	<p><label for="course_program" class="required">Add mapping to program:</label>
-	<%= select_tag 'program_id', options_from_collection_for_select(@programs, "id", "title" ) %></p>
-</div>
+<fieldset>
+ <div class="control-group">
+   <label for="course_program" class="control-label">Map to program:</label>
+   <div class="controls">
+	<%= select_tag 'program_id', options_from_collection_for_select(@programs, "id", "title" ) %>
+   </div>
+ </div>
+</fieldset>

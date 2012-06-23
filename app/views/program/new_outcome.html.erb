@@ -1,17 +1,10 @@
-<p><%= link_to 'Back', :controller => '/program', :action => 'template_outcomes', :id => @program, :template => @course_template %></p>
-
-<div class="SectionHeader"><div class="Full">
 <h2>Create new Outcome for Course Template:<br/> '<%=h @course_template.title%>' </h2>
-</div></div>
 
-<div id="form_area">
-  <%= error_messages_for 'course_template_outcome' %>	
-  <% form_tag( :action => 'create_course_template_outcome', :template => @course_template, :id => @program ) do %>
+<%= error_messages_for 'course_template_outcome' %>	
+  <% form_tag( {:action => 'create_course_template_outcome', :template => @course_template, :id => @program}, {:class => 'form-horizontal'} ) do %>
 
   <%= render :partial => 'template_outcome_form' %>
  
-  <div class="submit">
-	<%= submit_tag "Create Course Template Outcome" %>
-  </div>
-  <% end %>	
-</div>
+  <%= submit_tag "Create Course Template Outcome", :class => 'btn btn-primary' %>
+  <%= link_to 'Back', {:controller => '/program', :action => 'template_outcomes', :id => @program, :template => @course_template}, {:class => 'btn'} %>
+<% end %>

@@ -1,20 +1,13 @@
-<%= link_to 'Back to programs', :action => nil, :id => nil %>
-
-<div class="SectionHeader"><div class="Full">
 <h2>Outcomes for <%= @program.title %></h2>
-</div></div>
-
-<br/>
-
 
 <% if @program.program_outcomes.length == 0 %>
-  <p><i>There are no outcomes defined for this program.</i></p>
+  <div class="alert alert-info">There are no outcomes defined for this program.</div>
 <% else %>
 
 <div id="master">
 <p><%= link_to_function 'Reorder Outcomes for this Program', "new Element.toggle('master');new Element.toggle('reorder');" %></p>
 
-<table class="fancy" width="99%">
+<table class="table table-striped">
   <tr class="header">
 	  <th width="90%">Program Outcome</th>
 	  <th>Controls</th>
@@ -36,39 +29,28 @@
 </table>
 </div>
 
-<div id="reorder" style="display: none;">
-	
-  <p><b><%= link_to "I'm done reordering objectives.", :action => 'outcomes', :id => @program %></b></p>
-
+<div id="reorder" style="display: none;">	
+  <%= link_to("I'm done reordering program outcomes.", {:action => 'outcomes', :id => @program}, {:class => 'btn btn-success'}) %><br/>
   <ul id="outcome-order">
     <% for outcome in @program.program_outcomes %>
-      <li id="program_outcome_<%= outcome.id %>"><%= image_tag 'arrow_switch.png', :align => 'absmiddle' %>
+      <li id="program_outcome_<%= outcome.id %>"><i class="icon-random"></i>
         <b><%= outcome.outcome %></b>
       </li>
     <% end %>
   </ul>
-	
 </div>
-
 <%= sortable_element 'outcome-order', 
     :url => { :action => 'sort', :id => @program },
     :complete => visual_effect(:highlight, 'outcome-order')
 %>
-
 <% end %>
 
-<div class="SectionHeader"><div class="Full">
 <h2>Add new Program Outcome for <%= @program.title %></h2>
-</div></div>
 
-<div id="form_area">
-  <%= error_messages_for 'program_outcome' %>	
-  <% form_tag( :action => 'save_outcome', :program => @program ) do %>
-
+<%= error_messages_for 'program_outcome' %>	
+<% form_tag( {:action => 'save_outcome', :program => @program}, {:class => 'form-horizontal'} ) do %>
   <%= render :partial => 'form' %>
  
-  <div class="submit">
-	<%= submit_tag "Save New Outcome" %>
-  </div>
-  <% end %>	
-</div>
+  <%= submit_tag "Save New Outcome", :class => 'btn btn-primary' %>
+  <%= link_to 'Done Editing', {:controller => '/program', :action => nil, :id => nil}, {:class => 'btn'} %>
+<% end %>	

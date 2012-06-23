@@ -9,7 +9,7 @@
       <a class="brand" href="#">CascadeLMS</a>
       <div class="nav-collapse">
         <ul class="nav">
-          <li <%= 'class="active"' if !@tab.nil? && @tab.eql?('home') %>>
+	      <li <%= 'class="active"' if !@tab.nil? && @tab.eql?('home') %>>
 	        <%= link_to '<i class="icon-home icon-white"></i> Home', :controller => '/home', :course => nil, :assignment => nil %>
           </li>
           <li class="divider-vertical"></li>
@@ -100,6 +100,7 @@
   <% unless @breadcrumb.nil? %>
   <ul class="breadcrumb">
    <li>
+	 <%=@app['title']%> <span class="divider">/</span>
 	 <%= link_to 'Home', :controller => '/home', :action => nil, :id => nil, :course => nil %> <span class="divider">/</span>
 	 <% unless @breadcrumb.course.nil? %>
 	   Course <span class="divider">/</span>
@@ -129,6 +130,13 @@
      <% unless @breadcrumb.forum.nil? %>
         <%= link_to "Forums", :controller => '/forums', :course => @course, :action => nil, :id => nil %> <span class="divider">/</span>
         <%= link_to "#{h @breadcrumb.forum.topic}", :controller => '/forums', :course => @course, :action => 'view_topic', :id => @breadcrumb.forum.id %> <span class="divider">/</span>
+     <% end %>
+     <% unless @breadcrumb.program.nil? %>
+        <%= link_to 'Programs', :controller => '/program', :action => nil, :id => nil, :course => nil %> <span class="divider">/</span>
+        <%= @breadcrumb.program.title %> <span class="divider">/</span>
+     <% end %>
+     <% if !@breadcrumb.outcomes.nil? && @breadcrumb.outcomes %>
+        <%= link_to 'Course Outcomes', :controller => '/instructor/outcomes', :action => 'index', :id => nil, :course => @course %> <span class="divider">/</span>
      <% end %>
 	
 	 <% unless @breadcrumb.text.nil? %>

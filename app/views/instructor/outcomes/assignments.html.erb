@@ -1,19 +1,12 @@
-<p><%= link_to 'Back', :controller => '/instructor/outcomes', :action => nil, :course => @course %></p>
-
-<div class="SectionHeader"><div class="Full">
 <h2>Assignment/Outcome report '<%=h @course.title%>' </h2>
-</div></div>
-
-<br/>
 
 <% all_outcomes = @course.ordered_outcomes %>
-
-<table class="fancy">
+<table class="table table-striped table-compact">
   <tr class="header">
 	<th>Assignments \ Outcomes</th>
 	<% for outcome in all_outcomes %>
 	  <th align="center">
-	    <u><acronym title="<%=h outcome.outcome %>"><%= @numbers[outcome.id] %></acronym></u>
+		<a href="#" rel="popover" title="Course Outcome #<%= @numbers[outcome.id] %>" data-placement="bottom" data-content="<%=h outcome.outcome %>"><%= @numbers[outcome.id] %></a>
 	  </th>
 	<% end %>
   </tr>

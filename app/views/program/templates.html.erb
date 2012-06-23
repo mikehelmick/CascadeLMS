@@ -1,17 +1,12 @@
-<%= link_to 'Back to programs', :action => nil, :id => nil %>
-
-<div class="SectionHeader"><div class="Full">
 <h2>Course Templates for <%= @program.title %></h2>
-</div></div>
-
-<br/>
-
 <% if @course_templates.length == 0 %>
-  <p><i>There are no course templates for this program</i></p>
-
+  <div class="alert alert-info">There are no course templates for this program</div>
 <% else %>
 
- <table class="fancy" width="99%">
+<%= link_to 'Back to Programs', {:action => nil, :id => nil}, {:class => 'btn'} %>
+<br/>&nbsp;<br/>
+
+<table class="table table-striped">
   <tr class="header">
 	  <th width="80%">Course Template</th>
 	  <th>Approval</th>
@@ -36,9 +31,8 @@
 		    <%= link_to 'Edit', :action => 'edit_template', :id => @program, :template => course_template %> |
 		    <%= link_to 'Outcomes', :action => 'template_outcomes', :id => @program, :template => course_template %> |
 			
-			<%= link_to 'Outcome Mapping Report', :action => 'view_course_template_to_program_outcomes', :id => @program, :template => course_template %> 
-			<%= link_to "#{image_tag 'report.png', :align => 'absmiddle'}", :action => 'view_course_template_to_program_outcomes', :id => @program, :template => course_template %>
-		    <%= link_to "#{image_tag 'page_white_excel.png', :align => 'absmiddle'}", :action => 'view_course_template_to_program_outcomes', :id => @program, :template => course_template, :format => 'csv' %> | 
+			<%= link_to 'Outcome Mapping Report', :action => 'view_course_template_to_program_outcomes', :id => @program, :template => course_template %>
+		    (<%= link_to 'Export CSV', :action => 'view_course_template_to_program_outcomes', :id => @program, :template => course_template, :format => 'csv' %>) | 
 			
 			<%= link_to 'Clone', {:action => 'clone_template', :id => @program, :template => course_template}, :confirm => 'Are you sure you want to clone this course template, and all outcomes and outcome mappings?' %> |
 		    <% extended = "" 
@@ -55,7 +49,7 @@
 
 
 <br/>
-<p><%= link_to_function 'Create new course template.', "blindToggle('create_new')" %></p>
+<p><%= link_to_function 'Create new course template.', "blindToggle('create_new')", {:class => 'btn btn-success'} %></p>
 
 <div id="create_new" style="display:none;">
 <div class="SectionHeader"><div class="Full">

@@ -1,21 +1,17 @@
-<div class="SectionHeader"><div class="Full">
 <h2>Programs - Courses of Study</h2>
-</div></div>
 
-<p>Programs that you are a manager of:</p>
-
-<table class="fancy" width="99%">
-  <tr class="header">
-	  <th width="90%">Program</th>
-	  <th>&nbsp;</th>
-	</tr>
+<table class="table table-striped">
+ <thead>
+  <tr>
+	<th>Program</th>
+	<th align="right">&nbsp;</th>
+  </tr>
+ </thead>
 
   <% count = 0 %>
   <% for program in @user.programs_users %>	
-    <% count = count.next 
-       odd = "odd"
-       odd = "even" if count.even? %>
-    <tr class="<%=odd%> hover" id="program_<%=program.program.id%>">
+    <% count = count.next %>
+    <tr id="program_<%=program.program.id%>">
       <td><%=h program.program.title %></td>
       <td nowrap="nowrap">
 	    <% if program.program_manager %>
@@ -31,8 +27,8 @@
 	    <% end %>
 	  </td>
 	</tr>
-	<tr class="<%=odd%> hover" style="padding-left: 1px;">
-	  <td colspan="2>">
+	<tr style="padding-left: 1px;">
+	  <td colspan="2">
 		<% if program.program.enable_api %>
 		  <ul>
 			<li><b>Public API url:</b> <%= url_for( :only_path => false, :controller => '/public/api', :action => 'program', :id => program.program ) %></li>

@@ -1,6 +1,6 @@
 class ProgramController < ApplicationController
   
-  before_filter :ensure_logged_in, :ensure_program_manager, :set_tab
+  before_filter :ensure_logged_in, :ensure_program_manager
   
   def index
     set_tab
@@ -9,7 +9,8 @@ class ProgramController < ApplicationController
   def outcomes
     return unless load_program( params[:id] )
     return unless allowed_to_manage_program( @program, @user )
-    set_tab
+    set_tab(@program)
+    @breadcrumb.text = "#{@program.title} - Outcomes"
     
     @program_outcome = ProgramOutcome.new
   end
@@ -164,7 +165,9 @@ class ProgramController < ApplicationController
   def templates
     return unless load_program( params[:id] )
     return unless allowed_to_manage_program( @program, @user )
-    
+    set_tab(@program)
+    @breadcrumb.text = 'Course Templates'
+
     @course_templates = @program.course_templates.sort do |a,b|
       rtn = a.title <=> b.title
       if rtn == 0 
@@ -173,8 +176,6 @@ class ProgramController < ApplicationController
          rtn
       end
     end
-    
-    render :layout => 'noright'
   end
   
   def create_template
@@ -234,7 +235,10 @@ class ProgramController < ApplicationController
     return unless load_program( params[:id] )
     return unless allowed_to_manage_program( @program, @user )
     return unless load_template( params[:template] )
-    return unless template_in_program( @course_template, @program )    
+    return unless template_in_program( @course_template, @program )
+    
+    set_tab(@program)
+    @breadcrumb.text = "Outcomes for '#{@course_template.title}'"  
   end
   
   def new_outcome
@@ -243,8 +247,10 @@ class ProgramController < ApplicationController
     return unless load_template( params[:template] )
     return unless template_in_program( @course_template, @program )
     
-    @course_template_outcome = CourseTemplateOutcome.new    
-    render :layout => 'noright'
+    @course_template_outcome = CourseTemplateOutcome.new
+    
+    set_tab(@program)
+    @breadcrumb.text = "Outcomes for Template '#{@course_template.title}'"
   end
   
   def create_course_template_outcome
@@ -542,7 +548,10 @@ class ProgramController < ApplicationController
     
     @title = "'#{@course_template.title}' (#{@course_template.start_date}) Outcomes to Program Outcomes Report"    
     respond_to do |format|
-        format.html { render :layout => 'noright' }
+        format.html { 
+          set_tab(@program)
+          render
+        }
         format.csv  { 
           response.headers['Content-Type'] = 'text/csv; charset=iso-8859-1; header=present'
           response.headers['Content-Disposition'] = "attachment; filename=#{@course_template.title}_course_template_outcomes_report.csv"
@@ -625,9 +634,17 @@ private
     return false
   end
   
-  def set_tab
+  def set_tab(program = nil)
     @title = "Program Management - Accreditation Tracking"
     @tab = 'programs'
+    
+    if (program.nil?)
+      @breadcrumb = Breadcrumb.new()
+      @breadcrumb.text = 'Programs'
+      @breadcrumb.link = url_for(:action => 'index')
+    else
+      @breadcrumb = Breadcrumb.for_program(program)
+    end
   end
   
   def read_program_outcome_mappings_from_params( course_template_outcome, program_outcomes, params )

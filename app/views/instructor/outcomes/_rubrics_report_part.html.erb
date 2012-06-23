@@ -1,19 +1,13 @@
-<div class="SectionHeader"><div class="Full">
-<h2>Course Outcomes to Rubrics Report for '<%=h @course.title%>' </h2>
-</div></div>
-<br/>
+<h2>Course Outcomes to Rubrics Report for '<%=h @course.title%>'</h2>
 
 <p>This table shows each course outcome, the rubrics that map to that outcome, and the number of students achieving each mark on that rubric, and aggregate numbers for each outcome.</p>
 
 <% for outcome in @course.ordered_outcomes %>
 
-<div class="SectionHeader"><div class="Full">
 <h3><%= @outcome_position[outcome.id] %> <%= outcome.outcome %></h3>
-</div></div>
-<br/>
 
 <% if @outcome_to_rubrics[outcome.id].length == 0 %>
-  <p><i>No rubrics map to this outcome.</i></p>
+  <div class="alert alert-info">No rubrics map to this outcome.</div>
 <% else %>
 
 <table class="fancy">
