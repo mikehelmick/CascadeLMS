@@ -352,6 +352,7 @@ class Instructor::OutcomesController < Instructor::InstructorBase
     respond_to do |format|
         format.html {
           @breadcrumb = Breadcrumb.for_course(@course, true)
+          @breadcrumb.outcomes = true
           @breadcrumb.text = "Course / Program Outcomes"
         }
         format.csv  { 

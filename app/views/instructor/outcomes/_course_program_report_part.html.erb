@@ -16,7 +16,7 @@
 	<% for program in @course.programs %>
 	  <% for po in program.program_outcomes%>
 	    <th align="center" width="2%">
-	      <u><acronym title="<%=h po.outcome %>"><%= program.title[0...1] %><%= po.position %></acronym></u>
+		  <a href="#" rel="popover" data-placement="left" title="<%= program.title %>: <%= po.position %>" data-content="<%=h po.outcome %>"><%= program.title[0...1] %><%= po.position %></a>
 	    </th>
 	  <% end %>
 	<% end %>
@@ -42,7 +42,7 @@
 	    <% for po in program.program_outcomes%>
 	      <th align="center" nowrap="nowrap">
 	        <% if outcome.mapped_to_program_outcome?(po.id) %>
-	          <acronym title="<%=h po.outcome %>"><%= image_tag 'accept.png', :align => 'absmiddle' %><%= outcome.get_depth_level_short(po.id) %></acronym>
+	          <a href="#" rel="popover" data-placement="left" title="<%= program.title %>: <%= po.position %>" data-content="<%=h po.outcome %>"><i class="icon-ok-sign"></i><%= outcome.get_depth_level_short(po.id) %></acronym>
 	        <% end %>
 	      </th>
 	    <% end %>
