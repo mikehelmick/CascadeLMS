@@ -1,22 +1,21 @@
 <h2>Assignments for <%= @course.title %></h2>
 
-<% if @course.assignments.size == 0 %>
- <div class="alert alert-info">There are no assignments in this course.</div>
-<% else %>
-
-<p>
- <% if @user.instructor_in_course?(@course.id) || (@user.assistant_in_course?(@course.id) && @course.course_setting.ta_course_assignments) %>
-   <%= link_to "#{image_tag 'arrow_switch.png'} Reorder Assignments", :action => 'reorder', :course => @course %> | 
-   <%= link_to 'New Assignment', :action => 'new' %> |
-   <%= link_to 'Duplicate Assignment', :action => 'duplicate' %> |
+<% if @user.instructor_in_course?(@course.id) || (@user.assistant_in_course?(@course.id) && @course.course_setting.ta_course_assignments) %>
+ <div class="btn-group">
+  <%= link_to "Reorder Assignments", {:action => 'reorder', :course => @course}, {:class => 'btn'} %> 
+  <%= link_to 'New Assignment', {:action => 'new'}, {:class => 'btn'} %> 
+  <%= link_to 'Duplicate Assignment', {:action => 'duplicate'}, {:class => 'btn'} %>
 	<% if @course.course_setting.enable_quizzes && (@user.instructor_in_course?(@course.id) || (@user.assistant_in_course?(@course.id) && @course.course_setting.ta_create_quizzes) )%>
-	  <%= link_to 'New Quiz/Survey', :controller => '/instructor/quiz', :action => 'new' %> |
-	  <%= link_to 'Duplicate Quiz/Survey', :controller => '/instructor/quiz', :action => 'duplicate' %> |
+	  <%= link_to 'New Quiz/Survey', {:controller => '/instructor/quiz', :action => 'new'}, {:class => 'btn'} %>
+	  <%= link_to 'Duplicate Quiz/Survey', {:controller => '/instructor/quiz', :action => 'duplicate'}, {:class => 'btn'} %>
 	<% end %>
-   <%= link_to 'View All Rubrics', :controller => '/instructor/rubrics', :action => 'all', :course => @course %> |
- <% end %>
-<%= link_to 'Back', :controller => '/instructor/index', :course => @course %>
-</p>
+  <%= link_to 'View All Rubrics', {:controller => '/instructor/rubrics', :action => 'all', :course => @course}, {:class => 'btn'} %>
+ </div>
+<% end %>
+
+<% if @course.assignments.size == 0 %>
+ <br/><div class="alert alert-info">There are no assignments in this course.</div>
+<% else %>
 
 <p><em>Students will see this list in 3 groups: current assignments, upcoming assignments, and past assignments. <%= link_to 'See how students see the assignment list.', :course => @course, :id => nil, :assignment => nil, :controller => '/assignments', :action => nil %></em></p>
 
@@ -33,9 +32,9 @@
     <th align="left" valign="bottom">Turn-ins</th>
     <th align="left" valign="bottom">Graded</th>
     <th align="left" valign="bottom">Category</th>
-    <th align="left" valign="bottom" colspan="2">Available & Due Date</th>
+    <th align="left" valign="bottom">Available & Due Date</th>
     <% if @user.instructor_in_course?(@course.id) || (@user.assistant_in_course?(@course.id) && @course.course_setting.ta_course_assignments) %>
-      <th align="left" valign="bottom">Controls</th>
+      <th align="left" valign="bottom">Delete</th>
     <% end %>
    </tr>
 
@@ -63,11 +62,11 @@
 	    <td valign="top" nowrap="nowrap">
 	      <% if @user.instructor_in_course?(@course.id) || (@user.assistant_in_course?(@course.id) && @course.course_setting.ta_course_assignments) %>
 	         <% if assignment.is_quiz? %>       
-	             <%= link_to "#{image_tag 'page_edit.png', :align => 'absmiddle'} #{h assignment.title}", :controller => '/instructor/quiz', :action => 'questions', :id => assignment, :assignment => nil %>
+	             <%= link_to "<i class=\"icon-edit\"></i> #{h assignment.title}", :controller => '/instructor/quiz', :action => 'questions', :id => assignment, :assignment => nil %>
   	         <% else %>
-	             <%= link_to "#{image_tag 'page_edit.png', :align => 'absmiddle'} #{h assignment.title}", :action => 'edit', :id => assignment %>
+	             <%= link_to "<i class=\"icon-edit\"></i> #{h assignment.title}", :action => 'edit', :id => assignment %>
 	         <% end %>
-	        <% if assignment.team_project %><%= image_tag 'group.png' %><% end %>
+	        <% if assignment.team_project %><i class="icon-magnet"></i><% end %>
 	       
 	      <% else %>
 	        <%= h assignment.title %>
@@ -76,31 +75,31 @@
 	    <td valign="top">
 	        <% if assignment.rubrics.size > 0 %>
 	          <% if @user.instructor_in_course?(@course.id) || (@user.assistant_in_course?(@course.id) && @course.course_setting.ta_course_assignments) %>    
-	             <%= link_to "#{image_tag 'pencil.png', :align => 'absmiddle'} Edit", :controller => '/instructor/rubrics', :course => @course, :assignment => assignment %>
+	             <%= link_to '<i class="icon-check"></i> Edit', :controller => '/instructor/rubrics', :course => @course, :assignment => assignment %>
 	          <% else %>
-	             <s><%= image_tag 'pencil.png' %> Edit</s>
+	             <s><i class="icon-check"></i> Edit</s>
 	          <% end %>
 	        <% else %>
 	          <% if @user.instructor_in_course?(@course.id) || (@user.assistant_in_course?(@course.id) && @course.course_setting.ta_course_assignments) %>
-	             <%= link_to "#{image_tag 'add.png', :align => 'absmiddle'} Define", :controller => '/instructor/rubrics', :course => @course, :assignment => assignment %>
+	             <%= link_to '<i class="icon-check"></i> Define', :controller => '/instructor/rubrics', :course => @course, :assignment => assignment %>
 	          <% else %>
-	             <s><%= image_tag 'add.png' %> Define</s>
+	             <s><i class="icon-check"></i> Define</s>
 	          <% end %>
 	        <% end %>
 	    </td>
 	    <% if @course.course_setting.enable_project_teams %>
 	     <td valign="top">
 	       <% if assignment.team_filters.size == 0 %>
-	         <%= link_to "#{image_tag 'group_delete.png', :align => 'absmiddle'} Create", :controller => '/instructor/course_assignments', :action => 'team_filter', :id => assignment %>
+	         <%= link_to '<i class="icon-magnet"></i> Create', :controller => '/instructor/course_assignments', :action => 'team_filter', :id => assignment %>
 	       <% else %>
-	         <%= link_to "#{image_tag 'group_add.png', :align => 'absmiddle'} Edit", :controller => '/instructor/course_assignments', :action => 'team_filter', :id => assignment %>
+	         <%= link_to '<i class="icon-magnet"></i> Edit', :controller => '/instructor/course_assignments', :action => 'team_filter', :id => assignment %>
 	       <% end %>
 	     </td>
 	    <% end %>
 	    <td valign="top">
 	       <%if assignment.auto_grade %>
 	           <% if @user.instructor_in_course?(@course.id) || (@user.assistant_in_course?(@course.id) && @course.course_setting.ta_course_assignments) %>
-	             <%= link_to "#{image_tag 'pencil.png', :align => 'absmiddle'} Edit", :action => 'autograde', :course => @course, :id => assignment.id %> 
+	             <%= link_to '<i class="icon-play"></i> Edit', :action => 'autograde', :course => @course, :id => assignment.id %> 
 	           <% end %>
 		   <% else %>
 		       &nbsp;
@@ -136,46 +135,29 @@
 		  <% if assignment.grade_item.nil? && assignment.quiz && assignment.quiz.survey %>
 		    &nbsp;
 		  <% elsif assignment.grade_item.nil? %>
-		    No Link <%= image_tag 'link_break.png' %>
+		    No Link
 		  <% elsif assignment.released %>
-	        Yes <%= image_tag 'lightbulb.png' %>
+	        Yes
 	      <% else %>
-	        No <%= image_tag 'lightbulb_off.png' %>
+	        No
 	      <% end %>
 		</td>
 	
 	    <td nowrap="nowrap" valign="top"><%=h assignment.grade_category.category %></td>
 	    <td nowrap="nowrap" valign="top">
-	    <% if assignment.upcoming? %><%= image_tag 'clock_error.png' %>
-	    <% elsif assignment.current? %><%= image_tag 'clock.png' %>
-	    <% else %><%= image_tag 'clock_red.png' %>
-	    <% end %>
-	    </td>
-	    <td nowrap="nowrap" valign="top" align="left">
-	    S: <%= assignment.open_date.to_formatted_s(:compact_date) %><br/>
-	    E: <%= assignment.due_date.to_formatted_s(:compact_date) %></td>
+		<% spanTag = 'badge-error'
+		   if assignment.upcoming? || assignment.current?
+		    spanTag = 'badge-success'
+	       end %>
+	    <span class="badge <%= spanTag %>">S: <%= assignment.open_date.to_formatted_s(:long) %></span><br/>
+	    <span class="badge <%= spanTag %>">E: <%= assignment.due_date.to_formatted_s(:long) %></span></td>
 	    
 	    <% if @user.instructor_in_course?(@course.id) || (@user.assistant_in_course?(@course.id) && @course.course_setting.ta_course_assignments) %>
 	    <td nowrap="nowrap" valign="top">	  
-	      <%= link_to "#{image_tag 'delete.png', :align => 'absmiddle'} Delete", { :action => 'destroy', :id => assignment }, :method => "post", :confirm => "Are you sure you want to delete the assignment '#{assignment.title}' and all of it's associated data? This action can not be undone." %> 
+	      <%= link_to '<i class="icon-remove"></i> Delete', { :action => 'destroy', :id => assignment }, :method => "post", :confirm => "Are you sure you want to delete the assignment '#{assignment.title}' and all of it's associated data? This action can not be undone." %> 
 	    </td>
 	    <% end %> 
 	  </tr>
    <% end %>
  </table>
-
 <% end %>
-
-<p>
-  <% if @user.instructor_in_course?(@course.id) || (@user.assistant_in_course?(@course.id) && @course.course_setting.ta_course_assignments) %>
-    <%= link_to "#{image_tag 'arrow_switch.png'} Reorder Assignments", :action => 'reorder', :course => @course %> | 
-    <%= link_to 'New Assignment', :action => 'new' %> |
-    <%= link_to 'Duplicate Assignment', :action => 'duplicate' %> |
-	<% if @course.course_setting.enable_quizzes && (@user.instructor_in_course?(@course.id) || (@user.assistant_in_course?(@course.id) && @course.course_setting.ta_create_quizzes) )%>
-	  <%= link_to 'New Quiz/Survey', :controller => '/instructor/quiz', :action => 'new' %> |
-	  <%= link_to 'Duplicate Quiz/Survey', :controller => '/instructor/quiz', :action => 'duplicate' %> |
-	<% end %>
-	<%= link_to 'View All Rubrics', :controller => '/instructor/rubrics', :action => 'all', :course => @course %> |
-  <% end %>
- <%= link_to 'Back', :controller => '/instructor/index', :course => @course %>
-</p>

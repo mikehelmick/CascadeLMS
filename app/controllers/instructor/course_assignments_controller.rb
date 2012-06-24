@@ -14,6 +14,7 @@ class Instructor::CourseAssignmentsController < Instructor::InstructorBase
     RubricLevel.for_course( @course )
   
     set_title
+    @breadcrumb.text = 'Assignments'
   end
   
   def reorder
@@ -73,6 +74,7 @@ class Instructor::CourseAssignmentsController < Instructor::InstructorBase
     end
     
     set_title
+    @breadcrumb.text = 'New Assignment'
     @title = "New Assignment"
     @duplicate = false
   end

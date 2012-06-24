@@ -1,46 +1,88 @@
-<p class="blockintro">Create a new rubric, where the primary trait is the goal displayed to the student.</p>
-<div class="block">
-<p><label for="rubric_primary_trait" class="required">Rubric primary trait:</label>
-   <%= text_area 'rubric', 'primary_trait', "cols" => 80, "rows" => 5  %></p>
-</div>
+<fieldset>
+ <div class="control-group">
+  <label for="rubric_primary_trait" class="control-label">Rubric primary trait:</label>
+  <div class="controls">
+   <%= text_area 'rubric', 'primary_trait', {:class => 'input-xlarge', :rows => 2} %>
+   <p class="help-block">The primary trait is the goal displayed to the student.</p>
+  </div>
+ </div>
 
-<p class="blockintro">Rubric scoring: Rubrics are scored on a 4 tiered basis, <b>excellent</b>, <b>proficient</b>, <b>apprentice</b> and <b>novice</b> 
+
+<p class="help-block">Rubric scoring: Rubrics are scored on a 4 tier basis, <strong>excellent</strong>, <strong>proficient</strong>, <strong>apprentice</strong> and <strong>novice</strong> 
 	(or custom labels).  You should define the criteria that lead to each category being selected and assign a point value to each.   The point values are not absolute, for instance if you assign apprentice as being 3 points, you can award an individual student 4 points if they exceed the partial credit requirement but don't achieve the proficient requirement.</p>
-<div class="block">
-<p><label for="rubric_above_credit_criteria" class="required"><%= @course.rubric_level.l1_name %> trait:</label>
-   <%= text_area 'rubric', 'above_credit_criteria', "cols" => 80, "rows" => 5  %></p>
-<p><label for="rubric_above_credit_points" class="required"><%= @course.rubric_level.l1_name %> points:</label>
-   <%= text_field 'rubric', 'above_credit_points'  %></p>	
-	
-<p><label for="rubric_full_credit_criteria" class="required"><%= @course.rubric_level.l2_name %> trait:</label>
-   <%= text_area 'rubric', 'full_credit_criteria', "cols" => 80, "rows" => 5  %></p>
-<p><label for="rubric_full_credit_points" class="required"><%= @course.rubric_level.l2_name %> points:</label>
-   <%= text_field 'rubric', 'full_credit_points'  %></p>
 
-<p><label for="rubric_part_credit_criteria" class="required"><%= @course.rubric_level.l3_name %> trait:</label>
-   <%= text_area 'rubric', 'part_credit_criteria', "cols" => 80, "rows" => 5  %></p>
-<p><label for="rubric_part_credit_points" class="required"><%= @course.rubric_level.l3_name %> points:</label>
-   <%= text_field 'rubric', 'part_credit_points'  %></p>
+ <div class="control-group">
+  <label for="rubric_above_credit_criteria" class="control-label"><%= @course.rubric_level.l1_name %> trait:</label>
+  <div class="controls">
+   <%= text_area 'rubric', 'above_credit_criteria', {:class => 'input-xlarge', :rows => 2} %>
+  </div>
+ </div>
+ <div class="control-group">
+  <label for="rubric_above_credit_points" class="control-label"><%= @course.rubric_level.l1_name %> points:</label>
+  <div class="controls">
+   <%= text_field 'rubric', 'above_credit_points'  %>
+  </div>
+ </div>
 
-<p><label for="rubric_no_credit_criteria" class="required"><%= @course.rubric_level.l4_name %> trait:</label>
-   <%= text_area 'rubric', 'no_credit_criteria', "cols" => 80, "rows" => 5  %></p>
-<p><label for="rubric_no_credit_points" class="required"><%= @course.rubric_level.l4_name %> points:</label>
-   <%= text_field 'rubric', 'no_credit_points'  %></p>
-</div>
+ <div class="control-group">
+  <label for="rubric_full_credit_criteria" class="control-label"><%= @course.rubric_level.l2_name %> trait:</label>
+  <div class="controls">
+   <%= text_area 'rubric', 'full_credit_criteria', {:class => 'input-xlarge', :rows => 2} %>
+  </div>
+ </div>
+ <div class="control-group">
+   <label for="rubric_full_credit_points" class="control-label"><%= @course.rubric_level.l2_name %> points:</label>
+   <div class="controls">
+     <%= text_field 'rubric', 'full_credit_points'  %>
+   </div>
+ </div>
 
-<p class="blockintro">You can define visibility of rubrics.  A rubric can be visible to student from the moment the assignment is visible, after the assignment is graded, or not at all.</p>
-<div class="block">
-<p><label for="rubric_visible_before_grade_release" class="required">Show rubric before grading complete:</label>
-	 <%= radio_button 'rubric', 'visible_before_grade_release', true %> Yes
-	 <%= radio_button 'rubric', 'visible_before_grade_release', false %> No</p>
-	
-<p><label for="rubric_visible_after_grade_release" class="required">Show rubric after grading complete:</label>
-	 <%= radio_button 'rubric', 'visible_after_grade_release', true %> Yes
-	 <%= radio_button 'rubric', 'visible_after_grade_release', false %> No</p>
-</div>
+ <div class="control-group">
+  <label for="rubric_part_credit_criteria" class="control-label"><%= @course.rubric_level.l3_name %> trait:</label>
+  <div class="controls">
+   <%= text_area 'rubric', 'part_credit_criteria', {:class => 'input-xlarge', :rows => 2} %>
+  </div>
+ </div>
+ <div class="control-group">
+   <label for="rubric_part_credit_points" class="control-label"><%= @course.rubric_level.l3_name %> points:</label>
+   <div class="controls">
+     <%= text_field 'rubric', 'part_credit_points'  %>
+   </div>
+ </div>
 
-<p class="blockintro">Map this rubric to one or more course outcomes.</p>
-<div class="block">
+ <div class="control-group">
+  <label for="rubric_no_credit_criteria" class="control-label"><%= @course.rubric_level.l4_name %> trait:</label>
+  <div class="controls">
+   <%= text_area 'rubric', 'no_credit_criteria', {:class => 'input-xlarge', :rows => 2} %>
+  </div>
+ </div>
+ <div class="control-group">
+   <label for="rubric_no_credit_points" class="control-label"><%= @course.rubric_level.l4_name %> points:</label>
+   <div class="controls">
+     <%= text_field 'rubric', 'no_credit_points'  %>
+   </div>
+ </div>
+
+<p class="help-block">You can define visibility of rubrics.  A rubric can be visible to student from the moment the assignment is visible, after the assignment is graded, or not at all.</p>
+ 
+ <div class="control-group">
+  <label for="rubric_visible_before_grade_release" class="control-label">Show rubric before grading complete:</label>
+  <div class="controls">
+	<%= radio_button 'rubric', 'visible_before_grade_release', true %> Yes
+	<%= radio_button 'rubric', 'visible_before_grade_release', false %> No
+  </div>
+ </div>
+
+ <div class="control-group">
+  <label for="rubric_visible_after_grade_release" class="required">Show rubric after grading complete:</label>
+  <div class="controls">
+	<%= radio_button 'rubric', 'visible_after_grade_release', true %> Yes
+	<%= radio_button 'rubric', 'visible_after_grade_release', false %> No
+  </div>
+ </div>
+
+<p class="help-block">Map this rubric to one or more course outcomes.</p>
+<div class="well">
 <ul>
 
 <%
@@ -80,7 +122,6 @@
     last_stack_size = parent_stack.length
   end
 %>
-
-	
 </ul>
 </div>
+</fieldset>

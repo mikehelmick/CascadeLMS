@@ -1,8 +1,6 @@
 <h2>New Assignment for <%= @course.title %></h2>
 
-<div id="form_area">
-
-<% form_tag( { :action => 'create' }, :multipart => true, :onsubmit => "new Element.toggle('button'); new Element.toggle( 'spinner');" ) do %>
+<% form_tag( { :action => 'create' }, {:class => 'form-horizontal', :multipart => true, :onsubmit => "new Element.toggle('button'); new Element.toggle( 'spinner');"} ) do %>
 
   <%= render :partial => 'form', :locals => { :edit_mode => false } %>
 
@@ -12,12 +10,9 @@
   <%= text_field_tag 'point_value', @points  %></p>
 </div>
 
-<div class="submit">
-  <div id="button"><%= submit_tag "Create" %></div>
+  <div id="button">
+    <%= submit_tag "Create", {:class => 'btn btn-primary'} %>
+	<%= link_to 'Cancel', {:action => 'index'}, {:class => 'btn'} %>
+  </div>
   <div id="spinner" style="display: none;"><%= image_tag 'spinner.gif' %></div>
-</div>
 <% end %>
-
-<p><%= link_to 'Cancel', :action => 'index' %></p>
-
-</div>

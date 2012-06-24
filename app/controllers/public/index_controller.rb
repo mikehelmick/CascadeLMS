@@ -1,6 +1,5 @@
 class Public::IndexController < ApplicationController
   
-  layout 'public'
   
   before_filter :set_tab
   before_filter :load_user_if_logged_in
