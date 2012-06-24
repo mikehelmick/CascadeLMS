@@ -1,42 +1,42 @@
 <h2>Student turn-ins for '<%= @assignment.title %>'</h2>
-<h3>Course: <%= @course.title %> (<%= @course.term.semester%>)</h3>
-
-<p>
-<%= link_to "Edit Rubrics for this assignment", :controller => '/instructor/rubrics', :course => @course, :assignment => @assignment %> |
-<%= link_to 'Back to all assignments', :course => @course, :assignment => nil, :controller => '/instructor/course_assignments' %>
 
 <% unless @grade_item %>
-<p><i>Warning - this assignment is not connected with an entry in the GradeBook.</i></p>
+<div class="alert alert-warning">Warning - this assignment is not connected with an entry in the GradeBook.</div>
 <% end %>
 
 <% if @assignment.released %>
-<div class="GoodMessage">Comments entered on files and assignments are available to students.  (<%= link_to 'change', :action => 'toggle_released', :course => @course, :assignment => @assignment %>)</div>
+<div class="alert alert-success">Comments entered on files and assignments are available to students.  (<%= link_to 'change', :action => 'toggle_released', :course => @course, :assignment => @assignment %>)</div>
 <% else %>
-  <div class="errorExplanation">Comments entered on files and assignments are NOT available to students.  (<%= link_to 'change', :action => 'toggle_released', :course => @course, :assignment => @assignment %>)</div>
- <% if @assignment.auto_grade %>
-  <div class="standout"><%= link_to "#{image_tag 'bug.png'} Rerun AutoGrade for ALL students in this class.", :course => @course, :assignment => @assignment, :action => 'autograde_all' %></div>
- <% end %>
-
+  <div class="alert alert-warning">Comments entered on files and assignments are NOT available to students.  (<%= link_to 'change', :action => 'toggle_released', :course => @course, :assignment => @assignment %>)</div>
 <% end %>
 
-<ul>
+<div class="btn-group">
+<%= link_to '<i class="icon-edit"></i> Edit Rubrics', {:controller => '/instructor/rubrics', :course => @course, :assignment => @assignment}, {:class => 'btn btn-small'} %>
+<% if @assignment.rubrics.size > 0 %>
+  <%= link_to 'Rubrics Report', {:action => 'rubrics', :course => @course, :assignment => @assignment}, {:class => 'btn btn-small'} %>
+<% end %>
+<% if @assignment.auto_grade %>
+  <%= link_to "Rerun AutoGrade for ALL students in this class.", {:course => @course, :assignment => @assignment, :action => 'autograde_all'}, {:class => 'btn btn-small'} %>
+<% end %>
 <% if( (@assignment.use_subversion || @assignment.enable_upload) &&  @any_turnins  ) %>
-  <li><%= image_tag 'page_white_compressed.png' %> <%= link_to "Download all student files.", {:action => 'download_all_files', :course => @course, :assignment => @assignment }, :confirm => "Press OK to gather and download students files.  This make take several minutes depending on class size." %></li>
+  <%= link_to '<i class="icon-download-alt"></i> Download all student files', {:action => 'download_all_files', :course => @course, :assignment => @assignment }, {:confirm => "Press OK to gather and download students files.  This make take several minutes depending on class size.", :class => 'btn btn-small'} %>
 <% end %>
+<%= link_to '<i class="icon-arrow-left"></i> Back to all assignments', {:course => @course, :assignment => nil, :controller => '/instructor/course_assignments'}, {:class => 'btn btn-small'} %>
+</div>
+<br/>
+
 <% if ( @assignment.programming )%>
-  <li><%= image_tag 'table_relationship.png' %> Look for similarities in submissions: 
+<div class="well">
+  <%= image_tag 'table_relationship.png' %> Look for similarities in submissions: 
 	<% form_tag( {:action => 'diff_count', :course => @course, :assignment => @assignment, :id => nil} ) do %>
 		File Extension: <%= select_tag 'extension', options_for_select(@textfiles,'java') %>
 		Max Differences: <%= select_tag 'diffcount', options_for_select(@diffsize,@count) %>
 		<%= submit_tag 'Look for differences' %>
 	<% end %>
-	</li>
-<% end %>
-<% if @assignment.rubrics.size > 0 %>
-  <li><%= image_tag 'layout_content.png', :align => 'absmiddle' %> <%= link_to 'Rubrics Report', :action => 'rubrics', :course => @course, :assignment => @assignment %></li>
+ </div>
 <% end %>
 
-</ul>
+
 
 <% if @course.course_setting.enable_project_teams %>
  <% if @assignment.team_filters.size > 0 %>
@@ -44,13 +44,13 @@
  <% end %>
 <% end %>
 
-<% form_tag( :controller => '/instructor/turnins', :action => 'save_all_grades', :course => @course, :assignment => @assignment, :id => nil ) do %>
+<% form_tag( {:controller => '/instructor/turnins', :action => 'save_all_grades', :course => @course, :assignment => @assignment, :id => nil}, {:class => 'form-inline'} ) do %>
 
 <% if @grade_item %>
 <p><i>When entering grades, you can enter a grade less than zero to remove the entry all together.  If you leave the field blank, no change will be made.</i></p>
 <% end %>
 
-<table class="fancy">
+<table class="table table-striped table-compact">
   <tr class="header">
     <th valign="bottom">&nbsp;</th>
     <th valign="bottom">Student</th>
@@ -150,7 +150,7 @@
 		  <% value = '' 
 		     value = sprintf("%0.1f", @grades[student.id]) unless @grades[student.id].nil?
 		   %>
-	 	  <%= text_field_tag "grade_#{student.id}", value, :size => 5 %> / <%= @grade_item.points %>
+	 	  <%= text_field_tag "grade_#{student.id}", value, :class => 'input-small' %> / <%= @grade_item.points %>
 	 	</td>
 	  <% end %>
 	  <% if @assignment.auto_grade %>
