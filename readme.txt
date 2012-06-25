@@ -1,4 +1,7 @@
 
+** The master branch now contains an early version of CascadeLMS 2.0. This version is not suitable for a production deployment.
+
+
 Branching:
  * master - active devlopment
  * relX.Y - release branch 
