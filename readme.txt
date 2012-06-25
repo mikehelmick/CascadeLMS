@@ -1,12 +1,12 @@
 
-As of March 1, 2012 - CascadeLMS has gone into maintenance mode.
+Branching:
+ * master - active devlopment
+ * relX.Y - release branch 
 
-Serious bugs will be addressed for a period of 6 months (until October 1, 2012).
+Current status:
+ * master branch is being used for development of CascadeLMS 2.0 (alpha release)
+ * For production systems, the rel1.4 branch is what you want.
 
-I may pick this project up agin in the future, but I have other priorities right now.
-
-thanks for your support.
-mike helmick
 
 --------------------------
 
