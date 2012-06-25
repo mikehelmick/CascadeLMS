@@ -1241,7 +1241,10 @@ class Instructor::TurninsController < Instructor::InstructorBase
         end
       end
     end
-    
+
+    @breadcrumb = Breadcrumb.for_assignment(@assignment)
+    @breadcrumb.instructor = true
+    @breadcrumb.text = "View Student File"
     render :layout => 'noright'
   end
   

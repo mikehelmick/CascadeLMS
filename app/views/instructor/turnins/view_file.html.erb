@@ -1,31 +1,31 @@
+<div class="row-fluid"><div class="span12">
 <h2>'<%= @assignment.title %>' turn-ins for '<%= @student.display_name %>'</h2>
-<h3>Course: <%= @course.title %> (<%= @course.term.semester%>)</h3>
 
-<p><%= link_to "Back turn-in for #{@student.display_name}", :controller => '/instructor/turnins', :action => 'view_student', :course => @course, :assignment => @assignment, :id => @student %></p>
+ <div class="btn-group">
+<%= link_to "Back turn-in for #{@student.display_name}", {:controller => '/instructor/turnins', :action => 'view_student', :course => @course, :assignment => @assignment, :id => @student}, {:class => 'btn'} %>
+ </div>
+</div></div>
 
-<div id="gradable_override"> 
-<%= render :partial => 'utf_gradable' %> 
+<div class="row-fluid">
+ <div class="span12">
+  <%= render :partial => 'utf_gradable' %>
+ </div>
 </div>
 
-<% if @utf.main %>
-<div class="standout" id="execute_java">
+<% if false && @utf.main %>
+<div class="row-fluid"><div class="span12"><div class="well">
 <p>This file is marked as the Java main class for this turn-in.   This gives you the option to simply compile and run this single file.  If you need to pull in more source files, consider configuring AutoGrade for this assignment.</p>
-<p>Before compiling and running this file - please check the file for malicious code (deletion/creation of files, network usage, System.exec, infinite loops).  <b>Code that expects more input than is provided will not terminate.</b></p>
+<p>Before compiling and running this file - please check the file for malicious code (deletion/creation of files, network usage, System.exec, infinite loops). <strong>Code that expects more input than is provided will not terminate.</strong></p>
 
-<% form_tag( {:course => @course, :assignment => @assignment, :student => @student, :action => 'view_file', :id => @utf }, :onsubmit => "new Element.toggle('button');new Element.toggle( 'spinner');" ) do %>
+<% form_tag( {:course => @course, :assignment => @assignment, :student => @student, :action => 'view_file', :id => @utf }, {:onsubmit => "new Element.toggle('button');new Element.toggle( 'spinner');", :class => 'form-inline' } ) do %>
   <%= hidden_field_tag 'execute_java', true %>
-<p>
-
-  <label for="command_line_arguments">Command line arguments:</label> <%= text_field_tag 'command_line_arguments', @command_line_arguments, :size => 50 %><br/>
-  <label for="standard_in">Standard in:</label> <%= text_area_tag 'standard_in', @standard_in, :rows => 5, :cols => 50 %>
-
-</p>
-
+  <%= text_field_tag 'command_line_arguments', @command_line_arguments, {:class => 'input-xlarge', :placeholder => 'Command line arguments' }%>
+  <%= text_area_tag 'standard_in', @standard_in, {:rows => 5, :class => 'input-xlarge', :placeholder => 'Standard In'} %>
   
- <div id='button'><%= submit_tag 'Compile and Execute this file' %></div>
+ <div id='button'><%= submit_tag 'Compile and Execute this file', :class => 'btn btn-primary' %></div>
  <div id='spinner' style="display:none;"><%= image_tag 'spinner.gif' %></div>
 <% end %>
-</div>
+</div></div></div>
 <% end %>
 
 <% if @display_java_execute %>
@@ -52,7 +52,7 @@
 <% else %>
   <p><%= link_to "Collapse all comments / style guides", :action => 'view_file', :course => @course, :assignment => @assignment, :student => @student, :id => @utf, :expand => nil %></p>
 <% end %>
-<table class="codetable" cellpadding="0" cellspacing="0" width="99%">
+<table class="table-compact codetable" cellpadding="0" cellspacing="0" width="99%">
   <tr class="header">
    <th nowrap="nowrap" width="30px">Line#</th>
    <th class="has_comment" nowrap="nowrap" width="50px">Comments</th>
@@ -102,11 +102,11 @@
            <%= hidden_field_tag 'line', line_num.to_s %>
            <% if @comments[line_num] %>
              <i>Comment by <%= @comments[line_num].user.display_name %></i><br/>
-             <%= text_area_tag 'comments', @comments[line_num].comments, "cols" => 80, "rows" => 4 %> 
+             <%= text_area_tag 'comments', @comments[line_num].comments, {:class => 'input-xlarge', :rows => 5} %> 
            <% else %>
-             <%= text_area_tag 'comments', '', "cols" => 80, "rows" => 4 %>
+             <%= text_area_tag 'comments', '', {:class => 'input-xlarge', :rows => 5, :placeholder => 'Your Comment'}%>
            <% end %>
-           <%= submit_tag "Save Comments for line #{line_num}" %>
+           <%= submit_tag "Save Comments for line #{line_num}", :class => 'btn btn-primary' %>
         <% end %>
       </td>
     </tr>
@@ -144,5 +144,5 @@
   <% end %>
 
 </table>
-
-<p><%= link_to "Back turn-in for #{@student.display_name}", :controller => '/instructor/turnins', :action => 'view_student', :course => @course, :assignment => @assignment, :id => @student %></p>
+<br/>
+<div class="btn-group"><%= link_to "Back turn-in for #{@student.display_name}", {:controller => '/instructor/turnins', :action => 'view_student', :course => @course, :assignment => @assignment, :id => @student}, {:class => 'btn'} %></div>
