@@ -22,6 +22,7 @@ class Instructor::CourseAssignmentsController < Instructor::InstructorBase
     return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_assignments', 'ta_grade_individual', 'ta_view_student_files' )
   
     set_title
+    @breadcrumb.text = 'Reorder Assignments'
   end
   
   def sort
