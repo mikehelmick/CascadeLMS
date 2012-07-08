@@ -48,11 +48,14 @@ class Instructor::TwitterController < Instructor::InstructorBase
       puts "key: #{@app['oauth_consumer_key']}"
       puts "secret: #{@app['oauth_consumer_secret']}"
       
-      oauth = Twitter::OAuth.new(@app['oauth_consumer_key'], @app['oauth_consumer_secret'])
+      oauth = OAuth::Consumer.new(@app['oauth_consumer_key'], @app['oauth_consumer_secret'],
+          :site => 'http://api.twitter.com', :request_endpoint => 'http://api.twitter.com', :sign_in => true)
+      callback_url = url_for(:controll => 'instructor/twitter', :action => 'authorize', :course => @course, :only_path => false)
+      request_token = oauth.get_request_token(:oauth_callback => callback_url)
       ## write info
-      courseTwitter.request_token = oauth.request_token.token
-      courseTwitter.request_secret = oauth.request_token.secret
-      courseTwitter.auth_url = oauth.request_token.authorize_url
+      courseTwitter.request_token = request_token.token
+      courseTwitter.request_secret = request_token.secret
+      courseTwitter.auth_url = request_token.authorize_url
       courseTwitter.save
 
       @course.course_twitter = courseTwitter
