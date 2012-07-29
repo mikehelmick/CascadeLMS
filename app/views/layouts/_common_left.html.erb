@@ -43,7 +43,9 @@
     <li><%= link_to "#{h cu.course.title}", {:controller => '/overview', :action => nil, :course => cu.course, :id => nil} %>
     </li>
   <% end %>
-  <li><%= link_to 'Change Display Order <i class="icon-random"></i>', :controller => '/home', :action => 'reorder' %></li>
+  <% if ct.size > 1 %>
+    <li><%= link_to 'Change Display Order <i class="icon-random"></i>', :controller => '/home', :action => 'reorder' %></li>
+  <% end %>
 <% else %>
 <li><i class="icon-info-sign"></i> You are not enrolled in any courses during this term.  If this is incorrect, please contact your instructor.</li>
 <% end %>
