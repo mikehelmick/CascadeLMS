@@ -1,8 +1,9 @@
 <h2>Grades for <%= @user.display_name %></h2>
 <h3><%= @course.title %>, <%= @course.term.semester %></h3>
 
-<table class="fancy">
-  <tr class="header">
+<table class="table table-compact table-striped">
+ <thead>
+  <tr>
     <th>Assignment</th>
     <th>Feedback</th>
     <th>Category</th>
@@ -12,6 +13,7 @@
     <th>Possible Points</th>
     <th>Percentage</th>
    </tr>
+ </thead>
 
   <% count = 0 %>
   <% for grade_item in @grade_items %>
@@ -31,13 +33,11 @@
 	  <td>
 		<% if !grade_item.assignment.nil? &&  grade_item.assignment.released %>
 		  <% if grade_item.assignment.quiz.nil? %>                
-			<%= link_to 'View Feedback', :controller => '/turnins', :course => @course, :assignment => grade_item.assignment, :action => 'feedback' %>
-			<%= image_tag 'lightbulb.png' %>
+			<%= link_to 'Get Feedback', :controller => '/turnins', :course => @course, :assignment => grade_item.assignment, :action => 'feedback' %>
           <% elsif grade_item.assignment.quiz.survey %>
 		    -N/A-
 		  <% else %> 
-		    <%= link_to 'View Feedback', :controller => '/quiz', :action => 'results', :course => @course, :id => grade_item.assignment %>
-		    <%= image_tag 'lightbulb.png' %>
+		    <%= link_to 'Get Feedback', :controller => '/quiz', :action => 'results', :course => @course, :id => grade_item.assignment %>
 		  <% end %>
 		<% elsif !grade_item.assignment.nil? %>
 		  <% if grade_item.assignment.quiz.nil? %>
@@ -95,23 +95,25 @@
 
 
   <% if @course.gradebook && @course.gradebook.show_total %>
-    <tr class="summary">
-      <% width = 3
-         width = 4 if @course.gradebook.weight_grades  
+   <thead>
+    <tr>
+      <% width = 4
+         width = 5 if @course.gradebook.weight_grades  
        %>
-      <td colspan="<%=width%>" align="right">Points Summary:</td>
-      <td class="summaryCell"><%= sprintf( "%.1f", @total_points ) %></td>
-      <td class="summaryCell"><%= sprintf( "%.1f", @total_points_possible ) %></td> 
-      <td class="summaryCell"><%= sprintf( "%.2f", @total_points / @total_points_possible * 100 ) rescue '--' %>% </td>
+      <th colspan="<%=width%>" align="right">Points Summary:</th>
+      <th><%= sprintf( "%.1f", @total_points ) %></th>
+      <th><%= sprintf( "%.1f", @total_points_possible ) %></th> 
+      <th><%= sprintf( "%.2f", @total_points / @total_points_possible * 100 ) rescue '--' %>% </th>
     </tr>
     <% if @course.gradebook.weight_grades %>
-      <tr class="summary">
-        <td colspan="4" align="right">Weighted Average:</td>
-        <td class="summaryCell"><%= sprintf( "%.2f", @weighted_average ) %>%</td>
-        <td class="summaryCell"> </td> 
-        <td class="summaryCell"> </td>
+      <tr>
+        <th colspan="5" align="right">Weighted Average:</th>
+        <th><%= sprintf( "%.2f", @weighted_average ) %>%</th>
+        <th> </th> 
+        <th> </th>
       </tr>
     <% end %>
+   </thead>
   <% end %>
 
 </table>

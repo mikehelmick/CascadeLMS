@@ -1,10 +1,8 @@
 <% public = false if public.nil? %>
-
 <h2>Documents for <%= @course.title %></h2>
 
-<p><b>Folder Navigation: </b>
-  <%= link_to 'root://', :action => 'index', :id => 0 %>	
-  
+<ul class="breadcrumb">
+ <li><%= link_to 'All Documents', :action => 'index', :id => 0 %><span class="divider">/</span></li>
   <% dir_arr = Array.new
    unless @folder.nil?
      cur_f = @folder
@@ -16,52 +14,45 @@
    dir_arr.reverse!
    for fold in dir_arr
    %>
-     <%= fold %> /
+     <li><%= fold %> <span class="divider">/</span></li>
    <% end %>
 
 <% if !@folder.nil? && @folder.podcast_folder %>
 <br/>
-This folder is a podcast: <%= link_to "#{image_tag 'ipod_cast.png'} Subscribe", :action => 'subscribe', :course => @course.id, :id => @folder_id %>  
+This folder is a podcast: <%= link_to '<i class="icon-headphones"></i> Subscribe', :action => 'subscribe', :course => @course.id, :id => @folder_id %>  
 <% end %>
-
-</p>
+</ul>
 
 <% if @documents.size == 0 %>
-  <p><i>There are no documents in this folder.</i></p>
+  <div class="alert alert-info">There are no documents in this folder.</div>
 <% else %>
-
 <%= render :partial => '/documents/pages' %>
-
-  <table class="fancy" width="99%">
-    <tr class="header">
+  <table class="table table-striped">
+    <tr>
 	  <th>Title</th>
 	  <th>Filename</th>
 	  <th>Size</th>
 	  <th>Published At</th>
 	</tr>
 
-    <% count = 0 %>
     <% for document in @documents %>
-      <% count = count.next 
-	     odd = "odd"
-	     odd = "even" if count.even? %>
-	  <tr class="<%=odd%> hover" id="documet_<%=document.id%>">
+	  <tr id="documet_<%=document.id%>">
 	    <% unless public %>
 		  <td>
 		    <% if document.folder %>   		      
-		      <%= link_to "#{image_tag document.icon_file, :align=> 'absmiddle'} #{document.title}", :action => 'index', :course => @course.id, :id => document %> 
+		      <%= link_to "<i class=\"#{document.icon_file}\"></i> #{document.title}", :action => 'index', :course => @course.id, :id => document %> 
 		      <% if document.podcast_folder %>
-		        <%= link_to "#{image_tag 'ipod_cast.png'} Subscribe", :action => 'subscribe', :course => @course.id, :id => document %>
+		        <%= link_to '<i class="icon-headphones"></i> Subscribe', :action => 'subscribe', :course => @course.id, :id => document %>
 		      <% end %>
 		
 		      <% if @instructor %>
-			    &nbsp;&nbsp;(<%= link_to "#{image_tag 'page_edit.png', :align=>'absmiddle'} Edit", :controller => '/instructor/course_docs', :action => 'edit', :course => @course, :id => document %>)
+			    &nbsp;&nbsp;(<%= link_to '<i class="icon-edit"></i> Edit', :controller => '/instructor/course_docs', :action => 'edit', :course => @course, :id => document %>)
 			  <% end %>
 		    <% else %>
-		      <%= link_to "#{image_tag document.icon_file, :align=> 'absmiddle'} #{document.title}", :action => 'download', :course => @course.id, :id => document, :file => document.without_extension, :extension => document.extension %>
+		      <%= link_to "<i class=\"#{document.icon_file}\"></i> #{document.title}", :action => 'download', :course => @course.id, :id => document, :file => document.without_extension, :extension => document.extension %>
 		
 		      <% if @instructor %>
-			    &nbsp;&nbsp;(<%= link_to "#{image_tag 'page_edit.png', :align=>'absmiddle'} Edit", :controller => '/instructor/course_docs', :action => 'edit_folder', :course => @course, :id => document %>)
+			    &nbsp;&nbsp;(<%= link_to '<i class="icon-edit"></i> Edit', :controller => '/instructor/course_docs', :action => 'edit_folder', :course => @course, :id => document %>)
 			  <% end %>
 		    <% end %>
 		  </td>
@@ -71,12 +62,12 @@ This folder is a podcast: <%= link_to "#{image_tag 'ipod_cast.png'} Subscribe", 
 		
 		  <td>
 		    <% if document.folder %>   
-		      <%= link_to "#{image_tag document.icon_file, :align=> 'absmiddle'} #{document.title}", :controller => '/public/documents', :action => 'index', :course => @course.id, :id => document %> 
+		      <%= link_to "<i class=\"#{document.icon_file}\"></i> #{document.title}", :controller => '/public/documents', :action => 'index', :course => @course.id, :id => document %> 
 		      <% if document.podcast_folder %>
-		        <%= link_to "#{image_tag 'ipod_cast.png'} Subscribe", :controller => '/public/documents', :action => 'subscribe', :course => @course.id, :id => document %>
+		        <%= link_to '<i class="icon-headphones"></i> Subscribe', :controller => '/public/documents', :action => 'subscribe', :course => @course.id, :id => document %>
 		      <% end %>
 		    <% else %>
-		      <%= link_to "#{image_tag document.icon_file, :align=> 'absmiddle'} #{document.title}", :controller => '/public/documents', :action => 'download', :course => @course.id, :id => document %>
+		      <%= link_to "<i class=\"#{document.icon_file}\"></i> #{document.title}", :controller => '/public/documents', :action => 'download', :course => @course.id, :id => document %>
 		    <% end %>
 		  </td>
 		  <td><% unless document.folder %><%= link_to "#{document.filename}", :controller => '/public/documents', :action => 'download', :course => @course.id, :id => document %> <% end %>&nbsp;</td>

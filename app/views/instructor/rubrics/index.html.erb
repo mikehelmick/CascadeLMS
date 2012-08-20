@@ -1,22 +1,19 @@
-<p><%= link_to 'Back to Assignment', :controller => '/instructor/course_assignments', :action => 'edit', :course => @course, :id => @assignment, :assignment => nil %> |
-   <%= link_to 'Turnins for this Assignment', :controller => '/instructor/turnins', :action => nil, :course => @course, :id => nil, :assignment => @assignment %> |
-   <%= link_to 'View All Assignments', :controller => '/instructor/course_assignments', :action => nil, :course => @course, :id => nil, :assignment => nil %></p>
+<div class="btn-group">
+  <%= link_to 'Back to Assignment', {:controller => '/instructor/course_assignments', :action => 'edit', :course => @course, :id => @assignment, :assignment => nil}, {:class => 'btn'} %>
+  <%= link_to 'Turnins for this Assignment', {:controller => '/instructor/turnins', :action => nil, :course => @course, :id => nil, :assignment => @assignment}, {:class => 'btn'} %>
+  <%= link_to 'View All Assignments', {:controller => '/instructor/course_assignments', :action => nil, :course => @course, :id => nil, :assignment => nil}, {:class => 'btn'} %>
+</div>
 
-<div class="SectionHeader"><div class="Full">
-<h2>Rubrics for '<%=h @assignment.title%>' </h2>
-</div></div>
-
-<div class="Section">
+<h2>Rubrics for '<%=h @assignment.title%>'</h2>
 	
 <p>	
-  <%= link_to "#{image_tag('add.png', :align => 'absmiddle' )} Create new rubric", :controller => '/instructor/rubrics', :action => 'new', :course => @course.id, :assignment => @assignment %> 
+  <%= link_to '<i class="icon-plus-sign icon-white"></i> Create new rubric', {:controller => '/instructor/rubrics', :action => 'new', :course => @course.id, :assignment => @assignment}, {:class => 'btn btn-primary'} %> 
   <% if @user.instructor_in_course?(@course.id) || (@user.assistant_in_course?(@course.id) && @course.course_setting.ta_course_assignments) %>
-   <br/><%= link_to "#{image_tag 'arrow_switch.png', :align => 'absmiddle'} Reorder Rubrics", :action => 'reorder', :course => @course %>
+   <%= link_to '<i class="icon-random icon-white"></i> Reorder Rubrics', {:action => 'reorder', :course => @course}, {:class => 'btn btn-success'} %>
   <% end %>  
 
   <% if @all_rubrics.size > 0 %>
-    <br/>
-	<%= link_to_function "#{image_tag('database_refresh.png', :align => 'absmiddle' )} Copy rubric from another assignment.", "blindToggle('import')" %>
+    <%= link_to_function '<i class="icon-download icon-white"></i> Copy rubric from another assignment.', "blindToggle('import')", {:class => 'btn btn-warning'} %>
 
 	<div id="import" class ="sub_form" style="display:none;">
 	<div id="form_area">
@@ -57,11 +54,11 @@
 </p>
 	
 <% if @assignment.rubrics.length == 0 %>
-  <p><i>There are no rubrics for this assignment.</i></p>
+  <div class="alert alert-info">There are no rubrics for this assignment.</div>
 <% else %>
 
 
-<table class="fancy" width="99%">
+<table class="table table-compact table-striped">
   <tr class="header">
 	<th>#</td>
     <th width="18%">Rubric</th>
@@ -69,7 +66,7 @@
 	<th width="18%"><%= @rubric_level.l3_name %></th>
 	<th width="18%"><%= @rubric_level.l2_name %></th>
 	<th width="18%"><%= @rubric_level.l1_name %></th>
-	<th>Controls</th>
+	<th></th>
   </tr>
 
   <% row_count = 0 %>
@@ -91,13 +88,13 @@
          <% end %>
 	</td>
 	  <td align="left" valign="top" nowrap="nowrap">
-		<%= link_to "#{image_tag 'pencil.png'} Edit", :controller => '/instructor/rubrics', :action => 'edit', :course => @course, :assignment => @assignment, :id => rubric %><br/>
-		<%= link_to "#{image_tag 'delete.png'} Delete", {:controller => '/instructor/rubrics', :action => 'destroy', :course => @course, :assignment => @assignment, :id => rubric}, :confirm => "Are you sure you want to delete the rubric '#{rubric.primary_trait}' and all of it's associated data? This action can not be undone." %>
+		<%= link_to '<i class="icon-edit"></i> Edit', :controller => '/instructor/rubrics', :action => 'edit', :course => @course, :assignment => @assignment, :id => rubric %><br/>
+		<%= link_to '<i class="icon-remove"></i> Delete', {:controller => '/instructor/rubrics', :action => 'destroy', :course => @course, :assignment => @assignment, :id => rubric}, :confirm => "Are you sure you want to delete the rubric '#{rubric.primary_trait}' and all of it's associated data? This action can not be undone." %>
 	  </td>
 	</tr>
 	<tr class="<%=odd%> hover" id="rubric_<%=rubric.id%>_outcomes">
 	  <td align="right" valign="top" colspan="2"><i>Course outcomes:</i></td>
-	  <td align="left" valign="top" colspan="4">
+	  <td align="left" valign="top" colspan="5">
 		<% if rubric.course_outcomes.size == 0 %>
 		  <i>No course outcomes mapped to this rubric.</i>
 	    <% else %>
@@ -114,6 +111,4 @@
 </table>
 	
 <% end %>	
-	
-</div>
 

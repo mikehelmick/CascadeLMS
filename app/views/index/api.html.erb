@@ -628,8 +628,8 @@ Make sure that you pass the 2 required HTTP headers, (1) the Cookies passed back
 There are 3 different types of grades that can be reported (1) "Complete / Incomplete", (2) "Percentage", and (3) "Score". Examples of all 3 are shown below.<br/>
 The date element will always be midnight in the local time zone, but shown in GMT.
 </p>
-<p><b><%= link_to_function "#{image_tag 'page_code.png', :align => 'absmiddle'} View Sample Response", visual_effect(:toggle_slide, 'Sample_Course_Grades' ) %></b></p>	
-<div class="code" id="Sample_Course_Grades" style="display: none;">
+<p><b><%= link_to_function "#{image_tag 'page_code.png', :align => 'absmiddle'} View Sample Response", visual_effect(:toggle_slide, 'Sample_Course_Grades' ) %></b></p>
+<pre class="prettyprint" id="Sample_Course_Grades" style="display: none;">
 	<% segment ="<?xml version=\"1.0\" encoding=\"UTF-8\"?>
 <grades>
   <grade>
@@ -661,7 +661,7 @@ The date element will always be midnight in the local time zone, but shown in GM
 </grades>
  " %>	
 <% for line in segment.split("\n") %><% 0.upto(line.size-1) do |i| %><% if line[i...i+1].eql?(" ") %>&nbsp;<% else %><%=h  line[i...i+1] %><% end %><% end %><br/><% end %>	
-</div>
+</pre>
 
 
 <br/><div class="SectionHeader"><div class="Full">

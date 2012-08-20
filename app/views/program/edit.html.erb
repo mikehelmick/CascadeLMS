@@ -1,15 +1,10 @@
-<div class="SectionHeader"><div class="Full">
 <h2>Edit Outcome for <%= @program.title %></h2>
-</div></div>
 
-<div id="form_area">
-  <%= error_messages_for 'program_outcome' %>	
-  <% form_tag( :action => 'update_outcome', :id => @program, :outcome => @program_outcome ) do %>
+<%= error_messages_for('program_outcome', :class => 'alert alert-error') %>	
+<% form_tag( {:action => 'update_outcome', :id => @program, :outcome => @program_outcome}, {:class => 'form-horizontal'} ) do %>
 
   <%= render :partial => 'form' %>
  
-  <div class="submit">
-	<%= submit_tag "Save Changes to Outcome" %>
-  </div>
-  <% end %>	
-</div>
+ <%= submit_tag "Save Changes to Outcome", {:class => 'btn btn-primary'} %>
+ <%= link_to 'Cancel', {:controller => '/program', :action => 'outcomes', :id => @program}, {:class => 'btn'}%>
+<% end %>

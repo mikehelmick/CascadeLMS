@@ -1,19 +1,27 @@
   <% if @grade_entry.nil? %>
-    <p><i>No grade has been submitted.</i></p>
+    <div class="alert alert-warning">No grade has been submitted.</div>
   <% else %> 
-    <div class="standout">
-    <p><b>Your grade:</b> <%= sprintf("%.1f",@grade_entry.points) rescue 'no grade submitted' %> out of <%= sprintf("%.1f",@grade_item.points) %> possible points</p>
-    <p><b>Instructor Comments:</b> 
-      <div class="fixedWidth codecomment">
-        <%= @feedback_html %>
+    <div class="hero-unit">
+	  <div class="row-fluid">
+		<div class="span4">
+    <h2>Your grade:</h2>
+    <pre><%= sprintf("%.1f",@grade_entry.points) rescue 'no grade submitted' %> out of <%= sprintf("%.1f",@grade_item.points) %> possible points</pre>
+        </div>
+        <div class="span8">
+    <h2>Instructor Comments:</h2> 
+      <pre><%= @feedback_html %></pre>
+        </div>
       </div>
-    </p>
-
+    </div>
 <!-- @rubric_entry_map -->
 
 <!-- RUBRICS FEEDBACK -->
+  <% if @assignment.rubrics.size > 0 %>
+    <h2>Assignment Rubrics</h2>
+  <% end %>
+
     <% for rubric in @assignment.rubrics %>
-      <table class="fancy" width="99%" style="background: #FFFFFF;">
+      <table class="table table-striped table-compact">
 	    <tr class="header">
 		 <th colspan="2"><h2><%= rubric.primary_trait %></h2></th>
 		</tr>
@@ -40,7 +48,7 @@
 		 </td>
 	    </tr>
 		<tr>
-		  <td width="10%" valign="top" align="right"><strong><%= @course.rubric_level.l1_name %></strong></td>
+		  <td width="10%" valign="top" align="right"><span class="badge badge-success"><%= @course.rubric_level.l1_name %></span></td>
 		  <td>
 		  	<% if !@rubric_entry_map[rubric.id].nil? && @rubric_entry_map[rubric.id].above_credit %>
 			     <b><%= image_tag "accept.png", :align => 'absmiddle' %><%=h rubric.above_credit_criteria %> (<i><%= rubric.above_credit_points %> points</i>)</b>
@@ -50,7 +58,7 @@
 		  </td>
 		</tr>
 		<tr>
-		  <td width="10%" valign="top" align="right"><strong><%= @course.rubric_level.l2_name %></strong></td>
+		  <td width="10%" valign="top" align="right"><span class="badge badge-warning"><%= @course.rubric_level.l2_name %></span></td>
 		  <td>
 		  	<% if !@rubric_entry_map[rubric.id].nil? && @rubric_entry_map[rubric.id].full_credit %>
 			  <b><%= image_tag "accept.png", :align => 'absmiddle' %><%=h rubric.full_credit_criteria %> (<i><%= rubric.full_credit_points %> points</i>)</b>
@@ -60,7 +68,7 @@
 		  </td>
 		</tr>
 		<tr>
-		  <td width="10%" valign="top" align="right"><strong><%= @course.rubric_level.l3_name %></strong></td>
+		  <td width="10%" valign="top" align="right"><span class="badge badge-error"><%= @course.rubric_level.l3_name %></span></td>
 		  <td>
 		  	<% if !@rubric_entry_map[rubric.id].nil? && @rubric_entry_map[rubric.id].partial_credit %>
 			  <b><%= image_tag "accept.png", :align => 'absmiddle' %><%=h rubric.part_credit_criteria %> (<i><%= rubric.part_credit_points %> points</i>)</b>
@@ -70,7 +78,7 @@
 		  </td>
 	    </tr>
 	    <tr>
-		  <td width="10%" valign="top" align="right"><strong><%= @course.rubric_level.l4_name %></strong></td>
+		  <td width="10%" valign="top" align="right"><span class="badge badge-inverse"><%= @course.rubric_level.l4_name %></span></td>
 		  <td>
 		  	<% if !@rubric_entry_map[rubric.id].nil? && @rubric_entry_map[rubric.id].no_credit %>
 		       <b><%= image_tag "accept.png", :align => 'absmiddle' %><%=h rubric.no_credit_criteria %> (<i><%= rubric.no_credit_points %> points</i>)</b>
@@ -84,5 +92,4 @@
 
 <!-- RUBRICS FEEDBACK -->
 
-    </div>
   <% end %>

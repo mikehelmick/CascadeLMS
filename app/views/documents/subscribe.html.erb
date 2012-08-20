@@ -1,19 +1,14 @@
 <h2>Subscribe to podcast</h2>
-
-<p><%= link_to 'Back to documents', :action => 'index', :id => @folder.id %></p>
-
+<p><i class="icon-chevron-left"></i><%= link_to 'Back to documents', :action => 'index', :id => @folder.id %></p>
 <div class="standout">
 <p>
 To subscribe to the postcast <b><%= @folder.title %></b> in the course <b><%= @course.title %></b> click the link below.  iTunes or a compatible podcast client is required.</p>
 
 <p><B>Podcast description:</b> <%= @folder.comments_html %></p>
 	
-	
 <B>Podcast Subscription URL:</b>		
 <%= link_to "#{url_for :controller => '/documents', :action => 'podcast', :id => @folder.id, :course => @course, :only_path => false }", :controller => '/documents', :action => 'podcast', :id => @folder.id, :course => @course, :only_path => false %>
 <br/>
 Depending on your system configuration you can click the above link or copy and paste it into your favorite podcast client.
-
-
 </p>
 </div>

@@ -1,7 +1,7 @@
 <h2>Comparing files for assignment '<%= @assignment.title %>'</h2>
 <h3>Course '<%= @course.title %>'</h3>
 
-<table class="fancy" width="100%">
+<table class="table table-compact table-striped" width="100%">
   <tr class="header">
 	   <th width="1%" align="right">#</th>
     <% if @assignment.team_project %>
@@ -33,10 +33,7 @@
 	   count = 0
 	   csCount = 0
 	   while( i < @lines1.size && j < @lines2.size ) %>
-	<% odd = "odd"
-	   odd = "even" if count.even?
-	
-	   aDifference = false
+	<% aDifference = false
 	   action = '&nbsp;'
 	 
 	   skipJ = false
@@ -67,7 +64,7 @@
 	   style = "background: green;"
 	   style = "background: red;" unless aDifference
   	%>
-	<tr class="<%=odd%> hover">
+	<tr>
 	  <td align="right"><%= i unless skipI %></td>
 	  <td class="fixedFont"><%= @lines1[i].to_html rescue '' unless skipI %></td>
 	  <td style="<%=style%>"><%= action %></td>

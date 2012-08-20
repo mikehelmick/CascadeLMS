@@ -1,22 +1,11 @@
-
-<div id="form_area">
-
-<h2>Editing journal entry</h2>
-
-<%= link_to 'Back', :controller => 'assignments', :action => 'view', :course => @course, :assignment => nil, :id => @assignment %>
-
-<p>
-<b>Course:</b> <%=h @course.title %><br/>
-<b>Assignment:</b> <%=h @assignment.title %>
-</p>
-
-
-<% form_tag( :action => 'update', :course => @course, :assignment => @assignment,  :id => @journal ) do %>
+<h2>Edit Journal Entry</h2>
+<ul>
+ <li><strong>Course:</strong> <%=h @course.title %></li>
+ <li><strong>Assignment:</strong> <%=h @assignment.title %></li>
+</ul>
+<% form_tag( {:action => 'update', :course => @course, :assignment => @assignment,  :id => @journal}, {:class => 'well form-horizontal'} ) do %>
   <%= render :partial => 'form' %>
-<div class="submit">
-  <%= submit_tag 'Edit' %>
-</div>
-<% end %>
+  <%= submit_tag 'Edit', :class => 'btn btn-primary' %>
+  <%= link_to 'Cancel', {:controller => 'assignments', :action => 'view', :course => @course, :assignment => nil, :id => @assignment}, {:class => 'btn'} %>
 
-<%= link_to 'Back', :controller => 'assignments', :action => 'view', :course => @course, :assignment => nil, :id => @assignment %>
-</div>
+<% end %>

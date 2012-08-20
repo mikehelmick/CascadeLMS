@@ -1,33 +1,36 @@
-<%= render :partial => 'emailhead' %>
-<div class="menuout">
-  <%= image_tag 'page_add.png' %> <%= link_to 'Upload a new file.', :action => 'file_new', :id => @team.id %>
-</div>
-
-<hr/>
-
-<h2>Shared files for team <%= @team.name %></h2>
+<%= render :partial => 'filehead' %>
 
 <% if @documents.size == 0 %>
   <p><i>There are no shared files for this team.</i></p>
 <% else %>
 
-<% last_date = (Time.now + 5.days).to_date %>
+<% last_date = (Time.now + 5.days).to_date 
+   seen_any = false
+%>
 
+<table class="table table-striped">
+ <tr><td><h2>Shared files for team <%= @team.name %></h2>
 <% for doc in @documents %>
   <% unless doc.created_at.to_date.eql?( last_date )
        last_date = doc.created_at.to_date
    %>
-    </ul>
-    <div class="SectionHeader"><div class="Full">
-	  <b>Files uploaded on <%= last_date.to_formatted_s(:long) %></b>
-	</div></div>
-	<ul>
+    <% if seen_any %>
+      </ul>
+    <% else 
+         seen_any = true
+       end
+     %>
+    </td></tr>
+    <tr><td>
+	  <h4>Files uploaded on <%= last_date.to_formatted_s(:long) %></h4>
+	  <ul>
   <% end %>
-  <li><%= image_tag "#{doc.icon_file}" %>
+    <li><i class="<%= doc.icon_file %>"></i>
 	<%= link_to "#{doc.filename}", :action => 'download', :id => @team.id, :document => doc.id %> 
 	<i>(<%= doc.size_text %>)</i>, Uploaded by <%= doc.user.display_name %> @ <%= doc.created_at.to_formatted_s(:long) %>
 	</li>
-<% end %>
-</ul>
+  <% end %>
 
+ </tr>
 <% end %>
+</table>

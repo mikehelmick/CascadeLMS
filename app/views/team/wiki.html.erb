@@ -1,11 +1,8 @@
 <%= render :partial => 'wikihead' %>
-<hr/>
-
-<%= error_messages_for 'page' %>
-
+<%= error_messages_for('page', :class => 'alert alert-error') %>
+<div class="well">
 <h2><%= @page.page %></h2>
-
 <%= @page.content_html %>
-
+</div>
 <hr/>
 <%= render :partial => 'wikifoot' %>

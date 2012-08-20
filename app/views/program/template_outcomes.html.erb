@@ -1,11 +1,8 @@
 <p><%= link_to 'Back to templates', :action => 'templates', :id => @program %></p>
-
-<div class="SectionHeader"><div class="Full">
 <h2>Course Outcomes Template for <br/>'<%=h @course_template.title%>' (<%=h @course_template.start_date%>) </h2>
-</div></div>
 
 <% if @course_template.programs.length == 0 %>
-  <p><i>This course template is not mapped to any programs.</i></p>
+  <div class="alert alert-info">This course template is not mapped to any programs.</div>
 <% else %>
   <ul>
     <li><b>This course template can satisfy outcomes from the following programs:</b></li>
@@ -17,18 +14,18 @@
   </ul>
 <% end %>
 
-<p><%= link_to "#{image_tag('add.png', :align => 'absmiddle' )} Create new course outcome", :controller => '/program', :action => 'new_outcome', :id => @program, :template => @course_template %></p>
+<p><%= link_to '<i class="icon-plus-sign"></i> Create new course outcome', {:controller => '/program', :action => 'new_outcome', :id => @program, :template => @course_template}, {:class => 'btn btn-success'} %></p>
 
 <% if @course_template.course_template_outcomes.length == 0 %>
-	<p><i>There are no outcomes defined for this course template.</i></p>
+	<div class='alert alert-info'>There are no outcomes defined for this course template.</div>
 <% else %>
 
 
-<table class="fancy" width="99%">
+<table class="table table-compact table-striped">
   <tr class="header">
-	  <th width="90%">Course Outcome</th>
+	  <th>Course Outcome</th>
 	  <th>Controls</th>
-	</tr>
+  </tr>
 
    <% row_count = 0 
       parent_stack = [-1]
@@ -38,7 +35,7 @@
 	    odd = "odd"
         odd = "even" if row_count.even? %> 
 	
-	 <tr class="<%=odd%> hover" id="course_template_outcome_<%=outcome.id%>">
+	 <tr id="course_template_outcome_<%=outcome.id%>">
        <td>
           <% if outcome.parent == parent_stack[-1] ## Same level %>
              <% count_stack.push( count_stack.pop + 1 ) %>

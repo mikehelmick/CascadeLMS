@@ -1,19 +1,9 @@
-<p><%= link_to "#{image_tag 'arrow_left.png' } Back", :controller => '/instructor/index', :course => @course.id %></p>
+<h2>Editing Course Information for <%= @course.title %></h2>
+<% form_tag( {:action => 'update'}, {:class => 'form-horizontal'} ) do %>
+  <%= error_messages_for('course', :class => 'alert alert-error') %>
+  <%= error_messages_for('course_information', :class => 'alert alert-error') %>
+  <%= render :partial => 'courseform' %>
 
-<div id="form_area">
-<h2>Editing course information for <%= @course.title %></h2>
-
-<% form_tag( :action => 'update' ) do %>
-
-<%= error_messages_for 'course' %>
-<%= error_messages_for 'course_information' %>
-
-<%= render :partial => 'courseform' %>
-
-<div class="submit">
-  <%= submit_tag "Save Changes" %>
-</div>
+  <%= submit_tag "Save Changes", :class => 'btn btn-primary' %>
+  <%= link_to 'Cancel', {:controller => '/instructor/index', :course => @course.id}, {:class => 'btn'} %>
 <% end %>
-</div>
-
-<p><%= link_to "#{image_tag 'arrow_left.png' } Back", :controller => '/instructor/index', :course => @course.id %></p>

@@ -9,7 +9,6 @@ class Instructor::TurninsController < Instructor::InstructorBase
   
   layout 'noright'
   
-  
   verify :method => :post, :only => [ :save_all_grades ],
          :redirect_to => { :action => :index }
   
@@ -86,6 +85,9 @@ class Instructor::TurninsController < Instructor::InstructorBase
     end
     
     @title = "Turnins for #{@assignment.title}"
+    @breadcrumb = Breadcrumb.for_assignment(@assignment)
+    @breadcrumb.instructor = true
+    @breadcrumb.text = "Student Turnins"
   end
   
   def rubrics
@@ -435,6 +437,9 @@ class Instructor::TurninsController < Instructor::InstructorBase
     @rubric_entry_map = @assignment.rubric_map_for_user(@student.id)
     
     @title = "#{@student.display_name} (#{@student.uniqueid}) - #{@assignment.title}"
+    @breadcrumb = Breadcrumb.for_assignment(@assignment)
+    @breadcrumb.instructor = true
+    @breadcrumb.text = "Grade Student Work"
     @checkForm = true
   end
   
@@ -1236,7 +1241,10 @@ class Instructor::TurninsController < Instructor::InstructorBase
         end
       end
     end
-    
+
+    @breadcrumb = Breadcrumb.for_assignment(@assignment)
+    @breadcrumb.instructor = true
+    @breadcrumb.text = "View Student File"
     render :layout => 'noright'
   end
   

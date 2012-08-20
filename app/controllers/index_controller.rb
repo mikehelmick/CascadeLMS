@@ -3,20 +3,34 @@ require 'LdapAuthentication'
 
 class IndexController < ApplicationController
   
-  before_filter :check_login, :except => [ :logout, :credits, :api ]
+  before_filter :check_login, :except => [ :logout, :credits, :api, :logged_in ]
   before_filter :set_title
   
-  def index
+  def index 
     @user = User.new
     if params[:out].eql?('out')
       flash[:notice] = "You have been logged out."
     elsif params[:out].eql?('exp')
       flash[:notice] = "Your session has expired due to inactivity, please log in again."
     end
-    
+
+    showAds()
     render :layout => 'login'
   end
   
+  def logged_in
+    load_user_if_logged_in()
+    loggedIn = false
+    unless @user.nil?
+      loggedIn = session_valid?(false)
+    end
+    
+    rtn = Hash.new
+    rtn['valid'] = loggedIn
+    
+    render :json => rtn
+  end
+
   def credits
     load_user_if_logged_in()
     render :layout => 'noright'
@@ -24,9 +38,10 @@ class IndexController < ApplicationController
   
   def api
     load_user_if_logged_in
-    @title = "CSCW - REST API"
+    @title = "CascadeLMS - REST API"
     
-    render :layout => 'noright'
+    showAds()
+    render :layout => 'login'
   end
   
   def login
@@ -45,6 +60,11 @@ class IndexController < ApplicationController
     redirect_uri = session[:post_login]
     reset_session
     session[:post_login] = redirect_uri
+    redirect_to :action => 'index', :out => 'exp'
+  end
+
+  def timeout
+    reset_session
     redirect_to :action => 'index', :out => 'exp'
   end
   
@@ -205,6 +225,17 @@ class IndexController < ApplicationController
   end
 
   private
+
+  def showAds
+    # Random selection of public courses
+    @term = Term.find_current
+    @publicCourses = Array.new
+    unless @term.nil?
+      @publicCourses = Course.find(:all, :conditions => ['term_id=? and public=?',@term.id,true], :order => 'title ASC')
+      @publicCourses.shuffle
+    end
+    @showAds = true
+  end
   
   def check_login
     return true if session[:user].nil?

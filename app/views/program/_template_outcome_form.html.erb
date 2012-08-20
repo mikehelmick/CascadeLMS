@@ -1,8 +1,11 @@
+<fieldset>
+ <div class="control-group">
+  <label for="course_template_outcome_outcome" class="control-label">Outcome:</label>
+  <div class="controls">
+   <%= text_area 'course_template_outcome', 'outcome', {:class => 'input-xlarge'} %>
+  </div>
+ </div>
 
-<p class="blockintro">Create a new course template outcome:</p>
-<div class="block">
-<p><label for="course_template_outcome_outcome" class="required">Outcome:</label>
-   <%= text_area 'course_template_outcome', 'outcome', "cols" => 80, "rows" => 5  %></p>
 
 <%
   options = "\n<option value=\"-1\" #{"selected=\"selected\"" if @course_template_outcome.parent==-1}>none (top level)</option> "
@@ -32,13 +35,14 @@
   end
 %>
 
-<p><label for="course_template_outcome_parent" class="required">Child of outcome:</label>
-   <%= select_tag 'parent', options %></b> </p>
-</div>
+ <div class="control-group">
+   <label for="course_template_outcome_parent" class="control-label">Child of outcome:</label>
+   <div class="controls">
+    <%= select_tag 'parent', options %>
+   </div>
+ </div>
 
-<p class="blockintro">Map to program outcome:</p>
-<div class="block">
-
+<div class="well">Map to program outcome:
 <ul class="outcomesList">
 <% for program in @course_template.programs %>
   <li class="outcomesList">Program outcomes for <b><%= program.title %></b></li>
@@ -61,6 +65,5 @@
   </ul>
 <% end %>
 <ul>
-
-
 </div>
+</fieldset>

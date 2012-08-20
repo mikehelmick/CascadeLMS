@@ -1,6 +1,10 @@
-<p>
-  <%= image_tag 'group.png', :align => 'middle' %> <%= link_to 'Team Center', :controller => '/team', :id => nil, :course => @course %> | 
-<% if @course.course_setting.team_enable_wiki %><%= image_tag 'layout_content.png', :align => 'middle' %> <%= link_to 'Wiki Home', :controller => '/team', :id => @team, :course => @course, :action => 'wiki', :page => 'Home' %> |<% end %>
-  <% if @course.course_setting.team_enable_documents %><%= image_tag 'folder.png', :align => 'middle' %> <%= link_to 'Files Home', :controller => '/team', :id => @team, :course => @course, :action => 'files' %> | <% end %>
-  <% if  @course.course_setting.team_enable_email %><%= image_tag 'email.png', :align => 'middle' %> <%= link_to 'Email Home', :controller => '/team', :id => @team, :course => @course, :action => 'email' %> <% end %>
-</p>
+<div class="row-fluid">
+ <div class="span12">
+	<div class="btn-toolbar">	
+	<div class="btn-group">
+      <%= link_to 'Send new email <i class="icon-inbox"></i>', {:action => 'email_compose', :id => @team, :course => @course}, {:class => 'btn btn-small'} %>
+    </div>
+    <%= render :partial => 'buttons' %>
+    </div>
+ </div>
+</div>

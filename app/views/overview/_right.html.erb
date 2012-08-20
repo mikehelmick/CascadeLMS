@@ -1,32 +1,35 @@
 <% if @course.course_setting.enable_rss %>
-<h2>Subscribe to this course's RSS feed</h2>
+<h4>Subscribe to this course's RSS feed</h4>
 <p>
-Want to be notified any time there is a new document, announcement, or assignment posted? <%= link_to "Subscribe to this course's RSS feed. #{image_tag 'feed_go.png'}", :controller => 'feed', :action => 'subscribe', :course => @course %>
+Want to be notified any time there is a new document, announcement, or assignment posted? <%= link_to "Subscribe to this course's RSS feed. <i class=\"icon-fire\"></i>", :controller => 'feed', :action => 'subscribe', :course => @course %>
 (<%= link_to "What is RSS?", "http://www.google.com/support/feedburner/bin/answer.py?answer=79408", :popup => true %>)
 </p>
 <% end %>
 
-<h2>Course Information</h2>
-<p>
-<b>Course:</b> <%=h @course.title %><br/>
-<b>Instructor:</b> <br/>
+<h4>Course Information</h4>
+<ul class="unstyled">
+ <li><strong>Course:</string> <%=h @course.title %></strong></li>
+ <li><strong>Instructor<%= 's' if @course.instructors.size > 1 %>:</strong>
+  <ul>
  <% for instructor in  @course.instructors %>
-   <span class="instructor"><img src="<%= instructor.gravatar_url(request.ssl?) %>" align="middle" /> <%= instructor.to_s %></span>
+   <li><img src="<%= instructor.gravatar_url(request.ssl?) %>" align="middle" /> <%= instructor.to_s %></li>
  <% end %>
- 
+  </ul>
+ </li>
 <% tas = @course.assistants %>
 <% if tas.size > 0 %>
- <b>Assistant(s):</b><br/>
+ <li><strong>Assistant(s):</strong>
+  <ul>
  <% for assistant in  tas %>
-    <span class="instructor"><img src="<%= assistant.gravatar_url(request.ssl?) %>" align="middle" /> <%= assistant.to_s %></span>
+    <li><img src="<%= assistant.gravatar_url(request.ssl?) %>" align="middle" /> <%= assistant.to_s %></li>
  <% end %>
+  </ul>
+ </li>
 <% end %>
-
 <% if @course.course_information %>
-<b>Days:</b> <%=h @course.course_information.meeting_days %><br/>
-<b>Time:</b> <%=h @course.course_information.meeting_time %><br/>
-<b>Room:</b> <%=h @course.course_information.room %><br/>
-<b>Office Hours:</b> <%=h @course.course_information.office_hours %><br/>
+ <li><strong>Days:</strong> <%=h @course.course_information.meeting_days %></li>
+ <li><strong>Time:</strong> <%=h @course.course_information.meeting_time %></li>
+ <li><strong>Room:</strong> <%=h @course.course_information.room %></li>
+ <li><strong>Office Hours:</strong> <%=h @course.course_information.office_hours %></li>
 <% end %>
-
-</p>
+</ul>

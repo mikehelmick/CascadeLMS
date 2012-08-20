@@ -1,6 +1,15 @@
-<h2>Your Turned in files</h2>
-
-<p><%= link_to 'Back', :controller => '/assignments', :course => @course, :action => 'view', :id => @assignment, :assignment => nil %></p>
+<div class="well">
+<div class="row-fluid">
+ <div class="span6">
+	<h3>Current Time:</h3>
+	<%= Time.now.to_formatted_s(:friendly_date) %>
+ </div>
+ <div class="span6">
+	<h3>Due Date:</h3>
+	<%=h @assignment.due_date.to_formatted_s(:friendly_date) %>
+ </div>
+</div>
+</div>
 
 <%= render :partial => 'group' %>
 
@@ -8,102 +17,110 @@
   <% if @turnins.size == 0 %> 
     <p><%= link_to "#{image_tag 'add.png'} Create First Turn-in Set.", :action => 'create_set', :course => @course, :assignment => @assignment %></p>
   <% else %>
-    <p><%= link_to "#{image_tag 'add.png'} Archive your current turn-in set and create a new one.", :action => 'create_set', :course => @course, :assignment => @assignment %>
-	    <% if  @assignment.auto_grade %><b>This does NOT count against submission limits.</b><% end %>
-	  </p>
+    <div class="alert alert-info"><i class="icon-plus-sign"></i><%= link_to 'Archive your current turn-in set and create a new one.', :action => 'create_set', :course => @course, :assignment => @assignment %>
+	    <% if  @assignment.auto_grade %><strong>This does NOT count against your daily submission limit.</strong><% end %>
+	  </div>
   <% end %>
-
 <% elsif !@extension.nil? && !@extension.past? %>
   <% if @turnins.size == 0 %> 
-    <p><%= link_to "#{image_tag 'add.png'} Create First Turn-in Set.", :action => 'create_set', :course => @course, :assignment => @assignment %></p>
+    <div class="alert alert-info"><%= link_to '<i class="icon-plus-sign"></i> Create First Turn-in Set.', :action => 'create_set', :course => @course, :assignment => @assignment %></div>
   <% else %>
-    <p><%= link_to "#{image_tag 'add.png'} Archive your current turn-in set and create a new one.", :action => 'create_set', :course => @course, :assignment => @assignment %>
-	    <% if  @assignment.auto_grade %><b>This does NOT count against submission limits.</b><% end %>
-	</p>
+    <div class="alert alert-info"><%= link_to '<i class="icon-plus-sign"></i> Archive your current turn-in set and create a new one.', :action => 'create_set', :course => @course, :assignment => @assignment %>
+	    <% if  @assignment.auto_grade %><strong>This does NOT count against your daily submission limit.</strong><% end %>
+	</div>
   <% end %>
-
 <% end %>
-
-
 
   <% unless @current_turnin.nil? %>
     <% if @assignment.auto_grade && !@current_turnin.sealed %>
-      <div class="errorExplanation"><%= image_tag 'flag_red.png' %> Your most recent turn-in set has not been submitted yet.<br/>
-	  <b>You must submit the turn-in set once you are done uploading all of your files for the assignment.</b>
+      <div class="alert"><i class="icon-info-sign"></i> Your most recent turn-in set has not been submitted yet.
+	  <strong>You must submit the turn-in set once you are done uploading all of your files for the assignment.</strong>
 	  </div>
 	<% elsif @assignment.auto_grade %>
-	  <div class="GoodMessage"><p>This turn-in set has been submitted for grading, no further action is required to have these files graded.</p>
-		
+	  <div class="alert alert-success">This turn-in set has been submitted for grading, no further action is required to have these files graded.
+	    <ul><li>	
 		<% if @assignment.released %>
-		  <p><b><%= link_to 'View Instructor Feedback', :action => 'feedback', :course => @course, :assignment => @assignment %></b></p>
+		  <%= link_to 'View Instructor Feedback', :action => 'feedback', :course => @course, :assignment => @assignment %>
 		<% elsif @current_turnin.finalized && @assignment.auto_grade && !@assignment.auto_grade_setting.nil? && @assignment.auto_grade_setting.any_student_grade? %>
-		  <p><b><%= link_to "#{image_tag 'flag_green.png'} View AutoGrade Results for Current Turnin", :action => 'feedback', :course => @course, :assignment => @assignment %></b></p>
+		  <%= link_to "#{image_tag 'flag_green.png'} View AutoGrade Results for Current Turnin", :action => 'feedback', :course => @course, :assignment => @assignment %>
 		<% end %>
-		
-		</div>
+		</li></ul>
+	  </div>
     <% end %>
   <% end %>
 
 
 <% if @turnins.size == 0 %>
-  <p><i>No turn-ins found found</i></p>
+  <div class="alert">No turn-ins found found</div>
 <% else %>
 
 <%= render :partial => 'turnin' %>
 
-<br />
 
 <% if @current_turnin.sealed %>
-<p><b>This turn-in set has been submitted for grading, no changes can be made.</b></p>
+<div class="alert alert-info">This turn-in set has been submitted for grading, no changes can be made.</div>
 
 <% elsif (@assignment.closed? && (@extension.nil? || @extension.past?)) && !@instructor %>
 
 <% else %>
-<div id="form_area">
  <% if @assignment.enable_upload %>
-  <%= error_messages_for 'utf' %>
-  <% form_tag( { :action => "upload_file" }, :multipart => true, :onsubmit => "new Element.toggle('f_button'); new Element.toggle( 'f_spinner');" ) do %>
+<div class="row-fluid">
+  <%= error_messages_for 'utf', :class => 'alert alert-error' %>
+  <div class="span6">
+  <% form_tag( { :action => "upload_file" }, :multipart => true, :onsubmit => "new Element.toggle('f_button'); new Element.toggle( 'f_spinner');", :class => 'form-horizontal' ) do %>
 
-   <p class="blockintro">Upload a new file.  <i>Files can not be deleted or updated, if the need arises please create a new turn-in set.</i></p>
-   <div class="block">
-	<p><label for="file" class="required">Upload File:</label> <%= file_field_tag("file", :onchange => "new Element.toggle('press_button'); new Effect.Highlight('f_button');") %></p>
-	<p><label for="nested" class="required">Nested In:</label>
-	  <%= select_tag("directory", options_from_collection_for_select(@directories, "id", "filename") ) %>
-	</p>
-	
-	<div id="f_button"><%= submit_tag "Upload File" %>
-	  <span id="press_button" style="display: none; color: red;"><strong><- Press to upload</strong></span></div>
-	<div id="f_spinner" style="display: none;"><%= image_tag 'spinner.gif' %></div>
-   </div>
-  <% end %>
+   <h3>Upload File</h3>
 
-  <% form_tag( :action => "create_directory" ) do %>
-  <p class="blockintro">Create a new directory</p>	
-  <div class="block">
-	<p><label for="directory" class="required">Directory to create:</label>
-	   <%= text_field_tag "newdir", @newdir %></p>
-	
-	<p><label for="nested" class="required">Nested In:</label>
-	  <%= select_tag("directory", options_from_collection_for_select(@directories, "id", "filename") ) %>
-	</p>
-
-	<div id="d_button"><%= submit_tag "Create Directory" %></div>
+ <div class="control-group">
+  <label for="file" class="control-label">Upload File:</label>
+  <div class="controls">
+   <%= file_field_tag("file", :onchange => "new Element.toggle('press_button'); new Effect.Highlight('f_button');") %>
   </div>
+ </div>
+ <div class="control-group">
+  <label for="nested" class="control-label">Nested In:</label>
+  <div class="controls">
+	<%= select_tag("directory", options_from_collection_for_select(@directories, "id", "filename") ) %>
+  </div>
+ </div>
+ <div id="f_button"><%= submit_tag 'Upload File', :class => 'btn-large btn-primary' %>
+	  <span id="press_button" class="label label-important" style="display: none;"><- Press to upload</span></div>
+ <div id="f_spinner" style="display: none;"><%= image_tag 'spinner.gif' %></div>
+
   <% end %>
- <% end %>
+  </div>
+  <div class="span6">
+  <% form_tag( :action => "create_directory" ) do %>
+  <h3>Create a new directory</h3>	
+  <div class="control-group">
+	<label for="directory" class="control-label">Directory to create:</label>
+	<div class="controls">
+	  <%= text_field_tag "newdir", @newdir %>
+	</div>
+  </div>
+  <div class="control-group">
+	<label for="nested" class="control-label">Nested In:</label>
+	<div class="controls">
+	  <%= select_tag("directory", options_from_collection_for_select(@directories, "id", "filename") ) %>
+	</div>
+  </div>
+  <%= submit_tag "Create Directory", :cass => 'btn btn-primary' %>
+  <% end %>
+  </div>
 </div>
+ <% end %>
 <% end %>
 
 <% if @assignment.auto_grade && @assignment.enable_upload && ((!@current_turnin.sealed && (!@assignment.closed? || (!@extension.nil? && !@extension.past?))) || @instructor) %>
-<div id="form_area">
+<div class="well">
   <% form_tag( { :action => "finalize" }, :onsubmit => "new Element.toggle('finalize_button');new Element.toggle( 'finalize_spinner');" ) do %>
-  <p class="blockintro">Submit files for grading:</p>
+  <h2>Submit files for grading:</h2>
   <div class="block">
 	  <div id="finalize_button">
 	     <% if @has_files %>
-	       <%= submit_tag "Submit For Grading", :confirm => "Are you sure you want to submit these files for grading?" %>
+	       <%= submit_tag "Submit For Grading", {:confirm => "Are you sure you want to submit these files for grading?", :class => "btn btn-primary"} %>
 	     <% else %>
-	       <div class="errorExplanation">This turnin set doesn't contain any files, so it cannot be submitted for grading yet.</div>
+	       <div class="alert alert-info">This turnin set doesn't contain any files, so it cannot be submitted for grading yet.</div>
 	     <% end %>
 	 
 		<% if @assignment.auto_grade %>
@@ -126,11 +143,10 @@
 
 
 <hr/>
-
 <h2>Previous Turn-in sets (read-only)</h2>
-
-<table class="fancy">
-  <tr class="header">
+<table class="table table-striped">
+ <thead>
+  <tr>
     <th>#</th>
     <th>Previous Set (Last Updated Time)</th>   
     <% if @team %><th>Creator</th><% end %> 
@@ -138,21 +154,19 @@
     <th>Submitted</th>
     <th>View</th>
   </tr>
+ </thead>
 
 <% count = @turnins.size + 1 %>
 <% for ut in @turnins %>
-  <% count = count - 1  
-     odd = "odd"
-     odd = "even" if count.even?
-   %>
-  <tr class="<%=odd%> hover" id="user_turnin_<%=ut.id%>">
+  <% count = count - 1  %>
+  <tr id="user_turnin_<%=ut.id%>">
     <td align="right"><%= count %></td>
     <td><%=h ut.updated_at.to_formatted_s(:long) %>
-      <% if ut.id == @current_turnin.id %><b>current</b> <%end%>
+      <% if ut.id == @current_turnin.id %> <span class="label label-success">current</span> <%end%>
     </td>
     <% if @team %><td><%= ut.user.display_name %></td><% end %>
-    <td><% if ut.sealed %> <%= image_tag 'accept.png' %> <% else %> <%= image_tag 'cross.png' %> <% end %></td>
-    <td><% if ut.finalized %> <%= image_tag 'accept.png' %> <% else %> <%= image_tag 'cross.png' %> <% end %></td>
+    <td><% if ut.sealed %> <i class="icon-ok"></i> <% else %> <i class="icon-remove"></i> <% end %></td>
+    <td><% if ut.finalized %> <i class="icon-ok"></i> <% else %> <i class="icon-remove"></i> <% end %></td>
     <td><%= link_to 'View', :course => @course, :assignment => @assignment, :action => 'view', :id => ut.id %></td>
   </tr>
 <% end %>

@@ -1,8 +1,4 @@
-<h2>Programs</h2>
-<p>From here you can manage program outcomes and run reports on those program outcomes.   If you also have the auditor role, you will be able to see more details about how those program outcomes map to course objectives and how assignments in courses meet those objectives.</p>
-
 <% if request.path_parameters['action'].eql?('users') %>
-
 <h2>Add Managers/Auditors</h2>
 <div id="search_area">
 <% form_remote_tag( :update => 'search_results', :url => { :action => :search, :id => @program }, :complete => "new Effect.BlindDown('search_results');" ) do %>
@@ -16,5 +12,4 @@
 <div id="search_results" style="display: none;">
 
 </div>
-	
 <% end %>

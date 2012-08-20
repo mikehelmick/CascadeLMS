@@ -1,8 +1,10 @@
-
-<p class="blockintro">Create a new outcome:</p>
-<div class="block">
-<p><label for="course_outcome_outcome" class="required">Outcome:</label>
-   <%= text_area 'course_outcome', 'outcome', "cols" => 80, "rows" => 5  %></p>
+<fieldset>
+  <div class="control-group">
+   <label for="course_outcome_outcome" class="control-label">Outcome:</label>
+   <div class="controls">
+     <%= text_area 'course_outcome', 'outcome', "cols" => 80, "rows" => 5  %>
+   </div>
+  </div>
 
 <%
   options = "\n<option value=\"-1\" #{"selected=\"selected\"" if @course_outcome.parent==-1}>none (top level)</option> "
@@ -32,19 +34,23 @@
   end
 %>
 
-<p><label for="course_outcome_parent" class="required">Child of outcome:</label>
-   <%= select_tag 'parent', options %></b> </p>
-</div>
+ <div class="control-group">
+   <label for="course_outcome_parent" class="control-label">Child of outcome:</label>
+   <div class="controls">
+     <%= select_tag 'parent', options %>
+   </div>
+ </div>
 
-<p class="blockintro">Map to program outcome by depth of coverage level <i>none</i> (N), <i>some</i> (S), <i>moderate</i> (M), or <i>extensive</i> (E):
-<div class="block">
+
+<div class="well">
+<span class="help-inline">Map to program outcome by depth of coverage level <em>none</em> (N), <em>some</em> (S), <em>moderate</em> (M), or <em>extensive</em> (E)</span>
 
 <ul class="outcomesList">
 <% for program in @course.programs %>
   <li class="outcomesList">Program outcomes for <b><%= program.title %></b></li>
   <ul class="outcomesList">
     <% if program.program_outcomes.length == 0 %>
-      <li class="outcomesList"><i>No program outcomes defined.</i></li>
+      <li class="outcomesList"><em>No program outcomes defined.</em></li>
     <% else %>
       <% count = 0
          for prog_outcome in program.program_outcomes
@@ -61,6 +67,5 @@
   </ul>
 <% end %>
 <ul>
-
-
 </div>
+</fieldset>

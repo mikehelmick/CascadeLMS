@@ -3,10 +3,10 @@ class QuizController < ApplicationController
   before_filter :ensure_logged_in
   before_filter :set_tab
   
-  layout 'quiz'
-  
   verify :method => :post, :only => [ :take ],
          :redirect_to => { :controller => '/home', :course => nil, :action => nil, :id => nil }
+
+  layout 'application_right'
 
   def index
     return unless load_course( params[:course] )
@@ -29,6 +29,8 @@ class QuizController < ApplicationController
     load_quiz_dependencies()
     
     set_title
+    @breadcrumb = Breadcrumb.for_course(@course)
+    @breadcrumb.assignment = @assignment
   end
   
   def attempt_info
@@ -112,7 +114,6 @@ class QuizController < ApplicationController
     @title = "Quiz Results"
     @show_course_tabs = true
     @tab = "course_assignments"
-    render :layout => 'application'
   end
   
   def abort
@@ -142,11 +143,7 @@ class QuizController < ApplicationController
     redirect_to :action => 'results', :course => @course, :id => @assignment
   end
   
-  
   private
-  
-
-  
   def save_quiz_answers( params )
     QuizAttempt.transaction do
       @quiz_attempt.save_count = @quiz_attempt.save_count + 1
@@ -267,8 +264,6 @@ class QuizController < ApplicationController
       else
         map_existing_quiz_attempt
       end
-      
-    
     end
     
     # take care of randomization
@@ -392,5 +387,4 @@ class QuizController < ApplicationController
     end
     return true
   end
-  
 end

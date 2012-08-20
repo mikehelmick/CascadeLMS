@@ -302,7 +302,7 @@ class Assignment < ActiveRecord::Base
   end
   
   def icon
-    'calendar.png'
+    'icon-calendar'
   end
   
   def upcoming?

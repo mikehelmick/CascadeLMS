@@ -3,7 +3,7 @@ class DocumentsController < ApplicationController
   before_filter :ensure_logged_in, :except => [:podcast, :podcast_download]
   before_filter :set_tab, :except => [:podcast, :podcast_download]
   
-  layout 'noright', :except => [:podcast, :podcast_download]
+  layout 'application', :except => [:podcast, :podcast_download]
   
   def index
     return unless load_course( params[:course] )
@@ -119,7 +119,8 @@ class DocumentsController < ApplicationController
       flash[:badnotice] = "The selected folder is not a podcast."
       redirect_to :action => 'index'
     end
-    
+
+    set_title
   end
   
   def doc_in_course( course, doc )
@@ -139,6 +140,10 @@ class DocumentsController < ApplicationController
   
   def set_title
     @title = "#{@course.title} (Course Documents)"
+
+    @breadcrumb = Breadcrumb.for_course(@course)
+    @breadcrumb.text = "Documents"
+    @breadcrumb.link = url_for(:controller => '/documents', :course => @course, :action => nil, :id => nil)
   end
   
   def load_folder( folder_id )

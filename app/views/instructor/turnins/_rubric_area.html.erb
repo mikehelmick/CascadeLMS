@@ -1,8 +1,8 @@
 <% if @assignment.rubrics.size > 0 %>
-  <p><b>Rubrics for this assignment</b><br/>
-  <ul><% for rubric in @assignment.rubrics %>
-    <li><b><%=h rubric.primary_trait %></b></li>
-
+ <% for rubric in @assignment.rubrics %>
+  <div class="control-group">
+   <label class="control-label"><strong><%=h rubric.primary_trait %></strong></label>
+    <div class="controls">
 <% pointValue = 0
    pointValue = rubric.no_credit_points if @rubric_entry_map[rubric.id].no_credit
    pointValue = rubric.part_credit_points if @rubric_entry_map[rubric.id].partial_credit
@@ -65,28 +65,23 @@ function toggle_custom_score_rubric_<%=rubric.id%>() {
 }
 <% end %>
 
-    <ul>
-	  <li><%= radio_button_tag( "rubric_#{rubric.id}", 'above', @rubric_entry_map[rubric.id].above_credit, :onclick => "update_rubric_#{rubric.id}_to( #{rubric.above_credit_points}, true ); set_form_needs_checked();" )%><b><%= @course.rubric_level.l1_name %>:</b> 
-			  <%=h rubric.above_credit_criteria %> (<%=h rubric.above_credit_points%> points)
-	  <li><%= radio_button_tag( "rubric_#{rubric.id}", 'full', @rubric_entry_map[rubric.id].full_credit, :onclick => "update_rubric_#{rubric.id}_to( #{rubric.full_credit_points}, true ); set_form_needs_checked();" )%><b><%= @course.rubric_level.l2_name %>:</b>
-		  <%=h rubric.full_credit_criteria %> (<%=h rubric.full_credit_points%> points)</li>
-	  <li><%= radio_button_tag( "rubric_#{rubric.id}", 'partial', @rubric_entry_map[rubric.id].partial_credit, :onclick => "update_rubric_#{rubric.id}_to( #{rubric.part_credit_points}, true ); set_form_needs_checked();" )%><b><%= @course.rubric_level.l3_name %>:</b>
-	      <%=h rubric.part_credit_criteria %> (<%=h rubric.part_credit_points%> points)</li>
-	  <li><%= radio_button_tag( "rubric_#{rubric.id}", 'no', @rubric_entry_map[rubric.id].no_credit, :onclick => "update_rubric_#{rubric.id}_to( #{rubric.no_credit_points}, true ); set_form_needs_checked();" )%><b><%= @course.rubric_level.l4_name %>:</b>
-	      <%=h rubric.no_credit_criteria %> (<%=h rubric.no_credit_points%> points)</li>
-	  <li>
+    <%= radio_button_tag( "rubric_#{rubric.id}", 'above', @rubric_entry_map[rubric.id].above_credit, :onclick => "update_rubric_#{rubric.id}_to( #{rubric.above_credit_points}, true ); set_form_needs_checked();" )%> <strong><%= @course.rubric_level.l1_name %>:</strong> 
+			  <%=h rubric.above_credit_criteria %> <span class="badge badge-success"><%=h rubric.above_credit_points%> points</span><br/>
+	<%= radio_button_tag( "rubric_#{rubric.id}", 'full', @rubric_entry_map[rubric.id].full_credit, :onclick => "update_rubric_#{rubric.id}_to( #{rubric.full_credit_points}, true ); set_form_needs_checked();" )%> <strong><%= @course.rubric_level.l2_name %>:</strong>
+		  <%=h rubric.full_credit_criteria %> <span class="badge badge-warning"><%=h rubric.full_credit_points%> points</span><br/>
+	<%= radio_button_tag( "rubric_#{rubric.id}", 'partial', @rubric_entry_map[rubric.id].partial_credit, :onclick => "update_rubric_#{rubric.id}_to( #{rubric.part_credit_points}, true ); set_form_needs_checked();" )%> <strong><%= @course.rubric_level.l3_name %>:</strong>
+	      <%=h rubric.part_credit_criteria %> <span class="badge badge-error"><%=h rubric.part_credit_points%> points</span><br/>
+	<%= radio_button_tag( "rubric_#{rubric.id}", 'no', @rubric_entry_map[rubric.id].no_credit, :onclick => "update_rubric_#{rubric.id}_to( #{rubric.no_credit_points}, true ); set_form_needs_checked();" )%> <strong><%= @course.rubric_level.l4_name %>:</strong>
+	      <%=h rubric.no_credit_criteria %> <span class="badge badge-inverse"><%=h rubric.no_credit_points%> points</span><br/>
 	<% custom_score_value = @rubric_entry_map[rubric.id].score 
 	   unless @rubric_entry_map[rubric.id].custom_score
 	     custom_score_value = rubric.above_credit_points if @rubric_entry_map[rubric.id].above_credit
 	   end
 	%>
 	
-	<%= check_box_tag( "rubric_#{rubric.id}_custom_score", "true", @rubric_entry_map[rubric.id].custom_score, :onclick => "toggle_custom_score_rubric_#{rubric.id}();" ) %> Use custom score: <%= text_field_tag( "rubric_#{rubric.id}_score", custom_score_value, {:disabled => !@rubric_entry_map[rubric.id].custom_score, :size => 10, :onchange => "custom_score_change_rubric#{rubric.id}(); set_form_needs_checked();", :onkeypress => "return handleEnter(event);"}) %> <span id="rubric_<%= rubric.id %>_warning"></span></li>
-	  <li>Comments:<br/>
-		 <%= text_area_tag("rubric_#{rubric.id}_comments", @rubric_entry_map[rubric.id].comments, { "cols" => 80, "rows" => 7, :onchange => 'set_form_needs_checked();'} ) %>
-		 </li>
-	</ul>
-  <% end %></ul>
-  </b></p>	
-  <hr/>
+	<%= check_box_tag( "rubric_#{rubric.id}_custom_score", "true", @rubric_entry_map[rubric.id].custom_score, :onclick => "toggle_custom_score_rubric_#{rubric.id}();" ) %> Use custom score: <%= text_field_tag( "rubric_#{rubric.id}_score", custom_score_value, {:disabled => !@rubric_entry_map[rubric.id].custom_score, :class => 'input-small', :onchange => "custom_score_change_rubric#{rubric.id}(); set_form_needs_checked();", :onkeypress => "return handleEnter(event);"}) %> <span id="rubric_<%= rubric.id %>_warning"></span><br/>
+ 		 <%= text_area_tag("rubric_#{rubric.id}_comments", @rubric_entry_map[rubric.id].comments, { :class => 'input-large', :rows => 3, :onchange => 'set_form_needs_checked();', :placeholder => 'Comments...'} ) %>
+    </div>
+   </div>
+  <% end %>	
 <% end %>

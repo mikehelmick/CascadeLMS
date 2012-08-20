@@ -1,8 +1,15 @@
-  <div class="menuout">
-  <% unless @page.nil? %>
-    <%= image_tag 'house.png', :align => 'middle' %> <%= link_to 'Wiki Home', :controller => '/wiki', :id => 'Home', :course => @course, :action => 'page' %> |
-    <%= image_tag 'layout_edit.png', :align => 'middle' %> <%= link_to "Edit Page '#{@page.page}'", :controller => '/wiki', :id => @page.page, :course => @course, :action => 'edit'  %> |
-    <%= image_tag 'layers.png', :align => 'middle' %> <%= link_to "History for '#{@page.page}'", :controller => '/wiki', :id => @page.page, :course => @course, :action => 'history' %> |
-  <% end %>
-    <%= image_tag 'application_cascade.png', :align => 'middle' %> <%= link_to 'All Wiki Pages', :controller => '/wiki', :id => nil, :course => @course, :action => 'wikidex' %>
-  </div>
+<div class="row-fluid">
+ <div class="span12">
+  <div class="btn-toolbar">	
+	<div class="btn-group">
+    <% unless @page.nil? %>   
+     <%= link_to '<i class="icon-home"></i> Wiki Home', {:controller => '/wiki', :id => 'Home', :course => @course, :action => 'page'}, {:class => 'btn btn-small'} %>
+     <%= link_to "<i class=\"icon-edit\"></i> Edit Page '#{@page.page}'", {:controller => '/wiki', :id => @page.page, :course => @course, :action => 'edit'}, {:class => 'btn btn-small'}  %>
+	 <%= link_to "<i class=\"icon-road\"></i> History for '#{@page.page}'", {:controller => '/wiki', :id => @page.page, :course => @course, :action => 'history'}, {:class => 'btn btn-small'} %>
+	<% end %>
+	<%= link_to '<i class="icon-th-list"></i> All Wiki Pages', {:controller => '/wiki', :id => nil, :course => @course, :action => 'wikidex'}, {:class => 'btn btn-small'} %>
+    </div>
+   </div>
+ </div>
+</div>
+

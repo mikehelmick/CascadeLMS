@@ -1,5 +1,13 @@
+<% if @instructor && (@assignment.closed? || !@assignment.visible) %>
+<div class="alert alert-error">This assignment is either not available to students due to date restrictions or because it hasn't been published yet. You are able to turn in files since you are logged in as an instructor for this course.</div>
+<% end %>
+
+<div class="row-fluid">
+<div class="span3">
+<h2>Turn-in Set</h2>
+	
 <% if @current_turnin.id == @display_turnin.id %>
-  <div class="GoodMessage">This is your current turn-in set.
+  <div class="alert alert-success">This is your current turn-in set.
   <% if @assignment.closed? && (@extension.nil? || @extension.past?)%>
     <b>This assignment is closed - the files below are the ones submitted to your instructor.</b>
   <% elsif ! @current_turnin.sealed %>
@@ -13,29 +21,29 @@
   <div class="errorExplanation">This is not your current turn-in set.</div>
 <% end %>
 
-<% if @instructor && (@assignment.closed? || !@assignment.visible) %>
-<div class="errorExplanation">This assignment is either not available to students due to date restrictions or because it hasn't been published yet. You are able to turn in files since you are logged in as an instructor for this course.</div>
-<% end %>
+<ul>
+ <li>Created: <%= @display_turnin.created_at.to_formatted_s(:long) %></li>
+ <li>Updated: <%= @display_turnin.updated_at.to_formatted_s(:long) %></li>
+ <li><i class="icon-download-alt"></i><%= link_to 'Download all files', :action => 'download_set', :id => @display_turnin.id %></li>
+</ul>
 
-<p><b>Turn-in set</b><br/>
-Originally Created: <%= @display_turnin.created_at.to_formatted_s(:friendly_date) %><br/>
-Last Updated: <%= @display_turnin.updated_at.to_formatted_s(:friendly_date) %><br/>
-</p>
-
-<p><b>Download entire turn-in set:</b> <%= link_to 'as tar file', :action => 'download_set', :id => @display_turnin.id %></p>
+</div>
+<div class="span9">
+  <h2>Files in this turn-in set</h2>
 
 <% parent_spaces = Hash.new 
    parent_spaces[0.to_s] = 0
    any_java = @display_turnin.any_java_files?
 %>
 
-<table class="fancy">
+<table class="table table-striped table-condensed">
+ <thead>
   <tr class="header">
     <th>File</th>
 	<th>Date</th>
 	<th>Auto Added?</th>
 	<% if @assignment.programming %>
-	  <th>Main?</th>
+	  <th>Main Class?</th>
 	  <% if any_java && @assignment.auto_grade %>
 	    <th>Clean Java?</th>
 	  <% end %>
@@ -45,23 +53,16 @@ Last Updated: <%= @display_turnin.updated_at.to_formatted_s(:friendly_date) %><b
 	  <th>Submitter</th>
 	<% end %>
   </tr>
+ </thead>
 
 <% count = 0 %>
 <% previous_tif = nil %>
 <% for @tif in @display_turnin.user_turnin_files %>
-  <% count = count.next 
-     odd = "odd"
-     odd = "even" if count.even?
-   %>
-  <tr class="<%=odd%> hover" id="user_turnin_file_<%=@tif.id%>">
-    
-    <% 
-
-       if @tif.directory_entry 
+  <% count = count.next %>
+  <tr id="user_turnin_file_<%=@tif.id%>">
+    <% if @tif.directory_entry 
 	     parent_spaces[@tif.id.to_s] = parent_spaces[@tif.directory_parent.to_s] + 1
        end %>
-
-
     <% spaces = ''
        if @tif.directory_entry
          upper = parent_spaces[@tif.id.to_s] - 1
@@ -72,18 +73,18 @@ Last Updated: <%= @display_turnin.updated_at.to_formatted_s(:friendly_date) %><b
      %>
     <td>
       <%= spaces %>    
-      <%= image_tag "#{@tif.icon}", :align => 'absmiddle' %>
+      <i class="<%= @tif.icon %>"></i>
       <%=h @tif.filename %> 
     </td>
     <td> <i><%= @tif.created_at.to_formatted_s(:short) %></i> </td>
-    <td><% if @tif.auto_added %><%= image_tag 'accept.png' %><% end %></td>
+    <td><% if @tif.auto_added %><i class="icon-ok-sign"></i><% end %></td>
     <% if @assignment.programming %>
       <td>
 	    <% if @tif.main %>
-	      <acronym title="This is the class that will be run when graded."><%= image_tag 'accept.png' %> <b>Current</b></acronym>
+	      <acronym title="This is the class that will be run when graded."><i class="icon-ok-sign"></i> <b>Current</b></acronym>
 	    <% elsif @tif.main_candidate && ! (@display_turnin.sealed || @display_turnin.finalized) %>
 	      <acronym title="Make this the main class when grading.">
-	        <%= link_to "#{image_tag 'add.png'} Select", :action => 'change_main', :course => @course, :assignment => @assignment, :id => @tif %>
+	        <%= link_to '<i class="icon-ok-sign"></i> Select', :action => 'change_main', :course => @course, :assignment => @assignment, :id => @tif %>
 	         </acronym>
 	    <% end %>
 	  </td>
@@ -92,9 +93,9 @@ Last Updated: <%= @display_turnin.updated_at.to_formatted_s(:friendly_date) %><b
 	    <td>
 		  <% if @tif.extension.eql?('java') ## will need to expand later w/ other languages %>
 		    <% if @tif.gradable %>
-		      <%= image_tag 'accept.png' %> 
+		      <i class="icon-ok-sign"></i>
 		    <% else %>
-		      <%= image_tag 'cross.png' %> <b><%= link_to_function "Details", visual_effect(:toggle_appear, "dirty_details_#{@tif.id}" ) %></b>
+		      <i class="icon-exclamation-sign"></i> <b><%= link_to_function "Details", visual_effect(:toggle_appear, "dirty_details_#{@tif.id}" ) %></b>
 		    <% end %>
 		  <% end %>
 		</td>
@@ -130,4 +131,5 @@ Last Updated: <%= @display_turnin.updated_at.to_formatted_s(:friendly_date) %><b
   <% previous_tif = @tif %>
 <% end %>
 </table>
-
+</div>
+</div>

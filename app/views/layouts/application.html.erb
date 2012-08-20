@@ -1,138 +1,90 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
-
 <head>
-	<title><%=@title if @title%></title>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	
-	<%= javascript_include_tag :defaults %>
-	<%= render :partial => '/layouts/google' %>
-	
-	<%= stylesheet_link_tag "master", :media => "all" %>
-	<%= stylesheet_link_tag "calendar/red/style", :media => "all" %>
-	<%= stylesheet_link_tag "print", :media => "print" %>
-	
-	<style type="text/css">
-		body {
-	    	background: url(<%= image_path('cascade_bg.jpg') %>) repeat-x top center #426479;
-	    }
-	</style>
-		
-	<% if @course %>
-	<%= auto_discovery_link_tag(:rss, {:controller => 'feed', :course => @course }) %>
-	<% end %>
+ <title><%= @title if @title %></title>
+ <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+ <%= stylesheet_link_tag "bootstrap", :media => "all" %>
+ <style type="text/css">
+   body {
+     padding-top: 60px;
+     padding-bottom: 40px;
+   }
+   .sidebar-nav {
+     padding: 9px 0;
+   }
+ </style>
+ <%= stylesheet_link_tag "bootstrap-responsive", :media => "all" %>
+ <%= stylesheet_link_tag "application", :media => "all" %>
+ <%= stylesheet_link_tag "prettify", :media => "all" %>
+
+ <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+ <!--[if lt IE 9]>
+   <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+ <![endif]-->
+
+ <%= stylesheet_link_tag "calendar/red/style", :media => "all" %>
+			
+ <% if @course %>
+ <%= auto_discovery_link_tag(:rss, {:controller => 'feed', :course => @course }) %>
+ <% end %>
+
+ <!-- scripts -->
+ <%= javascript_include_tag "jquery" %>
+ <%= javascript_include_tag "bootstrap-transition" %>
+ <%= javascript_include_tag "bootstrap-alert" %>
+ <%= javascript_include_tag "bootstrap-modal" %>
+ <%= javascript_include_tag "bootstrap-dropdown" %>
+ <%= javascript_include_tag "bootstrap-scrollspy" %>
+ <%= javascript_include_tag "bootstrap-tab" %>
+ <%= javascript_include_tag "bootstrap-tooltip" %>
+ <%= javascript_include_tag "bootstrap-popover" %>
+ <%= javascript_include_tag "bootstrap-button" %>
+ <%= javascript_include_tag "bootstrap-collapse" %>
+ <%= javascript_include_tag "bootstrap-carousel" %>
+ <%= javascript_include_tag "bootstrap-typeahead" %>
+ <%= javascript_include_tag "prettify" %>
+ <%= javascript_include_tag :defaults %>
+ <%= render :partial => '/layouts/google' %>
 </head>
 
 <% if !@checkForm.nil? && @checkForm == true %>
-<body class="webkit">
+<body>
 	<script language="JavaScript">
 	  window.onbeforeunload = check_form_submitted
 	</script>
 <% else %>
-<body class="webkit">
-<% end %>	
-	
-<div id="container">	
-  <div id="headercontainer" class="clear">
-	
-	<div id="headertitle">
-		<h1><%=@app['title']%></h1>
-		<h4>CascadeLMS</h4>
-	</div>
-	
-	<div id="headerright">
-		<div id="userinfoarea">
-			
-		  	<div id="userinfo">
-				<a href="http://en.gravatar.com/">
-				  <img id="avatar" src="<%= @user.gravatar_url(request.ssl?) %>" />
-				</a>
-				
-				<div id="signout">
-					<%= link_to "log out #{image_tag 'lock_go.png', :class => "noborder"}", :controller => '/index', :action => 'logout' %>
-				</div>
-	
-			 	
-				<span class="loginInfo">
-				<% unless @app['dir_link'].nil? || @app['authtype'].eql?('basic') %> 
-			      <a href="<%=@app['dir_link']%><%= session[:user].uniqueid %>" target="_blank"><%=session[:user].display_name%></a>
-			    <% else %>
-			      <%= link_to "#{session[:user].display_name} #{image_tag 'user_edit.png'}", :controller => '/home', :action => 'account' %>
-			    <% end %><br/>
-				<%= @user.email %>
-				</span>
-				
-				<div class="courses"><form name="course_jump">
-				
-					<%= @term.semester %>:
-					<select id="course_select_top" name="course_id">
-						<% for cu in @user.courses_in_term( @term ) %>
-						  <% selected = "" 
-						     selected = "selected=\"selected\"" if !@course.nil? && @course.id == cu.course_id 
- 						  %>						
-						  <option value="<%= url_for( :controller => '/overview', :course => cu.course, :id => nil, :action => nil, :only_path => false ) %>" <%= selected %>><%= cu.course.title[0..30] %></option>
-						<% end %>
-						<% if @user.auditor? %>
-						  <% selected = "" 
-							 selected = "selected=\"selected\"" unless @tab.nil? || !@tab.eql?('audit') %>
-						  <option value="<%= url_for :controller => '/audit', :course => nil, :id => nil, :only_path => false %>" <%= selected %>>* Audit</option>
-					    <% end %>
-						<% if @user.program_manager? %>
-						  <% selected = "" 
-							 selected = "selected=\"selected\"" unless @tab.nil? || !@tab.eql?('programs') %>
-						  <option value="<%= url_for :controller => '/program', :course => nil, :id => nil, :only_path => false %>" <%= selected %>>* Programs</option>
-					    <% end %>
-					    <% if @user.admin %>
-						  <% selected = "" 
-							 selected = "selected=\"selected\"" unless @tab.nil? || !@tab.eql?('administration') %>
-					      <option value="<%= url_for :controller => '/admin', :course => nil, :id => nil, :only_path => false %>" <%= selected %>>* Administration</option>
-					    <% end %>
-					</select>
-					<a onClick="changeCourse(); return true" href="#">
-						<%= image_tag 'application_go.png', :align => 'absmiddle', :class => 'noborder' %>
-					</a>
-					</form>
-				</div>
-				
-			</div>
-		  
-	    </div>
-	
-	</div>
-	
+<body>
+<% end %>
+
+<%= render :partial => '/layouts/navbar' %>
+
+<div class="container-fluid">
+ <div class="row-fluid">
+  <div class="span3">
+   <div class="well sidebar-nav">
+	<ul class="nav nav-list">
+	<%= render :partial => "right" %>
+	<%= render :partial => '/layouts/common_left' %>
+	</ul>	
+   </div>
   </div>
-
-<%= render :partial => '/layouts/menu' %>
-	
-  <div id="contentarea" class="clear">
-	
-	<div id="content">
-		<% if flash[:notice] %><div id="GoodMessage"><%= flash[:notice] %></div><% end %>
-		<% if flash[:badnotice] %><div class="errorExplanation"><%= flash[:badnotice] %></div><% end %>
+  <div class="span9">
+    <% if flash[:notice] %><div class="alert alert-success"><%= flash[:notice] %></div><% end %>
+	<% if flash[:badnotice] %><div class="alert alert-error"><%= flash[:badnotice] %></div><% end %>
 		
-	    <%= @content_for_layout %>
-	</div>
-		
-	<div id="right">
-		<div class="rightbox">
-		  <%= render :partial => "right" %>	
-		</div>
-	</div>
-	
+	<%= @content_for_layout %>
   </div>
+</div>	
 
-
-<%= render :partial => '/layouts/footer' %>
-
-  
+<%= render :partial => '/layouts/footer' %>  
 <div>	
 
-	
-	<% if flash[:highlight] %> 
-	  <%= javascript_tag visual_effect(:highlight, "#{flash[:highlight]}", :duration => 3.5 )  %>
-	<% end %>
-	
+ <% if flash[:highlight] %> 
+  <%= javascript_tag visual_effect(:highlight, "#{flash[:highlight]}", :duration => 3.5 )  %>
+ <% end %>
+ <%= javascript_include_tag "notifyme" %>
 </body>
 </html>
 

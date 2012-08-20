@@ -1,13 +1,13 @@
-<%= link_to_function(image_tag("arrow_up.png"), "new Effect.BlindUp('search_results')") %>
+<%= link_to_function('<i class="icon-arrow-up"></i> Dismiss', "new Effect.BlindUp('search_results')") %>
 <% if @invalid %>
-<div id="ErrorExplanation">You must enter at least 4 characters in your search term.</div>
+<div class="alert alert-error">You must enter at least 4 characters in your search term.</div>
 <% else %>
 
 <% if @users.size == 0 %>
-<div id="ErrorExplanation">No users matched your search term.</div>
+<div class="alert">No users matched your search term.</div>
 <% else %>
 
-<table class="fancy" width="100%" style="display: block;">
+<table class="table table-compact" style="display: block;">
 
 <% count = 0 %>
 <% for user in @users %>

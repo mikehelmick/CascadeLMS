@@ -4,7 +4,7 @@ require 'auto_grade_helper'
 class AssignmentsController < ApplicationController
   
   before_filter :ensure_logged_in
-  before_filter :set_tab, :except => [ :svn_command ]
+  before_filter :set_tab, :except => [ :svn_command ]  
 
   def index
     return unless load_course( params[:course] )
@@ -34,7 +34,7 @@ class AssignmentsController < ApplicationController
     @public = false
     
     respond_to do |format|
-      format.html 
+      format.html
       format.xml { render :layout => false }
     end
   end
@@ -93,7 +93,7 @@ class AssignmentsController < ApplicationController
     @extension = @assignment.extension_for_user( @user )
     
     @now = Time.now
-    set_title
+    set_title(@assignment)
     
     respond_to do |format|
       format.html
@@ -414,9 +414,16 @@ class AssignmentsController < ApplicationController
     @title = "Course Assignments"
   end
 
-  def set_title
+  def set_title(assignment = nil)
     @title = "#{@course.title} (Course Assignments)"
     @title = "#{@assignment.title} - #{@course.title}" unless @assignment.nil?
+    @breadcrumb = Breadcrumb.for_course(@course)
+    if assignment.nil?
+      @breadcrumb.text = 'Assignments'
+      @breadcrumb.link = url_for(:action => 'index', :id => nil)
+    else
+      @breadcrumb.assignment = assignment
+    end
   end
   
   def count_todays_turnins( max = 3 )

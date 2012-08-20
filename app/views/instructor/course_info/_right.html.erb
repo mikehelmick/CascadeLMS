@@ -1,15 +1,11 @@
-<%= render :partial => 'instructor/index/right' %>
-
 <h2>Merge Courses</h2>
-<div id="merge_area">
-
 <% term_courses = @user.courses_in_term( @course.term ) %>
 <% if @course.course_open %>
 <% if term_courses.size <= 1 %>
   <i>You have no other courses in this term.  Courses can only be merged if they are in the same term.</i>
 <% else %>
 
-<table class="fancy">
+<table class="table">
 
 <% count = 0 %>
 <% for cu in term_courses %>
@@ -27,7 +23,7 @@
 	  CRN(s): <%= course.crns.join(', ') %><br />
 	  Instructor(s): <%= course.instructors.join(', ') %><br />
 	  Students: <%= course.students.size %> | TAs: <%= course.assistants.size %> | Guests: <%= course.guests.size %> <br/>
-	  <%= link_to "#{image_tag 'arrow_join.png'} Merge into #{@course.title}", { :action => 'merge', :course => @course.id, :id => course.id }, :confirm => "Are you sure you want to merge these courses?  Blog posts, documents, assignments and student enrollment will be copied.  All turnins and grades from the course '#{course.title}' will be deleted and cannot be recovered. There is no way to undo this action, and it make take up to 1 minute to complete." %>
+	  <i class="icon-chevron-right"></i><i class="icon-chevron-left"></i> <%= link_to 'Merge into this course', { :action => 'merge', :course => @course.id, :id => course.id }, :confirm => "Are you sure you want to merge these courses?  Blog posts, documents, assignments and student enrollment will be copied.  All turnins and grades from the course '#{course.title}' will be deleted and cannot be recovered. There is no way to undo this action, and it make take up to 1 minute to complete." %>
 	</td>	
   </tr>
   <% end %>
@@ -38,5 +34,3 @@
 <% else %>
 <i><b>Disabled:</b> this course is in archive status.</i>
 <% end %>
-	
-</div>

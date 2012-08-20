@@ -1,17 +1,15 @@
-<h2>'<%= @assignment.title %>' turn-ins for '<%= @student.display_name %>'</h2>
-<h3>Course: <%= @course.title %> (<%= @course.term.semester%>)</h3>
+<h2>'<%= @assignment.title %>' submitted files for '<%= @student.display_name %>' <img src="<%= @user.gravatar_url(request.ssl?) %>" /></h2>
 
-<p><%= link_to 'Back to all students', :controller => '/instructor/turnins', :course => @course, :assignment => @assignment %> |
-   <%= link_to "Grade overview for #{@student.display_name}", :controller => '/instructor/course_gradebook', :action => 'for_student', :course => @course, :id => @student.id %>
-   <img src="<%= @student.gravatar_url(request.ssl?) %>" align="top" />
-	</p>
+<div class="btn-group">
+ <%= link_to 'Back to all students', {:controller => '/instructor/turnins', :course => @course, :assignment => @assignment}, {:class => 'btn btn-danger'} %>
+ <%= link_to "Grade overview for #{@student.display_name}", {:controller => '/instructor/course_gradebook', :action => 'for_student', :course => @course, :id => @student.id}, {:class => 'btn btn-success'} %>
+</div>
 
 <!-- team -->
 <% if @assignment.team_project %>
-<div class="SectionHeader"><div class="Full">
-  <h2>Project Team Details</h2>
-</div></div>
-<div class="Section">
+<div class="row">
+ <div class="span12">
+<h2>Project Team Details</h2>
 	<p><%= image_tag 'group.png' %><b>This is a group project, turn-ins are shared.</b><br/>
   <% if @team.nil? %>
     <i>This student is NOT assigned to a project group.</i>
@@ -27,40 +25,47 @@
 		<% end %>
   <% end %>
   <p>
+ </div>
 </div>
 <% end %>
 
 <!-- files -->
-<div class="SectionHeader"><div class="Full">
+<div class="row-fluid">
+ <div class="span12">
   <h2>Turn-in Set</h2>
-</div></div>
-<div class="Section">
-	
+
 <% if @display_turnin %>
+ <% if @display_turnin.id == @current_turnin.id %>
+   <div class="alert alert-success">
+	<a class="close" data-dismiss="alert">×</a>
+	This is the student's most recent turn-in set.</div>
+ <% else %>
+   <div class="alert alert-warning">
+	<a class="close" data-dismiss="alert">×</a>
+	This is NOT the student's final turn-in set.  You most likely do not want to grade these files.</div>
+ <% end %>
+ </div>
+</div>
 
-<% if @display_turnin.id == @current_turnin.id %>
-  <div class="GoodMessage">This is the student's most recent turn-in set.</div>
-<% else %>
-  <div class="errorExplanation">This is NOT the student's final turn-in set.  You most likely do not want to grade these files.</div>
-<% end %>
-
-<p><b>Turn-in set</b><br/>
-Originally Submitted: <%= @display_turnin.created_at.to_formatted_s(:friendly_date) %><br/>
-Last Updated: <%= @display_turnin.updated_at.to_formatted_s(:friendly_date) %><br/>
-</p>
-
-<p><b>Download entire turn-in set:</b> <%= link_to 'as tar file', :course => @course, :assignment => @assignment, :controller => 'instructor/turnins', :action => 'download_set', :id => @display_turnin.id %></p>
+<div class="row-fluid">
+ <div class="span4">
+  <ul>  
+   <li>Originally Submitted: <%= @display_turnin.created_at.to_formatted_s(:friendly_date) %></li>
+   <li>Last Updated: <%= @display_turnin.updated_at.to_formatted_s(:friendly_date) %></li>
+   <li><strong>Download entire turn-in set:</strong> <%= link_to 'as tar file', {:course => @course, :assignment => @assignment, :controller => 'instructor/turnins', :action => 'download_set', :id => @display_turnin.id} %></li>
+  </ul>
+ </div>
+ <div class="span8">
 
 <% if @display_turnin.id == @current_turnin.id && @current_turnin.user_turnin_files.size == 1 && @turnins.size > 1 %>
-<div class="errorExplanation">This student's current turn-in set does not have any files in it, and there are previous turn-in sets.  You may <%= link_to 'rollback to the previous turn-in set', :controller => 'instructor/turnins', :action => 'rollback', :course => @course, :assignment => @assignment, :student => @student, :id => @student %></div>
+<div class="alert alert-error">This student's current turn-in set does not have any files in it, and there are previous turn-in sets.  You may <%= link_to 'rollback to the previous turn-in set', :controller => 'instructor/turnins', :action => 'rollback', :course => @course, :assignment => @assignment, :student => @student, :id => @student %>, in order to see the last files that this student actually submitted.</div>
 <% end %>
-
 
 <% parent_spaces = Hash.new 
    parent_spaces[0.to_s] = 0
    any_java = @display_turnin.any_java_files?
 %>
-<table class="fancy">
+<table class="table table-compact table-striped">
   <tr class="header">
     <th valign="bottom">File</th>
 	<th valign="bottom">Date</th>
@@ -78,18 +83,10 @@ Last Updated: <%= @display_turnin.updated_at.to_formatted_s(:friendly_date) %><b
 	<% end %>
   </tr>
 
-<% count = 0 %>
 <% previous_tif = nil %>
 <% for @tif in @display_turnin.user_turnin_files %>
-  <% count = count.next 
-     odd = "odd"
-     odd = "even" if count.even?
-   %>
-  <tr class="<%=odd%> hover" id="user_turnin_file_<%=@tif.id%>">
-    
-    <% 
-
-       if @tif.directory_entry 
+  <tr id="user_turnin_file_<%=@tif.id%>">    
+    <% if @tif.directory_entry 
 	     parent_spaces[@tif.id.to_s] = parent_spaces[@tif.directory_parent.to_s] + 1
        end %>
 
@@ -104,17 +101,17 @@ Last Updated: <%= @display_turnin.updated_at.to_formatted_s(:friendly_date) %><b
      %>
     <td nowrap="nowrap">
       <%= spaces %>    
-      <%= image_tag "#{@tif.icon}", :align => 'absmiddle' %>
-      <%=h @tif.filename %> 
+      <i class="<%= @tif.icon %>"></i>
+      <%=h @tif.filename %>  
     </td>
     <td nowrap="nowrap"> <i><%= @tif.created_at.to_formatted_s(:short) %></i> </td>
     <% if @assignment.programming %>
       <td>
 		<% if @tif.main %>
-	      <acronym title="This is the class that will be run when graded."><%= image_tag 'accept.png' %> <b>Current</b></acronym>
+	      <acronym title="This is the class that will be run when graded."><i class="icon-ok-sign"></i> <b>Current</b></acronym>
 	    <% elsif @tif.main_candidate  %>
 	      <acronym title="Make this the main class when grading.">
-	        <%= link_to "#{image_tag 'add.png'} Select", :action => 'change_main', :course => @course, :assignment => @assignment, :id => @student, :tif => @tif %>
+	        <%= link_to '<i class="icon-ok-sign"></i> Select', :action => 'change_main', :course => @course, :assignment => @assignment, :id => @student, :tif => @tif %>
 	         </acronym>
 	    <% end %>	
 	  </td>
@@ -123,9 +120,9 @@ Last Updated: <%= @display_turnin.updated_at.to_formatted_s(:friendly_date) %><b
 	    <td>
 		  <% if @tif.extension.eql?('java') ## will need to expand later w/ other languages %>
 		    <% if @tif.gradable %>
-		      <%= image_tag 'accept.png' %> 
+		      <i class="icon-ok-sign"></i>
 		    <% else %>
-		      <%= image_tag 'cross.png' %> <b><%= link_to_function "Details", visual_effect(:toggle_appear, "dirty_details_#{@tif.id}" ) %></b>
+		      <i class="icon-remove-sign"></i> <b><%= link_to_function "Details", visual_effect(:toggle_appear, "dirty_details_#{@tif.id}" ) %></b>
 		    <% end %>
 		  <% end %>
 		</td>
@@ -184,41 +181,32 @@ Last Updated: <%= @display_turnin.updated_at.to_formatted_s(:friendly_date) %><b
   <% previous_tif = @tif %>
 <% end %>
 </table>
-
 <% else %>
   <p><i>No files submitted</i></p>
 <% end %>
+</div></div> <!-- end span8 and row -->
 
 <!-- AutoGrade area -->
 <% if !@assignment.auto_grade_setting.nil? && @assignment.auto_grade_setting.io_check? %>
- <div class="SectionHeader"><div class="Full"> 
-   <h2>AutoGrade Results</h2>
- </div></div>
-
- <div class="Section">
-    <p><ul><li><%= link_to "View I/O Check results for #{@student.display_name}.", :course => @course, :assignment => @assignment, :student => @student, :action => 'view_io_tests', :controller => 'instructor/turnins' %> <b>From this screen you can also re-run the automatic tests.</b></li></ul></p>
- </div>
-
-<% elsif @assignment.auto_grade && !@assignment.auto_grade_setting.nil? && @assignment.auto_grade_setting.check_style? %>
-<div class="SectionHeader"><div class="Full"> 
-  <h2>PMD Control</h2>
+<div class="row-fluid"><div class="span12">
+ <h2>AutoGrade Results</h2>
+ <p><%= link_to "View I/O Check results for #{@student.display_name}.", :course => @course, :assignment => @assignment, :student => @student, :action => 'view_io_tests', :controller => 'instructor/turnins' %> <strong>From this screen you can also re-run the automatic tests.</strong></p>
 </div></div>
 
-<div class="Section">
-	<p><%= image_tag 'flag_green.png' %><%= link_to 'Re-run PMD checks for the current turn-in set.', :course => @course, :assignment => @assignment, :student => @student, :controller => 'instructor/turnins', :action => 'io_retest' %></p>
-</div>
-
+<% elsif @assignment.auto_grade && !@assignment.auto_grade_setting.nil? && @assignment.auto_grade_setting.check_style? %>
+<div class="row-fluid"><div class="span12"> 
+  <h2>PMD Control</h2>
+  <p><%= image_tag 'flag_green.png' %><%= link_to 'Re-run PMD checks for the current turn-in set.', :course => @course, :assignment => @assignment, :student => @student, :controller => 'instructor/turnins', :action => 'io_retest' %></p>
+</div></div>
 <% end %>
 
 
 <!-- begin grade area -->
-<div class="SectionHeader"><div class="Full">
-  <h2>Grade</h2>
-</div></div>
-
-  <div id="form_area">
+<div class="row-fluid">
+  <div class="span12">
+    <h2>Grade</h2>
 <% unless @grade_item %>
-<p><i>Warning - this assignment is not connected with an entry in the GradeBook.</i></p>
+<div class="alert">Warning - this assignment is not connected with an entry in the GradeBook.</div>
 <% else %>
   <script language="javascript">
 function handleEnter(event)
@@ -230,70 +218,78 @@ function handleEnter(event)
   return true;
 }
   </script>
+ </div>
+</div>
 
-  <% form_tag( {:controller => 'instructor/turnins', :action => 'submit_grade', :id => @student, :course => @course, :assignment => @assignment}, {:name=>"gradeForm", :onsubmit=>"set_form_submitted();", :id => "grade_form"} ) do %>
-	<div class="submit">
-	  <div id="button">
-		 <%= submit_tag "Skip and Go to Next Student" %>
-		 <%= submit_tag "Save Grade and Go to Previous Student" %>
-	     <%= submit_tag "Save Grade" %>
-	     <%= submit_tag "Save Grade and Go to Next Student" %>	     
-	  </div>
-	</div>
+<% form_tag( {:controller => 'instructor/turnins', :action => 'submit_grade', :id => @student, :course => @course, :assignment => @assignment}, {:name=>"gradeForm", :onsubmit=>"set_form_submitted();", :id => "grade_form", :class => 'form-horizontal'} ) do %>
+ <div class="row-fluid">
+  <div class="span12">
+   <%= submit_tag "Skip and Go to Next Student", :class => 'btn btn-primary' %>
+   <%= submit_tag "Save Grade and Go to Previous Student", :class => 'btn btn-primary' %>
+   <%= submit_tag "Save Grade", :class => 'btn btn-primary' %>
+   <%= submit_tag "Save Grade and Go to Next Student", :class => 'btn btn-primary' %>
 
-    <%= error_messages_for 'grade_entry' %>    
-
-	<p class="blockintro">You can enter general assignment comments here.   You also have the ability to comment on individual files below as well as to make annotations tied to specific line numbers for text files.   <b>If you enter a negative point value, the student's grade for this assignment will be deleted (including the comments entered below).</b> Leaving the points value blank, results in a score of zero.
-   <% if @assignment.rubrics.size > 0 %><br/>
-      <b>This assignment contains defined rubrics</b>, so they are displayed first.
-   <% end %>	
-  </p>
-	<div class="block">
-
-<%= render :partial => 'rubric_area' %>
-
-	  <p><label for="document_title">Points:</label>
-	  <%= text_field 'grade_entry', 'points', {:size => 10, :onchange => 'set_form_needs_checked();', :onkeypress => "return handleEnter(event);"}  %> / <%= sprintf("%0.1f", @grade_item.points ) %>
+   <%= error_messages_for('grade_entry', {:class => 'alert alert-error'}) %> 
+   	<p class="help-block">You can enter general assignment comments here.   You also have the ability to comment on individual files below as well as to make annotations tied to specific line numbers for text files.   <b>If you enter a negative point value, the student's grade for this assignment will be deleted (including the comments entered below).</b> Leaving the points value blank, results in a score of zero.
+    <% if @assignment.rubrics.size > 0 %>
+      <em>This assignment contains defined rubrics</em>, so they are displayed first.
+    <% end %>	
+    </p>
+  </div>
+ </div>
+ <div class="row-fluid">
+  <div class="span6">
+   <fieldset>
+    <%= render :partial => 'rubric_area' %>
+   </fieldset>
+  </div>
+  <div class="span6">
+	<fieldset>
+	  <div class="control-group">
+	    <label for="document_title" class="control-label">Points:</label>
+	    <div class="controls">
+	      <%= text_field 'grade_entry', 'points', {:class => 'input-medium', :onchange => 'set_form_needs_checked();', :onkeypress => "return handleEnter(event);"}  %> / <%= sprintf("%0.1f", @grade_item.points ) %>
           <% if @assignment.team_project && !@team.nil? %>
              <br/><%= check_box_tag( 'apply_to_team', true, @apply_to_team )%> Apply grade and comments to all team members.
           <% end %> 
-      </p>
+        </div>
+      </div>
 
-      <p><label for="document_comments">General comments:</label><br/>
-        <%= text_area 'grade_entry', 'comment', "cols" => 90, "rows" => 12, :class=>'short', :onchange => 'set_form_needs_checked();'  %><br/>
-        <%= link_to_function "More room to type", "Form.Element.toggleHeight(this, 'grade_entry_comment'); return false;", :class => 'bottab more' %>
-      </p>
-
-    </div>
-
-  	<div class="submit">
-	  <div id="button">
-	  	 <%= submit_tag "Skip and Go to Next Student" %>
-	     <%= submit_tag "Save Grade and Go to Previous Student" %>
-	     <%= submit_tag "Save Grade" %>
-	     <%= submit_tag "Save Grade and Go to Next Student" %>
-	  </div>
-	</div>
+      <div class="control-group">
+	    <label for="document_comments" class="control-label">General comments:</label>
+	    <div class="controls">
+          <%= text_area 'grade_entry', 'comment', :class=> 'input-xlarge', :rows => 5, :onchange => 'set_form_needs_checked();'  %>
+        </div>
+      </div>
+    </fieldset>
+  </div>
+ </div>
+ <div class="row-fluid">
+  <div class="span12" style="align: right">
+  	<%= submit_tag "Skip and Go to Next Student", :class => 'btn btn-primary' %>
+	<%= submit_tag "Save Grade and Go to Previous Student", :class => 'btn btn-primary' %>
+	<%= submit_tag "Save Grade", :class => 'btn btn-primary' %>
+	<%= submit_tag "Save Grade and Go to Next Student", :class => 'btn btn-primary' %>
   <% end %>
   </div>
-
 <% end %>
 <!-- END GRADE AREA -->
+</div>
 
 <!-- journals -->
 
 
 <% if @assignment.enable_journal %>
-<div class="SectionHeader"><div class="Full">
+<div class="row-fluid">
+ <div class="span12">
   <h2>Assignment Journals</h2>
-</div></div>
 <% if !@assignment.team_project || @team.nil? %>
 	<% if @journals.size == 0 %>
-	  <p><i>This student has not submitted any journal entries.</i></p>
+	  <div class="alert">This student has not submitted any journal entries.</div>
 	<% else %>
   	  <p><b>Reported Time:</b> <%= pluralize(@days,'day') %>, <%= pluralize(@hours,'hour') %>, <%= pluralize(@minutes,'minute') %>.
 
-    <table cellpadding="0" cellspacing="0" class="fancy">
+    <table class="table table-compact table-striped">
     <%= render :partial => 'journalheader' %>
 
     <% count = 0 %>
@@ -318,7 +314,7 @@ function handleEnter(event)
 	<% if @team_journals[tm.user.id].nil? || @team_journals[tm.user.id].size == 0 %>
 	  <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i>This student has not submitted any journal entries.</i></p>
 	<% else %>
-      <table cellpadding="0" cellspacing="0" class="fancy">
+      <table class="table table-compact table-striped">
       <%= render :partial => 'journalheader' %>
 
       <% count = 0 %>
@@ -335,28 +331,28 @@ function handleEnter(event)
   <% end %>
 
 <% end %>
+  </div>
+ </div>
 <% end %> <!-- end journals -->
 
 <!-- previous turn-in sets -->
-<div class="SectionHeader"><div class="Full">
+<div class="row-fluid"><div class="span12">
   <h2>Previous Turn-in sets (read-only)</h2>
-</div></div>
-<div class="Section">
 
 <p>Previous turn-in sets for <%= @student.display_name %>.   By selecting these previous turn-in sets you can view the files and AutoGrade reports to see how students progressed during development.  Any comments entered on previous turn-in sets are ultimately available to students as they browse their own turn-in history.</p>
 
 <% if @assignment.auto_grade %>
  <% unless @assignment.auto_grade_setting.nil? %>
   <% if @assignment.auto_grade_setting.student_style || @assignment.auto_grade_setting.student_io_check || @assignment.auto_grade_setting.student_autograde %> 
-    <div class="standout">
-	  <p><%= image_tag 'information.png' %> This assignment has automatic grading enabled and is <b>limited to <%= @app['turnin_limit'] %> submissions per day.</b></p>
-	  <p><%= @student.display_name %> has finalized <%= @today_count %> turn-in sets today, and may finalize <b><%= @remaining_count %>  more turn-in sets today.</b>   If the student requires additional turn-in sets, you may reopen the most recent turn-in set, allowing them to submit additional turn-in sets in a single day.</p>
+    <div class="alert">
+	  <i class="icon-exclamation-sign"></i> This assignment has automatic grading enabled and is <strong>limited to <%= @app['turnin_limit'] %> submissions per day.</strong><br/>
+	  <%= @student.display_name %> has finalized <%= @today_count %> turn-in sets today, and may finalize <strong><%= @remaining_count %>  more turn-in sets today.</strong>   If the student requires additional turn-in sets, you may reopen the most recent turn-in set, allowing them to submit additional turn-in sets in a single day.
 	</div>
   <% end %>
  <% end %>
 <% end %>
 
-<table class="fancy">
+<table class="table table-compact table-striped">
   <tr class="header">
     <th>#</th>
     <th>Previous Set</th>
@@ -380,8 +376,8 @@ function handleEnter(event)
     </td>
     <% if @team %><td><%= ut.user.display_name %></td><% end %>
     <td><%= link_to 'View', :controller => 'instructor/turnins', :action => 'view_student', :course => @course, :assignment => @assignment, :id => @student, :ut => ut.id %></td>
-    <td><% if ut.sealed %> <%= image_tag 'accept.png' %> <% else %> <%= image_tag 'cross.png' %> <% end %></td>
-    <td><% if ut.finalized %> <%= image_tag 'accept.png' %> <% else %> <%= image_tag 'cross.png' %> <% end %></td>
+    <td><% if ut.sealed %> <i class="icon-ok-circle"></i> <% else %> <i class="icon-ban-circle"></i> <% end %></td>
+    <td><% if ut.finalized %> <i class="icon-ok-circle"></i> <% else %> <i class="icon-ban-circle"></i> <% end %></td>
     <td id="reopen_<%= ut.id %>">
 	  <% if @current_turnin.id == ut.id && ut.finalized %>
 	    <%= link_to  'Reopen (unfinalized)', :controller => '/instructor/turnins', :action => 'unfinalize', :course => @course.id, :assignment => @assignment, :id => @student %>
@@ -394,4 +390,4 @@ function handleEnter(event)
   </tr>
 <% end %>
 </table>
-</div>
+</div></div>

@@ -25,9 +25,7 @@ class AttendanceController < ApplicationController
     @attendance.each do |att|
       @class_matrix[att.class_period_id.to_s] = att
     end
-    
-    
- 
+
     set_title
   end
   
@@ -99,6 +97,9 @@ class AttendanceController < ApplicationController
   
   def set_title
     @title = "Attendance for #{@course.title}"
+    @breadcrumb = Breadcrumb.for_course(@course)
+    @breadcrumb.text = 'Attendance'
+    @breadcrumb.link = url_for :action => 'index', :course => @course
   end
   
   def set_tab

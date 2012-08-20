@@ -1,10 +1,10 @@
 <% 
 if assignment.visible 
-  img_url = image_tag('accept.png', :align => 'absmiddle')
+  img_url = 'icon-ok-circle'
   status = 'yes'
 else
-  img_url = image_tag('cancel.png', :align => 'absmiddle')
+  img_url = 'icon-ban-circle'
   status = 'no'
 end 
 %>
-<%= link_to_remote( "#{img_url} #{status}", :update => "visibility_#{assignment.id}", :url => { :action => 'toggle_visibility', :id => assignment.id }, :complete => "new Effect.Highlight( 'visibility_#{assignment.id}' )" ) %>
+<%= link_to_remote( "<i class=\"#{img_url}\"></i> #{status}", :update => "visibility_#{assignment.id}", :url => { :action => 'toggle_visibility', :id => assignment.id }, :complete => "new Effect.Highlight( 'visibility_#{assignment.id}' )" ) %>

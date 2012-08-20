@@ -1,46 +1,35 @@
-<h2>Course: <%= @course.title %></h2>
-<h3>Forum: <%= @topic.topic %></h3>
+<div class="row-fluid">
+ <div class="span12">
+  <div class="btn-toolbar">	
+   <div class="btn-group">
+     <%= link_to 'Back to Forum', {:action => 'view_topic', :id => @topic.id, :course => @course}, {:class => 'btn'} %>
+   </div>
+  </div>
+ </div>
+</div>
 
-<p><%= link_to 'Back to forum.', :action => 'view_topic', :id => @topic.id, :course => @course %></p>
+<h2><%=h @topic.topic %> : '<%=h @parent_post.headline %>'</h2>
 
-<table class="forum" cellpadding="0" cellspacing="0">
+<table class="table table-compact">
   <%= render :partial => "post", :locals => { :post => @parent_post, :parent => @parent_post, :controls => true } %> 
+</table>
 
-  <% if @posts.size > 0 %>
-    <tr>
-	  <td class="replies" colspan="2">
-		 <b>replies</b> 
-	
-		<% if @post_pages.page_count > 1 %><p>Page: 
-		<% 1.upto(@post_pages.page_count) do |i| %>
-		 <% if i == @page %>
-		   <%= i %>
-		 <% else %>
-		     <%= link_to i, { :page => i } %>
-		 <% end %>
-		<% end %></p>
-		<% end %>
-		
-	  </td>
-	</tr>
-  <% end %>
+<h2>Replies to '<%=h @parent_post.headline %>'</h2>
 
+<table class="table table-compact table-striped">
   <% for post in @posts %>
      <%= render :partial => "post", :locals => { :post => post, :parent => @parent_post, :controls => true } %> 
   <% end %>
-
-<% if @post_pages.page_count > 1 %>
-<tr><td class="replies" colspan="2">Page: 
-<% 1.upto(@post_pages.page_count) do |i| %>
- <% if i == @page %>
-   <%= i %>
- <% else %>
-     <%= link_to i, { :page => i } %>
- <% end %>
-<% end %></td></tr>
-<% end %> 
-
 </table>
 
+<div class="pagination">
+ <ul>
+ <% 1.upto(@post_pages.page_count) do |i| %>
+ <li <%= 'class="active"' if i == @page %>>
+     <%= link_to i, { :page => i } %>
+ </li>
+ <% end %>
+ </ul>
+</div>
 
 

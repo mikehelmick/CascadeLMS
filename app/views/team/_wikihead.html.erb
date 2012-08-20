@@ -1,14 +1,14 @@
-<p>
-  <%= image_tag 'group.png', :align => 'middle' %> <%= link_to 'Team Center', :controller => '/team', :id => nil, :course => @course %> |
-  <% if @course.course_setting.team_enable_wiki %><%= image_tag 'layout_content.png', :align => 'middle' %> <%= link_to 'Wiki Home', :controller => '/team', :id => @team, :course => @course, :action => 'wiki', :page => 'Home' %> |<% end %>
-  <% if @course.course_setting.team_enable_documents %><%= image_tag 'folder.png', :align => 'middle' %> <%= link_to 'Files Home', :controller => '/team', :id => @team, :course => @course, :action => 'files' %> | <% end %>
-  <% if  @course.course_setting.team_enable_email %><%= image_tag 'email.png', :align => 'middle' %> <%= link_to 'Email Home', :controller => '/team', :id => @team, :course => @course, :action => 'email' %> <% end %> <br/>
-
-  <div class="menuout">
-  <% unless @page.nil? %>
-    <%= image_tag 'layout_edit.png', :align => 'middle' %> <%= link_to "Edit Page '#{@page.page}'", :controller => '/team', :id => @team, :course => @course, :action => 'wikiedit', :page => @page.page %> |
-    <%= image_tag 'layers.png', :align => 'middle' %> <%= link_to "History for '#{@page.page}'", :controller => '/team', :id => @team, :course => @course, :action => 'wikipast', :page => @page.page %> |
-  <% end %>
-    <%= image_tag 'application_cascade.png', :align => 'middle' %> <%= link_to 'All Wiki Pages', :controller => '/team', :id => @team, :course => @course, :action => 'wikidex' %>
-  </div>
-</p>
+<div class="row-fluid">
+ <div class="span12">
+	<div class="btn-toolbar">	
+	<div class="btn-group">
+    <% unless @page.nil? %>   
+    <%= link_to "<i class=\"icon-edit\"></i> Edit Page '#{@page.page}'", {:controller => '/team', :id => @team, :course => @course, :action => 'wikiedit', :page => @page.page}, {:class => 'btn btn-small'} %>
+    <%= link_to "<i class=\"icon-road\"></i> History for '#{@page.page}'", {:controller => '/team', :id => @team, :course => @course, :action => 'wikipast', :page => @page.page}, {:class => 'btn btn-small'} %>
+    <% end %>
+    <%= link_to '<i class="icon-th-list"></i> All Wiki Pages', {:controller => '/team', :id => @team, :course => @course, :action => 'wikidex'}, {:class => 'btn btn-small'} %>
+    </div>
+    <%= render :partial => 'buttons' %>
+    </div>
+ </div>
+</div>

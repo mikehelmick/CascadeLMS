@@ -1,6 +1,6 @@
 <% for notification in @notifications %>
-  <div id="notification_<%= notification.id %>" class="GoodMessage">
- 	<% if notification.link %>
+  <div id="notification_<%= notification.id %>" class="alert alert-info">
+    <% if notification.link %>
       <a href="<%= notification.link %>"><%= notification.notification %></a>
     <% else %>
       <%= notification.notification %>

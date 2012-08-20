@@ -1,17 +1,17 @@
+<%= error_messages_for('post', :class => 'alert alert-error') %>
 
-<%= error_messages_for 'post' %>
-
-<!--[form:post]-->
-<div class="block">
-	
-<p><label for="post_headline"  class="required">Title:</label>
-<%= text_field 'post', 'headline'  %></p>
-
-<%= render :partial => 'formatting'%>
-
-<p><label for="post_post" class="required">Post:</label>
-<%= text_area 'post', 'post', "cols" => 80, "rows" => 25  %></p>
-
-
-</div>
-<!--[eoform:post]-->
+<fieldset>
+ <div class="control-group">
+   <label for="post_headline"  class="control-label">Title</label>
+   <div class="controls">
+     <%= text_field 'post', 'headline', {:class => 'input-large'}  %>
+   </div>
+ </div>	
+ <div class="control-group">
+   <label class="control-label" for="post_post">Post</label>
+   <div class="controls">
+	 <p class="help-block"><%= render :partial => 'formatting'%></p>
+     <%= text_area 'post', 'post', :class => 'input-xlarge' %>
+   </div>
+ </div>
+</fieldset>

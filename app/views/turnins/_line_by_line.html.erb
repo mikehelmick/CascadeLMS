@@ -1,0 +1,51 @@
+     
+     <% io_count = 0 
+        count = 0 %>
+     <% for check in @assignment.io_checks %>   
+       <% if check.student_level || @assignment.released %>
+         <% show_input = check.show_input && @assignment.released 
+          %>
+      
+	   <table class="table">
+	     <tr>
+		   <th>Output Line</td>
+		   <th colspan="2" align="center" valign="top"><i class="icon-list-alt"></i> I/O Check: '<%= check.name %>' 
+			  <% unless @student_io_check[check.id].nil? %>
+		       :: Match Percentage <b><%= sprintf( "%.2f", @student_io_check[check.id].match_percent ) %>
+				<% if 100 - @student_io_check[check.id].match_percent < check.tolerance %>
+		           <i class="icon-ok-sign"></i> Pass
+		         <% else %> 
+		           <i class="icon-remove-sign"></i> Failure
+		         <% end %>			
+			  <% end %>
+			</th>
+		 </tr>
+		
+		 <% max = @student_io_check_lines[check.id][:EXPECTED].size rescue max = 0
+		    max = @student_io_check_lines[check.id][:STUDENT].size if @student_io_check_lines[check.id][:STUDENT].size > max rescue max = 0
+		  %>
+		 <% 0.upto(max-1) do |i| %>
+           <tr>
+	         <td width="5%" nowrap="nowrap" rowspan="3" align="center" valign="middle" class="code"><%= i + 1 %></td>
+	         <td width="5%" nowrap="nowrap" align="right">EXPECTED OUTPUT:</td>
+	         <td class="codeB"><%= @student_io_check_lines[check.id][:EXPECTED][i] unless @student_io_check_lines[check.id][:EXPECTED][i].nil? %></td>
+	       </tr>
+	       <tr><td width="5%" nowrap="nowrap" align="right">YOUR OUTPUT:</td>
+	         <td class="codeA">
+			  <% unless @student_io_check[check.id].nil? %>
+            	<%= @student_io_check_lines[check.id][:STUDENT][i].to_html unless @student_io_check_lines[check.id][:STUDENT][i].nil? %> 
+              <% end %>
+             </td>
+	       </tr>
+	       <tr><td width="5%" nowrap="nowrap" align="right">DIFFERENCES:</td>
+		     <td class="codeC">
+			    <% unless @student_io_check[check.id].nil? %>
+	              <%= @student_io_check_lines[check.id][:DIFF][i] unless @student_io_check_lines[check.id][:DIFF][i].nil? %>
+	            <% end %>
+			 </td>
+		   </tr>
+	     <% end %>
+       </table>
+
+	   <% end %>
+     <% end %>

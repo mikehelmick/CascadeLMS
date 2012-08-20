@@ -104,7 +104,7 @@ class Document < ActiveRecord::Base
   end
   
   def icon
-    'page.png'
+    'icon-file'
   end
   
   def without_extension
@@ -191,7 +191,7 @@ class Document < ActiveRecord::Base
   
   def icon_file
     if self.folder
-      'folder.png'
+      'icon-folder-open'
     else
       FileManager.icon(self.extension)
     end

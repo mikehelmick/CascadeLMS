@@ -1,10 +1,5 @@
-<h2>Your Account Information</h2>
-
-<div id="form_area">
-<% form_tag( :controller => "/home", :action => "account_update" ) do %>
+<% form_tag( {:controller => "/home", :action => "account_update"}, {:class => 'form-horizontal'} ) do %>
+  <legend><h2>Edit Your Account Information</h2></legend>
   <%= render :partial => 'account_form' %>
-  <div class="submit">
-    <%= submit_tag "Submit Changes" %>
-  </div>
+  <%= submit_tag "Save Changes", :class => 'btn-large btn-primary' %>
 <% end %>
-</div>

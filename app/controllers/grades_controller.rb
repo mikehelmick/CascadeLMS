@@ -65,7 +65,11 @@ class GradesController < ApplicationController
     set_title
     
     respond_to do |format|
-      format.html
+      format.html {
+        @breadcrumb = Breadcrumb.for_course(@course)
+        @breadcrumb.text = "Grades"
+        @breadcrumb.link = url_for(:action => 'index')
+      }
       format.xml { 
         render :layout => false 
       }

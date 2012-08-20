@@ -1,35 +1,30 @@
 <%= render :partial => 'wikihead' %>
-<hr/>
 
-<%= error_messages_for 'pg' %>
-
-
-<div id="form_area">
+<%= error_messages_for('pg', :class => 'alert alert-error') %>
 <h2>Editing Wiki page '<%= @page.page %>'</h2>
-<p><%= link_to 'Cancel', :course => @course, :action => 'page', :id => @page.page %></p>
 
-<% form_tag( :action => 'save', :id => @page.page ) do %>
-  
+<% form_tag( {:action => 'save', :id => @page.page}, {:class => 'form-horizontal'} ) do %>
+ <%= render :partial => 'forums/formatting', :locals => { :wiki => true }%>
 
-<%= render :partial => 'forums/formatting', :locals => { :wiki => true }%>
+ <fieldset>
+	<div class="control-group">
+	  <label for="pg_content" class="control-label">Page content:</label>
+	  <div class="controls">
+	   <%= text_area 'pg', 'content', :class => 'input-xlarge'  %>       
+     </div>
+   </div>
+  </fieldset>
 
-<p><label for="pg_content">Page content:</label><br/>
-  <%= text_area 'pg', 'content', "cols" => 90, "rows" => 12, :class=>'short'  %><br/>
-  <%= link_to_function "More room to type", "Form.Element.toggleHeight(this, 'pg_content'); return false;", :class => 'bottab more' %>
-</p>
-
-<div class="submit">
-  <%= submit_tag 'Save Changes' %>
-</div>
+  <%= submit_tag 'Save Changes', :class => 'btn btn-primary' %>
+  <%= link_to 'Cancel', {:course => @course, :action => 'page', :id => @page.page}, {:class => 'btn'} %>
 <% end %>
 
-</div>
 
 <hr/>
 <h3>Current page content...</h3>
 
+<div class="well">
 <%= @page.content_html %>
-
-<hr/>
+</div>
 
 <%= render :partial => 'wikifoot' %>

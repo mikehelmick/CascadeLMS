@@ -2,119 +2,107 @@
 
 <h2><%= @assignment.title %> ( <%= @assignment.grade_category.category %>)
 <% if @instructor %>
-  | <%= link_to "#{image_tag 'page_edit.png', :align=>'absmiddle'} Edit", :course => @course, :id => @assignment, :controller => '/instructor/course_assignments', :action => 'edit' %>
+  <%= link_to '<i class="icon-edit"></i>', {:course => @course, :id => @assignment, :controller => '/instructor/course_assignments', :action => 'edit'}, {:rel => 'tooltip', :title => 'Edit this assignment'} %>
 <% end %>	
 </h2>
 
 <% if @instructor && !@assignment.visible %>
-<div class="errorExplanation">This assignment is not yet published to students. You are able to see it since you are an instructor in this course.</div>
+<div class="alert">This assignment is not yet published to students. You are able to see it since you are an instructor in this course.</div>
 <% end %>
 
-<p><%= link_to 'Back', :action => 'index' %></p>
+<div class="row-fluid">
+  <div class="span9">
 
-<div id="Assignment">
-  <div class="blockintro"><p><b>Assignment Information</b> <%= link_to_function "#{image_tag 'eye.png', :align => 'absmiddle'}", visual_effect(:toggle_slide, 'assignment_information' ) %></p></div>
-  <div class="block" id="assignment_information">
-    <table width="100%">
-      <tr><td class="label" width="15%" nowrap="nowrap" valign="top">Name:</td>
-          <td valign="top"><%= @assignment.title %></td>
-          <td rowspan="15" width="15%" align="right" valign="top">
-              <%= render :partial => 'duecalendar' %>
-	          <% unless @assignment.past? %>due in <%= distance_of_time_in_words_to_now( @assignment.due_date, true ) %><% end %>
-          </td>
-      </tr>
-      <tr><td class="label" width="15%" nowrap="nowrap" valign="top">Type:</td>
-          <td valign="top"><%= @assignment.grade_category.category %></td></tr>
-      <tr><td class="label" width="15%" nowrap="nowrap" valign="top">Date Available:</td>
-          <td valign="top"><%= @assignment.open_date.to_formatted_s(:friendly_date) %></td></tr>
-      <tr><td class="label" width="15%" nowrap="nowrap" valign="top">Due Date:</td>
-          <td valign="top"><%= @assignment.due_date.to_formatted_s(:friendly_date) %></td></tr>
-      <tr><td class="label" width="15%" nowrap="nowrap" valign="top">Last Submission Date:</td>
-          <td valign="top"><%= @assignment.close_date.to_formatted_s(:friendly_date) %></td></tr>
+    <table class="table table-condensed">
+      <tr><th nowrap="nowrap">Name:</th>
+      <td><%=h @assignment.title %></td></tr>
+      <tr><th nowrap="nowrap">Type:</th>
+      <td><%= @assignment.grade_category.category %></td></tr>
+	  <tr><th nowrap="nowrap">Date Available:</th>
+      <td><%= @assignment.open_date.to_formatted_s(:friendly_date) %></td></tr>
+      <tr><th nowrap="nowrap">Due Date:</th>
+      <td><%= @assignment.due_date.to_formatted_s(:friendly_date) %></td></tr>
+      <tr><th nowrap="nowrap">Last Submission Date:</th>
+      <td><%= @assignment.close_date.to_formatted_s(:friendly_date) %></td></tr>
 <% unless @extension.nil? %>
-	  <tr><td class="label" width="15%" nowrap="nowrap" valign="top">Your Extension Date:</td>
-	      <td valign="top"><%= @extension.extension_date.to_formatted_s(:friendly_date) %></td></tr>
+	  <tr><th nowrap="nowrap">Your Extension Date:</th>
+	  <td><span class="badge badge-warning"><%= @extension.extension_date.to_formatted_s(:friendly_date) %></span></td></tr>
 <% end %>
-      <tr><td class="label" width="15%" nowrap="nowrap" valign="top">Journals Required:</td>
-	      <td valign="top"><%=  @assignment.enable_journal.yes_no %></td></tr>
+      <tr><th nowrap="nowrap">Journals Required:</th>
+	  <td><%=  @assignment.enable_journal.yes_no %></td></tr>
 	  <% unless @assignment.grade_item.nil? %>
-	    <tr><td class="label" width="15%" nowrap="nowrap" valign="top">Grade Category:</td>
-		    <td valign="top"><%=  @assignment.grade_item.grade_category.category %></td></tr>
-		<tr><td class="label" width="15%" nowrap="nowrap" valign="top">Possible Points:</td>
-		    <td valign="top"><%=  @assignment.grade_item.points %></td></tr>
-		<tr><td class="label" width="15%" nowrap="nowrap" valign="top">Assignment Graded:</td>
-			<td valign="top">
-			  <% if @assignment.released %>
-			    <%= link_to 'Yes', :controller => '/turnins', :course => @course, :assignment => @assignment, :action => 'feedback' %><%= image_tag 'lightbulb.png' %>
-			  <% else %>
-			    No <%= image_tag 'lightbulb_off.png' %>
-			  <% end %>
-			</td></tr>
+	    <tr><th nowrap="nowrap">Grade Category:</th>
+		<td><%=  @assignment.grade_item.grade_category.category %></td></tr>
+		<tr><th nowrap="nowrap">Possible Points:</th>
+		<td><%=  @assignment.grade_item.points %></td></tr>
+		<tr><th nowrap="nowrap">Assignment Graded:</th>
+	    <td><% if @assignment.released %>
+			  <%= link_to 'Yes', :controller => '/turnins', :course => @course, :assignment => @assignment, :action => 'feedback' %><i class="icon-ok-sign "></i>
+			<% else %>
+			  No
+			<% end %>
+		</td></tr>
 	  <% end %>
-	  <tr><td class="label" width="15%" nowrap="nowrap" valign="top">Turnin methods:</td>
-		  <td valign="top">
+	  <tr><th nowrap="nowrap">Turnin methods:</th>
+	  <td>
 		   <% if (@assignment.use_subversion && @assignment.programming) && @assignment.enable_upload %> Subversion or Upload to this site.
 		   <% elsif @assignment.use_subversion && @assignment.programming %> Subversion only.
 		   <% elsif @assignment.enable_upload %> 
-		     <%= link_to "#{image_tag 'folder_table.png'} Upload / Manage Submitted Files #{"and AutoGrade" if @assignment.auto_grade}", :controller => '/turnins', :course => @course, :assignment => @assignment, :action => 'index', :id => nil  %> 
+		     <%= link_to "<i class=\"icon-upload\"></i> Upload / Manage Submitted Files #{"and AutoGrade" if @assignment.auto_grade}", :controller => '/turnins', :course => @course, :assignment => @assignment, :action => 'index', :id => nil  %> 
 		   <% else %> Printout. 
 		   <% end %>
-		  </td>
-	  </tr>
-	  
-	  <% if  @assignment.use_subversion && !@assignment.enable_upload %>
-	  <tr><td class="label" width="15%" nowrap="nowrap" valign="top">&nbsp;</td>
-	      <td valign="top">
-	        <%= link_to "#{image_tag 'folder_table.png'} Manage Submitted Files #{"and AutoGrade" if @assignment.auto_grade}", :controller => '/turnins', :course => @course, :assignment => @assignment, :action => 'index'  %>
-	      </td>
+	  </td></tr>
+      <% if  @assignment.use_subversion && !@assignment.enable_upload %>
+	  <tr><th nowrap="nowrap">Upload:</th>
+	      <td>
+	        <%= link_to "<i class=\"icon-upload\"></i> Manage Submitted Files #{"and AutoGrade" if @assignment.auto_grade}", :controller => '/turnins', :course => @course, :assignment => @assignment, :action => 'index'  %>
+	      </td></tr>
 	  <% end %>
 	  <% if @assignment.use_subversion && @assignment.programming %>  
-	  <tr><td class="label" width="15%" nowrap="nowrap" valign="top">Subversion Server:</td>
-		  <td valign="top"><%=  @assignment.subversion_server %></td></tr>
-	    
+	  <tr><th nowrap="nowrap">Subversion Server:</th>
+	  <td><%=  @assignment.subversion_server %></td></tr>
+	
 	    <% if !@assignment.team_project || (@assignment.team_project && !@team.nil?)%>		
-  	      <tr><td class="label" width="15%" nowrap="nowrap" valign="top">SVN Dev Path:</td>
-		    <td valign="top"><a href="<%=@assignment.subversion_server%><%=@assignment.development_path_replace( @user.uniqueid, @team ) %>"><%=  @assignment.development_path_replace( @user.uniqueid, @team ) %></a></td></tr>
+  	      <tr><th nowrap="nowrap">SVN Dev Path:</th>
+		  <td><a href="<%=@assignment.subversion_server%><%=@assignment.development_path_replace( @user.uniqueid, @team ) %>"><%=  @assignment.development_path_replace( @user.uniqueid, @team ) %></a></td></tr>
 	      <% unless @assignment.subversion_release_path.nil? || @assignment.subversion_release_path.size == 0 %>
-	      <tr><td class="label" width="15%" nowrap="nowrap" valign="top">SVN Release Path:</td>
-		    <td valign="top"><a href="<%=@assignment.subversion_server%><%=@assignment.release_path_replace( @user.uniqueid, @team ) %>"><%=  @assignment.release_path_replace( @user.uniqueid, @team ) %></a></td></tr>
+	      <tr><th nowrap="nowrap">SVN Release Path:</th>
+		  <td><a href="<%=@assignment.subversion_server%><%=@assignment.release_path_replace( @user.uniqueid, @team ) %>"><%=  @assignment.release_path_replace( @user.uniqueid, @team ) %></a></td></tr>
 		<% else %>
-		  <tr><td class="label" width="15%" nowrap="nowrap" valign="top">SVN Dev Path:</td>
-		    <td valign="top"><i>You are not assigned to a project team.</i></td></tr>
-		  <tr><td class="label" width="15%" nowrap="nowrap" valign="top">SVN Release Path:</td>
-			<td valign="top"><i>You are not assigned to a project team.</i></td></tr>
+		  <tr><th nowrap="nowrap">SVN Dev Path:</th>
+		  <td><span class="alert alert-error">You are not assigned to a project team.</span></td></tr>
+		  <tr><th nowrap="nowrap">SVN Release Path:</th>
+	      <td><span class="alert alert-error">You are not assigned to a project team.</span></td></tr>
 		<% end %>
 	  <% end %>
 	  <% end %>
 	  <% if @assignment.programming %>
-	  <tr><td class="label" width="15%" nowrap="nowrap" valign="top">AutoGrade Enabled:</td>
-		  <td valign="top"><%=  @assignment.auto_grade.yes_no %></td></tr>	  
+	  <tr><th nowrap="nowrap">AutoGrade Enabled:</th>
+      <td><%=  @assignment.auto_grade.yes_no %></td></tr>	  
 	  <% end %>
 
       <% unless @assignment.description.nil? or @assignment.description.size == 0 %>
-	  <tr><td class="label" width="15%" nowrap="nowrap" valign="top">Assignment Description:</td>
-		  <td valign="top"><%=  @assignment.description_html %></td></tr>
+	  <tr><th nowrap="nowrap">Assignment Description:</th>
+	  <td><%=  @assignment.description_html %></td></tr>
       <% end %>
       <% if @assignment.file_uploads %>
-	  <tr><td class="label" width="15%" nowrap="nowrap" valign="top">Assignment Files:</td>
-		  <td valign="top"> 
-		  
+	  <tr><th nowrap="nowrap">Assignment Files:</th>
+	  <td> 
 		  <ul>
 	      <% for asgn_doc in @assignment.assignment_documents %>
 	        <% if asgn_doc.add_to_all_turnins && asgn_doc.keep_hidden %>
 	            <li><%= image_tag asgn_doc.icon_file %> <%=h asgn_doc.filename %>  - <i>Will be automatically added to your turnin.</i></li>
 	        <% elsif !asgn_doc.keep_hidden %>
-	            <li><%= link_to "#{image_tag asgn_doc.icon_file, :align => 'absmiddle'} #{h asgn_doc.filename}", :action => 'download', :id => @assignment, :course => @course, :document => asgn_doc.id, :file => asgn_doc.without_extension, :extension => asgn_doc.extension %> (Size: <%=h asgn_doc.size_text %>)
+	            <li><%= link_to "<i class=\"#{asgn_doc.icon_file}\"></i> #{h asgn_doc.filename}", :action => 'download', :id => @assignment, :course => @course, :document => asgn_doc.id, :file => asgn_doc.without_extension, :extension => asgn_doc.extension %> (Size: <%=h asgn_doc.size_text %>)
 			    <% if @assignment.enable_upload  && asgn_doc.add_to_all_turnins %><i>Will be automatically added to turnins</i><% end %> </li>
 			<% end %>
 		  <% end %>
 		  </ul>
-		
-		  </td></tr>    
+      </td></tr>    
       <% end %>
       <% if @assignment.team_project %>
-        <tr><td class="label" width="15%" nowrap="nowrap" valign="top">This is a Group Project:</td>
-	      <td valign="top"> 
+        <tr><th nowrap="nowrap">This is a Group Project:</th>
+	    <td> 
 		    <% team =  @course.team_for_user( @user.id )
 		       if team.nil? %>
 		         <i>You are not assigned to a project team, please contact your instructor.</i>
@@ -126,17 +114,22 @@
 			         <% end %>
 			       </ul>
 		    <% end %>
-		  </td>
-		</tr>
+		</td></tr>
       <% end %>
     </table>
+
   </div>
+  <div class="span3">
+	<%= render :partial => 'duecalendar' %>
+    <span class="pull-right"><% unless @assignment.past? %>due in <%= distance_of_time_in_words_to_now( @assignment.due_date, true ) %><% end %></span>
+  </div>
+</div>
 
 
-  <div class="blockintro"><p><b>Assignment Rubrics / Course Outcomes</b> <%= link_to_function "#{image_tag 'eye.png', :align => 'absmiddle'}", visual_effect(:toggle_slide, 'assignment_rubrics' ) %></p></div>
+  <h3>Assignment Rubrics / Course Outcomes</h3>
   <div id="assignment_rubrics">
-	<br/>
-	<table class="fancy" width="99%">
+	<table class="table table-striped">
+	 <thead>
 	  <tr class="header">
 		<th width="18%">Rubric</th>
 		<th width="18%"><%= @course.rubric_level.l4_name %></th>
@@ -144,6 +137,7 @@
 		<th width="18%"><%= @course.rubric_level.l2_name %></th>
   	    <th width="18%"><%= @course.rubric_level.l1_name %></th>
 	  </tr>
+	 </thead>
 
 	  <% row_count = 0 %>
 	  <% for rubric in @assignment.rubrics %>
@@ -153,11 +147,11 @@
 		    odd = "odd"
 	        odd = "even" if row_count.even? %>
 	    <tr class="<%=odd%> hover" id="rubric_<%=rubric.id%>">
-		  <td align="left" valign="top"><%=h rubric.primary_trait %></td>
-		  <td align="left" valign="top"><%=h rubric.no_credit_criteria %> (<i><%= rubric.no_credit_points %> points</i>)</td>
-		  <td align="left" valign="top"><%=h rubric.part_credit_criteria %> (<i><%= rubric.part_credit_points %> points</i>)</td>
-		  <td align="left" valign="top"><%=h rubric.full_credit_criteria %> (<i><%= rubric.full_credit_points %> points</i>)</td>
-		  <td align="left" valign="top"><%=h rubric.above_credit_criteria %> (<i><%= rubric.above_credit_points %> points</i>)</td>
+		  <th align="left" valign="top"><%=h rubric.primary_trait %></th>
+		  <td align="left" valign="top"><%=h rubric.no_credit_criteria %> <span class="badge badge-inverse"><i><%= rubric.no_credit_points %> points</i></span></td>
+		  <td align="left" valign="top"><%=h rubric.part_credit_criteria %> <span class="badge badge-error"><i><%= rubric.part_credit_points %> points</i></span></td>
+		  <td align="left" valign="top"><%=h rubric.full_credit_criteria %> <span class="badge badge-warning"><i><%= rubric.full_credit_points %> points</i></span></td>
+		  <td align="left" valign="top"><%=h rubric.above_credit_criteria %> <span class="badge badge-success"><i><%= rubric.above_credit_points %> points</i></span></td>
 		</tr>
 		<tr class="<%=odd%> hover" id="rubric_<%=rubric.id%>_outcomes">
 		  <td align="right" valign="top" colspan="1"><i>Course outcomes:</i></td>
@@ -181,12 +175,10 @@
   </div>
 
 <% if @assignment.use_subversion && @assignment.programming %>
-  <div class="blockintro"><p><b>Subversion</b> <%= link_to_function "#{image_tag 'eye.png', :align => 'absmiddle'}", visual_effect(:toggle_slide, 'subversion_setup_area' ) %></p></div>
+  <h3>Subversion</h3>
   <% if @assignment.use_subversion && @assignment.auto_grade %>
     <%= render :partial => '/turnins/agwarning' %>
   <% end %> 
-
-  <div class="block" id="subversion_setup_area">
 
   <% unless @user.student_in_course?( @course.id )%>
       <p><i>Subversion controls are only available to users who are registered in this course as students.  Please contact your instructor if you feel you should be able to see this information.</i></p>
@@ -217,26 +209,14 @@
       <p><i><b>Disabled:</b> this course is in archive status.</i></p>
     <% end %>  
    <% end %>
- 
-  </div>
 <% end %>
 
 
   <% if @assignment.enable_journal %>
-  <div class="blockintro"><p><b>Assignment Journals</b> <%= link_to_function "#{image_tag 'eye.png', :align => 'absmiddle'}", visual_effect(:toggle_slide, 'journals_area' ) %></p></div>
-  <div class="block" id="journals_area">
-    <p>
-      <% if @course.course_open %>
-        <%= link_to 'New Journal Entry', :controller => 'journals', :action => 'new', :course => @course, :assignment => @assignment %>  
-      <% else %>
-        <s>New Journal Entry</s>
-      <% end %>
-   </p>
-	
-	<%= render :partial => 'journals' %>
-
-  </div>
+  <h3>Assignment Journals</h3>
+  <% if @course.course_open %>
+    <%= link_to 'New Journal Entry', :controller => 'journals', :action => 'new', :course => @course, :assignment => @assignment %>  
   <% end %>
+  <%= render :partial => 'journals' %>
 
-
-</div>
+  <% end %>

@@ -43,15 +43,18 @@ class User < ActiveRecord::Base
       self.feed.save
     end
     return self.feed
+
+  def notification_count
+    Notification.count(:conditions => ["user_id = ? and acknowledged = ?", self.id, false])
   end
   
-  def gravatar_url(ssl = false)
+  def gravatar_url(ssl = false, size = 60)
     email_address = self.email.downcase
     #create the md5 hash
     hash = MD5::md5(email_address)
     
-    return "http://www.gravatar.com/avatar/#{hash}.jpg?s=60&d=wavatar&r=PG" unless ssl
-    return "https://secure.gravatar.com/avatar/#{hash}.jpg?s=60&d=wavatar&r=PG"
+    return "http://www.gravatar.com/avatar/#{hash}.jpg?s=#{size}&d=wavatar&r=PG" unless ssl
+    return "https://secure.gravatar.com/avatar/#{hash}.jpg?s=#{size}&d=wavatar&r=PG"
   end
 
   def assignment_journals( assignment )

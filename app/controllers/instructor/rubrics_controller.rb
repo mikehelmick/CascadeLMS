@@ -3,8 +3,6 @@ class Instructor::RubricsController< Instructor::InstructorBase
  before_filter :ensure_logged_in
  before_filter :set_tab
 
- layout 'noright'
-
  def index
    return unless common_data_load( params ) 
    @title = "Rubrics for '#{@assignment.title}'"
@@ -23,6 +21,10 @@ class Instructor::RubricsController< Instructor::InstructorBase
    end
    
    @rubric_level = RubricLevel.for_course(@course)
+
+   @breadcrumb = Breadcrumb.for_assignment(@assignment)
+   @breadcrumb.instructor = true
+   @breadcrumb.text = 'Assignment Rubrics'
  end
  
  def reorder
@@ -50,6 +52,10 @@ class Instructor::RubricsController< Instructor::InstructorBase
    return unless common_data_load( params )
    @rubric = Rubric.new
    @title = "New Rubric for '#{@assignment.title}'"
+
+   @breadcrumb = Breadcrumb.for_assignment(@assignment)
+   @breadcrumb.instructor = true
+   @breadcrumb.text = 'New Rubric'
  end
  
  def create
@@ -82,6 +88,10 @@ class Instructor::RubricsController< Instructor::InstructorBase
    return unless common_data_load( params )  
    return unless load_rubric( params[:id] )
    @title = "Edit Rubric for '#{@assignment.title}'"
+
+   @breadcrumb = Breadcrumb.for_assignment(@assignment)
+   @breadcrumb.instructor = true
+   @breadcrumb.text = 'Edit Rubric'
  end
  
  def update

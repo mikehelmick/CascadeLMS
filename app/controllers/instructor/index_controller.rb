@@ -2,12 +2,18 @@ class Instructor::IndexController < Instructor::InstructorBase
   
   before_filter :ensure_logged_in
   before_filter :set_tab
+
+  layout 'application_right'
   
   def index
     return unless load_course( params[:course] )
     return unless ensure_course_instructor_on_assistant( @course, @user )
   
     set_title
+    
+    @breadcrumb = Breadcrumb.for_course(@course)
+    @breadcrumb.text = 'Instructor'
+    @breadcrumb.link = url_for(:action => 'index')
   end
   
   def toggle_open

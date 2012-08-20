@@ -2,23 +2,22 @@ class Instructor::NewcourseController < Instructor::InstructorBase
 
   before_filter :ensure_logged_in, :ensure_instrctur_or_admin
 
-  layout 'noright'
-
   def index    
     set_title()
     initialize_with_term(@current_term)
-    @term = @current_term
+    @createTerm = @current_term
   end
 
   def change_term
     set_title()
     
-    @term = Term.find(params[:id])
-    initialize_with_term(@term)
+    @createTerm = Term.find(params[:id])
+    initialize_with_term(@createTerm)
     render :action => 'index'
   end
 
   def create
+    set_title()
     crnsToAdd = Array.new
     ## Possibly add any other CRNs by id.
     params.keys.each do |key|
@@ -51,6 +50,7 @@ class Instructor::NewcourseController < Instructor::InstructorBase
       flash[:badnotice] = "Course create failed."
       @terms = Term.find(:all)
       @crn = params[:crn]
+      @createTerm = Term.find(params[:term])
       render :action => 'index'
     end
   end
@@ -62,21 +62,23 @@ private
     @course.term = term
     @crn = ''
 
-    #if @isLdap
-      # load the CRNs for the current term
-      @allCrns = Crn.find(:all, :conditions => ["crn like ?", "#{@term.term}%" ])
-      size = @allCrns.size / 2
-      @column1 = Array.new
-      0.upto(size) { |i| @column1 << @allCrns[i] }
-      @column2 = Array.new
-      (size+1).upto(@allCrns.size-1) { |i| @column2 << @allCrns[i] }
-    #end
+    # load the CRNs for the current term
+    @allCrns = Crn.find(:all, :conditions => ["crn like ?", "#{term.term}%" ])
+    size = @allCrns.size / 2 rescue size = 0
+    @column1 = Array.new
+    0.upto(size) { |i| @column1 << @allCrns[i] }
+    @column2 = Array.new
+    (size+1).upto(@allCrns.size-1) { |i| @column2 << @allCrns[i] }
+    
+    puts @column1.inspect
   end
 
   def set_title
     @title = "Create a new course"
     @current_term = Term.find_current
     @isLdap = is_using_ldap()
+    @breadcrumb = Breadcrumb.new
+    @breadcrumb.text = 'Create Course'
   end
   
 end

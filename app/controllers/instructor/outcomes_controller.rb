@@ -20,7 +20,6 @@ class Instructor::OutcomesController < Instructor::InstructorBase
     
     @surveys = Quiz.find(:all, :conditions => ["course_id = ? and entry_exit = ?", @course, true], :order => "id asc")
     
-  
     set_title
   end
   
@@ -123,8 +122,8 @@ class Instructor::OutcomesController < Instructor::InstructorBase
     
     @course_outcome = CourseOutcome.new
     @title = "Create new Course Outcome for '#{@course.title}'"
-    
-    render :layout => 'noright'
+    @breadcrumb = Breadcrumb.for_course(@course, true)
+    @breadcrumb.outcomes = true
   end
   
   def create_outcome
@@ -339,9 +338,8 @@ class Instructor::OutcomesController < Instructor::InstructorBase
     return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_edit_outcomes' )
     
     @numbers = load_outcome_numbers( @course )
+    set_title
     @title = "Assignment to outcomes report."
-    
-    render :layout => 'noright'
   end
   
   def course_program_report
@@ -352,7 +350,11 @@ class Instructor::OutcomesController < Instructor::InstructorBase
     
     @title = "'#{@course.title}' Outcomes to Program Outcomes Report"    
     respond_to do |format|
-        format.html { render :layout => 'noright' }
+        format.html {
+          @breadcrumb = Breadcrumb.for_course(@course, true)
+          @breadcrumb.outcomes = true
+          @breadcrumb.text = "Course / Program Outcomes"
+        }
         format.csv  { 
           response.headers['Content-Type'] = 'text/csv; charset=iso-8859-1; header=present'
           response.headers['Content-Disposition'] = "attachment; filename=#{@course.short_description}_course_outcomes.csv"
@@ -373,7 +375,9 @@ class Instructor::OutcomesController < Instructor::InstructorBase
     build_course_rubrics_report()
     
     respond_to do |format|
-        format.html { render :layout => 'noright' }
+        format.html {
+          
+        }
         format.csv  { 
           response.headers['Content-Type'] = 'text/csv; charset=iso-8859-1; header=present'
           response.headers['Content-Disposition'] = "attachment; filename=#{@course.short_description}_course_outcomes_rubrics_report.csv"
@@ -386,6 +390,8 @@ class Instructor::OutcomesController < Instructor::InstructorBase
 private
   def set_title
     @title = "Course Outcomes - #{@course.title}"
+    @breadcrumb = Breadcrumb.for_course(@course, true)
+    @breadcrumb.outcomes = true
   end
   
   def read_program_outcome_mappings_from_params( course_outcome, program_outcomes, params )

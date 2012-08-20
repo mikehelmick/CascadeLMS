@@ -1,25 +1,27 @@
-<div align="center">
-<%= image_tag 'spinner.gif' %>
+<div class="hero-unit">
+  <h2>Grading in progress ... please wait.</h2>
+<% amount = 1
+   unless @queue.message.nil?
+     amount = 25 if @queue.message.index('Autograding has started') == 0
+     amount = 50 if @queue.message.index('Performing static analysis on your code') == 0
+     amount = 75 if @queue.message.index('Compiling and running I/O based tests on your') == 0
+     amount = 100 if @queue.message.index('AutoGrade complete') == 0
+   end
+%>
+<div class="progress progress-striped active">
+  <div class="bar" style="width: <%= amount %>%;"></div>
 </div>
-
-<div class="standout">
-  
-  <p><b>Grading in progress ... please wait.</b></p>
-
   <ul>
 	<li>Request submitted at: <%= @queue.created_at.to_formatted_s(:rfc822) %></li>
 	<% if @queue.acknowledged %>
 	  <li>Processing started at: <%= @queue.updated_at.to_formatted_s(:rfc822) %></li>
 	<% else %>
-	  <li><b>Processing has not yet started.</b> <i>Please wait, this could take several minutes if the server is busy.  Your turn-in has already been accepted and will not be considered late if this process takes a long period of time.</i></li>
+	  <li><strong>Processing has not yet started.</strong> <em>Please wait, this could take several minutes if the server is busy.  Your turn-in has already been accepted and will not be considered late if this process takes a long period of time.</em></li>
 	<% end %>
 	
 	   <% unless @queue.message.nil? || @queue.message.eql?('') %>
 	     <li><%= @queue.message %></li>
 	   <% end %>
   </ul>
-
-
-  <p><i>This page will automatically refresh...</i></p>
-
+  <div class="alert">This page will automatically refresh...</div>
 </div>

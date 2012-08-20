@@ -1,6 +1,6 @@
 <h2>Team Center for <%= @course.title %></h2>
 <% if @team.nil? %>
-  <p><i>You are not assigned to a team.</i></p>	
+  <span class="alert alert-error">You are not assigned to a team.</span>	
 	
 <% else%>
   <% if @course.course_setting.team_show_members %>
@@ -16,19 +16,11 @@
   <% end %>
 
   <p><b>Team Actions</b></p>
-
-  <ul>
-	<% if @course.course_setting.team_enable_wiki %>
-	  <li><%= image_tag 'layout_content.png', :align => 'middle' %><%= link_to 'Team Wiki', :action => 'wiki', :id => @team.id, :page => 'Home' %></li>
-	<% end %>
-	<% if @course.course_setting.team_enable_documents %>
-  	  <li><%= image_tag 'folder.png', :align => 'middle' %><%= link_to 'Team Files', :action => 'files', :id => @team.id %></li>
-    <% end %>
-    <% if  @course.course_setting.team_enable_email %>
-  	  <li><%= image_tag 'email.png', :align => 'middle' %><%= link_to 'Team Email', :action => 'email', :id => @team.id %></li>
-    <% end %>
-  </ul>
-
+<div class="btn-group">
+  <%= link_to '<i class="icon-list-alt"></i> Team Wiki', {:action => 'wiki', :id => @team.id, :page => 'Home'}, {:class => 'btn btn-large'} %>
+  <%= link_to '<i class="icon-folder-open"></i> Team Files', {:action => 'files', :id => @team.id}, {:class => 'btn btn-large'} %>
+  <%= link_to '<i class="icon-envelope"></i> Team Email', {:action => 'email', :id => @team.id}, {:class => 'btn btn-large'} %>
+  </div>
 <% end%>
 
 
@@ -40,9 +32,9 @@
 	<% for team in @all_teams %>
 	  <li><%= team.name %> (<%= team.team_id %>)</li>
 	  <ul>
-		<li><% if @course.course_setting.team_enable_wiki %><%= image_tag 'layout_content.png', :align => 'middle' %><%= link_to 'Team Wiki', :action => 'wiki', :id => team.id, :page => 'Home' %> |<% end %> 
-		    <% if @course.course_setting.team_enable_documents %><%= image_tag 'folder.png', :align => 'middle' %><%= link_to 'Team Files', :action => 'files', :id => team.id %> |<% end %> 
-		    <% if  @course.course_setting.team_enable_email %><%= image_tag 'email.png', :align => 'middle' %><%= link_to 'Team Email', :action => 'email', :id => team.id %><% end %></li>
+		<li><% if @course.course_setting.team_enable_wiki %><i class="icon-list-alt"></i><%= link_to 'Team Wiki', :action => 'wiki', :id => team.id, :page => 'Home' %> |<% end %> 
+		    <% if @course.course_setting.team_enable_documents %><i class="icon-folder-open"></i><%= link_to 'Team Files', :action => 'files', :id => team.id %> |<% end %> 
+		    <% if  @course.course_setting.team_enable_email %><i class="icon-envelope"></i><%= link_to 'Team Email', :action => 'email', :id => team.id %><% end %></li>
 		<% for tm in team.team_members %>
 		  <li><%= tm.user.display_name %></li>
 		<% end %>
