@@ -4,11 +4,13 @@
 
   <%= render :partial => 'form', :locals => { :edit_mode => false } %>
 
-<div class="blockintro">If you enter a point value, a GradeBook item will be created and associated with this assignment.</div>
-<div class="block">
-<p><label for="point_value" class="required">Points:</label>
-  <%= text_field_tag 'point_value', @points  %></p>
-</div>
+ <div class="control-group">
+  <label for="point_value" class="control-label">Points:</label>
+  <div class="controls">
+    <%= text_field_tag 'point_value', @points  %>
+    <p class="help-block">If you enter a point value, a GradeBook item will be created and associated with this assignment.</p>
+  </div>
+ </div>
 
   <div id="button">
     <%= submit_tag "Create", {:class => 'btn btn-primary'} %>

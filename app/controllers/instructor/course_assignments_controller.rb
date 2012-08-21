@@ -192,6 +192,10 @@ class Instructor::CourseAssignmentsController < Instructor::InstructorBase
     end
     
     @auto_grade_setting = @assignment.auto_grade_setting
+
+    set_title
+    @breadcrumb.text = "Autograde for '#{@assignment.title}'"
+    @title = "Edit Autograde Settings"
   end
   
   def save_autograde
@@ -278,6 +282,10 @@ class Instructor::CourseAssignmentsController < Instructor::InstructorBase
     @categories = GradeCategory.for_course( @course ) 
     @title = "Edit #{@assignment.title} (#{@course.title})"
     @duplicate = false
+
+    set_title
+    @breadcrumb.text = "Edit '#{@assignment.title}'"
+    @title = "Edit Assignment"
   end
   
   def update
