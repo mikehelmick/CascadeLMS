@@ -116,8 +116,13 @@
 	   <%= link_to "#{h @breadcrumb.post.title}", :controller => '/blog', :course => @course, :id => @breadcrumb.post.id, :action => 'post' %> <span class="divider">/</span>
 	 <% end %>
 	 <% unless @breadcrumb.assignment.nil? %>
-	    <%= link_to 'Assignments', :controller => '/assignments', :course => @course, :id => nil, :action => nil %> <span class="divider">/</span>
-	    <%= link_to "#{h @breadcrumb.assignment.title[0..40]}", :controller => 'assignments', :course => @course, :id => @breadcrumb.assignment, :action => 'view' %> <span class="divider">/</span>
+	    <% unless @breadcrumb.instructor %>
+	      <%= link_to 'Assignments', :controller => '/assignments', :course => @course, :id => nil, :action => nil %> <span class="divider">/</span>
+	      <%= link_to "#{h @breadcrumb.assignment.title[0..40]}", :controller => 'assignments', :course => @course, :id => @breadcrumb.assignment, :action => 'view' %> <span class="divider">/</span>
+	    <% else %>
+	      <%= link_to 'Assignments', :controller => '/instructor/course_assignments', :course => @course, :id => nil, :action => nil %> <span class="divider">/</span>
+	      <%= link_to "#{h @breadcrumb.assignment.title[0..40]}", :controller => '/instructor/course_assignments', :course => @course, :id => @breadcrumb.assignment, :action => 'edit' %> <span class="divider">/</span>
+	    <% end %>
 	 <% end%>
 	 <% unless @breadcrumb.team.nil? %>
 		<%= link_to 'Team', :controller => '/team', :course => @course, :id => nil, :action => nil %> <span class="divider">/</span>

@@ -1,56 +1,56 @@
-<%= error_messages_for 'io_check' %>
+<%= error_messages_for('io_check', {:class => 'alert alert-error'}) %>
 
-<div class="blockintro">Create a new automatic input/output based test (using stdin and stdout).</div>
-
-<!--[form:io_check]-->
-<div class="block">
-
-<p><label for="io_check_name" class="required">Test Name:</label>
-<%= text_field 'io_check', 'name'  %></p>
+<div class="control-group">
+ <label for="io_check_name" class="control-label">Test Name</label>
+ <div class="controls">
+  <%= text_field 'io_check', 'name' %>
+ </div>
 </div>
 
-<div class="blockintro">If a description is entered, it will be displayed to students, otherwise the field will not appear.</div>
-<div class="block">
-<p><label for="io_check_description">Description:</label><br/>
-  <%= text_area 'io_check', 'description', :rows => 3, :cols => 80, :class => 'short'  %><br/>
-  <%= link_to_function "More room to type", "Form.Element.toggleHeight(this, 'io_check_description'); return false;", :class => 'bottab more' %>
-</p>
+<div class="control-group">
+ <label for="io_check_description" class="control-label">Description</label>
+ <div class="controls">
+  <%= text_area 'io_check', 'description', :rows => 3, :cols => 80, :class => 'input-medium' %>
+  <p class="help-block">If a description is entered, it will be displayed to students, otherwise the field will not appear.</p>
+ </div>
 </div>
 
-<div class="blockintro">Copy and paste (or enter) the desired input and output for this project.  Remember that you can have multiple test cases and a single test case does not need to exercise all functionality of the program.   The input should allow for a complete run for a properly written program. <b>Input, Output, or a combination of both may be blank.  Be sure that this is the behavior you want, i.e. a student submission passing when no output is produced.</b></div>
-<div class="block">
-<p><label for="io_check_input" class="required">Input:</label><br/>
-<%= text_area 'io_check', 'input', :rows => 6, :cols => 82, :class=>"short"  %><br/>
-<%= link_to_function "More room to type", "Form.Element.toggleHeight(this, 'io_check_input'); return false;", :class => 'bottab more' %>
-</p>
+<p class="help-block">Copy and paste (or enter) the desired input and output for this project.  Remember that you can have multiple test cases and a single test case does not need to exercise all functionality of the program.   The input should allow for a complete run for a properly written program. <b>Input, Output, or a combination of both may be blank.  Be sure that this is the behavior you want, i.e. a student submission passing when no output is produced.</b></p>
 
-<p><label for="io_check_output" class="required">Output:</label><br/>
-<%= text_area 'io_check', 'output', :rows => 6, :cols => 82, :class=>"short"  %><br/>
-<%= link_to_function "More room to type", "Form.Element.toggleHeight(this, 'io_check_output'); return false;", :class => 'bottab more' %></p>
+<div class="control-group">
+ <label for="io_check_input" class="control-label">Input</label>
+ <div class="controls">
+  <%= text_area 'io_check', 'input', {:rows => 6, :cols => 200, :class=> 'input-large'} %>
+ </div>
 </div>
 
-<div class="blockintro">Tolerance is a percent of deviation in output on a character count basis.   So if there are 1000 characters in the expected output, a tolerance of 2% allows 20 characters to differ in the program output and expected output (specified above) for the turn-in to be marked passed.   The default of 0, requires an exact match.</div>
-<div class="block">
-<p><label for="io_check_tollerance" class="required">Tolerance percentage:</label>
-<%= text_field 'io_check', 'tolerance'  %></p>
-<!--
-<p><label for="io_check_ignore_newlines" class="required">Ignore newlines in compare:</label>
-        <%= radio_button 'io_check', 'ignore_newlines', true %> Yes
-	    <%= radio_button 'io_check', 'ignore_newlines', false %> No</p>
-	-->
+<div class="control-group">
+ <label for="io_check_output" class="control-label">Output</label>
+ <div class="controls">
+  <%= text_area 'io_check', 'output', :rows => 6, :cols => 200, :class=> 'input-large'  %>
+ </div>
 </div>
 
-<div class="blockintro">These options specify when students can see the reference output and input.
-</div>
-<div class="block">
-<p><label for="io_check_student_level" class="required">Allow student to see before grade release:</label>
-	<%= radio_button 'io_check', 'student_level', true %> Yes
-    <%= radio_button 'io_check', 'student_level', false %> No</p>
-
-<p><label for="io_check_always_suppress_input" class="required">Allow student to input after grade release:</label>
-	<%= radio_button 'io_check', 'show_input', true %> Yes
-    <%= radio_button 'io_check', 'show_input', false %> No</p>
+<div class="control-group">
+ <label for="io_check_tollerance" class="control-label">Tolerance percentage</label>
+ <div class="controls">
+  <%= text_field 'io_check', 'tolerance'  %>
+  <p class="help-block">Tolerance is a percent of deviation in output on a character count basis.   So if there are 1000 characters in the expected output, a tolerance of 2% allows 20 characters to differ in the program output and expected output (specified above) for the turn-in to be marked passed.   The default of 0, requires an exact match.</p>
+ </div>
 </div>
 
-<!--[eoform:io_check]-->
+<div class="control-group">
+ <label for="io_check_student_level" class="control-label">Allow student to see this test before grade release</label>
+ <div class="controls">
+  <%= radio_button 'io_check', 'student_level', true %> Yes
+  <%= radio_button 'io_check', 'student_level', false %> No
+ </div>
+</div>
 
+<div class="control-group">
+ <label for="io_check_always_suppress_input" class="control-label">Allow student to the input for this test after grade release</label>
+ <div class="controls">
+  <%= radio_button 'io_check', 'show_input', true %> Yes
+  <%= radio_button 'io_check', 'show_input', false %> No
+ </div>
+</div>

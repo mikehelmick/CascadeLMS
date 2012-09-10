@@ -194,7 +194,8 @@ class Instructor::CourseAssignmentsController < Instructor::InstructorBase
     @auto_grade_setting = @assignment.auto_grade_setting
 
     set_title
-    @breadcrumb.text = "Autograde for '#{@assignment.title}'"
+    @breadcrumb.text = "Autograde Settings"
+    @breadcrumb.assignment = @assignment
     @title = "Edit Autograde Settings"
   end
   
@@ -363,6 +364,11 @@ class Instructor::CourseAssignmentsController < Instructor::InstructorBase
           @assignments << asgn unless asgn.id == @assignment.id
         end
       end
+
+      set_title
+      @breadcrumb.assignment = @assignment
+      @breadcrumb.text = 'PMD Settings'
+      @title = 'Edit PMD Settings'
       
       # this isn't fun - make sure that pmd setting are available
       if @assignment.assignment_pmd_settings.size == 0

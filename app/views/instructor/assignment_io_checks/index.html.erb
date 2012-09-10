@@ -1,19 +1,16 @@
+<%= link_to 'Back to Assignment', {:controller => '/instructor/course_assignments', :action => 'autograde', :id => @assignment, :course => @course, :assignment => nil}, {:class => 'btn'} %>
+
 <h3>IO AutoGrade Settings for '<%= @assignment.title %>'</h3>
 
-<p><%= link_to 'Back', :controller => '/instructor/course_assignments', :action => 'autograde', :id => @assignment, :course => @course, :assignment => nil %> |
-   <%= link_to 'New I/O Test', :action => 'new' %>
-</p>
-
 <% if @io_checks.size == 0 %>
-	<p><i>There are no I/O checks configured for this assignment.</i></p>
+	<div class="alert">There are no I/O checks configured for this assignment.</div>
 <% else %>
     
-<p>Current IO tests:</p>
-<table class="fancy">
+<table class="table table-striped table-condensed">
   <tr>
 	<th valign="bottom">Name</th>
-	<th>Visible<br/>before release</th>
-	<th>Input available<br/>after release</th>
+	<th>Visible before release</th>
+	<th>Input available after release</th>
 	<th>Controls</th>
   </tr>
 
@@ -25,12 +22,13 @@
   	  %>
 	  <tr class="<%=odd%> hover" id="check_<%=check.id%>">
 		 <td><%= check.name %></td>
-		 <td><% if check.student_level %><%= image_tag 'thumb_up.png' %> Yes <% else %><%= image_tag 'thumb_down.png' %> No <%end %></td>
-		 <td><% if check.show_input %><%= image_tag 'thumb_up.png' %> Yes <% else %><%= image_tag 'thumb_down.png' %> No <%end %></td>
+		 <td><% if check.student_level %><i class="icon-ok"></i> Yes <% else %><i class="icon-remove"></i> No <%end %></td>
+		 <td><% if check.show_input %><i class="icon-ok"></i> Yes <% else %><i class="icon-remove"></i> No <%end %></td>
 		 <td>
-		   <%= link_to 'Edit', :action => 'edit', :id => check, :course => @course, :assignment => @assignment %> |
-		   <%= link_to 'Delete', { :action => 'destroy', :id => check, :course => @course, :assignment => @assignment  }, :confirm => "Are you sure you want to delete the I/O Test '#{check.name}' and all of it's associated data including reports of previously run student code? This action can no be undone.", :method => :post %>	
-		 
+		   <div class="btn-group">
+		   <%= link_to 'Edit', {:action => 'edit', :id => check, :course => @course, :assignment => @assignment}, {:class => 'btn btn-info btn-mini'} %>
+		   <%= link_to 'Delete', { :action => 'destroy', :id => check, :course => @course, :assignment => @assignment  }, :confirm => "Are you sure you want to delete the I/O Test '#{check.name}' and all of it's associated data including reports of previously run student code? This action can no be undone.", :method => :post, :class => 'btn btn-danger btn-mini' %>	
+		   </div>
 		 </td>
       </tr>
    <% end %>
@@ -38,8 +36,5 @@
 
 <% end %>
 
-
-<p><%= link_to 'Back', :controller => '/instructor/course_assignments', :action => 'autograde', :id => @assignment, :course => @course, :assignment => nil %> |
-   <%= link_to 'New I/O Test', :action => 'new' %>
-</p>
+<%= link_to 'New I/O Test', {:action => 'new'}, {:class => 'btn btn-primary'} %>
 

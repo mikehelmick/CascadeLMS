@@ -20,8 +20,8 @@ class Breadcrumb
     Breadcrumb.new(course, instructor)
   end
 
-  def self.for_assignment(assignment)
-    obj = Breadcrumb.new(assignment.course)
+  def self.for_assignment(assignment, instructor = false)
+    obj = Breadcrumb.new(assignment.course, instructor)
     obj.assignment = assignment
     return obj
   end
