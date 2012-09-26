@@ -143,6 +143,9 @@
      <% if !@breadcrumb.outcomes.nil? && @breadcrumb.outcomes %>
         <%= link_to 'Course Outcomes', :controller => '/instructor/outcomes', :action => 'index', :id => nil, :course => @course %> <span class="divider">/</span>
      <% end %>
+     <% if @breadcrumb.instructor && @breadcrumb.gradebook %>
+        <%= link_to 'Gradebook', :controller => '/instructor/course_gradebook', :action => nil, :id => nil, :course => @course %> <span class="divider">/</span>
+     <% end %>
 	
 	 <% unless @breadcrumb.text.nil? %>
 	   <% if @breadcrumb.link.nil? %>

@@ -1,6 +1,6 @@
 class Breadcrumb
   
-  attr_accessor :course, :assignment, :document, :forum, :post, :team, :wiki, :instructor, :program, :outcomes
+  attr_accessor :course, :assignment, :document, :forum, :post, :team, :wiki, :instructor, :program, :outcomes, :gradebook
   # text to display at the end
   attr_accessor :text, :link
 
@@ -8,6 +8,7 @@ class Breadcrumb
     @course = course
     @instructor = instructor
     self.outcomes = false
+    self.gradebook = false
   end
 
   def self.for_program(program)
