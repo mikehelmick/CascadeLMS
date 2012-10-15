@@ -289,8 +289,10 @@ class Instructor::CourseGradebookController < Instructor::InstructorBase
     @column1 = Array.new
     0.upto(size) { |i| @column1 << @students[i] }
     @column2 = Array.new
-    (size+1).upto(@students.size-1) { |i| @column2 << @students[i] }
-    
+    (size + 1).upto(@students.size - 1) { |i| @column2 << @students[i] }
+
+    set_breadcrumb(@course)
+    @breadcrumb.text = 'By Student'
   end
   
   def for_student
@@ -358,7 +360,9 @@ class Instructor::CourseGradebookController < Instructor::InstructorBase
       end      
     
     end
-    
+
+    set_breadcrumb(@course)
+    @breadcrumb.text = 'Grades for Student'    
   end
   
 ## private
