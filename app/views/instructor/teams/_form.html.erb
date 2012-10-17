@@ -1,15 +1,21 @@
-<%= error_messages_for 'team' %>
+<%= error_messages_for('team', :class => 'alert alert-error') %>
 
 <!--[form:post]-->
-<p class="blockintro">After creating the team, you will have a chance to add team members.</p>
-<div class="block">
+<fieldset>
+<span class="help-inline">After creating the team, you will have a chance to add team members.</span>
 
-<p><label for="team_team_id"  class="required">Team ID (short name<% if @course.course_setting.enable_svn %>,for Subversion<% end %>):</label>
-<%= text_field 'team', 'team_id'  %></p>
-
-<p><label for="team_name"  class="required">Team Name:</label>
-<%= text_field 'team', 'name'  %></p>
-
+<div class="control-group">
+ <label for="team_team_id" class="control-label">Team ID (short name<% if @course.course_setting.enable_svn %>, for Subversion<% end %>):</label>
+ <div class="controls">
+  <%= text_field('team', 'team_id') %>
+ </div>
 </div>
-<!--[eoform:post]-->
 
+<div class="control-group">
+ <label for="team_name"  class="control-label">Team Name:</label>
+ <div class="controls">
+  <%= text_field('team', 'name') %>
+ </div>
+</div>
+</fieldset>
+<!--[eoform:post]-->

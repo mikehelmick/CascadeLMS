@@ -1,6 +1,8 @@
 class Breadcrumb
   
-  attr_accessor :course, :assignment, :document, :forum, :post, :team, :wiki, :instructor, :program, :outcomes, :gradebook
+  # team is studnet view
+  # teams is instructor view
+  attr_accessor :course, :assignment, :document, :forum, :post, :team, :wiki, :instructor, :program, :outcomes, :gradebook, :teams
   # text to display at the end
   attr_accessor :text, :link
 
