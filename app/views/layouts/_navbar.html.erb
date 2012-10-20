@@ -1,4 +1,4 @@
-<div class="navbar navbar-fixed-top">
+<div class="navbar navbar-inverse navbar-fixed-top">
   <div class="navbar-inner">
     <div class="container-fluid">
       <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
@@ -148,6 +148,9 @@
      <% end %>
 	 <% if @breadcrumb.instructor && @breadcrumb.teams %>
         <%= link_to 'Teams', :controller => '/instructor/teams', :action => nil, :id => nil, :course => @course %> <span class="divider">/</span>
+     <% end %>
+     <% if @breadcrumb.instructor && @breadcrumb.attendance %>
+       <%= link_to('Attendance', {:controller => '/instructor/attendance', :action => nil, :id => nil, :course => @course}) %> <span class="divider">/</span>
      <% end %>
 	
 	 <% unless @breadcrumb.text.nil? %>
