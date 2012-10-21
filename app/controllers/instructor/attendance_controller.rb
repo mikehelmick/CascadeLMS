@@ -1,13 +1,8 @@
-require 'ziya'
-
 class Instructor::AttendanceController < Instructor::InstructorBase
-  include Ziya
   
   before_filter :ensure_logged_in
   before_filter :set_tab
-  
-  ziya_theme 'default'
- 
+
   def index
     return unless load_course( params[:course] )
     return unless attendance_enabled( @course )
@@ -15,6 +10,7 @@ class Instructor::AttendanceController < Instructor::InstructorBase
     
     load_periods
     @title = "Attendance | Class Periods for #{@course.title}"
+    set_breadcrumb()
   end
   
   def open
@@ -87,15 +83,18 @@ class Instructor::AttendanceController < Instructor::InstructorBase
     
     @attendees = Hash.new
     @correct_key = Hash.new
+    @num_attending = 0
     
     @period.class_attendances.each do |att|
       @attendees[att.user_id] = true
       if att.correct_key
         @correct_key[att.user_id] = true
+        @num_attending += 1
       end
     end
     
     @title = "Attendance on #{Date::MONTHNAMES[@period.created_at.mon]} #{@period.created_at.mday}, #{@period.created_at.year} for #{@course.title}"
+    set_breadcrumb().text = 'View Class Attendance'
   end
   
   def mark_attending
@@ -137,7 +136,7 @@ class Instructor::AttendanceController < Instructor::InstructorBase
     render :layout => false
   end
   
-  def attendance_report
+  def report
     return unless load_course( params[:course] )
     return unless attendance_enabled( @course )
     return unless ensure_course_instructor_on_assistant( @course, @user )
@@ -145,6 +144,7 @@ class Instructor::AttendanceController < Instructor::InstructorBase
     common_report
 
     @title = "Attendance report for #{@course.title}"
+    set_breadcrumb().text = 'Report'
     render :layout => 'noright'
   end
   
@@ -161,53 +161,24 @@ class Instructor::AttendanceController < Instructor::InstructorBase
     
     render :layout => false
   end
-  
-  def attendance_report_graph
-    return unless load_course( params[:course] )
-    return unless attendance_enabled( @course )
-    return unless ensure_course_instructor_on_assistant( @course, @user )
-    
-    common_report
-    
-    graph = Ziya::Charts::StackedColumn.new( @license, "Attendance", "attendance_stacked_column" ) 
-    
-    @categories = Array.new
-    @periods.each { |period| @categories << period.created_at.to_formatted_s(:short) }
-    graph.add :axis_category_text, @categories
-    
-    ## calculate the series for each student
-    @students = @course.students
-    @students.each do |student|
-      
-      @forStudent = Array.new
-      @periods.each do |period|
-        if @att_map[student.id].nil? || @att_map[student.id][period.id].nil? || @att_map[student.id][period.id] == false
-          @forStudent << 0
-        else
-          @forStudent << 1
-        end
-      end
-      
-      graph.add( :series, "#{student.display_name}", @forStudent )
-    end
-    
-    graph.add( :user_data, :colors, colors( @categories.size ) )
-    
-    graph.add :theme, 'default' 
-    render :xml => graph.to_xml
-  end
-  
+
   
   private
+
+  def set_breadcrumb()
+    @breadcrumb = Breadcrumb.for_course(@course, true)
+    @breadcrumb.attendance = true
+    return @breadcrumb
+  end
   
   def common_report
     load_periods
     
     ## exclude instructors who are also students
     @exclude = Hash.new
-    @course.instructors.each do |inst|
-      @exclude[inst.id] = true
-    end
+    #@course.instructors.each do |inst|
+    #  @exclude[inst.id] = true
+    #end
     
     ## initialize attendance map
     @att_map = Hash.new
@@ -218,6 +189,8 @@ class Instructor::AttendanceController < Instructor::InstructorBase
          @students << student
       end
     end
+
+    @period_attendance = Hash.new
     
     ## for each class period
     @periods.each do |period|
@@ -230,6 +203,8 @@ class Instructor::AttendanceController < Instructor::InstructorBase
           if @exclude[att.user_id].nil?
             begin
               @att_map[att.user_id][period.id] = true 
+              @period_attendance[period.id] = 0 if @period_attendance[period.id].nil?
+              @period_attendance[period.id] = @period_attendance[period.id].next
             rescue
             end
           end

@@ -36,6 +36,7 @@
    <% end %>		
 <% end %>
 
+<% unless @user.nil? %>
 <li class="nav-header">Your Courses - <%= @term.semester %></li>
 <% ct = @user.courses_in_term( @term ) %>
 <% if ct.size > 0%>
@@ -60,6 +61,7 @@
  <% for prog_user in programs %>
    <li><%= link_to "<b>#{prog_user.program.title}</b>", :controller => "/audit", :action => 'program', :id => prog_user.program_id %></li>
  <% end %>
+<% end %>
 <% end %>
 <% end %>
 

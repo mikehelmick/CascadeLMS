@@ -1,0 +1,65 @@
+<h2>Attendance report class: <%= @course.title %></h2>	
+
+<div class="btn-group">
+ <%= link_to('<i class="icon-download-alt"></i> Export to CSV', {:action => 'export_csv'}, {:class => 'btn btn-info'}) %>
+</div>
+
+<script type="text/javascript">
+      google.load("visualization", "1", {packages:["linechart"]});
+      google.setOnLoadCallback(drawChart);
+      function drawChart() {
+	    var data = new google.visualization.DataTable();
+		data.addColumn("string", "Class");
+        data.addColumn("number", "Attendance");
+        data.addRows( <%= @periods.size %> );
+
+        <% counter = 0 %>
+		<% for period in @periods %>
+		  <% 
+           data_value = 0
+           data_value = @period_attendance[period.id] unless @period_attendance[period.id].nil?
+           %> 
+           data.setValue( <%= counter %>, 0, "<%= period.created_at.to_formatted_s(:short) %>");
+           data.setValue( <%= counter %>, 1, <%= data_value %>);
+           <% counter = counter + 1 %>
+		<% end %>
+
+		var chart = new google.visualization.LineChart(document.getElementById('visualization'));
+        chart.draw(data, {curveType: "function", width: 800, height: 480, title: 'Attendance', vAxis: {maxValue: 5}});
+      }
+</script>
+
+<div id="visualization" style="width: 800; height: 480"> </div>
+
+<table class="table table-striped table-condensed">
+ <thead>
+  <tr>
+<td><b>Student</b></td>
+<% for period in @periods %>
+  <td><b><%= period.created_at.to_formatted_s(:short) %></b></td>
+<% end %>
+  <td><b>Total</b></td>
+  <td><b>Percentage</b></td>
+  </tr>
+ </thead>
+
+  <% for student in  @students %>
+    <tr>
+      <td><%= student.display_name %></td>
+
+    <% total = 0 %>
+	<% for period in @periods %>
+	  <td>
+	    <% if @att_map[student.id][period.id] %>
+	      <b>Yes</b>
+	    <%   total = total.next
+	       else %>
+	      No
+	    <% end %>
+	  </td>
+	<% end %>
+	  <td><%= total %></td>
+	  <td><%= sprintf("%.2f", total.to_f / @periods.size * 100 )%>
+	</tr>
+  <% end %>
+</table>
