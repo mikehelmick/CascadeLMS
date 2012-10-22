@@ -1,14 +1,13 @@
+<%= error_messages_for('journal_stop_reason', {:class => 'alert alert-error'}) %>
 
-<%= error_messages_for 'journal_stop_reason' %>
-
-<ul>
+<ul class="unstyled">
   <% for jsr in @journal_stop_reasons %>
     <li id="jsr_<%=jsr.id%>">
       <% unless @jsr_in_use[jsr.id] %>
-        <%= link_to_remote( image_tag('delete.png', :align => 'absmiddle' ), :url => { :action => 'del_stop_reason', :course => @course.id, :id => jsr.id }, :confirm => "Delete the journal stop reason '#{jsr.reason}'?", :success => "new Effect.Puff( 'jsr_#{jsr.id}' )", :failure => "alert('There was an error deleting this task.');" ) %>
+        <%= link_to_remote( '<i class="icon-remove"></i>', :url => { :action => 'del_stop_reason', :course => @course.id, :id => jsr.id }, :confirm => "Delete the journal stop reason '#{jsr.reason}'?", :success => "new Effect.Puff( 'jsr_#{jsr.id}' )", :failure => "alert('There was an error deleting this task.');" ) %>
         <%= jsr.reason %>
       <% else %>
-        <%= image_tag 'flag_blue.png', :align => 'absmiddle' %> <%= jsr.reason %> -- (<i>In Use, cannot be deleted</i>)
+        <i class="icon-ok"></i> <%= jsr.reason %> -- (<i>In Use, cannot be deleted</i>)
 	  <% end %>
 	 </li>
   <% end %>
