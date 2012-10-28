@@ -16,7 +16,8 @@ class Instructor::BlogController < Instructor::InstructorBase
     return unless load_course( params[:course] )
     return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_blog_post' )
     
-    set_title
+    set_title()
+    set_breadcrumb()
     
     @page = params[:page].to_i
     @page = 1 if @page.nil? || @page == 0
@@ -32,6 +33,8 @@ class Instructor::BlogController < Instructor::InstructorBase
     return unless course_open( @course, :action => 'index' )
     
     @post = Post.new
+    @title = 'New Blog Post'
+    set_breadcrumb().text = 'New Post'
   end
 
   def create
@@ -56,6 +59,8 @@ class Instructor::BlogController < Instructor::InstructorBase
     return unless course_open( @course, :action => 'index' )
     
     @post = Post.find(params[:id])
+    @title = 'Edit Blog Post'
+    set_breadcrumb().text = 'Edit Post'
   end
 
   def update
@@ -97,6 +102,14 @@ class Instructor::BlogController < Instructor::InstructorBase
   
     render :nothing => true
   end
+
+  private
+
+  def set_breadcrumb
+    @breadcrumb = Breadcrumb.for_course(@course, true)
+    @breadcrumb.instructorblog = true
+    return @breadcrumb
+  end
   
   def set_tab
     @show_course_tabs = true
@@ -115,7 +128,4 @@ class Instructor::BlogController < Instructor::InstructorBase
     end
     return true
   end
-  
-  private :set_tab, :set_title, :post_in_course
-  
 end

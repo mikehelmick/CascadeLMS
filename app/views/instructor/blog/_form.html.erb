@@ -1,31 +1,49 @@
-<%= error_messages_for 'post' %>
+<%= error_messages_for('post', :class => 'alert alert-error') %>
 
-<!--[form:post]-->
-<p class="blockintro">Making a post featured will force it to show up first, regardless of there being newer posts to show.   It is suggested that you only feature 1 or 2 posts at a time.</p>
-<div class="block">
-<p><label for="post_featured" class="required">Featured: </label>
+<div class="control-group">
+  <label for="post_featured" class="control-label">Featured</label>
+  <div class="controls">
 	<%= radio_button 'post', 'featured', true %> Yes
-	<%= radio_button 'post', 'featured', false %> No</p>
+	<%= radio_button 'post', 'featured', false %> No
+    <span class="help-block">Making a post featured will force it to show up first, regardless of there being newer posts to show.   It is suggested that you only feature 1 or 2 posts at a time.</span>
+  </div>
+</div>
 
-<p><label for="post_title"  class="required">Title:</label>
-<%= text_field 'post', 'title'  %></p>
+<div class="control-group">
+  <label for="post_title" class="control-label">Title:</label>
+  <div class="controls">
+    <%= text_field 'post', 'title' %>
+  </div>
+</div>
 
 <%= render :partial => '/forums/formatting'%>
 
-<p><label for="post_body" class="required">Body:</label>
-<%= text_area 'post', 'body', 'cols' => 90, 'rows' => 28  %></p>
-
-<p><label for="post_enable_comments" class="required">Enable comments:</label>
-	<%= radio_button 'post', 'enable_comments', true %> Yes
-	<%= radio_button 'post', 'enable_comments', false %> No</p>
-
-<p><label for="post_created_at" class="required">Publish Date/Time:</label>
-<%= datetime_select 'post', 'created_at'  %></p>
-
-<p><label for="post_published" class="required">Published:</label>
-	<%= radio_button 'post', 'published', true %> Yes
-	<%= radio_button 'post', 'published', false %> No</p>
-
+<div class="control-group">
+  <label for="post_body" class="control-label">Body:</label>
+  <div class="controls">
+    <%= text_area 'post', 'body', {:class => 'input-xlarge', :rows => 10}  %>
+  </div>
 </div>
-<!--[eoform:post]-->
 
+<div class="control-group">
+  <label for="post_enable_comments" class="control-label">Enable comments:</label>
+  <div class="controls">
+	<%= radio_button 'post', 'enable_comments', true %> Yes
+	<%= radio_button 'post', 'enable_comments', false %> No
+  </div>
+</div>
+
+<div class="control-group">
+  <label for="post_created_at" class="control-label">Publish Date/Time:</label>
+  <div class="controls">
+    <%= datetime_select 'post', 'created_at', {}, {:class => 'input-small'}  %>
+  </div>
+</div>
+
+<div class="control-group">
+  <label for="post_published" class="control-label">Published:</label>
+  <div class="controls">
+	<%= radio_button 'post', 'published', true %> Yes
+	<%= radio_button 'post', 'published', false %> No
+  </div>
+</div>

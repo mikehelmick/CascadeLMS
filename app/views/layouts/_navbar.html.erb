@@ -42,8 +42,7 @@
 		       <% end %>
                <% if !@user.nil? && (@user.instructor_in_course?(cu.course.id) || @user.assistant_in_course?(cu.course.id)) %>
 		         <li><%= link_to '<i class="icon-barcode"></i> Instructor', { :controller => '/instructor/index', :course => cu.course, :assignment => nil, :id => nil} %></li>
-		       <% end %>		
-		
+		       <% end %>
 		     </ul>
 		    </li>
 		  <% end %>
@@ -153,6 +152,9 @@
      <% end %>
      <% if @breadcrumb.instructor && @breadcrumb.attendance %>
        <%= link_to('Attendance', {:controller => '/instructor/attendance', :action => nil, :id => nil, :course => @course}) %> <span class="divider">/</span>
+     <% end %>
+     <% if @breadcrumb.instructor && @breadcrumb.instructorblog %>
+       <%= link_to('Blog', {:controller => '/instructor/blog', :action => nil, :id => nil, :course => @course}) %> <span class="divider">/</span>
      <% end %>
 	
 	 <% unless @breadcrumb.text.nil? %>
