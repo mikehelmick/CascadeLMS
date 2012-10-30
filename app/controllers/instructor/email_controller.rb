@@ -17,8 +17,8 @@ class Instructor::EmailController < Instructor::InstructorBase
      @course.students.each { |u| @users_hash[u.id] = true }
      @course.guests.each { |u| @users_hash[u.id] = true }
     
-    
-     set_title
+     set_title()
+     set_breadcrumb().text = "Send Email"
   end
   
   def send_email
@@ -47,6 +47,14 @@ class Instructor::EmailController < Instructor::InstructorBase
     flash[:notice] = 'Email delivered to selected users.'    
     render :action => 'index'
   end
+
+  private
+
+  def set_breadcrumb
+    @breadcrumb = Breadcrumb.for_course(@course, true)
+    
+    return @breadcrumb
+  end
   
   def add_users( send_users, user_hash, users, params )
     users.each do |user| 
@@ -65,7 +73,4 @@ class Instructor::EmailController < Instructor::InstructorBase
   def set_title
     @title = "Send Email - #{@course.title}"
   end
-  
-  private :set_tab, :set_title, :add_users
-  
 end

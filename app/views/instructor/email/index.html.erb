@@ -1,22 +1,20 @@
-<p><%= link_to "#{image_tag 'arrow_left.png' } Back", :controller => '/instructor/index', :course => @course.id %></p>
+<h2>Send Email to users (select below)</h2>
 
-<h3>Send Email to users (select below)</h3>
+<% form_tag( {:action => 'send_email', :id => nil}, {:class => 'form-horizontal'} ) do %>
 
-<div id="form_area">
-<% form_tag( :action => 'send_email', :id => nil ) do %>
-
-<hr/>
-<h2>TA/Grader(s) for <%= @course.title %></h2>
+<% if @course.assistants.size > 0 %>
+<h3>TA/Grader(s) for <%= @course.title %></h3>
 <div id="assistant_error"> </div>
 <div id="assistant">
-  <div class="block">
-	<input type="button" name="CheckAll" value="Check All" onClick="checkAllAssistants();">
-	<input type="button" name="UnCheckAll" value="Uncheck All" onClick="uncheckAllAssistants();"> <br/>
+ <div class="btn-group">
+	<input type="button" name="CheckAll" value="Check All" onClick="checkAllAssistants();" class="btn btn-success">
+	<input type="button" name="UnCheckAll" value="Uncheck All" onClick="uncheckAllAssistants();" class="btn btn-danger">
+ </div>
 <% @users = @course.assistants %>
     <% for user in @users %>
       <%= check_box_tag("user_#{user.id}", value = "1", checked = @users_hash[user.id] ) %> <%= user.display_name %> (<%= user.email %>) <br/>
     <% end %>
-  </div>
+
 </div>
 
 <script language="javascript">
@@ -38,19 +36,19 @@ function uncheckAllAssistants()
 }
 //  End -->
 </script>
+<% end %>
 
-<hr/>
-<h2>Students(s) for <%= @course.title %></h2>
+<h3>Students(s) for <%= @course.title %></h3>
 <div id="student_error"> </div>
 <div id="student">
-  <div class="block">
-	<input type="button" name="CheckAll" value="Check All" onClick="checkAllStudents();">
-	<input type="button" name="UnCheckAll" value="Uncheck All" onClick="uncheckAllStudents();"> <br/>
+ <div class="btn-group">
+	<input type="button" name="CheckAll" value="Check All" onClick="checkAllStudents();" class="btn btn-success">
+	<input type="button" name="UnCheckAll" value="Uncheck All" onClick="uncheckAllStudents();" class="btn btn-danger">
+ </div>
     <% @users = @course.students %>
     <% for user in @users %>
       <%= check_box_tag("user_#{user.id}", value = "1", checked = @users_hash[user.id] ) %> <%= user.display_name %> (<%= user.email %>) <br/>
     <% end %>
-  </div>
 </div>
 
 <script language="javascript">
@@ -73,21 +71,19 @@ function uncheckAllStudents()
 //  End -->
 </script>
 
-
-<hr/>
-<h2>Guest(s) for <%= @course.title %></h2>
+<% if @course.guests.size > 0 %>
+<h3>Guest(s) for <%= @course.title %></h3>
 <div id="guest_error"> </div>
 <div id="guest">
-  <div class="block">
-	<input type="button" name="CheckAll" value="Check All" onClick="checkAllGuests();">
-	<input type="button" name="UnCheckAll" value="Uncheck All" onClick="uncheckAllGuests();"> <br/>
+ <div class="btn-group">
+	<input type="button" name="CheckAll" value="Check All" onClick="checkAllGuests();" class="btn btn-success">
+	<input type="button" name="UnCheckAll" value="Uncheck All" onClick="uncheckAllGuests();" class="btn btn-danger">
+ </div>
     <% @users = @course.guests %>
     <% for user in @users %>
       <%= check_box_tag("user_#{user.id}", value = "1", checked = @users_hash[user.id] ) %> <%= user.display_name %> (<%= user.email %>) <br/>
     <% end %>
-  </div>
 </div>
-
 <script language="javascript">
 <!-- Begin
 function checkAllGuests()
@@ -107,18 +103,24 @@ function uncheckAllGuests()
 }
 //  End -->
 </script>
-
-<p><label for="email_subject" class="required">Email Subject:</label>
-<%= text_field_tag 'email_subject', @email_subject %></p>
-
-<p><label for="email_body" class="required">Email Body:</label>
-<%= text_area_tag 'email_body', @email, :cols => 75, :rows => 15  %></p>
-
-<div class="submit">
-  <%= submit_tag 'Send Email' %>
-</div>
 <% end %>
-</div>
 
 <hr/>
-<p><%= link_to "#{image_tag 'arrow_left.png' } Back", :controller => '/instructor/index', :course => @course.id %></p>
+
+<div class="control-group">
+  <label for="email_subject" class="control-label">Email Subject</label>
+  <div class="controls">
+    <%= text_field_tag 'email_subject', @email_subject, :class => 'input-xxlarge' %>
+  </div>
+</div>
+
+<div class="control-group">
+  <label for="email_body" class="control-label">Email Body</label>
+  <div class="controls">
+    <%= text_area_tag 'email_body', @email, {:class => 'input-xxlarge', :rows => 10}  %>
+  </div>
+</div>
+
+  <%= submit_tag('Send Email', :class => 'btn btn-primary') %>
+  <%= link_to('Cancel', {:controller => '/instructor/index', :action => nil, :class => @class, id => nil}, {:class => 'btn'}) %>
+<% end %>
