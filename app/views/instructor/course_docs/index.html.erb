@@ -1,14 +1,15 @@
 <h2>Documents for <%= @course.title %></h2>
 
-<p><%= link_to "Back", :controller => "/instructor/index", :course => @course %> | <%= link_to 'New document', :action => 'new', :id => @folder_id %> 
-<% if @folder.nil? || (!@folder.nil? && !@folder.podcast_folder) %>
-	| <%= link_to 'New Folder', :action => 'new_folder', :id => @folder_id %>
-<% end %>
-| <%= link_to "#{image_tag 'arrow_switch.png'} Reorder Documents", :action => 'reorder', :course => @course, :id => @folder_id %>
-</p>
+<div class="btn-group">
+ <%= link_to('<i class="icon-plus icon-white"></i> New document', {:action => 'new', :id => @folder_id}, {:class => 'btn btn-success'}) %> 
+ <% if @folder.nil? || (!@folder.nil? && !@folder.podcast_folder) %>
+	<%= link_to('<i class="icon-folder-open icon-white"></i> New Folder', {:action => 'new_folder', :id => @folder_id}, {:class => 'btn btn-success'}) %>
+ <% end %>
+ <%= link_to('<i class="icon-random"></i> Reorder Documents', {:action => 'reorder', :course => @course, :id => @folder_id}, {:class => 'btn'}) %>
+</div><br/>
 
-<p><b>Folder Navigation: </b>
-  <%= link_to 'root://', :action => 'index', :id => 0 %>	
+<ul class="breadcrumb">
+  <li><%= link_to 'Course Documents', :action => 'index', :id => 0 %><span class="divider">/</span></li>	
   
   <% dir_arr = Array.new
    unless @folder.nil?
@@ -16,7 +17,7 @@
      while !cur_f.nil?     
        dir_arr << link_to( "#{cur_f.title}", :action => 'index', :id => cur_f )
 	   if cur_f.podcast_folder
-	     dir_arr[-1] = "#{dir_arr[-1]} #{image_tag 'ipod_cast.png'} (#{link_to 'edit', :action => 'edit_folder', :id => @folder_id})"
+	     dir_arr[-1] = "#{dir_arr[-1]} <i class=\"icon-headphones\"></i> (#{link_to 'edit', :action => 'edit_folder', :id => @folder_id})"
 	   end
 	   cur_f = cur_f.parent_document()
 	 end
@@ -24,20 +25,17 @@
    dir_arr.reverse!
    for fold in dir_arr
    %>
-     <%= fold %> /
+     <li><%= fold %><span class="divider">/</span></li>
    <% end %>
-
-     
-
-</p>
+</ul>
 
 <% if @documents.size == 0 %>
- <p><i>There are no documents in this folder.</i></p>
+ <div class="alert alert-info">There are no documents in this folder.</div>
 <% else %>
 
-<table class="fancy">
-  <tr class="header">
-    <th>#</th>
+<table class="table table-condensed table-striped">
+ <thead>
+  <tr>
 	<th>Title</th>
 	<th>Size</th>
     <th>Visible</th>
@@ -45,20 +43,15 @@
 	<th>Accesses</th>
 	<th>Controls</th>
   </tr>
+ </thead>
  
-<% count = 0%> 
 <% for document in @documents %>
-<% count = count.next 
-   odd = "odd"
-   odd = "even" if count.even?
-%>
-  <tr class="<%=odd%> hover" id="document_<%=document.id%>">
-    <td><%= document.position %></td>
-    <td><%= image_tag "#{document.icon_file}", :align => 'absmiddle' %>
+  <tr id="document_<%=document.id%>">
+    <td><i class="<%= document.icon_file %>"></i>
       <% if document.folder %>
         <%= link_to "#{h document.title}", :action => 'index', :id => document %>
 		<% if document.podcast_folder %>
-		  <%= image_tag 'ipod_cast.png' %>
+		  <i class="icon-headphones"></i>
 		<% end %>
 	  <% else %>
 	    <%=h document.title %>
@@ -68,42 +61,44 @@
     <td><%=h document.created_at.to_formatted_s(:long) %></td>
 
     <td>
-	  <% if document.folder %>N/A<% else %>
-	  <%= link_to 'Accesses', :action => 'accesses', :id => document, :course => @course %><% end %>
+	  <% unless document.folder %>
+	    <span class="badge badge-inverse">
+	    <%= link_to "#{document.access_count()}", :action => 'accesses', :id => document, :course => @course %>
+	    </span>
+	  <% end %>
 	</td>
     <td>
+	  <div class="btn-group">
 	  <% if document.folder %>
-	    <%= link_to 'Open', :action => 'index', :id => document %>
+	    <%= link_to('Open', {:action => 'index', :id => document}, {:class => 'btn btn-small'}) %>
 	  <% else %>
-        <%= link_to 'Download', :action => 'download', :id => document, :file => document.without_extension, :extension => document.extension %>
+        <%= link_to('Download', {:action => 'download', :id => document, :file => document.without_extension, :extension => document.extension}, {:class => 'btn btn-small'}) %>
 	  <% end %>
-	 |
  
       <% if document.folder %>
-        <%= link_to 'Edit', :action => 'edit_folder', :id => document %> |
+        <%= link_to('Edit', {:action => 'edit_folder', :id => document}, {:class => 'btn btn-small'}) %>
       <% else %>
-        <%= link_to 'Edit', :action => 'edit', :id => document %> |
+        <%= link_to('Edit', {:action => 'edit', :id => document}, {:class => 'btn btn-small'}) %>
       <% end %>
 
       <% if document.folder %>
-        <%= link_to 'Delete', { :action => 'destroy', :id => document }, :confirm => 'Are you sure you want to permanently delete this folder AND ALL NEXTED FOLDERS AND DOCUMENTS.  This action can not be undone.?', :method => :post %>
+        <%= link_to 'Delete', { :action => 'destroy', :id => document }, :confirm => 'Are you sure you want to permanently delete this folder AND ALL NESTED FOLDERS AND DOCUMENTS.  This action can not be undone.?', :method => :post, :class => 'btn btn-danger btn-small' %>
       <%else %> 
-        <%= link_to 'Delete', { :action => 'destroy', :id => document }, :confirm => 'Are you sure you want to permanently delete this file?  This action can not be undone.', :method => :post %>
-      <% end %></td>
+        <%= link_to 'Delete', { :action => 'destroy', :id => document }, :confirm => 'Are you sure you want to permanently delete this file?  This action can not be undone.', :method => :post, :class => 'btn btn-danger btn-small' %>
+      <% end %>
+      </div>
+    </td>
   </tr>
 <% end %>
 </table>
 
-<%= link_to 'Previous page', { :page => @document_pages.current.previous, :id => @folder_id } if @document_pages.current.previous %>
-<%= link_to 'Next page', { :page => @document_pages.current.next, :id => @folder_id } if @document_pages.current.next %> 
-
-<% end %>
-
-<br />
-
-<p><%= link_to "Back", :controller => "/instructor/index", :course => @course%> | <%= link_to 'New document', :action => 'new', :id => @folder_id  %>
-	<% if @folder.nil? || (!@folder.nil? && !@folder.podcast_folder) %>
-		| <%= link_to 'New Folder', :action => 'new_folder', :id => @folder_id %>
+<div class="pagination">
+ <ul>
+	<% 1.upto(@document_pages.page_count) do |i| %>
+	<li <%= 'class="active"' if i == @page %>>
+	  <%= link_to i, { :page => i } %>
+	</li>
 	<% end %>
-	| <%= link_to "#{image_tag 'arrow_switch.png'} Reorder Documents", :action => 'reorder', :course => @course, :id => @folder_id %>	
-</p>
+ </ul>
+</div>
+<% end %>

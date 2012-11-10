@@ -1,19 +1,12 @@
 <h2>Editing folder '<%= @document.title %>'</h2>
 
 <% unless @folder.nil? %>
-<p>Folder is nested in the folder:<br>
-<b><%= @folder.relative_path() %></b>
-</p>
+<div class="alert alert-info">Nested in <strong><%= @folder.relative_path() %></strong></div>
 <% end %>
 
-<div id="form_area">
-<% form_tag( { :action => 'update_folder', :id => @document }, :multipart => true ) do %>
+<% form_tag( { :action => 'update_folder', :id => @document }, {:multipart => true, :class => 'form-horizontal'} ) do %>
   <%= render :partial => 'folder_form' %>
-<div class="submit"> 
-  <%= submit_tag 'Edit Folder' %>
-</div>
+
+  <%= submit_tag('Edit Folder', {:class => 'btn btn-primary'}) %>
+  <%= link_to('Back', {:action => 'index', :id => @document.document_parent}, {:class => 'btn'}) %>
 <% end %>
-
-</div>
-
-<%= link_to 'Back', :action => 'index', :id => @document.document_parent %>

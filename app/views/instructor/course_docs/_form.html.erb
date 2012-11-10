@@ -1,26 +1,40 @@
-<%= error_messages_for 'document' %>
+<%= error_messages_for('document', {:class => 'alert alert-error'}) %>
 
 <!--[form:document]-->
-<p class="blockintro">Course documents are any printed material that you might handout that is not part of an assignment.</p>
-<div class="block">
-<p><label for="document_title" class="required">Title:</label>
-<%= text_field 'document', 'title'  %></p>
-
-<p><label for="file">File:</label>
-<%= file_field_tag "file" %></p>
-
-<p><label for="document_comments">Comments:</label>
-<%= text_area 'document', 'comments'  %></p>
+<div class="control-group">
+  <label for="document_title" class="control-label">Title</label>
+  <div class="controls">
+    <%= text_field 'document', 'title', {:class => 'input-large'} %>
+  </div>
 </div>
 
-<p class="blockintro">Publication control. <em>Visible after</em> allows you to schedule documents for future publication, as long as the <em>Visible</em> setting is set to <strong>Yes</strong>.</p>
-<div class="block">
-<p><label for="document_created_at" class="required">Visible after:</label>
-<%= datetime_select 'document', 'created_at'  %></p>
+<div class="control-group">
+  <label for="file" class="control-label">File</label>
+  <div class="controls">
+    <%= file_field_tag "file" %>
+  </div>
+</div>
 
-<p><label for="document_published" class="required">Visible:</label>
+<div class="control-group">
+  <label for="document_comments" class="control-label">Comments</label>
+  <div class="controls">
+    <%= text_area 'document', 'comments', {:class => 'input-xlarge', :rows => 5} %>
+  </div>
+</div>
+
+<span class="help-block">Publication control. <em>Visible after</em> allows you to schedule documents for future publication, as long as the <em>Visible</em> setting is set to <strong>Yes</strong>.</span>
+<div class="control-group">
+ <label for="document_created_at" class="control-label">Visible after</label>
+ <div class="controls">
+   <%= datetime_select 'document', 'created_at', {}, {:class => 'input-small'} %>
+ </div>
+</div>
+
+<div class="control-group">
+ <label for="document_published" class="control-label">Visible</label>
+ <div class="controls">
 	<%= radio_button 'document', 'published', true %> Yes
-	<%= radio_button 'document', 'published', false %> No</p>
+	<%= radio_button 'document', 'published', false %> No
+ </div>
 </div>
 <!--[eoform:document]-->
-

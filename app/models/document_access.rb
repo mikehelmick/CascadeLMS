@@ -3,6 +3,10 @@ class DocumentAccess < ActiveRecord::Base
   belongs_to :user
   belongs_to :course
 
+  def self.count_for_document(document)
+    return DocumentAccess.count(:conditions => ["document_id = ?", document.id])
+  end
+
   def self.user_map_for_document(document)
     das = DocumentAccess.find(:all, :conditions => ["document_id = ?", document.id], :order => "created_at asc")
     doc_access_map = Hash.new

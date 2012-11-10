@@ -1,22 +1,17 @@
-<div class="SectionHeader"><div class="Full">
-<h2>Reorder Documents for 
-'<%= @course.title %>'</h2>
-</div></div>
+<h2>Reorder Documents for '<%= @course.title %>'</h2>
 
 
 <div id="reorder">
-  <p>Drag and Drop the documents to order.</p>
-
-  <p><b><%= link_to "I'm done reordering documents.", :controller => '/instructor/course_docs', :course => @course, :id => @folder_id %></b></p>
+  <%= link_to('Done Reordering', {:controller => '/instructor/course_docs', :course => @course, :id => @folder_id}, {:class => 'btn btn-primary'}) %><br/>
 
   <ul id="document-order">
     <% for document in @documents %>
-      <li id="document_<%= document.id %>"><%= image_tag 'arrow_switch.png', :align => 'absmiddle' %>
-        <%= image_tag "#{document.icon_file}", :align => 'absmiddle' %>
+      <li id="document_<%= document.id %>"><i class="icon-random"></i>
+        <i class="<%=document.icon_file%>"></i>
 	      <% if document.folder %>
 	        <%= link_to "#{h document.title}", :action => 'index', :id => document %>
 			<% if document.podcast_folder %>
-			  <%= image_tag 'ipod_cast.png' %>
+			  <i class="icon-headphones"></i>
 			<% end %>
 		  <% else %>
 		    <%=h document.title %>

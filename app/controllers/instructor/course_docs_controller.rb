@@ -20,7 +20,8 @@ class Instructor::CourseDocsController < Instructor::InstructorBase
     @document_pages = Paginator.new self, Document.count(:conditions => ["course_id = ? and document_parent = ?", @course.id, @folder_id]), 50, @page
     @documents = Document.find(:all, :conditions => ['course_id = ? and document_parent = ?', @course.id, @folder_id], :order => 'position', :limit => 50, :offset => @document_pages.current.offset)  
      
-    set_title
+    set_title()
+    set_breadcrumb()
   end
   
   def new
@@ -32,6 +33,7 @@ class Instructor::CourseDocsController < Instructor::InstructorBase
     
     @title = "Upload new document: #{@course.title}"
     @document = Document.new
+    set_breadcrumb().text = 'New Document'
   end
 
   def create
@@ -47,6 +49,7 @@ class Instructor::CourseDocsController < Instructor::InstructorBase
     file_field = params[:file]
     if file_field.nil? || file_field.eql?('') || file_field.class.to_s.eql?('String')
       @title = "Upload new document: #{@course.title}"
+      set_breadcrumb().text = 'New Document'
       flash[:badnotice] = "You must select a file for upload."
       render :action => 'new'
       return
@@ -64,16 +67,17 @@ class Instructor::CourseDocsController < Instructor::InstructorBase
       flash[:notice] = 'File was successfully uploaded.'
       redirect_to :action => 'index', :id => @folder_id
     else
+      set_breadcrumb().text = 'New Document'
       render :action => 'new'
     end
   end
   
   def new_folder
-    return unless load_course( params[:course] )
+    return unless load_course(params[:course])
     return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_documents' )
-    return unless course_open( @course, :action => 'index' )
+    return unless course_open(@course, :action => 'index')
     
-    return unless load_folder( params[:id].to_i )
+    return unless load_folder(params[:id].to_i)
     
     if !@folder.nil? && 
       if @folder.podcast_folder
@@ -82,7 +86,9 @@ class Instructor::CourseDocsController < Instructor::InstructorBase
       end
     end
     
-    @document = Document.new
+    @document = Document.new()
+    @title = 'New Folder'
+    set_breadcrumb().text = 'New Folder'
   end
   
   def create_folder
@@ -129,6 +135,9 @@ class Instructor::CourseDocsController < Instructor::InstructorBase
     return unless doc_in_course( @course, @document )
 
     load_folder( @document.document_parent )
+
+    @title = "Edit Document: #{@course.title}"
+    set_breadcrumb().text = 'Edit Document'
   end
 
   def update
@@ -150,6 +159,8 @@ class Instructor::CourseDocsController < Instructor::InstructorBase
       flash[:notice] = 'Document was successfully updated.'
       redirect_to :action => 'index', :id => @document.document_parent
     else
+      @title = 'Edit Document'
+      set_breadcrumb().text = 'Edit Document'
       render :action => 'edit'
     end
   end
@@ -162,6 +173,8 @@ class Instructor::CourseDocsController < Instructor::InstructorBase
     @document = Document.find(params[:id])
     return unless doc_in_course( @course, @document )
     load_folder( @document.document_parent )
+    @title = 'Edit Folder'
+    set_breadcrumb().text = 'Edit Folder'
   end
   
   def update_folder
@@ -188,7 +201,8 @@ class Instructor::CourseDocsController < Instructor::InstructorBase
    
     @documents = Document.find(:all, :conditions => ['course_id = ? and document_parent = ?', @course.id, @folder_id], :order => 'position')  
      
-    @title = "Reorder documents : #{@course.title}"
+    @title = "Reorder Documents : #{@course.title}"
+    set_breadcrumb().text = 'Reorder Documents'
   end
 
   def sort
@@ -220,6 +234,7 @@ class Instructor::CourseDocsController < Instructor::InstructorBase
     @access_map = DocumentAccess.user_map_for_document(@document)
     @students = @course.students
     @title = "Document access report for '#{@document.title}'"
+    set_breadcrumb().text = 'Access Report'
   end
   
   def download
@@ -246,6 +261,14 @@ class Instructor::CourseDocsController < Instructor::InstructorBase
     
     flash[:notice] = "Document #{@document.title} has been deleted."
     redirect_to :action => 'index', :id => @folder_id
+  end
+
+  private
+
+  def set_breadcrumb()
+    @breadcrumb = Breadcrumb.for_course(@course, true)
+    @breadcrumb.instructordocs = true
+    return @breadcrumb
   end
   
   def set_tab
@@ -283,7 +306,4 @@ class Instructor::CourseDocsController < Instructor::InstructorBase
     end
     return true
   end
-  
-  private :set_tab, :set_title, :doc_in_course, :load_folder
-  
 end

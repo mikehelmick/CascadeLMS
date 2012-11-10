@@ -156,6 +156,9 @@
      <% if @breadcrumb.instructor && @breadcrumb.instructorblog %>
        <%= link_to('Blog', {:controller => '/instructor/blog', :action => nil, :id => nil, :course => @course}) %> <span class="divider">/</span>
      <% end %>
+     <% if @breadcrumb.instructor && @breadcrumb.instructordocs %>
+       <%= link_to('Documents', {:controller => '/instructor/course_docs', :action => nil, :id => nil, :course => @course}) %> <span class="divider">/</span>
+     <% end %>
 	
 	 <% unless @breadcrumb.text.nil? %>
 	   <% if @breadcrumb.link.nil? %>

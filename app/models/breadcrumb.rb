@@ -4,7 +4,7 @@ class Breadcrumb
   # teams is instructor view
   attr_accessor :course, :assignment, :document, :forum, :post, :team, :wiki
   attr_accessor :instructor, :program, :outcomes, :gradebook, :teams, :attendance
-  attr_accessor :instructorblog
+  attr_accessor :instructorblog, :instructordocs
   # text to display at the end
   attr_accessor :text, :link
 

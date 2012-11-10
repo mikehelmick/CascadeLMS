@@ -20,6 +20,10 @@ class Document < ActiveRecord::Base
     da.user = user
     da.save
   end
+
+  def access_count()
+    DocumentAccess.count_for_document(self)
+  end
   
   def clone_to_course( course_id, user_id, time_offset = nil )
     dup = Document.new

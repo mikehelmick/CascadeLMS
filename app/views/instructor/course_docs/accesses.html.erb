@@ -1,20 +1,17 @@
 <h2>Document Accesses for <%=h @document.title %></h2>
-<p><%= link_to "Back", :controller => "/instructor/course_docs", :course => @course, :action => 'index', :id => @document.document_parent %></p>
+<p><%= link_to 'Back', {:controller => "/instructor/course_docs", :course => @course, :action => 'index', :id => @document.document_parent}, {:class => 'btn'} %></p>
 
-<table class="fancy">
-  <tr class="header">
+<table class="table table-condensed table-striped">
+ <thead>
+  <tr>
     <th>Student</th>
 	<th>Access Count</th>
   </tr>
-<% count = 0%> 
+ </thead>
 <% for user in @students %>
-<% count = count.next 
-   odd = "odd"
-   odd = "even" if count.even?
-%>
-  <tr class="<%=odd%> hover" id="user_<%=user.id%>">
-	<td><%=h user.display_name %> &nbsp;(<%= link_to_function( "#{image_tag('application_side_expand.png', :align => 'absmiddle' )} view details", "blindToggle( 'details_#{user.id}' )" ) %>)<br/>
-	 <div id="details_<%=user.id%>" style="display: none; padding-left: 25px"><ul>
+  <tr id="user_<%=user.id%>">
+	<td><%=h user.display_name %> &nbsp;<br/>
+	 <div id="details_<%=user.id%>" style="padding-left: 25px"><ul>
 	  <% if @access_map[user.id].nil? %><li><em>none</em></li><% else %>
 	   <% for da in @access_map[user.id] %>
 	    <li><%= da.created_at.to_formatted_s(:friendly_date) %></li>
