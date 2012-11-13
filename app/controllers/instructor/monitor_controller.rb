@@ -20,7 +20,7 @@ class Instructor::MonitorController < Instructor::InstructorBase
     
     @jobs = Bj.table.job.find(:all, :conditions => ["state != ?", "finished"], :order => 'priority asc, submitted_at asc')
     
-    render :layout => 'noright'
+    set_breadcrumb().text = 'AutoGrade Queue'
   end
   
   def agfailed
@@ -30,7 +30,7 @@ class Instructor::MonitorController < Instructor::InstructorBase
     @items = GradeQueue.find(:all, :conditions => ["failed = ?", true], :order => 'created_at asc' ) 
     @items = Array.new if @items.nil?
     
-    render :layout => 'noright'
+    set_breadcrumb().text = 'AutoGrade Failures'
   end
   
   def agclear
@@ -94,5 +94,9 @@ class Instructor::MonitorController < Instructor::InstructorBase
     @tab = "course_instructor"
     @title = "Application Monitor"
   end
-  
+
+  def set_breadcrumb()
+    @breadcrumb = Breadcrumb.for_course(@course, true)
+    return @breadcrumb
+  end
 end
