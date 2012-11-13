@@ -67,7 +67,7 @@
 	  <th width="90%">Course Outcome <br/>
 		<i>Course outcomes are mapped to program outcomes with a depth of coverage level, some (S), moderate (m), or extensive (e).</i>
 		</th>
-	  <th>Controls<br/><%= link_to "#{image_tag 'chart_organisation_delete.png', :align => 'absmiddle'} Delete All", {:course => @course, :action => 'delete_all'}, :confirm => "Are you sure you want to delete all the outcomes from this course? This action can not be undone." %></th>
+	  <th>Controls<br/><%= link_to '<i class="icon-trash"></i> Delete All', {:course => @course, :action => 'delete_all'}, :confirm => "Are you sure you want to delete all the outcomes from this course? This action can not be undone." %></th>
 	</tr>
 
    <% row_count = 0 
@@ -99,7 +99,7 @@
           <%=h outcome.outcome %>
 	
 	      <% if outcome.program_outcomes.size > 0 %>
-	        &nbsp;(<%= link_to_function( "#{image_tag('application_side_expand.png', :align => 'absmiddle' )} mappings", "blindToggle( 'outcome_details_#{outcome.id}' )" ) %>)
+	        &nbsp;(<%= link_to_function( '<i class="icon-picture"></i> mappings', "blindToggle( 'outcome_details_#{outcome.id}' )" ) %>)
 	      <% end%>
 	
 	      <br/>

@@ -10,6 +10,7 @@ class Instructor::TeamsController < Instructor::InstructorBase
     
     @teams = @course.project_teams
     @title = "Teams for #{@course.title}"
+    set_breadcrumb()
   end
   
   def new
@@ -20,6 +21,7 @@ class Instructor::TeamsController < Instructor::InstructorBase
     
     @team = ProjectTeam.new
     @title = "Create new team for #{@course.title}"
+    set_breadcrumb().text = "New Project Team"
   end
   
   def create
@@ -47,6 +49,7 @@ class Instructor::TeamsController < Instructor::InstructorBase
     @team = ProjectTeam.find(params[:id])
     
     @title = "Edit team #{@team.name}, course #{@course.title}"
+    set_breadcrumb().text = "Edit Project Team"
   end
   
   def update
@@ -74,7 +77,7 @@ class Instructor::TeamsController < Instructor::InstructorBase
     @team = ProjectTeam.find(params[:id]) rescue @team = nil
     return unless team_in_course( @course, @team )
     
-    @students = @course.students 
+    @students = @course.students
     
     @student_team = Hash.new
     student_teams = TeamMember.find(:all, :conditions => ["course_id = ?", @course.id] )
@@ -83,6 +86,7 @@ class Instructor::TeamsController < Instructor::InstructorBase
     end  
     
     @title = "Edit team members for '#{@team.name}'"
+    set_breadcrumb().text = "Edit Team Members"
   end
   
   def update_team_members
@@ -142,6 +146,12 @@ class Instructor::TeamsController < Instructor::InstructorBase
   
   
   private
+
+  def set_breadcrumb()
+    @breadcrumb = Breadcrumb.for_course(@course, true)
+    @breadcrumb.teams = true
+    return @breadcrumb
+  end
   
   def team_in_course( course, team )
     unless !team.nil? && course.id == team.course_id

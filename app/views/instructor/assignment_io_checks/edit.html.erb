@@ -1,19 +1,8 @@
 <h2>Editing I/O Test '<%= @io_check.name %>' for '<%= @assignment.title %>'</h2>
 
-<p><%= link_to 'Back / Cancel', :action => 'index' %></p>
-
-<div id="form_area">
-
-<% form_tag( :action => 'update', :id => @io_check ) do %>
-  <%= render :partial => 'form' %>
+<% form_tag({:action => 'update', :id => @io_check}, {:class => 'form-horizontal'}) do %>
+  <%= render(:partial => 'form') %>
  
-  <div class="submit">
-    <%= submit_tag "Save Changes" %>
-  </div>
+  <%= submit_tag('Save Changes', {:class => 'btn btn-primary'}) %>
+  <%= link_to('Back / Cancel', {:action => 'index'}, {:class => 'btn'}) %>
 <% end %>
-
-</div>
-
-<p><%= link_to 'Back / Cancel', :action => 'index' %></p>
-
-

@@ -1,6 +1,10 @@
 class Breadcrumb
   
-  attr_accessor :course, :assignment, :document, :forum, :post, :team, :wiki, :instructor, :program, :outcomes
+  # team is studnet view
+  # teams is instructor view
+  attr_accessor :course, :assignment, :document, :forum, :post, :team, :wiki
+  attr_accessor :instructor, :program, :outcomes, :gradebook, :teams, :attendance
+  attr_accessor :instructorblog, :instructordocs
   # text to display at the end
   attr_accessor :text, :link
 
@@ -8,6 +12,7 @@ class Breadcrumb
     @course = course
     @instructor = instructor
     self.outcomes = false
+    self.gradebook = false
   end
 
   def self.for_program(program)
@@ -20,8 +25,8 @@ class Breadcrumb
     Breadcrumb.new(course, instructor)
   end
 
-  def self.for_assignment(assignment)
-    obj = Breadcrumb.new(assignment.course)
+  def self.for_assignment(assignment, instructor = false)
+    obj = Breadcrumb.new(assignment.course, instructor)
     obj.assignment = assignment
     return obj
   end

@@ -1,15 +1,16 @@
-<%= link_to 'Back', :controller => '/instructor/index', :course => @course %> |
-<%= link_to 'Grade Book Settings', :action => 'settings', :course => @course %> |
-<% if @course.gradebook && @course.gradebook.weight_grades %>
-  <%= link_to 'Set Weighting', :action => 'set_weights', :course => @course %> |
-<% end %>
-<%= link_to 'Export', :action => 'export', :course => @course %> |
-<%= link_to 'Add New Item', :action => 'item', :course => @course %> |
-<%= link_to "#{image_tag 'arrow_switch.png', :align => 'absmiddle'} Set Display Order", :action => 'reorder', :course => @course %>
+<div class="btn-group">
+ <%= link_to 'Settings <i class="icon-cog"></i>', {:action => 'settings', :course => @course}, {:class => 'btn btn-small'} %>
+ <% if @course.gradebook && @course.gradebook.weight_grades %>
+   <%= link_to 'Set Weighting <i class="icon-indent-right"></i>', {:action => 'set_weights', :course => @course}, {:class => 'btn btn-small'} %>
+ <% end %>
+ <%= link_to 'Export <i class="icon-download"></i>', {:action => 'export', :course => @course}, {:class => 'btn btn-small'} %>
+ <%= link_to 'Add New Item <i class="icon-plus-sign"></i>', {:action => 'item', :course => @course}, {:class => 'btn btn-small'} %>
+ <%= link_to 'Set Display Order <i class="icon-random"></i>', {:action => 'reorder', :course => @course}, {:class => 'btn btn-small'} %>
+</div>
 
-<h2>Grade Book for <%= @course.title %></h2>
+<h2>Gradebook for <%= @course.title %></h2>
 
-<table class="fancy"> 
+<table class="table table-compact table-striped"> 
   <tr class="header"> 
    <th nowrap="nowrap">ID</th>
    <th nowrap="nowrap">Students</th>
@@ -24,16 +25,16 @@
 	  <br/>
 	  <i><%= gi.grade_category.category rescue "no category" %></i><br/>
 	  Points: <%= gi.points %><br/>
-	   <acronym title="Delete Item"><%= link_to "#{image_tag 'cross.png'}", { :action => 'delete_item', :course => @course, :id => gi.id}, :confirm => "Are you sure you want to delete the item '#{gi.name}'?  All entered student grade will be deleted.  This action can not be undone." %></acronym>
+	    <span rel="tooltip" title="Delete Item"><%= link_to '<i class="icon-remove-sign"></i>', { :action => 'delete_item', :course => @course, :id => gi.id}, :confirm => "Are you sure you want to delete the item '#{gi.name}'?  All entered student grade will be deleted.  This action can not be undone." %></span>
 	   <% if gi.visible %>
-	     <acronym title="Visible to Students"><%= image_tag 'picture_add.png' %></acronym>
+	     <span rel="tooltip" title="Visible to Students"><i class="icon-eye-open"></i></span>
 	   <% else %>
-	     <acronym title="Hidden from Students"><%= image_tag 'picture_delete.png' %></acronym>
+	     <span rel="tooltip" title="Hidden from Students"><i class="icon-eye-close"></i></span>
 	   <% end %>
-	   <acronym title="Edit Item Information">
-	     <%= link_to "#{image_tag 'book_edit.png'}", :action => 'item', :course => @course, :id => gi.id %>
-	   </a>
-	   <acronym title="Enter Grades"><%= link_to "#{image_tag 'calculator.png'}", :action => 'enter', :course => @course, :id => gi.id %></a>
+	   <span rel="tooltip" title="Edit Item Information">
+	     <%= link_to '<i class="icon-edit"></i>', :action => 'item', :course => @course, :id => gi.id %>
+	   </span>
+	   <span rel="tooltip" title="Enter Grades"><%= link_to '<i class="icon-pencil"></i>', :action => 'enter', :course => @course, :id => gi.id %></span>
 	    <% if @course.gradebook.weight_grades %><br/>
 	      Cat: <%= sprintf("%.2f", @weight_map[gi.grade_category.id] ) %>%
 	    <% end %>

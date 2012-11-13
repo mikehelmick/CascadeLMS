@@ -1,29 +1,35 @@
-<%= error_messages_for 'document' %>
+<%= error_messages_for('document', {:class => 'alert alert-error'}) %>
 
 <!--[form:document]-->
-<p class="blockintro">Create a new folder to hold course documents.</p>
-<div class="block">
-<p><label for="document_title" class="required">Folder Name:</label>
-<%= text_field 'document', 'title'  %></p>
-
-<p><label for="document_comments">Comments (optional):</label>
-<%= text_area 'document', 'comments'  %></p>
+<div class="control-group">
+  <label for="document_title" class="control-label">Folder Name</label>
+  <div class="controls">
+    <%= text_field 'document', 'title'  %>
+  </div>
 </div>
 
-<p class="blockintro">Setting a folder to unpublished prevents all documents in the folder from being seen by students.</p>
-<div class="block">
-<p><label for="document_published" class="required">Published:</label>
+<div class="control-group">
+  <label for="document_comments" class="control-label">Comments (optional)</label>
+  <div class="controls">
+    <%= text_area 'document', 'comments', {:class => 'input-large', :rows => 5} %>
+  </div>
+</div>
+
+<div class="control-group">
+  <span class="help-block">Setting a folder to unpublished prevents all documents in the folder from being seen by students.</span>
+  <label for="document_published" class="control-label">Published</label>
+  <div class="controls">
 	<%= radio_button 'document', 'published', true %> Yes
-	<%= radio_button 'document', 'published', false %> No</p>
+	<%= radio_button 'document', 'published', false %> No
+  </div>
 </div>
 
-<p class="blockintro"><%= image_tag 'ipod_cast.png' %> You can set a folder to be a <a href="http://www.apple.com/itunes/store/podcastsfaq.html" target="_blank">podcast</a>, allowing you to have multiple podcasts in your class.  We suggest that you fill in appropriate comments for the directory and for items in the directory.   Subdirectories in the posdcast directory are NOT included in the podcast.</p>
-<div class="block">
-<p><label for="document_podcast_folder" class="required">Podcast Folder:</label>
+<div class="control-group">
+  <span class="help-block"><i class="icon-headphones"></i> You can set a folder to be a <a href="http://www.apple.com/itunes/store/podcastsfaq.html" target="_blank">podcast</a>, allowing you to have multiple podcasts in your class. We suggest that you fill in appropriate comments for the directory and for items in the directory. Subdirectories in the posdcast directory are NOT included in the podcast.</span>
+  <label for="document_podcast_folder" class="control-label">Podcast Folder:</label>
+  <div class="controls">
 	<%= radio_button 'document', 'podcast_folder', true %> Yes
-	<%= radio_button 'document', 'podcast_folder', false %> No</p>
+	<%= radio_button 'document', 'podcast_folder', false %> No
+  </div>
 </div>
-
-
 <!--[eoform:document]-->
-

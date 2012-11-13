@@ -12,6 +12,7 @@ class Instructor::CourseGradebookController < Instructor::InstructorBase
     @showSections = @course.crns.size > 1
     
     process_grades( @course )
+    set_breadcrumb(@course)
   end
   
   def reorder
@@ -19,6 +20,9 @@ class Instructor::CourseGradebookController < Instructor::InstructorBase
     return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_gradebook' )
     
     @grade_items = @course.sorted_grade_items
+
+    set_breadcrumb(@course)
+    @breadcrumb.text = 'Reorder'
   end
   
   def sort
@@ -44,6 +48,8 @@ class Instructor::CourseGradebookController < Instructor::InstructorBase
     
     create_gradebook
     @gradebook = @course.gradebook
+    set_breadcrumb(@course)
+    @breadcrumb.text = 'Settings'
   end
   
   def save_settings
@@ -81,6 +87,9 @@ class Instructor::CourseGradebookController < Instructor::InstructorBase
         assignment.grade_item.nil?
       end
     end
+
+    set_breadcrumb(@course)
+    @breadcrumb.text = 'Add Item'
   end
   
   def delete_item
@@ -213,7 +222,10 @@ class Instructor::CourseGradebookController < Instructor::InstructorBase
     @weights = GradeWeight.reconcile( @course )
     
     @matrix = Array.new
-    @weights.each { |w| @matrix[w.id] = w.percentage }    
+    @weights.each { |w| @matrix[w.id] = w.percentage } 
+
+    set_breadcrumb(@course)
+    @breadcrumb.text = 'Set Weights'   
   end
   
   def save_weights
@@ -248,7 +260,10 @@ class Instructor::CourseGradebookController < Instructor::InstructorBase
   
   def export
     return unless load_course( params[:course] )
-    return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_gradebook' )    
+    return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_gradebook' )
+
+    set_breadcrumb(@course)
+    @breadcrumb.text = 'Export'
   end
   
   def export_csv
@@ -274,8 +289,10 @@ class Instructor::CourseGradebookController < Instructor::InstructorBase
     @column1 = Array.new
     0.upto(size) { |i| @column1 << @students[i] }
     @column2 = Array.new
-    (size+1).upto(@students.size-1) { |i| @column2 << @students[i] }
-    
+    (size + 1).upto(@students.size - 1) { |i| @column2 << @students[i] }
+
+    set_breadcrumb(@course)
+    @breadcrumb.text = 'By Student'
   end
   
   def for_student
@@ -343,10 +360,17 @@ class Instructor::CourseGradebookController < Instructor::InstructorBase
       end      
     
     end
-    
+
+    set_breadcrumb(@course)
+    @breadcrumb.text = 'Grades for Student'    
   end
   
 ## private
+  def set_breadcrumb(course)
+    @breadcrumb = Breadcrumb.for_course(course, true)
+    @breadcrumb.gradebook = true
+  end
+
   def set_tab
     @show_course_tabs = true
     @tab = "course_instructor"
@@ -533,6 +557,6 @@ class Instructor::CourseGradebookController < Instructor::InstructorBase
     end
   end
   
-  private :set_tab, :item_in_course, :create_gradebook, :course_weights_grades, :process_grades
+  private :set_breadcrumb, :set_tab, :item_in_course, :create_gradebook, :course_weights_grades, :process_grades
   
 end

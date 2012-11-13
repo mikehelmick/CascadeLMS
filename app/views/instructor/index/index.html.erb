@@ -1,18 +1,7 @@
-<h2><%= @course.title %><h2>
-<h3><%= @course.short_description %></h3>
+<h2><%= @course.title %> - <%= @course.short_description %></h2>
 
 <table class="table table-compact table-striped"> 
- <thead>
-  <tr>
-	<th colspan="3"><h3>
-		<% if @user.instructor_in_course?( @course.id ) %>
-		  Instructor
-		<% else %>
-		  Assistant
-		<% end %>Controls</h3>
-	</th>
-  </tr>
- </thead>
+
   <tr>
 	<th>General:</th>
 	<td><i class="icon-info-sign"></i>

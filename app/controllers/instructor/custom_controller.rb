@@ -20,6 +20,7 @@ class Instructor::CustomController < Instructor::InstructorBase
     load_category_info()
     
     @title = "Customize Grade Categories for '#{@course.title}'"
+    set_breadcrumb().text = 'Grade Categories'
   end
   
   def add_category
@@ -57,6 +58,7 @@ class Instructor::CustomController < Instructor::InstructorBase
     @rubric_level = RubricLevel.for_course(@course)
     
     @title = "Customize Rubric Levels for '#{@course.title}'"
+    set_breadcrumb().text = 'Rubric Levels'
   end
   
   def save_rubric_levels
@@ -80,6 +82,7 @@ class Instructor::CustomController < Instructor::InstructorBase
     load_journal_info()
     
     @title = "Customze Journal Settings for '#{@course.title}'"
+    set_breadcrumb().text = "Journal Settings"
   end
   
   def add_task
@@ -140,7 +143,7 @@ class Instructor::CustomController < Instructor::InstructorBase
   
   
   private
-  
+
   def load_category_info()
     @categories = GradeCategory.for_course(@course)
     
@@ -165,5 +168,10 @@ class Instructor::CustomController < Instructor::InstructorBase
         @jsr_in_use[jsr.id] = JournalEntryStopReason.count( :conditions => ["journal_stop_reason_id = ?", jsr.id] ) > 0
       end
   end
-  
+
+  def set_breadcrumb()
+    @breadcrumb = Breadcrumb.for_course(@course, true)
+    return @breadcrumb
+  end
+
 end

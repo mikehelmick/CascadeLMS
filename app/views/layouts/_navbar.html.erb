@@ -1,4 +1,4 @@
-<div class="navbar navbar-fixed-top">
+<div class="navbar navbar-inverse navbar-fixed-top">
   <div class="navbar-inner">
     <div class="container-fluid">
       <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
@@ -14,6 +14,7 @@
           </li>
           <li class="divider-vertical"></li>
 
+          <% unless @user.nil? %>
 	      <% for cu in @user.courses_in_term( @term ) %>
 	        <li class="dropdown <%= 'active' if !@course.nil? && @course.id == cu.course_id %>">
 	          <a href="#" class="dropdown-toggle" data-toggle="dropdown"><%= h cu.course.title[0..30] %><b class="caret"></b></a>
@@ -41,10 +42,10 @@
 		       <% end %>
                <% if !@user.nil? && (@user.instructor_in_course?(cu.course.id) || @user.assistant_in_course?(cu.course.id)) %>
 		         <li><%= link_to '<i class="icon-barcode"></i> Instructor', { :controller => '/instructor/index', :course => cu.course, :assignment => nil, :id => nil} %></li>
-		       <% end %>		
-		
+		       <% end %>
 		     </ul>
 		    </li>
+		  <% end %>
 		  <% end %>
         </ul>
 
@@ -116,8 +117,13 @@
 	   <%= link_to "#{h @breadcrumb.post.title}", :controller => '/blog', :course => @course, :id => @breadcrumb.post.id, :action => 'post' %> <span class="divider">/</span>
 	 <% end %>
 	 <% unless @breadcrumb.assignment.nil? %>
-	    <%= link_to 'Assignments', :controller => '/assignments', :course => @course, :id => nil, :action => nil %> <span class="divider">/</span>
-	    <%= link_to "#{h @breadcrumb.assignment.title[0..40]}", :controller => 'assignments', :course => @course, :id => @breadcrumb.assignment, :action => 'view' %> <span class="divider">/</span>
+	    <% unless @breadcrumb.instructor %>
+	      <%= link_to 'Assignments', :controller => '/assignments', :course => @course, :id => nil, :action => nil %> <span class="divider">/</span>
+	      <%= link_to "#{h @breadcrumb.assignment.title[0..40]}", :controller => 'assignments', :course => @course, :id => @breadcrumb.assignment, :action => 'view' %> <span class="divider">/</span>
+	    <% else %>
+	      <%= link_to 'Assignments', :controller => '/instructor/course_assignments', :course => @course, :id => nil, :action => nil %> <span class="divider">/</span>
+	      <%= link_to "#{h @breadcrumb.assignment.title[0..40]}", :controller => '/instructor/course_assignments', :course => @course, :id => @breadcrumb.assignment, :action => 'edit' %> <span class="divider">/</span>
+	    <% end %>
 	 <% end%>
 	 <% unless @breadcrumb.team.nil? %>
 		<%= link_to 'Team', :controller => '/team', :course => @course, :id => nil, :action => nil %> <span class="divider">/</span>
@@ -137,6 +143,21 @@
      <% end %>
      <% if !@breadcrumb.outcomes.nil? && @breadcrumb.outcomes %>
         <%= link_to 'Course Outcomes', :controller => '/instructor/outcomes', :action => 'index', :id => nil, :course => @course %> <span class="divider">/</span>
+     <% end %>
+     <% if @breadcrumb.instructor && @breadcrumb.gradebook %>
+        <%= link_to 'Gradebook', :controller => '/instructor/course_gradebook', :action => nil, :id => nil, :course => @course %> <span class="divider">/</span>
+     <% end %>
+	 <% if @breadcrumb.instructor && @breadcrumb.teams %>
+        <%= link_to 'Teams', :controller => '/instructor/teams', :action => nil, :id => nil, :course => @course %> <span class="divider">/</span>
+     <% end %>
+     <% if @breadcrumb.instructor && @breadcrumb.attendance %>
+       <%= link_to('Attendance', {:controller => '/instructor/attendance', :action => nil, :id => nil, :course => @course}) %> <span class="divider">/</span>
+     <% end %>
+     <% if @breadcrumb.instructor && @breadcrumb.instructorblog %>
+       <%= link_to('Blog', {:controller => '/instructor/blog', :action => nil, :id => nil, :course => @course}) %> <span class="divider">/</span>
+     <% end %>
+     <% if @breadcrumb.instructor && @breadcrumb.instructordocs %>
+       <%= link_to('Documents', {:controller => '/instructor/course_docs', :action => nil, :id => nil, :course => @course}) %> <span class="divider">/</span>
      <% end %>
 	
 	 <% unless @breadcrumb.text.nil? %>

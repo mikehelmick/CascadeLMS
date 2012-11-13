@@ -1,70 +1,79 @@
-<%= error_messages_for 'assignment' %>
-<%= error_messages_for 'journal_field' %>
-
+<%= error_messages_for('assignment', :class => 'alert alert-error') %>
+<%= error_messages_for('journal_field', :class => 'alert alert-error') %>
 
 <% if @duplicate %>
- <div class="blockintro">Duplicate assignment.</div>
- <div class="block">
- <p><label for="term" class="required">Assignment to copy:</label> 
-    <%= select_tag 'copy_from_id', options_from_collection_for_select(@assignments, "id", "title" ) %></p>
+ <div class="well">
+ <h3>Duplicate assignment.</h3>
+ <div class="control-group">
+   <label for="term" class="control-label">Assignment to copy</label>
+   <div class="controls">
+     <%= select_tag 'copy_from_id', options_from_collection_for_select(@assignments, "id", "title" ) %>
+   </div>
+ </div>
+ <h4>Details for cloned version of assignment.</h4>
+ </div>
+<% else %>
+
+ <div class="control-group">
+  <label for="assignment[title]" class="control-label">Assignment name</label>
+  <div class="controls">
+   <%= text_field 'assignment', 'title'  %>
+   <% unless @assignment.grade_item.nil? %>
+     <p class="help-block"><em>Changes to the assignment name will be reflected in the gradebook.</em></p>
+   <% end %>
+  </div>
+ </div>
+ <div class="control-group">
+  <label for="term" class="control-label">Category</label>
+  <div class="controls">
+   <%= select_tag 'grade_category_id', options_from_collection_for_select(@categories, "id", "category", @assignment.grade_category_id ) %>
+  </div>
  </div>
 
- <div class="blockintro">Details for cloned version of assignment.</div><br/>
-<% else %>
- <div class="blockintro">Create a new assignment for this course.</div>
-
-<div class="block">
-<p><label for="assignment[title]" class="required">Assignment name:</label>
-<%= text_field 'assignment', 'title'  %><br/>
-<% unless @assignment.grade_item.nil? %>
-<em>Changes to the assignment name will be reflected in the gradebook.</em>
-<% end %>
-</p>
-<p><label for="term" class="required">Category:</label> <%= select_tag 'grade_category_id', options_from_collection_for_select(@categories, "id", "category", @assignment.grade_category_id ) %></p>
-</div>
-
-<div class="blockintro">Is this assignment visible to students?</div>
-<div class="block">
-	<p><b>Assignment published:</b>
-		<%= radio_button 'assignment', 'visible', true %> Yes
-		<%= radio_button 'assignment', 'visible', false %> No
-	</p>	
-</div>
+ <div class="control-group">
+  <label class="control-label">Assignment published (visible to students)</label>
+  <div class="controls">	
+   <%= radio_button 'assignment', 'visible', true %> Yes
+   <%= radio_button 'assignment', 'visible', false %> No
+  </div>
+ </div>
 <% end %>
 
-<div class="blockintro">For the dates of an assignment: the available date allows to set up an assignment in this system without allowing students to see it until a certain point in time.  The due date and the close date allow you to set a time that assignments are due, but still allow files to be submitted for a slightly longer period of time.</div>
-<div class="block">
+<p class="help-inline">For the dates of an assignment: the available date allows to set up an assignment in this system without allowing students to see it until a certain point in time.  The due date and the close date allow you to set a time that assignments are due, but still allow files to be submitted for a slightly longer period of time.</p>
 
-<table border="0" cellspacing="2" cellpadding="2">
- <tr>
-  <td align="right" class="required"><b>Date available to students:</b></td>
-  <td align="left" nowrap="nowrap"><%= datetime_select 'assignment', 'open_date'  %></td>
- </tr>
- <tr>
-  <td align="right" class="required"><b>Assignment due date:</b></td>
-  <td align="left" nowrap="nowrap"><%= datetime_select 'assignment', 'due_date'  %></td>
- </tr>
- <tr>
-  <td align="right" class="required"><b>Last time material can be submitted:</b></td>
-  <td align="left" nowrap="nowrap"><%= datetime_select 'assignment', 'close_date'  %></td>
- </tr>
-</table>
-</div>
+ <div class="control-group">
+  <label for="assignment_open_date" class="control-label">Date available to students</label>
+  <div class="controls">
+    <%= datetime_select 'assignment', 'open_date', {}, {:class => 'input-small'}  %>
+  </div>
+ </div>
+ <div class="control-group">
+  <label for="assignment_due_date" class="control-label">Assignment due date</label>
+  <div class="controls">
+    <%= datetime_select 'assignment', 'due_date', {:default => 7.days.from_now}, {:class => 'input-small'} %>
+  </div>
+ </div>
+ <div class="control-group">
+  <label for="assignment_close_date" class="control-label">Last time material can be submitted</label>
+  <div class="controls">
+   <%= datetime_select 'assignment', 'close_date', {:default => 7.days.from_now}, {:class => 'input-small'}  %>
+  </div>
+ </div>
 
 <% unless @duplicate %>
 
 <% if @course.course_setting.enable_project_teams %>
-<div class="blockintro">Since this course has project teams enabled, you can make this assignment a team assignment.   By making the assignment a team assignment, all submission avenues will be shared by all the students on the same team, although you can assign separate grades to each team member.</div>
-<div class="block">
-	<p><b>Group Project:</b>
+ <p class="help-inline">Since this course has project teams enabled, you can make this assignment a team assignment.   By making the assignment a team assignment, all submission avenues will be shared by all the students on the same team, although you can assign separate grades to each team member.</p>
+ <div class="control-group">
+  <label for="assignment_team_project" class="control-label">Group Project</label>
+  <div class="controls">
 		<%= radio_button 'assignment', 'team_project', true %> Yes
 		<%= radio_button 'assignment', 'team_project', false %> No
-	</p>	
-</div>
+  </div>	
+ </div>
 <% end %>
 
-<div class="blockintro">You may either describe this assignment with text or upload a file.  If you choose to upload a file, you will be able to add additional files after the assignment is created.</div>
-<div class="block">
+ <p class="help-inline">You may either describe this assignment with text or upload a file.  If you choose to upload a file, you will be able to add additional files after the assignment is created.</p>
 
 <% desc_style = 'display: block;'
    file_style = 'display: none;'
@@ -75,37 +84,30 @@
    end
 %>
 
-  <div id="asgn_desc" style="<%=desc_style%>" >
-    <p><b>Use Description</b> | <%= link_to_function 'Use File', "new Effect.Puff('asgn_desc'); new Effect.Appear('asgn_file');" %></p>
+  <div id="asgn_desc" style="<%=desc_style%>">
+	<p class="help-inline"><strong>Use Description</strong> | <%= link_to_function 'Use File', "new Effect.Puff('asgn_desc'); new Effect.Appear('asgn_file');" %></p>
 
-    <% if edit_mode %>
-	  <p><label for="assignment[description]" class="required">Assignment Description:</label><br/>
-	  <table>
-	    <tr><td><i>Edit Description</i></td><td><i>Description As Students See It</i></td></tr>
-	    <tr>
-	      <td width="50%" valign="top"><%= text_area 'assignment', 'description'  %></td>
-	      <td width="50%" valign="top"><%= @assignment.description_html %></td>
-	    </tr>
-	  </table> 
-    <% else %>
-  	  <p><label for="assignment[description]" class="required">Assignment Description:</label>
-      <%= text_area 'assignment', 'description'  %></p>
-    <% end %>
+      <div class="control-group">
+	    <label for="assignment[description]" class="control-label">Assignment Description</label>
+	    <div class="controls">
+		  <%= text_area 'assignment', 'description', {:class => 'input-xlarge', :rows => 8, :cols => 200} %>
+	    </div>
+	  </div>
   </div>
   <div id="asgn_file" style="<%=file_style%>">
-    <p><%= link_to_function 'Use Description', "new Effect.Puff('asgn_file'); new Effect.Appear('asgn_desc');" %> | <b>Use File</b></p>
+    <p class="help-inline"><%= link_to_function 'Use Description', "new Effect.Puff('asgn_file'); new Effect.Appear('asgn_desc');" %> | <strong>Use File</strong></p>
 
-    <% if edit_mode %>
-      <p><label for="file" class="required">Upload additional assignment file:</label>
-	  <%= file_field_tag "file" %></p>
-
-    <% else %>
-  	  <p><label for="file" class="required">Assignment File:</label>
-	  <%= file_field_tag "file" %></p>
-	<% end %>
-	
+    <div class="control-group">
+      <% if edit_mode %>
+        <label for="file" class="control-label">Upload additional assignment file</label>
+      <% else %>
+        <label for="file" class="control-label">Assignment File</label>
+      <% end %>
+      <div class="controls">
+ 	    <%= file_field_tag "file" %>
+      </div>
+    </div>
   </div>
-</div>
 
 <% if edit_mode %>
 <div class="block">
@@ -154,85 +156,122 @@
 </div></div>
 <% end %>
 
-<div class="blockintro">Enabling web turning will allow students to turn in files for assignments through this web site.   If you want students to only hand in printouts, or force them to use subversion (see below), then you should disable this feature for this assignment.</div>
-<div class="block">
-<p><b>Enable Web Turnins:</b>
-	<%= radio_button 'assignment', 'enable_upload', true %> Yes
+<div class="control-group">
+ <label for="assignment[enable_upload]" class="control-label">Enable Web Turnins</label>
+ <div class="controls">
+   	<%= radio_button 'assignment', 'enable_upload', true %> Yes
 	<%= radio_button 'assignment', 'enable_upload', false %> No
-</p>
+    <p class="help-block">Enabling web turning will allow students to turn in files for assignments through this web site.   If you want students to only hand in printouts, or force them to use subversion (see below), then you should disable this feature for this assignment.</p>
+ </div>
 </div>
-
-<div class="blockintro">Journals allow students to chronicle their progress on this assignment.   If you choose to enable journals, you may specify which fields are to be included in the student journals.</div>
-<div class="block">
 
   <% journal_style = "display: block;" 
      journal_style = "display: none;" unless @assignment.enable_journal
   %>
-
-  <p><b>Enable Journals:</b>
-	<%= radio_button 'assignment', 'enable_journal', true, :onclick => 'new Effect.SlideDown("journal_settings")' %> Yes
-	<%= radio_button 'assignment', 'enable_journal', false, :onclick => 'new Effect.Puff("journal_settings")' %> No
-  </p>
-  <div id="journal_settings" style="<%=journal_style%>">
-    <div class="sub_form">
-      <p><label for="journal_field[start_time]" class="required">Capture start time:</label>
+<div class="control-group">
+ <label class="control-label">Enable Journals</label>
+ <div class="controls">
+  <%= radio_button 'assignment', 'enable_journal', true, :onclick => 'new Effect.SlideDown("journal_settings")' %> Yes
+  <%= radio_button 'assignment', 'enable_journal', false, :onclick => 'new Effect.Puff("journal_settings")' %> No
+ </div>
+</div>
+  <div id="journal_settings" style="<%=journal_style%>" class="well">
+    <div class="control-group">
+      <label for="journal_field[start_time]" class="control-label">Capture start time</label>
+      <div class="controls">
         <%= radio_button 'journal_field', 'start_time', true %> Yes
-	    <%= radio_button 'journal_field', 'start_time', false %> No</p>
-      <p><label for="journal_field[end_time]" class="required">Capture end time:</label>
+	    <%= radio_button 'journal_field', 'start_time', false %> No
+	  </div>
+	</div>
+	<div class="control-group">
+	  <label for="journal_field[end_time]" class="control-label">Capture end time</label>
+	  <div class="controls">
         <%= radio_button 'journal_field', 'end_time', true %> Yes
-	    <%= radio_button 'journal_field', 'end_time', false %> No</p>
-      <p><label for="journal_field[interruption_time]" class="required">Capture interruption time:</label>
+	    <%= radio_button 'journal_field', 'end_time', false %> No
+	  </div>
+	</div>
+    <div class="control-group">
+      <label for="journal_field[interruption_time]" class="control-label">Capture interruption time</label>
+      <div class="controls">
         <%= radio_button 'journal_field', 'interruption_time', true %> Yes
-	    <%= radio_button 'journal_field', 'interruption_time', false %> No</p>
-      <p><label for="journal_field[completed]" class="required">Capture completed status:</label>
+	    <%= radio_button 'journal_field', 'interruption_time', false %> No
+	  </div>
+	</div>
+    <div class="control-group">
+      <label for="journal_field[completed]" class="control-label">Capture completed status</label>
+      <div class="controls">
         <%= radio_button 'journal_field', 'completed', true %> Yes
-	    <%= radio_button 'journal_field', 'completed', false %> No</p>
-      <p><label for="journal_field[task]" class="required">Capture task worked on:</label>
+	    <%= radio_button 'journal_field', 'completed', false %> No
+	  </div>
+	</div>
+    <div class="control-group">
+      <label for="journal_field[task]" class="control-label">Capture task worked on</label>
+      <div class="controls">
         <%= radio_button 'journal_field', 'task', true %> Yes
-	    <%= radio_button 'journal_field', 'task', false %> No</p>
-      <p><label for="journal_field[reason_for_stopping]" class="required">Capture reason for stopping:</label>
+	    <%= radio_button 'journal_field', 'task', false %> No
+	  </div>
+	</div>
+    <div class="control-group">
+      <label for="journal_field[reason_for_stopping]" class="control-label">Capture reason for stopping</label>
+      <div class="controls">
         <%= radio_button 'journal_field', 'reason_for_stopping', true %> Yes
-	    <%= radio_button 'journal_field', 'reason_for_stopping', false %> No</p>
-      <p><label for="journal_field[comments]" class="required">Capture comments:</label>
+	    <%= radio_button 'journal_field', 'reason_for_stopping', false %> No
+	  </div>
+	</div>
+    <div class="control-group">
+      <label for="journal_field[comments]" class="control-label">Capture comments</label>
+      <div class="controls">
         <%= radio_button 'journal_field', 'comments', true %> Yes
-	    <%= radio_button 'journal_field', 'comments', false %> No</p>
-    </div>
+	    <%= radio_button 'journal_field', 'comments', false %> No
+	  </div>
+	</div>
   </div>
 
-</div>
-
 <% if @course.course_setting.enable_prog_assignments %>
-
-<div class="blockintro">This section allows you to specify items pertaining to programming assignments.</div>
-<div class="block">
-
   <% prog_style = "display: block;" 
      prog_style = "display: none;" unless @assignment.programming
   %>
-
-  <p><b>Enable Programming Assignment Enhancements:</b>
-	<%= radio_button 'assignment', 'programming', true, :onclick => 'new Effect.SlideDown("programming_settings")' %> Yes
-	<%= radio_button 'assignment', 'programming', false, :onclick => 'new Effect.Puff("programming_settings")' %> No
-  </p>
-  <div id="programming_settings" class="sub_form" style="<%=prog_style%>">
+  <div class="control-group">
+	<label class="control-label">Enable Programming Assignment Enhancements</label>
+	<div class="controls">
+  	  <%= radio_button 'assignment', 'programming', true, :onclick => 'new Effect.SlideDown("programming_settings")' %> Yes
+	  <%= radio_button 'assignment', 'programming', false, :onclick => 'new Effect.Puff("programming_settings")' %> No
+    </div>
+  </div>
+  <div id="programming_settings" class="well" style="<%=prog_style%>">
 
     <% if @course.course_setting.enable_svn %>
-
-    <p><label for="assignment[use_subversion]" class="required">Enable Subversion:</label>
-       <%= radio_button 'assignment', 'use_subversion', true, :onclick => 'new Effect.SlideDown("subversion_settings")' %> Yes
-	   <%= radio_button 'assignment', 'use_subversion', false, :onclick => 'new Effect.Puff("subversion_settings")' %> No</p>
+      <div class="control-group">
+        <label for="assignment[use_subversion]" class="control-label">Enable Subversion</label>
+        <div class="controls">
+          <%= radio_button 'assignment', 'use_subversion', true, :onclick => 'new Effect.SlideDown("subversion_settings")' %> Yes
+	      <%= radio_button 'assignment', 'use_subversion', false, :onclick => 'new Effect.Puff("subversion_settings")' %> No
+	    </div>
+	  </div>
 	
 	<% svn_style = "display: block;" 
 	   svn_style = "display: none;" unless @assignment.use_subversion
 	%>
 	<div id="subversion_settings" class="sub_form" style="<%=svn_style%>">
-	  <p>For subversion, the server name is something like <code>http://svn.server/</code> and the path is something like <code>$uniqueid$/assignment4/release/$uniqueid$</code>.  The development and release paths allow you to pull student files during development, but limit final turn in to a 'release' directory.  If you only with to use 1 path, leave the release path blank.  The symbol <code>$uniqueid$</code> is expanded to each student's uniqueID in this system. <% if @course.course_setting.enable_project_teams %> If this is a group assignment, the symbol <code>$teamid$</code> is expanded to each student's assigned teamId in this system. <% end %></p>
-  	  <p><label for="assignment[subversion_server]" class="required">Subversion Server:</label>
-      <%= text_field 'assignment', 'subversion_server'  %></p>
-	  <p><label for="assignment[subversion_development_path]" class="required">Subversion Development Path:</label>
-      <%= text_field 'assignment', 'subversion_development_path'  %></p>
-	  <p><label for="assignment[subversion_release_path]" class="required">Subversion Release Path:</label>
-      <%= text_field 'assignment', 'subversion_release_path'  %></p>
+	  <p class="help-block">For subversion, the server name is something like <code>http://svn.server/</code> and the path is something like <code>$uniqueid$/assignment4/release/$uniqueid$</code>.  The development and release paths allow you to pull student files during development, but limit final turn in to a 'release' directory.  If you only with to use 1 path, leave the release path blank.  The symbol <code>$uniqueid$</code> is expanded to each student's uniqueID in this system. <% if @course.course_setting.enable_project_teams %> If this is a group assignment, the symbol <code>$teamid$</code> is expanded to each student's assigned teamId in this system. <% end %></p>
+      <div class="control-group">
+        <label for="assignment[subversion_server]" class="control-label">Subversion Server:</label>
+        <div class="controls">
+          <%= text_field 'assignment', 'subversion_server'  %>
+        </div>
+      </div>
+      <div class="control-group">
+        <label for="assignment[subversion_development_path]" class="control-label">Subversion Development Path:</label>
+        <div class="controls">
+          <%= text_field 'assignment', 'subversion_development_path'  %>
+        </div>
+      </div>
+      <div class="control-group">
+        <label for="assignment[subversion_release_path]" class="control-label">Subversion Release Path:</label>
+        <div class="controls">
+          <%= text_field 'assignment', 'subversion_release_path'  %>
+        </div>
+      </div>
 	</div>
 	
 	<% else %>
@@ -240,13 +279,15 @@
       <%= hidden_field 'assignment', 'subversion_server', :value => '' %>
 	<% end %>
 	
-	<p><i>You will have the ability to adjust AutoGrade settings later.</i></p>
-	<p><label for="assignment[auto_grade]" class="required">Enable AutoGrade:</label>
+	<div class="control-group">
+	  <label for="assignment[auto_grade]" class="control-label">Enable AutoGrade:</label>
+	  <div class="controls">
        <%= radio_button 'assignment', 'auto_grade', true %> Yes
-	   <%= radio_button 'assignment', 'auto_grade', false %> No</p>
+	   <%= radio_button 'assignment', 'auto_grade', false %> No
+	   <p class="help-block"><em>You will have the ability to adjust AutoGrade settings later.</em></p>
+	  </div>
+	</div>
   </div>
-
-</div>
 
 <% else %>
   <%= hidden_field 'assignment', 'programming', :value => false %>

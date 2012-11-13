@@ -1,14 +1,14 @@
 
 <%= error_messages_for 'grade_category' %>
 
-<ul>
+<ul class="unstyled">
   <% for category in @categories %>
     <li id="category_<%=category.id%>">
       <% unless @category_in_use[category.id] %>
-        <%= link_to_remote( image_tag('delete.png', :align => 'absmiddle' ), :url => { :action => 'del_category', :course => @course.id, :id => category.id }, :confirm => "Delete the category task '#{category.category}'?", :success => "new Effect.Puff( 'category_#{category.id}' )", :failure => "alert('There was an error deleting this category.');" ) %>
+        <%= link_to_remote( '<i class="icon-remove"></i>', :url => { :action => 'del_category', :course => @course.id, :id => category.id }, :confirm => "Delete the category task '#{category.category}'?", :success => "new Effect.Puff( 'category_#{category.id}' )", :failure => "alert('There was an error deleting this category.');" ) %>
         <%= category.category %>
       <% else %>
-        <%= image_tag 'flag_blue.png', :align => 'absmiddle' %> <%= category.category %> -- (<i>In Use, cannot be deleted</i>)
+        <i class="icon-ok"></i> <%= category.category %> -- (<i>In Use, cannot be deleted</i>)
       <% end %>
 	 </li>
   <% end %>

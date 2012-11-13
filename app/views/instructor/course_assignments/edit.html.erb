@@ -1,35 +1,34 @@
 <h2>Assignment '<%= @assignment.title %>' for '<%= @course.title%>'</h2>
+<div class="btn-group">
+  <% if @assignment.auto_grade %> 
+    <%= link_to '<i class="icon-play"></i> AutoGrade Settings', {:action => 'autograde', :course => @course, :id => @assignment}, {:class => 'btn btn-small'} %> 
+  <% end %>
+  <% if @course.course_setting.enable_outcomes %>
+    <%= link_to '<i class="icon-check"></i> Assignment Rubrics', {:controller => '/instructor/rubrics', :course => @course, :assignment => @assignment}, {:class => 'btn btn-small'} %>
+  <% end %>
+</div>
+<br/>
 
-<p><%= link_to 'Back', :action => 'index' %>
-<% if @assignment.auto_grade %> 
-  | <%= link_to "#{image_tag 'computer.png', :align => 'absmiddle'} AutoGrade Settings", :action => 'autograde', :course => @course, :id => @assignment %> 
-<% end %>
-<% if @course.course_setting.enable_outcomes %>
-  | <%= link_to "#{image_tag 'pencil.png', :align => 'absmiddle'} Assignment Rubrics", :controller => '/instructor/rubrics', :course => @course, :assignment => @assignment %>
-<% end %>
-</p>
-
-<div id="form_area">
-
-<% form_tag( { :action => 'update', :id => @assignment }, :multipart => true, :onsubmit => "new Element.toggle('button'); new Element.toggle( 'spinner');" ) do %>
+<% form_tag( { :action => 'update', :id => @assignment }, :class => 'form-horizontal', :multipart => true, :onsubmit => "new Element.toggle('button'); new Element.toggle( 'spinner');" ) do %>
 
   <%= render :partial => 'form', :locals => { :edit_mode => true } %>
 
 <% unless @assignment.grade_item.nil? %>
-<div class="blockintro">Editing the point value here will also update the course gradebook.</div>
-<div class="block">
-<p><label for="point_value" class="required">Points:</label>
-  <%= text_field_tag 'point_value', @assignment.grade_item.points  %></p>
-</div>
+  <div class="control-group">
+    <label for="point_value" class="control-label">Points</label>
+    <div class="controls">
+      <%= text_field_tag 'point_value', @assignment.grade_item.points  %>
+      <p class="help-block">Editing the point value here will also update the course gradebook.</p>
+    </div>
+  </div>
 <% end %>
 
 <div class="submit">
-  <div id="button"><%= submit_tag "Save Changes" %></div>
+  <div id="button">
+    <%= submit_tag "Save Changes", :class => 'btn btn-primary' %>
+    <%= link_to 'Back', {:action => 'index'}, {:class => 'btn'} %>
+  </div>
   <div id="spinner" style="display: none;"><%= image_tag 'spinner.gif' %></div>
 </div>
 
 <% end %>
-
-<p><%= link_to 'Back', :action => 'index' %></p>
-
-</div>

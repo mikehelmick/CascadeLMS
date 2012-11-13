@@ -1,16 +1,14 @@
-<div class="SectionHeader"><div class="Full">
-<h2>Blog Posts for Course: <%= @course.title %></h2>	
-</div></div>
-
-<p><%= link_to "Cancel", :controller => '/instructor/index', :course => @course %> |
-	<%= link_to 'New Blog Post', :action => 'new' %> </p>
+<h2>Blog Posts for Course: <%= @course.title %></h2>
 
 <% if @course.posts.size == 0 %>
-  <p><i>There are no posts in this blog.</i></p>
-<% else %>
+  <div class="alert alert-info">There are no posts in this blog.</div>
+<% end %>
+<%= link_to('New Blog Post', {:action => 'new'}, {:class => 'btn btn-success'}) %>	
 
-<table class="fancy" width="100%">
-  <tr class="header">
+<% unless @course.posts.size == 0 %>
+<table class="table table-condensed table-striped">
+ <thead>
+  <tr>
     <th>Title</th>
     <th>Featured?</th>
     <th>Published?</th>
@@ -18,30 +16,26 @@
     <th>Comments</th>
     <th>Controls</th>	
   </tr>
+ </thead>
 
-<% count = 0%>  
 <% for post in @posts %>
-<% count = count.next 
-   odd = "odd"
-   odd = "even" if count.even?
-%>
   <% com_count = post.number_of_comments %>
-  <tr class="<%=odd%> hover" id="post_<%=post.id%>">
+  <tr id="post_<%=post.id%>">
     <td><%= link_to "#{post.title}", :controller => '/blog', :course => @course, :action => 'post', :id => post %></td>
     <td><%=h post.featured_text %></td>
     <td><%=h post.published_text %></td>
     <td><%=h post.created_at.to_formatted_s(:long) %></td>
     <td>
 	  <% if post.enable_comments %>  
-	    <%=h pluralize(com_count, 'Comment') %>
+	    <span class="badge badge-info"><%= com_count %></span>
       <% else %>
         <i>Disabled</i>
       <% end %>
     </td>
     <td>
       <% if @course.course_open %>
-<%= link_to "#{image_tag('pencil.png', :align => 'absmiddle')} Edit", :action => 'edit', :id => post %> |
-<%= link_to_remote( "#{image_tag('pencil_delete.png', :align => 'absmiddle')} Delete", :url => { :action => 'destroy', :course => @course.id, :id => post }, :confirm => "Delete blog post #{post.title} and #{pluralize(com_count, 'comment')} associated with it?", :success => "new Effect.Puff( 'post_#{post.id}' )", :failure => "alert('There was an error deleting the blog post.');" ) %>
+<%= link_to '<i class="icon-edit"></i> Edit', :action => 'edit', :id => post %> |
+<%= link_to_remote( '<i class="icon-remove"></i> Delete', :url => { :action => 'destroy', :course => @course.id, :id => post }, :confirm => "Delete blog post #{post.title} and #{pluralize(com_count, 'comment')} associated with it?", :success => "new Effect.Puff( 'post_#{post.id}' )", :failure => "alert('There was an error deleting the blog post.');" ) %>
       <% else %>
         <s><%= image_tag 'pencil.png' %> Edit | <%= image_tag 'pencil_delete.png' %> Delete</s>
       <% end %>
@@ -49,7 +43,6 @@
   </tr>
 
 <% end %>
-
 </table>
 
 

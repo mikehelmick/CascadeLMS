@@ -1,32 +1,80 @@
-<h2>Attendance for class on <%= Date::MONTHNAMES[@period.created_at.mon] %>
-	<%= @period.created_at.mday %>, <%= @period.created_at.year %></h2>
+<h2>Attendance for class on <%= Date::MONTHNAMES[@period.created_at.mon] %> <%= @period.created_at.mday %>, <%= @period.created_at.year %></h2>
 
-<p><%= link_to 'Back', :controller => '/instructor/attendance', :course => @course, :id => nil %></p>
+<script type='text/javascript'>
+  google.load('visualization', '1', {packages:['gauge']});
+  google.setOnLoadCallback(drawChart);
 
-	<table class="fancy">
-	  <tr class="header">
-	    <th>uniqueid</th>
-	    <th>Name</th>
-	    <th>Attendance Record</th>
-	    <th>Correct key</th>
-	    <th>Controls</th>
-	  </tr>
+  var data = null;
+  var chart;
+  var options;
 
-	<% count = 0%> 
-	<% for user in @course.students %>
-	<% count = count.next 
-	   odd = "odd"
-	   odd = "even" if count.even?
-	%>
-	  <tr class="<%=odd%> hover" id="user_<%=user.id%>">
-        <td><%= user.uniqueid %></td>
-        <td><%= user.display_name %></td>
-        <td id="attend_<%=user.id%>"><% if @attendees[user.id] %>Yes<% else %><b>No</b><% end %></td>
-        <td><% if @correct_key[user.id] %>Yes<% else %><b>No</b><% end %></td>
-        <td><%= link_to_remote( 'Mark Attending', :update => "attend_#{user.id}", :url => { :action => 'mark_attending', :user => user.id, :course => @course, :id => @period }, :success => visual_effect(:highlight, "attend_#{user.id}" ) ) %> |
-		    <%= link_to_remote( 'Mark Missing', :update => "attend_#{user.id}", :url => { :action => 'mark_missing', :user => user.id, :course => @course, :id => @period }, :success => visual_effect(:highlight, "attend_#{user.id}" ) ) %>
+  function initialLoad() {
+    data = google.visualization.arrayToDataTable([
+	    ['Label', 'Value'],
+	    ['Attendance', <%= @num_attending %>]]);
+  }
+
+  function drawChart() {
+	if (data == null) {
+	  initialLoad();
+	}
+	
+    options = {
+	  width: 400, height: 120,
+      minorTicks: 5,
+      majorTicks: 10,
+      max: <%= @course.students.size %>
+      };
+
+    chart = new google.visualization.Gauge(document.getElementById('visualization'));
+    chart.draw(data, options);
+  }
+
+  function changeAttendance(userId, value) {
+	data.setCell(0, 1, data.getValue(0, 1) + value);
+	new Effect.Highlight("attend_" + userId);
+	if (value > 0) {
+	  new Effect.toggle("a_" + userId, 'appear', { duration: 0.0 });
+      new Effect.toggle("m_" + userId, 'appear', { duration: 0.0 });
+    } else {
+      new Effect.toggle("m_" + userId, 'appear', { duration: 0.0 });
+	  new Effect.toggle("a_" + userId, 'appear', { duration: 0.0 });	
+    }
+	chart.draw(data, options);
+  }
+</script>
+
+<div id='visualization'></div>
+
+<table class="table table-striped table-condensed">
+ <thead>
+  <tr>
+   <th>UniqueID</th>
+   <th>Name</th>
+   <th>Attended</th>
+   <th>Correct key</th>
+   <th>Controls</th>
+  </tr>
+ </thead>
+
+ <% for user in @course.students %>
+  <tr id="user_<%=user.id%>">
+   <td><%= user.uniqueid %></td>
+   <td><%= user.display_name %></td>
+   <td id="attend_<%=user.id%>"><% if @attendees[user.id] %>Yes<% else %><b>No</b><% end %></td>
+   <td><% if @correct_key[user.id] %>Yes<% else %><b>No</b><% end %></td>
+   <td>
+	 <% attendStyle = "block";
+	    missingStyle = "none";
+	    if @attendees[user.id] 
+		  attendStyle = "none";
+		  missingStyle = "block";
+		end
+	  %>
+      <span id="a_<%=user.id%>" style="display: <%=attendStyle%>"><%= link_to_remote( 'Mark Attending', {:update => "attend_#{user.id}", :url => { :action => 'mark_attending', :user => user.id, :course => @course, :id => @period }, :success => "changeAttendance(#{user.id}, 1)"}, {:class => 'btn btn-success btn-small'} ) %></span>
+      <span id="m_<%=user.id%>" style="display: <%=missingStyle%>"><%= link_to_remote( 'Mark Missing', {:update => "attend_#{user.id}", :url => { :action => 'mark_missing', :user => user.id, :course => @course, :id => @period }, :success => "changeAttendance(#{user.id}, -1)"}, {:class => 'btn btn-small btn-danger'} ) %></span>
         </td>
       </tr>
     <% end %> 
-  </table>
+</table>
  

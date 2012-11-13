@@ -192,6 +192,11 @@ class Instructor::CourseAssignmentsController < Instructor::InstructorBase
     end
     
     @auto_grade_setting = @assignment.auto_grade_setting
+
+    set_title
+    @breadcrumb.text = "Autograde Settings"
+    @breadcrumb.assignment = @assignment
+    @title = "Edit Autograde Settings"
   end
   
   def save_autograde
@@ -278,6 +283,10 @@ class Instructor::CourseAssignmentsController < Instructor::InstructorBase
     @categories = GradeCategory.for_course( @course ) 
     @title = "Edit #{@assignment.title} (#{@course.title})"
     @duplicate = false
+
+    set_title
+    @breadcrumb.text = "Edit '#{@assignment.title}'"
+    @title = "Edit Assignment"
   end
   
   def update
@@ -355,6 +364,11 @@ class Instructor::CourseAssignmentsController < Instructor::InstructorBase
           @assignments << asgn unless asgn.id == @assignment.id
         end
       end
+
+      set_title
+      @breadcrumb.assignment = @assignment
+      @breadcrumb.text = 'PMD Settings'
+      @title = 'Edit PMD Settings'
       
       # this isn't fun - make sure that pmd setting are available
       if @assignment.assignment_pmd_settings.size == 0

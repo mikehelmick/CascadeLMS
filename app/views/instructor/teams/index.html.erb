@@ -1,14 +1,10 @@
 <h2>Project Teams for <%= @course.title %></h2>
 
-<p>
- <%= link_to 'Back', :course => @course, :controller => '/instructor/index' %> |
- <%= link_to 'New Project Team', :course => @course, :action => 'new' %>
-</p>
 <% if @teams.size == 0 %>
-	<p><i>There are no project teams for this course.</i></p>
+ <br/><div class="alert">There are no project teams for this course.</div>
 <% else %>
 
-<table class="fancy" width="100%">
+<table class="table table-striped">
   <tr class="header">
     <th>Team ID</th>
     <th>Team Name</th>
@@ -44,5 +40,8 @@
   </tr>
 <% end %>
 </table>
-
 <% end %>
+
+<div class="btn-group">
+ <%= link_to('New Project Team', {:course => @course, :action => 'new'}, {:class => 'btn btn-success'}) %>
+</div>

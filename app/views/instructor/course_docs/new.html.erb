@@ -1,21 +1,15 @@
-<h2>New document</h2>
+<h2>New Document</h2>
 
 <% unless @folder.nil? %>
-<p>New Document nested in the folder:<br>
-<b><%= @folder.relative_path() %></b>
-</p>
+<div class="alert alert-info">New document nested in <strong><%= @folder.relative_path() %></strong></div>
 <% end %>
 
-<div id="form_area">
-<% form_tag( { :action => 'create', :id => @folder_id }, :multipart => true, :onsubmit => "new Element.toggle('button');new Element.toggle('spinner');" ) do %>
+<% form_tag( { :action => 'create', :id => @folder_id }, :multipart => true, :onsubmit => "new Element.toggle('button');new Element.toggle('spinner');", :class => 'form-horizontal' ) do %>
   <%= render :partial => 'form' %>
 
-<div class="submit">
-  <div id="button"><%= submit_tag "Create" %></div>
+  <div id="button">
+    <%= submit_tag('Create', {:class => 'btn btn-primary'}) %>
+    <%= link_to('Cancel', {:action => 'index', :id => @folder_id}, {:class => 'btn'}) %>
+  </div>
   <div id="spinner" style="display: none;"><%= image_tag 'spinner.gif' %></div>
-</div>
 <% end %>
-
-</div>
-
-<%= link_to 'Back', :action => 'index', :id => @folder_id %>

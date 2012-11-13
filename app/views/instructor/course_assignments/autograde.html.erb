@@ -1,51 +1,54 @@
-<h3>AutoGrade Settings for '<%= @assignment.title %>'</h3>
+<h2>AutoGrade Settings for '<%= @assignment.title %>'</h2>
 
-<p><%= link_to 'Back to Assignment', :action => 'edit', :id => @assignment %> | 
-   <%= link_to 'Back to All Assignments', :action => 'index', :id => nil %></p>
+<% form_tag( { :action => 'save_autograde', :id => @assignment }, {:class => 'form-horizontal'} ) do %>
 
-<!--
-<p><i>AutoGrading</i> is divided up into 3 distinct areas: style checking, automated execution via the <i>AutoGrader</i> framework, and executing programs with strict output checking (programming competition style).</p>
--->
+<h3>Java style checking using PMD.</h3>
+  <% if @auto_grade_setting.student_style || @auto_grade_setting.style %>
+    <i class="icon-cog"></i><%= link_to 'Enable/Disable specific PMD tests.', :action => 'pmd_settings', :id => @assignment %>
+  <% end %>
 
-<div id="form_area">
+  <div class="control-group">
+    <label for="auto_grade_setting[student_style]" class="control-label">Allow students to run PMD</label>
+    <div class="controls">
+      <%= radio_button 'auto_grade_setting', 'student_style', true %> Yes
+      <%= radio_button 'auto_grade_setting', 'student_style', false %> No
+    </div>
+  </div>
+  <div class="control-group">
+    <label for="auto_grade_setting[style]" class="control-label">Enable automatic PMD on turnin</label>
+    <div class="controls">
+      <%= radio_button 'auto_grade_setting', 'style', true %> Yes
+      <%= radio_button 'auto_grade_setting', 'style', false %> No
+    </div>
+  </div>
 
-<% form_tag( { :action => 'save_autograde', :id => @assignment } ) do %>
+<h3>Standard In/Standard Out (I/O) Execution.</h3>
+ <% if @auto_grade_setting.student_io_check || @auto_grade_setting.io_check %>
+   <p><i class="icon-cog"></i><%= link_to 'Configure I/O Tests.', :controller => '/instructor/assignment_io_checks', :action => 'index', :course => @course, :assignment => @assignment %>
+ <% end %>  
 
-<div class="blockintro">Java style checking using PMD.</div>
-<div class="block">
-<p><label for="auto_grade_setting[student_style]" class="required">Allow students to run PMD:</label>
-  <%= radio_button 'auto_grade_setting', 'student_style', true %> Yes
-  <%= radio_button 'auto_grade_setting', 'student_style', false %> No</p>
-<p><label for="auto_grade_setting[style]" class="required">Enable automatic PMD on turnin:</label>
-  <%= radio_button 'auto_grade_setting', 'style', true %> Yes
-  <%= radio_button 'auto_grade_setting', 'style', false %> No</p>
-
-<% if @auto_grade_setting.student_style || @auto_grade_setting.style %>
- <p><%= image_tag 'cog.png' %> <%= link_to 'Enable/Disable specific PMD tests.', :action => 'pmd_settings', :id => @assignment %></p>
-<% end %>
-</div>
-
-<div class="blockintro">Standard In/Standard Out (I/O) Execution.</div>
-<div class="block">
-<p><label for="auto_grade_setting[student_io_check]" class="required">Allow students to run stdin/stdout tests:</label>
-   <%= radio_button 'auto_grade_setting', 'student_io_check', true %> Yes
-   <%= radio_button 'auto_grade_setting', 'student_io_check', false %> No</p>
-<p><label for="auto_grade_setting[io_check]" class="required">Enable automatic stdin/stdout tests on turnin:</label>
-   <%= radio_button 'auto_grade_setting', 'io_check', true %> Yes
-   <%= radio_button 'auto_grade_setting', 'io_check', false %> No</p>
-
-<% if @auto_grade_setting.student_io_check || @auto_grade_setting.io_check %>
- <p><%= image_tag 'cog.png' %> <%= link_to 'Configure I/O Tests.', :controller => '/instructor/assignment_io_checks', :action => 'index', :course => @course, :assignment => @assignment %></p>
-<% end %>
-</div>
+ <div class="control-group">
+   <label for="auto_grade_setting[student_io_check]" class="control-label">Allow students to run stdin/stdout tests</label>
+   <div class="controls">
+     <%= radio_button 'auto_grade_setting', 'student_io_check', true %> Yes
+     <%= radio_button 'auto_grade_setting', 'student_io_check', false %> No
+   </div>
+ </div>
+ <div class="control-group">
+   <label for="auto_grade_setting[io_check]" class="control-label">Enable automatic stdin/stdout tests on turnin</label>
+   <div class="controls">
+     <%= radio_button 'auto_grade_setting', 'io_check', true %> Yes
+     <%= radio_button 'auto_grade_setting', 'io_check', false %> No
+   </div>
+  </div>
 
 <!--
 <div class="blockintro">AutoGrader Framework Execution.</div>
 <div class="block">
-<p><label for="auto_grade_setting[student_autograde]" class="required">Allow students to run AutoGrader tests:</label>
+<p><label for="auto_grade_setting[student_autograde]" class="required">Allow students to run AutoGrader tests</label>
    <%= radio_button 'auto_grade_setting', 'student_autograde', true %> Yes
    <%= radio_button 'auto_grade_setting', 'student_autograde', false %> No</p>
-<p><label for="auto_grade_setting[autograde]" class="required">Enable automatic AutoGrader tests on turnin:</label>
+<p><label for="auto_grade_setting[autograde]" class="required">Enable automatic AutoGrader tests on turnin</label>
    <%= radio_button 'auto_grade_setting', 'autograde', true %> Yes
    <%= radio_button 'auto_grade_setting', 'autograde', false %> No</p>
 
@@ -55,16 +58,6 @@
 </div>
 -->
 
-
-
-<div class="submit">
-  <div id="button"><%= submit_tag "Save AutoGrade Settings" %></div>
-</div>
-
+ <%= submit_tag "Save AutoGrade Settings", :class => 'btn btn-primary' %>
+ <%= link_to 'Cancel', {:action => 'edit', :id => @assignment}, :class => 'btn' %>
 <% end %>
-
-<p><%= link_to 'Back', :action => 'index' %></p>
-
-</div>
-
-

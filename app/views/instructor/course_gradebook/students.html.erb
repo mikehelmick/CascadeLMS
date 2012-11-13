@@ -1,17 +1,12 @@
-<%= link_to 'Back to Instructor Home', :controller => '/instructor/index', :course => @course %>
- 
 <h2>Grade Book by Student for <%= @course.title %></h2>
 
-<table class="fancy">
+<table class="table table-striped table-condensed">
 <% 0.upto( @column1.size-1) do |i| %>
-  <% odd = "odd"
-	 odd = "even" if i.even?
-	  %>
-  <tr class="<%=odd%> hover">
-	<td width="50%"><img src="<%= @column1[i].gravatar_url(request.ssl?) %>" align="absmiddle" /><%= link_to "#{@column1[i].display_name} (#{@column1[i].uniqueid})", :id => @column1[i].id, :action => 'for_student' %></td>
-	<td width="50%">
-	   <% unless @column2[i].nil? %><img src="<%= @column2[i].gravatar_url(request.ssl?) %>" align="absmiddle" /><% end %>
-	   <%= link_to( "#{@column2[i].display_name} (#{@column2[i].uniqueid})", :id => @column2[i].id, :action => 'for_student') rescue "&nbsp;" %></td>
+  <tr>
+	<td><img src="<%= @column1[i].gravatar_url(request.ssl?) %>" align="absmiddle" /> <%= link_to "#{@column1[i].display_name} (#{@column1[i].uniqueid})", :id => @column1[i].id, :action => 'for_student' %></td>
+	<td>
+	   <% unless @column2[i].nil? %><img src="<%= @column2[i].gravatar_url(request.ssl?) %>" align="absmiddle" /> 
+	   <%= link_to( "#{@column2[i].display_name} (#{@column2[i].uniqueid})", :id => @column2[i].id, :action => 'for_student') rescue "&nbsp;" %><% end %></td>
   </tr>
 <% end %>
 </table>

@@ -48,9 +48,9 @@
 	    <td valign="top" align="right" nowrap="nowrap">
 	      <% if @user.instructor_in_course?(@course.id) || (@user.assistant_in_course?(@course.id) && @course.course_setting.ta_course_assignments) %>
 	         <% if assignment.is_quiz? %>       
-	             <%= link_to "#{h count}", :controller => '/instructor/quiz', :action => 'questions', :id => assignment, :assignment => nil %>
+	             <%= link_to "#{h count} <i class=\"icon-edit\"></i>", :controller => '/instructor/quiz', :action => 'questions', :id => assignment, :assignment => nil %>
   	         <% else %>
-                 <%= link_to "#{h count}", :action => 'edit', :id => assignment %>
+                 <%= link_to "#{h count} <i class=\"icon-edit\"></i>", :action => 'edit', :id => assignment %>
              <% end %>
 	      <% else %>
 	        <%= h count %>

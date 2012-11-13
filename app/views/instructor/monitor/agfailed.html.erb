@@ -1,13 +1,12 @@
-<div class="SectionHeader"><div class="Full">
 <h2>AutoGrade Queue - Failures</h2>
-</div></div>
-<br/>
-<p><%= link_to 'View Queue', :course => @course, :controller => '/instructor/monitor', :action => 'agqueue' %> | 
-   <%= link_to 'View Failures', :course => @course, :controller => '/instructor/monitor', :action => 'agfailed' %> 
-   <% if @user.admin? %> | <%= link_to 'Clear Failures', { :course => @course, :controller => '/instructor/monitor', :action => 'agclear' }, :confirm => "Are you sure you want to clear the autograde queue failures?" %> <% end %></p>
+<div class="btn-group">
+ <%= link_to('View Queue', {:course => @course, :controller => '/instructor/monitor', :action => 'agqueue'}, {:class => 'btn'}) %>
+ <%= link_to('View Failures', {:course => @course, :controller => '/instructor/monitor', :action => 'agfailed'}, {:class => 'btn'}) %> 
+ <% if @user.admin? %> | <%= link_to('Clear Failures', { :course => @course, :controller => '/instructor/monitor', :action => 'agclear' }, {:confirm => "Are you sure you want to clear the autograde queue failures?", :class => 'btn btn-danger'}) %> <% end %>
+</div><br/>
 
 <% if @items.size == 0 %>
-<p>There are no failed items in the AutoGrader queue.</p>
+<div class="alert alert-info">There are no failed items in the AutoGrader queue.</div>
 
 <% else %>
 

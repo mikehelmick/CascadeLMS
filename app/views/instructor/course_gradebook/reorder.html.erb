@@ -1,20 +1,18 @@
-<div class="SectionHeader"><div class="Full">
 <h2>Set GradeBook Items Display Order for  <%= @course.title %></h2>
-</div></div>
 
 <div id="reorder">
   <p>Drag and Drop the items to reorder.</p>
 
-  <p><b><%= link_to "I'm done reordering gradebook items.", :controller => '/instructor/course_gradebook', :action => nil, :id => nil, :course => @course %></b></p>
-
   <ul id="grades-order">
     <% for grade_item in @grade_items %>
-      <li id="grade_item_<%= grade_item.id %>"><%= image_tag 'arrow_switch.png', :align => 'absmiddle' %>
-        <b><%= grade_item.name %> (<i><%= grade_item.grade_category.category %></i>)  - <%= grade_item.date.to_formatted_s(:long) %></b>
+      <li id="grade_item_<%= grade_item.id %>"><i class="icon-random"></i>
+        <strong><%= grade_item.name %> (<em><%= grade_item.grade_category.category %></em>)  - <%= grade_item.date.to_formatted_s(:long) %></strong>
       </li>
     <% end %>
   </ul>
 </div>
+
+  <p><b><%= link_to "I'm done reordering gradebook items", {:controller => '/instructor/course_gradebook', :action => nil, :id => nil, :course => @course}, {:class => 'btn btn-success'} %></b></p>
 
 <%= sortable_element 'grades-order', 
     :url => { :action => 'sort' },

@@ -68,7 +68,7 @@ class Instructor::AssignmentIoChecksController < Instructor::InstructorBase
     @io_check = IoCheck.find(params[:id])
     return unless io_check_for_assignment( @course, @assignment, @io_check)
     
-    
+    set_title
   end
 
   def update
@@ -127,5 +127,7 @@ class Instructor::AssignmentIoChecksController < Instructor::InstructorBase
   
   def set_title
     @title = "I/O AutoGrade Settings - Assignment '#{@assignment.title}' - #{@course.title}"
+    @breadcrumb = Breadcrumb.for_assignment(@assignment, true)
+    @breadcrumb.text = 'I/O Checks'
   end
 end
