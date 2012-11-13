@@ -1,25 +1,25 @@
-<p><%= link_to 'Back', :controller => '/instructor/index', :action => nil, :course => @course %></p>
 
-<ul><li><a href="#own">Import From Your Courses</a></li>
-<li><a href="#other">Import From Shared Courses</a></li></ul>
+<h2>Import Course Data</h2>
+<p>You can only import from courses that you are/were an instructor of, or courses that have been shared with you by another instructor.</p>
 
-<div class="SectionHeader"><div class="Full">
-<h2><a name="own">Import From Your Courses</a></h2>
-</div></div>
+<ul class="nav nav-tabs">
+ <li class="active"><a href="#yours" data-toggle="tab">Your Courses</a></li>
+ <li><a href="#shared" data-toggle="tab">Shared Courses</a></li>
+</ul>
 
-<br/>
-<table class="fancy" width="99%">
-  <tr class="header">
-	<th width="10%" nowrap="nowrap">Import From</th>
-	<th width="90%">&nbsp;</th>
+<div class="tab-content">
+ <div class="tab-pane active" id="yours">
+   <h2>Import From Your Courses</h2>
+
+<table class="table table-striped table-condensed">
+ <thead>
+  <tr>
+	<th>Course</th>
+	<th>Import Details</th>
   </tr>
-  <% row_count = 0 %>
+ </thead>
   <% for course in @courses %>
-    <% row_count = row_count.next 
-	   odd = "odd"
-       odd = "even" if row_count.even? %>
-
-    <tr class="<%=odd%> hover" id="course_<%=course.id%>">
+    <tr id="course_<%=course.id%>">
       <td valign="top" align="left"><%= course.title %><br/><i><%= course.term.semester %></td>
       <td valign="top" align="left">
 	    <% if course.id == @course.id %>
@@ -35,26 +35,21 @@
 
   <% end %>
 </table>
-<br/>
+ </div>
+ <div class="tab-pane" id="shared">
+   <h2>Import From Shared Courses</h2>
 
-<div class="SectionHeader"><div class="Full">
-<h2><a name="other">Import From Shared Courses</a></h2>
-</div></div>
-
-<br/>
-<table class="fancy" width="99%">
+<% if @shares.size == 0 %>
+ <div class="alert alert-info">There are no shared courses to import content from.</div>
+<% else %>
+<table class="table table-striped table-condensed">
   <tr class="header">
-	<th width="10%" nowrap="nowrap">Import From</th>
-	<th width="90%">&nbsp;</th>
+	<th>Course</th>
+	<th>Import Details</th>
   </tr>
-  <% row_count = 0 %>
   <% for share in @shares %>
-    <% course = share.course
-       row_count = row_count.next 
-	   odd = "odd"
-       odd = "even" if row_count.even? %>
-
-    <tr class="<%=odd%> hover" id="course_<%=course.id%>">
+    <% course = share.course %>
+    <tr id="course_<%=course.id%>">
       <td valign="top" align="left"><%= course.title %><br/><i><%= course.term.semester %></td>
       <td valign="top" align="left">
 	    <% if course.id == @course.id %>
@@ -72,4 +67,7 @@
 
   <% end %>
 </table>
-<br/>
+<% end %>
+
+ </div>
+</div>

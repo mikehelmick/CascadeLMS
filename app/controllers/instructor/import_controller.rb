@@ -37,7 +37,8 @@ class Instructor::ImportController < Instructor::InstructorBase
       @rubric_count[share.course.id] = share.course.rubrics.size
     end
   
-    set_title
+    set_title()
+    set_breadcrumb()
   end
   
   def start
@@ -56,6 +57,7 @@ class Instructor::ImportController < Instructor::InstructorBase
     end
 
     @title = "Import content from #{@import_from.title} into #{@course.title}"
+    set_breadcrumb()
   end
   
   def import_data
@@ -232,6 +234,7 @@ class Instructor::ImportController < Instructor::InstructorBase
     flash[:badnotice] = @errorMessages.join(', ') if @errorMessages.size > 0
     
     @title = "Import Results - #{@course.title}"
+    set_breadcrumb().text = 'Import Results'
   end
   
   private
@@ -245,4 +248,9 @@ class Instructor::ImportController < Instructor::InstructorBase
     @title = "Import Content - #{@course.title}"
   end
 
+  def set_breadcrumb()
+    @breadcrumb = Breadcrumb.for_course(@course, true)
+    @breadcrumb.text = 'Import Content'
+    return @breadcrumb
+  end
 end

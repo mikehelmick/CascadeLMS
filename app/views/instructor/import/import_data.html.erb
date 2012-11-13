@@ -1,8 +1,6 @@
-<p><%= link_to 'Back', :controller => '/instructor/index', :action => nil, :course => @course %></p>
-
-<div class="SectionHeader"><div class="Full">
 <h2>Import Results for '<%=h @course.title%>' </h2>
-</div></div>
+
+<%= link_to('Done!', {:controller => '/instructor/index', :course => @course, :action => nil, :id => nil}, {:class => 'btn btn-success'}) %>
 
 <ul>
   <li>Imported <%= pluralize( @imported_posts.size, 'blog post' ) %></li>
@@ -13,9 +11,7 @@
 </ul>
 
 <% if @imported_assignments.size > 0 %>
-<div class="SectionHeader"><div class="Full">
-<h2>Imported Assignments</h2>
-</div></div>
+<h3>Imported Assignments</h3>
 <ul>	
  <% for assignment in @imported_assignments %>
    <li><%= assignment.title %></li>
@@ -24,9 +20,7 @@
 <% end %>
 
 <% if @imported_rubrics.size > 0 %>
-<div class="SectionHeader"><div class="Full">
-<h2>Imported Rubrics</h2>
-</div></div>
+<h3>Imported Rubrics</h3>
 <ul>	
  <% for rubric in @imported_rubrics %>
    <li><%= rubric.primary_trait %></li>
@@ -35,9 +29,7 @@
 <% end %>
 
 <% if @imported_documents.size > 0 %>
-<div class="SectionHeader"><div class="Full">
-<h2>Imported Documents</h2>
-</div></div>
+<h3>Imported Documents</h3>
 <ul>	
  <% for document in @imported_documents %>
    <li><%= image_tag( document.icon_file ) %> <%= document.title %> (<i><%= document.filename %></i>)</li>
@@ -46,9 +38,7 @@
 <% end %>
 
 <% if @imported_posts.size > 0 %>
-<div class="SectionHeader"><div class="Full">
-<h2>Imported blog posts</h2>
-</div></div>
+<h3>Imported blog posts</h3>
 <ul>
  <% for post in @imported_posts %>
    <li><%= post.title %></li>
@@ -63,9 +53,7 @@
 
 
 <% if @imported_wikis.size > 0 %>
-<div class="SectionHeader"><div class="Full">
-<h2>Imported Wiki Pages</h2>
-</div></div>
+<h3>Imported Wiki Pages</h3>
 <ul>	
  <% for wikiPage in @imported_wikis %>
    <li><%= wikiPage.page %></li>
