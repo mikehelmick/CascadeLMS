@@ -43,6 +43,7 @@ class User < ActiveRecord::Base
       self.feed.save
     end
     return self.feed
+  end
 
   def notification_count
     Notification.count(:conditions => ["user_id = ? and acknowledged = ?", self.id, false])

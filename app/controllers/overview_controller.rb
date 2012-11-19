@@ -36,19 +36,23 @@ class OverviewController < ApplicationController
   before_filter :ensure_logged_in
   before_filter :set_tab
 
-  layout 'application_right'
+  #layout 'application_right'
   
   def index
     return unless load_course( params[:course] )
     return unless allowed_to_see_course( @course, @user )
     
-    @recent_activity = FreshItems.fresh( @course, @app['recent_items'].to_i, true, @user.id )
-    
     set_title
     
     respond_to do |format|
-      format.html
-      format.xml { render :layout => false }
+      format.html {
+        @feed_id = @course.feed.id
+        @feed_items = @course.feed.load_items
+      }
+      format.xml {
+        @recent_activity = FreshItems.fresh( @course, @app['recent_items'].to_i, true, @user.id )
+        render :layout => false
+      }
     end
   end
   

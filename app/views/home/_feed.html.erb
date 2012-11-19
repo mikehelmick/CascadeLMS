@@ -1,22 +1,40 @@
 <% day_ago = Time.now - 60*60*24 %>
 <% for feed_item in @feed_items %>
-<div class="feed_item">
- <div class="feed_portrait">
+<div class="row" style="padding: 2px; margin-bottom: 10px;">
+ <div class="span1"></div>
+ <div class="span1">
 	<% unless feed_item.item.user.nil? %>
-	  <img id="avatar" src="<%= feed_item.item.user.gravatar_url(request.ssl?) %>" />
+	  <img id="avatar" src="<%= feed_item.item.user.gravatar_url(request.ssl?) %>" /><br/>
 	<% end %>
  </div>
- <div class="item_content">
-    <p>Posted by:
+ <div class="span9">
+   <div class="stream-item">
+	<span class="stream-item-label">
     <% unless feed_item.item.user.nil? %>
-      <%= link_to "#{feed_item.item.user.display_name}", :controller => '/profile', :id => feed_item.item.user.id, :course => nil, :assignment => nil %>
-    <% end %> -
+      By: <%= link_to "#{feed_item.item.user.display_name}", :controller => '/profile', :action => 'view', :id => feed_item.item.user.id, :course => nil, :assignment => nil %> /
+    <% end %>
     <% if feed_item.item.created_at > day_ago %>
-      <%= link_to "#{feed_item.item.created_at.to_formatted_s(:social_time)}", :controller => '/post', :id => feed_item.item.id, :course => nil, :assignment => nil %>
+      <%= link_to "#{feed_item.item.created_at.to_formatted_s(:social_time)}", :controller => '/post', :id => feed_item.item.id, :course => nil, :assignment => nil, :action => 'read' %>
 	<% else %>
-	  <%= link_to "#{feed_item.item.created_at.to_formatted_s(:social_date)}", :controller => '/post', :id => feed_item.item.id, :course => nil, :assignment => nil %>
+	  <%= link_to "#{feed_item.item.created_at.to_formatted_s(:social_date)}", :controller => '/post', :id => feed_item.item.id, :course => nil, :assignment => nil, :action => 'read' %>
 	<% end %>
-    </p>
+	
+	<% unless feed_item.item.course.nil? %>
+	  / <%= link_to "#{h feed_item.item.course.title}", :controller => '/overview', :course => feed_item.item.course, :id => nil %>
+	<% end %>
+	
+	<% if !feed_item.item.assignment_id.nil? && feed_item.item.assignment_id > 0 %>
+	  / Assignment: <%= link_to "#{feed_item.item.assignment.title}", {:controller => 'assignments', :course => feed_item.item.assignment.course, :action => 'view', :id => feed_item.item.assignment_id} %>
+	<% end %>
+	
+	</span>
+
+	<%= feed_item.item.body_html %>
+   </div>
+   <div class="stream-comment">
+   	 <span id="iap<%= feed_item.item.id %>"><%= render(:partial => '/post/aplus_btn', :locals => {:item => feed_item.item, :user => @user}) %></span> 
+<!-- / <span><%= link_to "#{pluralize(feed_item.item.comment_count, 'comment')}", :controller => '/post', :action => 'view', :id => feed_item.item, :course => nil %></span> -->
+   </div>
  </div>
 </div>
 <% end %>

@@ -1,4 +1,4 @@
 <h2><%= @course.title %> 
 <% if @course.short_description %>, <%= @course.short_description %><%end%></h2>
-<p><i class="icon-th-list"></i><strong>List View</strong> | <i class="icon-calendar"></i><%= link_to 'Calendar View', :controller => '/overview', :course => @course.id, :action => 'calendar' %></p>
-<%= render :partial => "fresh", :locals => { :public => false } %>
+
+<%= render :partial => '/home/feed' %>

@@ -1,6 +1,8 @@
 class Item < ActiveRecord::Base
   has_many :feeds, :through => :feeds_items
   has_many :item_shares, :dependent => :destroy
+
+  has_many :a_plus, :dependent => :destroy
   
   belongs_to :course
   belongs_to :user
@@ -13,6 +15,39 @@ class Item < ActiveRecord::Base
   
   before_save :transform_markup
 
+  # Toggle the A+ status for an item/user pair.
+  # This is done in a transaction, using locking on the item.
+  #
+  # Returns a pair of:
+  #   updated item (w/ new count), APlus record for user (or nil)
+  def self.toggle_plus(item, user)
+    nitem = nil
+    aplus = nil
+    
+    Item.transaction do
+      uncached do
+        nitem = Item.find(item.id, :lock => true)
+        aplus = APlus.find(:first, :conditions => ["item_id = ? and user_id =?", item.id, user.id], :lock => true)
+
+        if aplus.nil?
+          aplus = APlus.for(item, user)
+          nitem.aplus_count = nitem.aplus_count + 1
+        else
+          APlus.delete_all(["item_id = ? and user_id =?", item.id, user.id])
+          aplus = nil
+          nitem.aplus_count = nitem.aplus_count - 1
+          # sanity check condition
+          nitem.aplus_count = 0 if nitem.aplus_count < 0
+        end
+        
+        # Save everything back, commit
+        nitem.save
+      end
+    end
+
+    return nitem, aplus
+  end
+
   # Share this item with a whole course.
   def share_with_course(course, timestamp = Time.now)
     ItemShare.for_course(self, course)
@@ -23,6 +58,11 @@ class Item < ActiveRecord::Base
   def share_with_user(user, timestamp = Time.now)
     ItemShare.for_user(self, user)
     publish_to_user(user, timestamp)
+  end
+
+  # Check if an individual user did an A+ operation
+  def user_aplus?(user)
+    return !APlus.find(:first, :conditions => ["item_id = ? and user_id =?", self.id, user.id]).nil?
   end
   
   def transform_markup

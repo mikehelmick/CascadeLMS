@@ -10,7 +10,7 @@ class HomeController < ApplicationController
   before_filter :ensure_logged_in
   
   def initialize()
-    @title = "CS Courseware Home"
+    @title = "CascadeLMS"
   end
   
   # Some test code for background jobs

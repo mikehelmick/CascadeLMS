@@ -1,11 +1,9 @@
 <%= render :partial => 'announcements' %>
+<% if @feed_items.size < 5 %>
+ <div class="hero-unit">
+  <h2>Welcome to CascadeLMS</h2>
+  <p>Get started by selecting the appropriate course from the navigation bar. If you don't see a course that you expect to, please contact your instructor.</p>
+ </div>
+<% end %>
 
 <%= render :partial => 'feed' %>
-<div class="hero-unit">
- <h2>Welcome to CascadeLMS</h2>
- <p>Get started by selecting the appropriate course from the navigation bar. If you don't see a course that you expect to, please contact your instructor.</p>
-
- <% for cu in @user.courses_in_term( @term ) %>
-   
- <% end %>
-</div>
