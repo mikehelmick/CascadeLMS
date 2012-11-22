@@ -24,7 +24,10 @@
 	<% end %>
 	
 	<% if !feed_item.item.assignment_id.nil? && feed_item.item.assignment_id > 0 %>
-	  / Assignment: <%= link_to "#{feed_item.item.assignment.title}", {:controller => 'assignments', :course => feed_item.item.assignment.course, :action => 'view', :id => feed_item.item.assignment_id} %>
+	  / Assignment: <%= link_to "#{feed_item.item.assignment.title}", {:controller => '/assignments', :course => feed_item.item.assignment.course, :action => 'view', :id => feed_item.item.assignment_id} %>
+	<% end %>
+	<% if feed_item.item.forum? %>
+	  / <%= link_to('Read Forum', {:controller => '/forums', :course => feed_item.item.course, :action => 'read', :id => feed_item.item.forum_post_id}) %>
 	<% end %>
 	
 	</span>
@@ -32,7 +35,7 @@
 	<%= feed_item.item.body_html %>
    </div>
    <div class="stream-comment">
-   	 <span id="iap<%= feed_item.item.id %>"><%= render(:partial => '/post/aplus_btn', :locals => {:item => feed_item.item, :user => @user}) %></span> 
+   	     <span id="iap<%= feed_item.item.id %>"><%= render(:partial => '/post/aplus_btn', :locals => {:item => feed_item.item, :user => @user}) %></span> <% if feed_item.item.forum? %><%= link_to('Read Forum', {:controller => '/forums', :course => feed_item.item.course, :action => 'read', :id => feed_item.item.forum_post_id}, {:class => 'btn btn-mini'}) %><% end %>
 <!-- / <span><%= link_to "#{pluralize(feed_item.item.comment_count, 'comment')}", :controller => '/post', :action => 'view', :id => feed_item.item, :course => nil %></span> -->
    </div>
  </div>

@@ -14,6 +14,10 @@ class Item < ActiveRecord::Base
   belongs_to :forum_post
   
   before_save :transform_markup
+  
+  def forum?
+    return !self.forum_post_id.nil? && self.forum_post_id > 0
+  end
 
   # Toggle the A+ status for an item/user pair.
   # This is done in a transaction, using locking on the item.
@@ -49,13 +53,13 @@ class Item < ActiveRecord::Base
   end
 
   # Share this item with a whole course.
-  def share_with_course(course, timestamp = Time.now)
+  def share_with_course(course, timestamp)
     ItemShare.for_course(self, course)
     publish_to_course(course, timestamp)
   end
   
   # Share with a specific user only.
-  def share_with_user(user, timestamp = Time.now)
+  def share_with_user(user, timestamp)
     ItemShare.for_user(self, user)
     publish_to_user(user, timestamp)
   end
@@ -78,13 +82,12 @@ class Item < ActiveRecord::Base
   private
   def publish_to_course(course, timestamp)
     # publish to the course's feed
-    course_feed_id = course.create_feed.id
-    FeedsItems.create(course_feed_id, self.id, timestamp)
+    feed = course.create_feed
+    FeedsItems.create(feed.id, self.id, timestamp)
 
-    # publish to the the feed for all users in the course
-    courses_users = course.non_dropped_users
-    courses_users.each do |u|
-      publish_to_user(u, timestamp)
+    # publish to the subscribers
+    feed.feed_subscriptions.each do |fs|
+      publish_to_user(fs.user, timestamp)
     end
   end
 
@@ -93,5 +96,4 @@ class Item < ActiveRecord::Base
     user_feed_id = user.create_feed.id
     FeedsItems.create(user_feed_id, self.id, timestamp)
   end
-
 end

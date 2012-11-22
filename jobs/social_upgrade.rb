@@ -6,8 +6,25 @@ class SocialUpgrade
   
   def initialize()
   end
+
+  def upgrade_users()
+    puts "Creating feeds for all users"
+    users = User.find(:all)
+    users.each do |user|
+      user.create_feed
+    end
+  end
   
   def execute()
+    setting = Setting.find(:first, :conditions => ["name = ?", 'social_upgrade'])
+    unless setting.value.eql?("0")
+      puts "Social upgrade has already been run."
+      return
+    end
+
+    upgrade_users()
+    
+    Course.transaction do
     courses = Course.find(:all, :order => "term_id DESC, id DESC")
     puts "Upgrading #{courses.size} courses to social"
 
@@ -102,6 +119,9 @@ class SocialUpgrade
           end
         end
       end
+      setting.value = '1'
+      setting.save
+      end #transaction 
     end
   
   end

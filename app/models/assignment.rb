@@ -47,6 +47,7 @@ class Assignment < ActiveRecord::Base
     item.enable_comments = true
     item.enable_reshare = false
     item.assignment_id = self.id
+    item.created_at = self.open_date
     return item
   end
 
@@ -61,6 +62,7 @@ class Assignment < ActiveRecord::Base
     item.enable_comments = true
     item.enable_reshare = false
     item.assignment_id = self.id
+    item.created_at = self.updated_at
     return item  
   end
   

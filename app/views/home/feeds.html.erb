@@ -1,0 +1,24 @@
+<h2>Manage Feed Subscriptions</h2>
+
+<table class="table table-condensed table-striped">
+ <thead>
+  <tr>
+   <td>Subscribed</td>
+   <td>Get Email</td>
+   <td>Feed</td>
+  </tr>
+ </thead>
+
+ <% for fs in @user.feed_subscriptions %>
+   <tr>
+	<td>Yes</td>
+	<td><% if fs.send_email %>Yes<% else %>No<% end %></td>
+	<td>
+	  <% if !fs.feed.course_id.nil? %>
+	    Course: <%= fs.feed.course.title %>
+	  <% else %>
+	    User: <%= fs.feed.user.display_name %>
+	  <% end %>
+	</td>
+ <% end %>
+</table>

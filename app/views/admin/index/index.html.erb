@@ -1,6 +1,10 @@
 <h2>Administer your Courseware Installation</h2>
 
-<div id="GoodMessage"><%= link_to 'Upgrade your system to CascadeLMS 1.5 and above.', :action => 'run_upgrade' %>. This upgrade must be run once when upgrading from a release of CascadeLMS older than 1.5 to a version newer than 1.5.</div>
+<% if @app['social_upgrade'].eql?('0') %>
+<hr/>
+<%= link_to 'Upgrade your system to CascadeLMS 2', {:action => 'run_upgrade'}, {:class => "btn btn-xlarge btn-success"} %><br/> This upgrade must be run once when upgrading from a release of CascadeLMS older than 1.5 to a version newer than 1.5.
+<hr/>
+<% end %>
 
 <ul>
   <li><%= link_to 'System Announcements', :controller => '/admin/announcement', :action => nil, :id => nil %></li>

@@ -1,6 +1,8 @@
 require 'action_controller'
 
 class Feed < ActiveRecord::Base
+  belongs_to :user
+  belongs_to :course
 
   has_many :items, :through => :feeds_items
   
@@ -11,7 +13,8 @@ class Feed < ActiveRecord::Base
     subscription.feed = self
     subscription.user = user
     subscription.send_email = true
-    subscription.save
+    # could be an exception if the user is already subscribed.
+    subscription.save rescue true
   end
 
   # Gets one page of items for this feed

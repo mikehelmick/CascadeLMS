@@ -56,6 +56,12 @@ class HomeController < ApplicationController
       }
     end
   end
+
+  def feeds
+    set_tab
+    @title = "Manage Feeds"
+    @breadcrumb.text = 'Manage Feeds'
+  end
   
   def reorder
     set_tab

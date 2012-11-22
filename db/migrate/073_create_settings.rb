@@ -10,12 +10,11 @@ class CreateSettings < ActiveRecord::Migration
 
 #   Setting.create :name => 'storage_directory', :value => '/srv/www/rails/debug/shared/storage'
 
-    Setting.create :name => 'title', :value => 'Miami University', :description => 'Main title for the site.'
-    Setting.create :name => 'organization', :value => 'Miami University', :description => 'Name of the organization for which this software is installed.'
+    Setting.create :name => 'title', :value => 'University of Life', :description => 'Main title for the site.'
+    Setting.create :name => 'organization', :value => 'University of Life', :description => 'Name of the organization for which this software is installed.'
 
-    Setting.create :name => 'email', :value => 'mike.helmick@muohio.edu', :description => 'Contact email, displayed on the bottom of the page.'
-    Setting.create :name => 'error_email', :value => 'mike.helmick@muohio.edu', :description => 'Email address to send error reports to.   These are live reports of exceptions as they occur.'
-    Setting.create :name => 'blackboard', :value => 'http://mymiami.muohio.edu', :description => 'Do you still use Blackboard, or some other CMS?   Put the link here.'
+    Setting.create :name => 'email', :value => 'mike.helmick@gmail.com', :description => 'Contact email, displayed on the bottom of the page.'
+    Setting.create :name => 'error_email', :value => 'mike.helmick@gmail.com', :description => 'Email address to send error reports to.   These are live reports of exceptions as they occur.'
     Setting.create :name => 'dir_link', :value => 'http://netapps.muohio.edu/phpapps/directory/?searchstring=', :description => 'Link to a directory system based on Unique IDs'
 
     Setting.create :name => 'external_dir', :value => '/srv/www/rails/cscourseware/shared/storage', :description => 'Local file system directory where all data for this system is stored.  It is critical that this directory, exists, has correct permissions, has enough space, and DOES NOT CHANGE.'
