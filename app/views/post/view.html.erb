@@ -1,0 +1,9 @@
+<% day_ago = Time.now - 60*60*24 %>
+<%= render :partial => '/post/post', :locals => {:item => @item, :day_ago => day_ago}%>
+
+<% if @item.enable_comments %>
+ <h3><%= pluralize(@item.comment_count, 'comment') %></h3>
+
+<% else %>
+ <div class="alert alert-info">Comments are disabled on this post</div>
+<% end %>

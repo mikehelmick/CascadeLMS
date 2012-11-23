@@ -14,9 +14,84 @@ class Item < ActiveRecord::Base
   belongs_to :forum_post
   
   before_save :transform_markup
-  
+
+  def title
+    return "Assignment #{assignment.title}" if assignment?
+    return "Assignment #{graded_assignment.title}" if graded_assignment?
+    return "Document #{document.title}" if document?
+  end
+
+  # Gets users that have done the APlus action on this post.
+  # If a user is passed in, and the have done the aplus action, they should be in the list
+  def aplus_users(user = nil, limit = 15)
+    selected_user_plus = false
+    aplus_users = Hash.new
+    all_aplus = APlus.find(:all, :conditions => ["item_id = ?", self.id])
+    all_aplus.each do |aplus|
+      aplus_users[aplus.user_id] = aplus.user
+      selected_user_plus = true if !user.nil? && user.id == aplus.user_id
+    end
+
+    return Array.new if aplus_users.size == 0
+
+    rtnArray = Array.new
+    sampleSize = limit
+    if selected_user_plus
+      rtnArray << user
+      aplus_users[user.id] = nil
+      sampleSize = sampleSize + 1
+    end
+    # Randomly fill in the rest of the array
+    randomly_got_user = false;
+    aplus_users.keys.sample(sampleSize).each do |key|
+      if selected_user_plus && key == user.id
+        randomly_got_user = true
+      elsif rtnArray.size < limit
+        rtnArray << aplus_users[key]
+      end
+    end
+    return rtnArray
+  end
+
+  def assignment?
+    return !self.assignment_id.nil? && self.assignment_id > 0
+  end
+
+  def graded_assignment?
+    return !self.graded_assignment_id.nil? && self.graded_assignment_id > 0
+  end
+
+  def graded_assignment
+    return Assignment.find(graded_assignment_id) if graded_assignment?
+    return nil
+  end
+
   def forum?
     return !self.forum_post_id.nil? && self.forum_post_id > 0
+  end
+
+  def document?
+    return !self.document_id.nil? && self.document_id > 0
+  end
+
+  def blog_post?
+    return !self.post_id.nil? && self.post_id > 0
+  end
+
+  def wiki?
+    return !self.wiki_id.nil? && self.wiki_id > 0
+  end
+
+  def visible_to_user?(user)
+    course_ids = Hash.new
+    user.courses.each { |c| course_ids[c.id] = true }
+
+    self.item_shares.each do |share|
+      return true if !share.user_id.nil? && share.user_id == user.id
+      return true if !share.course_id.nil? && course_ids[share.course_id]
+    end
+
+    return false
   end
 
   # Toggle the A+ status for an item/user pair.

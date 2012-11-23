@@ -1,0 +1,43 @@
+<div class="row" style="padding: 2px; margin-bottom: 10px;">
+ <div class="span1"></div>
+ <div class="span1">
+	<% unless item.user.nil? %>
+	  <img id="avatar" src="<%= item.user.gravatar_url(request.ssl?) %>" /><br/>
+	<% end %>
+ </div>
+ <div class="span9">
+   <div class="stream-item">
+	<span class="stream-item-label">
+    <% unless item.user.nil? %>
+      By: <%= link_to "#{item.user.display_name}", :controller => '/profile', :action => 'view', :id => item.user.id, :course => nil, :assignment => nil %> /
+    <% end %>
+    <% if item.created_at > day_ago %>
+      <%= link_to "#{item.created_at.to_formatted_s(:social_time)}", :controller => '/post', :id => item.id, :course => nil, :assignment => nil, :action => 'read' %>
+	<% else %>
+	  <%= link_to "#{item.created_at.to_formatted_s(:social_date)}", :controller => '/post', :id => item.id, :course => nil, :assignment => nil, :action => 'read' %>
+	<% end %>
+	
+	<% unless item.course.nil? %>
+	  / <%= link_to "#{h item.course.title}", :controller => '/overview', :course => item.course, :id => nil %>
+	<% end %>
+	
+	<% if !item.assignment_id.nil? && item.assignment_id > 0 %>
+	  / Assignment: <%= link_to "#{item.assignment.title}", {:controller => '/assignments', :course => item.assignment.course, :action => 'view', :id => item.assignment_id} %>
+	<% end %>
+	<% if item.forum? %>
+	  / <%= link_to('Read Forum', {:controller => '/forums', :course => item.course, :action => 'read', :id => item.forum_post_id}) %>
+	<% end %>
+	<% if item.document? %>
+	  <!-- TODO(mikehelmick): Have link version -->
+	  / Download: <%= render :partial => '/documents/download_link', :locals => {:document => item.document, :course => item.course}%>
+	<% end %>
+	
+	</span>
+
+	<%= item.body_html %>
+   </div>
+   <div class="stream-comment">
+   	     <span id="iap<%= item.id %>"><%= render(:partial => '/post/aplus_btn', :locals => {:item => item, :user => @user}) %></span> <% if item.enable_comments %>| <%= link_to "#{pluralize(item.comment_count, 'comment')}", :controller => '/post', :action => 'view', :id => item, :course => nil %><% end %> <% if item.forum? %>| <%= link_to('Read Forum', {:controller => '/forums', :course => item.course, :action => 'read', :id => item.forum_post_id}) %><% end %> 
+   </div>
+ </div>
+</div>

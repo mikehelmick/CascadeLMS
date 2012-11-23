@@ -309,6 +309,15 @@ class ApplicationController < ActionController::Base
     end
     return true
   end
+
+  def allowed_to_view_item(user, item)
+    unless item.visible_to_user?(user)
+      flash[:notice] = "That post does not exist."
+      redirect_to :controller => '/home', :action => nil, :course => nil, :assignment => nil, :id => nil
+      return false
+    end
+    true
+  end
   
   def assignment_available_for_students_team( course, assignment, user_id )
     if course.course_setting.enable_project_teams
