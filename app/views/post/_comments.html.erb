@@ -1,0 +1,18 @@
+<% for comment in item.item_comments %>
+ <div class="row">
+  <div class="span1">&nbsp;</div>
+  <div class="span1">
+	<%= render :partial => '/profile/hovercard', :locals => {:user => comment.user, :size => 90} %>
+  </div>
+  <div class="span9 stream-item">
+	<span class="stream-item-label"><%= render :partial => '/profile/name_hovercard', :locals => {:user => comment.user} %> @ 
+		<% if comment.created_at > day_ago %>
+		  <%= comment.created_at.to_formatted_s(:social_time) %>
+		<% else %>
+		  <%= comment.created_at.to_formatted_s(:social_date) %>
+		<% end %>
+    </span>
+    <%= comment.body_html %>
+  </div>
+ </div>
+<% end %>

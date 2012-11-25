@@ -56,7 +56,7 @@ class BlogController < ApplicationController
     @comment = Comment.new(params[:comment])
     @comment.user = session[:user]
     @comment.post = @post
-    @comment.ip = 'unknown'  # FIX THIS
+    @comment.ip = session[:ip]
     @comment.course_id = @course.id
     
     if @comment.save

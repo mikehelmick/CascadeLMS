@@ -1,0 +1,1 @@
+<% carddata = "#{user.email}" %><%= link_to(user.display_name, {:controller => '/profile', :action => 'view', :id => user.id}, {:rel => 'popover', :title => user.display_name, 'data-trigger' => 'hover', 'data-html' => 'true', 'data-content' => carddata, 'data-placement' => 'right'}) %>

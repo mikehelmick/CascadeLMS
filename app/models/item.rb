@@ -2,6 +2,8 @@ class Item < ActiveRecord::Base
   has_many :feeds, :through => :feeds_items
   has_many :item_shares, :dependent => :destroy
 
+  has_many :item_comments, :order => 'created_at DESC', :dependent => :destroy
+
   has_many :a_plus, :dependent => :destroy
   
   belongs_to :course
@@ -92,6 +94,21 @@ class Item < ActiveRecord::Base
     end
 
     return false
+  end
+
+  def self.add_comment(item, comment)
+    noCacheItem = nil
+    Item.transaction do
+      uncached do
+        noCacheItem = Item.find(item.id, :lock => true)
+        noCacheItem.comment_count = noCacheItem.comment_count + 1
+        
+        comment.item = noCacheItem
+        comment.save
+        noCacheItem.save
+      end
+    end
+    return noCacheItem
   end
 
   # Toggle the A+ status for an item/user pair.

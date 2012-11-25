@@ -17,5 +17,5 @@ config.action_view.debug_rjs                         = true
 config.action_mailer.raise_delivery_errors = false
 
 config.action_controller.session = {  
-  :session_domain => 'me.muohio.edu',
+  :session_domain => '*.cascadelms.org',
 }

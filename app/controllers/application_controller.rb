@@ -487,6 +487,7 @@ class ApplicationController < ActionController::Base
       flash[:notice] = nil
       flash[:notice] = @user.notice if @user.notice
       session[:user] = User.find( @user.id )
+      session[:ip] = request.remote_ip
       session[:current_term] = Term.find_current
       
       if ( redirect && session[:post_login].nil? )
