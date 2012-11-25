@@ -25,6 +25,8 @@ class Assignment < ActiveRecord::Base
   has_many :team_filters, :dependent => :destroy
   
   has_many :rubrics, :order => "position", :dependent => :destroy
+
+  has_one :item, :dependent => :destroy
   
   
   validates_presence_of :title
@@ -58,10 +60,10 @@ class Assignment < ActiveRecord::Base
     item = Item.new
     item.user_id = inst_id
     item.course_id = self.course.id
-    item.body = "Greates for '#{self.title}' are now available (#{self.course.short_description}). See how you did!"
+    item.body = "Grades for '#{self.title}' are now available (#{self.course.short_description}). See how you did!"
     item.enable_comments = true
     item.enable_reshare = false
-    item.assignment_id = self.id
+    item.graded_assignment_id = self.id
     item.created_at = self.updated_at
     return item  
   end

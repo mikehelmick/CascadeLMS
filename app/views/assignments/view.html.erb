@@ -6,6 +6,10 @@
 <% end %>	
 </h2>
 
+<% unless @assignment.item.nil? %>
+ <span id="iap<%= @assignment.item.id %>"><%= render(:partial => '/post/aplus_btn', :locals => {:item => @assignment.item, :user => @user}) %></span> <% if @assignment.item.enable_comments %>| <%= link_to "#{pluralize(@assignment.item.comment_count, 'comment')}", :controller => '/post', :action => 'view', :id => @assignment.item, :course => nil %><% end %>
+<% end %>
+
 <% if @instructor && !@assignment.visible %>
 <div class="alert">This assignment is not yet published to students. You are able to see it since you are an instructor in this course.</div>
 <% end %>
