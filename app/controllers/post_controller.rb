@@ -11,10 +11,26 @@ class PostController < ApplicationController
     return unless allowed_to_view_item(@user, @item)
     return unless comments_open(@item)
 
+    # Default breadcrumb
     @breadcrumb = Breadcrumb.new()
     @breadcrumb.text = 'View Post'
     @title = @item.title
 
+    # Customize the menu display, depending on the kind of item.
+    # Attempt to make the menus as integrated as possible w/ normal course flow.
+    if !@item.course.nil? && allowed_to_see_course(@item.course, @user, false)
+      @course = @item.course
+      @show_course_tabs = true
+      if @item.assignment? || @item.graded_assignment?
+        @tab = 'course_assignments'
+        @breadcrumb = Breadcrumb.for_course(@course)
+        @breadcrumb.assignment = @item.assignment
+        @breadcrumb.text = 'Comments'
+        @breadcrumb.link = url_for(:action => 'view', :id => @item)
+      end
+    end
+
+    # For new comments
     @item_comment = ItemComment.new
   end
 

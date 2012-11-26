@@ -2,7 +2,7 @@ class Item < ActiveRecord::Base
   has_many :feeds, :through => :feeds_items
   has_many :item_shares, :dependent => :destroy
 
-  has_many :item_comments, :order => 'created_at DESC', :dependent => :destroy
+  has_many :item_comments, :order => 'created_at asc', :dependent => :destroy
 
   has_many :a_plus, :dependent => :destroy
   

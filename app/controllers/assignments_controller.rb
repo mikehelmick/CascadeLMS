@@ -410,8 +410,8 @@ class AssignmentsController < ApplicationController
 
   def set_tab
     @show_course_tabs = true
-    @tab = "course_assignments"
-    @title = "Course Assignments"
+    @tab = 'course_assignments'
+    @title = 'Course Assignments'
   end
 
   def set_title(assignment = nil)

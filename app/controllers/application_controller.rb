@@ -356,7 +356,7 @@ class ApplicationController < ActionController::Base
         end
       end  
     end
-    flash[:badnotice] = "You are not authorized to view the requested course."
+    flash[:badnotice] = "You are not authorized to view the requested course." if redirect
     redirect_to :controller => '/home' if redirect
     return false
   end
