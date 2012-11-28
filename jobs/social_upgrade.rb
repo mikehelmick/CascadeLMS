@@ -71,6 +71,7 @@ class SocialUpgrade
             if existing.nil?
               puts "Post #{post.id}"
               item = post.create_item
+              item.comment_count = post.number_of_comments()
               item.save
               item.share_with_course(course, post.created_at)
             end

@@ -52,21 +52,41 @@ class BlogController < ApplicationController
     @post = Post.find( params[:id] )
     return unless post_in_course( @course, @post )  
     return unless check_comments_enabled( @course, @post )    
-    
-    @comment = Comment.new(params[:comment])
-    @comment.user = session[:user]
-    @comment.post = @post
-    @comment.ip = session[:ip]
-    @comment.course_id = @course.id
-    
-    if @comment.save
-      set_highlight( "comment_#{@comment.id}" )
-      flash[:notice] = 'Your comment has been saved'
+
+    begin
+      @comment = Comment.new(params[:comment])
+      @comment.user = session[:user]
+      @comment.ip = session[:ip]
+      @comment.course_id = @course.id
+      
+      @post.add_comment(@comment)
+      flash[:notice] = 'Your comment has been saved.'
       redirect_to :action => 'post', :course => @course, :id => @post
-    else
+    rescue
+      set_title()
+      @breadcrumb.post = @post
+      @breadcrumb.text = nil
       flash[:expand] = true
       render :action => 'post'
     end
+  end
+
+  def delete_comment
+    return unless load_course( params[:course ] )
+    post = Post.find(params[:post_id])
+    return unless post_in_course( @course, post )
+    return unless course_open( @course, :action => 'index' )
+  
+    comment = Comment.find( params[:id] )
+    return false unless comment.post_id = post.id
+    
+    okToDelete = comment.user_id == @user.id
+    unless okToDelete
+      return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_blog_edit' )
+    end
+
+    return false unless post.remove_comment(comment)
+    render :nothing => true
   end
   
   def set_tab

@@ -11,13 +11,17 @@
 <%= post.body_html %>
 </p>
 <p class="summary">
+  <% unless post.item.nil? %>
+	 <span id="iap<%= post.item.id %>"><%= render(:partial => '/post/aplus_btn', :locals => {:item => post.item, :user => @user}) %></span>
+  <% end %>  
+	
   <% if post.enable_comments && @course.course_setting.blog_comments %>
     <% if single %>
       <% count = post.number_of_comments %>
-        <%= link_to_function( "Leave a comment <i class=\"icon-comment\"></i>", "blindToggle( 'leave_comment' )" ) %>
+        | <%= link_to_function( "Leave a comment <i class=\"icon-comment\"></i>", "blindToggle( 'leave_comment' )" ) %>
     <% else %>
       <% count = post.number_of_comments %>
-      <%= link_to "#{pluralize(count, 'Comment')}", :action => 'post', :course => @course, :id => post %>
+      | <%= link_to "#{pluralize(count, 'Comment')}", :action => 'post', :course => @course, :id => post %>
     <% end %>	
   <% else %>
     <i>Comments disabled for this post</i>

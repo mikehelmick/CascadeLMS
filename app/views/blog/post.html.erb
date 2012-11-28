@@ -1,4 +1,3 @@
-<p><i class="icon-chevron-left"></i><%= link_to "Back", :action => 'index' %></p>
 <%= render :partial => 'article', :locals => { :post => @post, :single => true } %>
 <% style = 'display: none;'
    style = '' if flash[:expand] %>
@@ -6,37 +5,43 @@
 <div id="leave_comment" style="<%=style%>">
 <div class="well">
   <%= error_messages_for 'comment', :class => 'alert alert-error' %>	
-  <% form_tag( {:action => 'comment', :id => @post}, {:class => 'form_horizontal'} ) do %>
+  <% form_tag( {:action => 'comment', :id => @post}, {:class => 'form-horizontal'} ) do %>
 
  <div class="control-group">
   <label for="comment_body" class="control-label">Your Comment:</label>
   <div class="controls">
-   <%= text_area 'comment', 'body', :cols => 150, :rows => 5  %></p>
+   <%= text_area 'comment', 'body', :class => 'input-xlarge', :cols => 150, :rows => 5  %></p>
   </div>
  </div>
 
-  <div class="submit">
-	<%= link_to_function( "Cancel", "blindToggle( 'leave_comment' )", :class => 'btn' ) %>
-	<%= submit_tag "Leave Comment", :class => 'btn btn-primary' %>
-  </div>
-  <% end %>	
+ <%= submit_tag "Leave Comment", :class => 'btn btn-primary' %>
+ <%= link_to_function( "Cancel", "blindToggle( 'leave_comment' )", :class => 'btn' ) %>
+ <% end %>	
 </div>
 </div>
 
 <% if @post.enable_comments && @course.course_setting.blog_comments %>
 <h2>Comments</h2>
+<% day_ago = Time.now - 60*60*24 %>
 <% for comment in @post.comments %>
-<div class="well" id="comment_<%=comment.id%>">
-  <h4><a name="comment_<%=comment.id%>"><img src="<%= comment.user.gravatar_url(request.ssl?) %>" align="bottom" /></a> <%=h comment.user.display_name %> @ <%=h comment.created_at.to_formatted_s(:long) %>
- <% if @user.instructor_in_course?(@course.id) || (@user.assistant_in_course?(@course.id) && @course.course_setting.ta_course_blog_edit ) %>
-<%= link_to_remote( "<i class=\"icon-minus-sign\"></i> Delete Comment", :url => { :controller => '/instructor/blog', :action => 'delete_comment', :course => @course.id, :post_id => @post.id, :id => comment.id }, :confirm => "Delete comment?", :success => "new Effect.Puff( 'comment_#{comment.id}' )", :failure => "alert('There was an error deleting the comment.');" ) %>
- <% end %>
-</h4>
-  <p class="commentBody">
-	<%= comment.body_html %>
-  </p>
-</div>
+<div class="row" id="comment_<%=comment.id%>">
+  <div class="span1">&nbsp;</div>
+  <div class="span1">
+	<%= render :partial => '/profile/hovercard', :locals => {:user => comment.user, :size => 90} %>
+  </div>
+  <div class="span9 stream-item">
+	<span class="stream-item-label"><%= render :partial => '/profile/name_hovercard', :locals => {:user => comment.user} %> @ 
+		<% if comment.created_at > day_ago %>
+		  <%= comment.created_at.to_formatted_s(:social_time) %>
+		<% else %>
+		  <%= comment.created_at.to_formatted_s(:social_date) %>
+		<% end %>
+		<% if @user.id == comment.user.id || @user.instructor_in_course?(@course.id) || (@user.assistant_in_course?(@course.id) && @course.course_setting.ta_course_blog_edit ) %>
+		:: <%= link_to_remote( "<i class=\"icon-minus-sign\"></i> Delete Comment", :url => { :controller => '/blog', :action => 'delete_comment', :course => @course.id, :post_id => @post.id, :id => comment.id }, :confirm => "Delete comment?", :success => "new Effect.Puff( 'comment_#{comment.id}' )", :failure => "alert('There was an error deleting the comment.');" ) %>
+		 <% end %>
+    </span>
+    <%= comment.body_html %>
+  </div>
+ </div>
 <% end %>
 <% end %>
-
-<p><i class="icon-chevron-left"></i><%= link_to "Back", :action => 'index' %></p>

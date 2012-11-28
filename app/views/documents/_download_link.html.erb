@@ -1,14 +1,14 @@
 <% if document.folder %>   		      
-  <%= link_to "<i class=\"#{document.icon_file}\"></i> #{document.title}", :action => 'index', :course => course.id, :id => document %> 
+  <%= link_to "<i class=\"#{document.icon_file}\"></i> #{document.title}", :controller => '/documents', :action => 'index', :course => course.id, :id => document %> 
   <% if document.podcast_folder %>
-    <%= link_to '<i class="icon-headphones"></i> Subscribe', :action => 'subscribe', :course => course.id, :id => document %>
+    <%= link_to '<i class="icon-headphones"></i> Subscribe', :controller => '/documents', :action => 'subscribe', :course => course.id, :id => document %>
   <% end %>
 
   <% if @instructor %>
     &nbsp;&nbsp;(<%= link_to '<i class="icon-edit"></i> Edit', :controller => '/instructor/course_docs', :action => 'edit', :course => course, :id => document %>)
   <% end %>
 <% else %>
-  <%= link_to "<i class=\"#{document.icon_file}\"></i> #{document.title}", :action => 'download', :course => course.id, :id => document, :file => document.without_extension, :extension => document.extension %>
+  <%= link_to "<i class=\"#{document.icon_file}\"></i> #{document.title}", :controller => '/documents', :action => 'download', :course => course.id, :id => document, :file => document.without_extension, :extension => document.extension %>
 
   <% if @instructor %>
     &nbsp;&nbsp;(<%= link_to '<i class="icon-edit"></i> Edit', :controller => '/instructor/course_docs', :action => 'edit_folder', :course => course, :id => document %>)

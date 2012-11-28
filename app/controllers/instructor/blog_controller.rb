@@ -45,10 +45,15 @@ class Instructor::BlogController < Instructor::InstructorBase
     @post = Post.new(params[:post])
     @post.course = @course
     @post.user = session[:user]
-    if @post.save
+    
+    begin
+      @post.publish()
       flash[:notice] = 'Post was successfully created.'
       redirect_to :action => 'list'
-    else
+    rescue
+      flash[:badnotice] = 'Failed to create blog post, please try again.'
+      @title = 'New Blog Post'
+      set_breadcrumb().text = 'New Post'
       render :action => 'new'
     end
   end

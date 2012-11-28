@@ -12,9 +12,9 @@
       By: <%= link_to "#{item.user.display_name}", :controller => '/profile', :action => 'view', :id => item.user.id, :course => nil, :assignment => nil %> /
     <% end %>
     <% if item.created_at > day_ago %>
-      <%= link_to "#{item.created_at.to_formatted_s(:social_time)}", :controller => '/post', :id => item.id, :course => nil, :assignment => nil, :action => 'read' %>
+      <%= link_to "#{item.created_at.to_formatted_s(:social_time)}", :controller => '/post', :id => item.id, :course => nil, :assignment => nil, :action => 'view' %>
 	<% else %>
-	  <%= link_to "#{item.created_at.to_formatted_s(:social_date)}", :controller => '/post', :id => item.id, :course => nil, :assignment => nil, :action => 'read' %>
+	  <%= link_to "#{item.created_at.to_formatted_s(:social_date)}", :controller => '/post', :id => item.id, :course => nil, :assignment => nil, :action => 'view' %>
 	<% end %>
 	
 	<% unless item.course.nil? %>

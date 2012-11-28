@@ -2,20 +2,41 @@ class Post < ActiveRecord::Base
   has_many :comments, :order => "created_at", :dependent => :destroy
   belongs_to :user
   belongs_to :course
+
+  has_one :item, :dependent => :destroy
   
   validates_presence_of :title, :body
   
   before_save :transform_markup
-  
-  def create_item()
-    item = Item.new
-    item.user_id = self.user_id
-    item.course_id = self.course.id
-    item.body = self.body
-    item.enable_comments = false
-    item.enable_reshare = false
-    item.post_id = self.id
-    return item
+
+  def publish
+    transaction do
+      save
+      item = create_item()
+      item.save
+      item.share_with_course(self.course, self.created_at)
+    end
+  end
+
+  def add_comment(comment)
+    transaction do
+      save
+      comment.post = self
+      comment.save
+      item = Item.find(:first, :conditions => ["post_id = ?", self.id], :lock => true)
+      item.comment_count = item.comment_count + 1
+      item.save
+    end
+  end
+
+  def remove_comment(comment)
+    transaction do
+      item = Item.find(:first, :conditions => ["post_id = ?", self.id], :lock => true)
+      item.comment_count = item.comment_count - 1
+      item.comment_count = 0 if item.comment_count < 0
+      item.save
+      comment.destroy
+    end
   end
   
   def clone_to_course( course_id, user_id, time_offset = nil? )
@@ -78,6 +99,8 @@ class Post < ActiveRecord::Base
   def number_of_comments
     Comment.count(:conditions => ["post_id = ?", self.id])
   end
+
+  protected
     		
 	def transform_markup
 	  this_post = self.body
@@ -86,7 +109,18 @@ class Post < ActiveRecord::Base
 	  
 	  self.body_html = HtmlEngine.apply_textile(this_post)
   end
-  
-  protected :transform_markup
+
+  private 
+
+  def create_item()
+    item = Item.new
+    item.user_id = self.user_id
+    item.course_id = self.course.id
+    item.body = self.body
+    item.enable_comments = true
+    item.enable_reshare = false
+    item.post_id = self.id
+    return item
+  end
   
 end

@@ -9,6 +9,11 @@ class PostController < ApplicationController
   def view
     @item = Item.find(params[:id])
     return unless allowed_to_view_item(@user, @item)
+
+    if @item.blog_post?
+      return redirect_to :controller => '/blog', :action => 'post', :course => @item.course_id, :id => @item.post_id
+    end
+
     return unless comments_open(@item)
 
     # Default breadcrumb
@@ -27,6 +32,8 @@ class PostController < ApplicationController
         @breadcrumb.assignment = @item.assignment
         @breadcrumb.text = 'Comments'
         @breadcrumb.link = url_for(:action => 'view', :id => @item)
+      elsif @item.document?
+        @tab = "course_documents"
       end
     end
 
