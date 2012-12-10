@@ -1,15 +1,21 @@
 <table class="table table-condensed">
  <% for note in @notifications %>
   <tr><td id="nid<%= note.id %>">
-	<% unless note.acknowledged %><span class="label label-success">New</span><% end %>
-	<%= note.notification %><br/>
+	<% unless note.acknowledged %><span class="label label-success" id="newnid<%= note.id %>">New</span><% end %>
 	<% unless note.link.nil? %>
-	  <a href="<%= note.link %>"><%= note.link %></a>
+	  <a href="<%= note.link %>">
+	<% end %>
+	<%= note.notification %>
+	<% unless note.link.nil? %>
+	  </a>
 	<% end %>
 	<% unless note.acknowledged %>
-	  <%= link_to_remote "Mark Read.",
+	  <span id="mrn<%= note.id %>">
+	  | <%= link_to_remote "Mark Read",
         :url => { :controller => '/notifications', :action => "ack", :id => note },
-        :complete => "jQuery(\"\#nid\" + note.id ).addClass(\"read_notification\'\");" %>
+        :success => "new Effect.Puff( 'newnid#{note.id}' ); new Effect.Puff( 'mrn#{note.id}' )",
+        :failure => "alert('There was an error marking this notification as read.');",
+	    :html => {:class => 'btn btn-mini btn-danger'} %>
     <% end %>
   </td></tr>
  <% end %>

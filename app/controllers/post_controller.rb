@@ -10,6 +10,8 @@ class PostController < ApplicationController
     @item = Item.find(params[:id])
     return unless allowed_to_view_item(@user, @item)
 
+    @item.mark_notifications_read_for_user(@user)
+  
     if @item.blog_post?
       return redirect_to :controller => '/blog', :action => 'post', :course => @item.course_id, :id => @item.post_id
     end
@@ -57,6 +59,9 @@ class PostController < ApplicationController
     @item = Item.find(params[:item])
     return unless allowed_to_view_item(@user, @item)
     @item, userApRec = Item.toggle_plus(@item, @user)
+
+    link = url_for(:action => 'view', :id => @item, :only_path => false)
+    Bj.submit "./script/runner ./jobs/aplus_notify.rb #{@item.id} #{@user.id} \"#{link}\""
 
     render :layout => false
   end

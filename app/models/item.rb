@@ -1,3 +1,5 @@
+require 'MyString'
+
 class Item < ActiveRecord::Base
   has_many :feeds, :through => :feeds_items
   has_many :item_shares, :dependent => :destroy
@@ -8,6 +10,7 @@ class Item < ActiveRecord::Base
   
   belongs_to :course
   belongs_to :user
+  belongs_to :item
   
   belongs_to :assignment
   belongs_to :post
@@ -18,9 +21,21 @@ class Item < ActiveRecord::Base
   before_save :transform_markup
 
   def title
-    return "Assignment #{assignment.title}" if assignment?
-    return "Assignment #{graded_assignment.title}" if graded_assignment?
-    return "Document #{document.title}" if document?
+    return "Assignment '#{assignment.title}'" if assignment?
+    return "Graded Assignment '#{graded_assignment.title}'" if graded_assignment?
+    return "Document '#{document.title}'" if document?
+    return "Forum #{forum_post.headline}" if forum?
+    return "Blog '#{post.title}'" if blog_post?
+    return "Wiki Page '#{wiki.page}'" if wiki?
+    ""
+  end
+
+  def mark_notifications_read_for_user(user)
+    notes = Notification.find(:all, :conditions => ["user_id = ? and item_id = ? and acknowledged = ?", user.id, self.id, false])
+    notes.each do |note|
+      note.acknowledged = true
+      note.save
+    end
   end
 
   # Gets users that have done the APlus action on this post.
@@ -109,6 +124,73 @@ class Item < ActiveRecord::Base
       end
     end
     return noCacheItem
+  end
+
+  def build_message(item, notification)
+    users = notification.get_recent_users()
+    names = Array.new
+    users.each do |u|
+      names << u.display_name
+    end
+
+    common = "give an A+ to your post, #{item.title}"
+    if names.size == 0
+      return ""
+    elsif names.size == 1
+      return "#{names[0]} #{common}"
+    elsif names.size == 2
+      return "#{names[0]} and #{names[1]} #{common}"
+    elsif names.size == 3
+      return "#{names[0..-2].join(", ")} and #{names[-1]} #{common}"
+    else
+      other_count = item.aplus_count - names.size
+      user_word = 'user'
+      user_word = 'users' if other_count > 1
+      return "#{names.join(", ")} and #{other_count} other #{user_word} #{common}"
+    end
+  end
+
+  def notify_for_aplus(aplus_user, link)
+    # If the item isn't owned, we can't add a notification for A+ actions.
+    return if self.user.nil?
+    
+    Item.transaction do
+      #uncached do
+        # Re-find the item w/ a lock. This will block other update actions on the item.
+        item = Item.find(self.id, :lock => true)
+        # If found - this was an add. If not found, this was a removal of an A+
+        # There are race conditions here, but since we're processing notificaitons for an item
+        # in a lock, we should end up in the correct state.
+        aplus = APlus.find(:first, :conditions => ["item_id = ? and user_id =?", item.id, aplus_user.id])
+
+        # See if there is an existing notification - if there is, lock it.
+        notification = Notification.find(:first, :conditions => ["user_id = ? and item_id = ? and aplus = ?", item.user_id, item.id, true], :lock => true)
+        unless notification.nil?
+          # Corner case - this was an aplus removal, and now we're at zero. Remove the notification
+          if item.aplus_count == 0
+            notification.destroy
+            notification = nil
+          else
+            # Update the notification, make it unacknowledged, and bump the time.
+            notification.add_to_recent_users(aplus_user)
+            notification.acknowledged = false
+            notification.emailed = false
+          end
+        else
+          # Create a new notification, for the item owner from the aplus user.
+          notification = Notification.create_aplus(item, item.user, aplus_user)
+          notification.item_id = item.id
+        end
+      
+        unless notification.nil?
+          # The message building is common. The message associated with a notification will be updated
+          # as the notification changes.
+          notification.notification = build_message(item, notification)
+          notification.link = link
+          notification.save
+        end
+      #end
+    end
   end
 
   # Toggle the A+ status for an item/user pair.

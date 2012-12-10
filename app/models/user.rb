@@ -67,7 +67,7 @@ class User < ActiveRecord::Base
   end
   
   def display_name
-    unless self.preferred_name.nil?
+    unless self.preferred_name.nil? || ''.eql?(self.preferred_name)
       "#{self.first_name} (#{self.preferred_name}) #{self.middle_name} #{self.last_name}"
     else
       "#{self.first_name} #{self.middle_name} #{self.last_name}"
@@ -232,7 +232,7 @@ class User < ActiveRecord::Base
   def change_email( email, new_password ) 
     if valid_password?( new_password )
       self.email = email
-      self.password = Digest::SHA1.hexdigest( self.email + "mmmm...salty" + new_password + "ROCK, ROCK ON" )
+      self.password = Digest::SHA1.hexdigest(email + "mmmm...salty" + new_password + "ROCK, ROCK ON")
       return true
     else 
       return false

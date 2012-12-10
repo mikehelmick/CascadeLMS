@@ -5,7 +5,7 @@ class NotificationsController < ApplicationController
     @page = params[:page].to_i
     @page = 1 if @page.nil? || @page == 0
     @note_pages = Paginator.new self, Notification.count(:conditions => ["user_id = ?", @user.id]), 30, @page
-    @notifications = Notification.find(:all, :conditions => ['user_id = ?', @user.id], :order => 'created_at DESC', :limit => 30, :offset => @note_pages.current.offset)
+    @notifications = Notification.find(:all, :conditions => ['user_id = ?', @user.id], :order => 'updated_at DESC', :limit => 30, :offset => @note_pages.current.offset)
 
     set_title
   end

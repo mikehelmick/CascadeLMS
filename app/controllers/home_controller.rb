@@ -31,7 +31,7 @@ class HomeController < ApplicationController
     @feed_id = @user.feed.id
     @feed_items = @user.feed.load_items
     
-    @notifications = Notification.find(:all, :conditions => ["user_id = ? and acknowledged = ? and view_count < ?", @user, false, 5] )
+    @notifications = Notification.find(:all, :conditions => ["user_id = ? and acknowledged = ? and view_count < ?", @user, false, 5], :order => "updated_at desc" )
     begin
       @notifications.each do |notification|
         notification.view_count = notification.view_count + 1

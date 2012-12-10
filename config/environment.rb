@@ -72,6 +72,6 @@ my_formats = {
   :social_date => '%b %d, %Y'
 }
 
-SITE_NAME = 'my.csi.muohio.edu'
+SITE_NAME = 'me.cascadelms.org'
 
 ActiveSupport::CoreExtensions::Time::Conversions::DATE_FORMATS.merge!(my_formats)
