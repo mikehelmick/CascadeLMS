@@ -5,6 +5,7 @@ class Breadcrumb
   attr_accessor :course, :assignment, :document, :forum, :post, :team, :wiki
   attr_accessor :instructor, :program, :outcomes, :gradebook, :teams, :attendance
   attr_accessor :instructorblog, :instructordocs
+  attr_accessor :admin
   # text to display at the end
   attr_accessor :text, :link
 
@@ -13,6 +14,12 @@ class Breadcrumb
     @instructor = instructor
     self.outcomes = false
     self.gradebook = false
+  end
+
+  def self.for_admin()
+    b = Breadcrumb.new()
+    b.admin = true
+    return b
   end
 
   def self.for_program(program)

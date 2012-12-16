@@ -4,6 +4,7 @@ class Admin::IndexController < ApplicationController
   
   def index
     set_tab
+    @breadcrumb = Breadcrumb.for_admin()
   end
 
   def run_upgrade
@@ -16,5 +17,4 @@ class Admin::IndexController < ApplicationController
     @title = "CSCW Administration"
     @tab = 'administration'
   end
-  
 end

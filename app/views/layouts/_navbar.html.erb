@@ -107,6 +107,9 @@
 	   <%= link_to "#{h @course.title}", :controller => '/overview', :course => @breadcrumb.course, :id => nil %>
 	   <span class="divider">/</span>
 	 <% end %>
+	 <% if @breadcrumb.admin %>
+	   <%= link_to 'Administration', {:controller => '/admin', :id => nil, :course => nil} %><span class="divider">/</span>
+	 <% end %>
 	 <% if @breadcrumb.instructor %>
 	   <%= link_to 'Instructor', {:controller => '/instructor/index', :course => @breadcrumb.course, :action => nil, :id => nil} %>
        <span class="divider">/</span>
