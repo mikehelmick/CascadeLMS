@@ -109,6 +109,9 @@
 	 <% end %>
 	 <% if @breadcrumb.admin %>
 	   <%= link_to 'Administration', {:controller => '/admin', :id => nil, :course => nil} %><span class="divider">/</span>
+	   <% if @breadcrumb.admin_announcements %>
+	     <%= link_to 'System Announcements', {:controller => '/admin/announcement', :action => nil, :id => nil} %><span class="divider">/</span>
+	   <% end %>
 	 <% end %>
 	 <% if @breadcrumb.instructor %>
 	   <%= link_to 'Instructor', {:controller => '/instructor/index', :course => @breadcrumb.course, :action => nil, :id => nil} %>

@@ -1,7 +1,6 @@
 class Admin::AnnouncementController < ApplicationController
 
   before_filter :ensure_logged_in, :ensure_admin
-  # don't set on the AJAX calls
   before_filter :set_tab
 
   def index
@@ -17,12 +16,9 @@ class Admin::AnnouncementController < ApplicationController
     @announcements = Announcement.find( :all, :order => "end desc" )
   end
 
-  def show
-    @announcement = Announcement.find(params[:id])
-  end
-
   def new
     @announcement = Announcement.new
+    @breadcrumb.text = 'New Announcement'
   end
 
   def create
@@ -43,7 +39,7 @@ class Admin::AnnouncementController < ApplicationController
     @announcement = Announcement.find(params[:id])
     if @announcement.update_attributes(params[:announcement])
       flash[:notice] = 'Announcement was successfully updated.'
-      redirect_to :action => 'show', :id => @announcement
+      redirect_to :action => 'list'
     else
       render :action => 'edit'
     end
@@ -59,5 +55,7 @@ class Admin::AnnouncementController < ApplicationController
     @tab = 'administration'
     @current_term = Term.find_current
     @announcements = Announcement.current_announcements
+    @breadcrumb = Breadcrumb.for_admin()
+    @breadcrumb.admin_announcements = true
   end
 end

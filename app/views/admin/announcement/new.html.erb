@@ -1,15 +1,8 @@
-<div id="form_area">
-
-<% form_tag( :action => 'create' ) do %>
+<% form_tag({:action => 'create'}, {:class => 'form-horizontal'}) do %>
   <h2>Create New announcement</h2>
 
   <%= render :partial => 'form' %>
 
-  <div class="submit">
-    <%= submit_tag "Create" %>
-  </div>
+  <%= submit_tag 'Create', {:class => 'btn btn-primary'} %>
+  <%= link_to 'Back', {:action => 'list'}, {:class => 'btn'} %>
 <% end %>
-
-<%= link_to 'Back', :action => 'list' %>
-
-</div>
