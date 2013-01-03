@@ -10,7 +10,9 @@ class PostController < ApplicationController
     @item = Item.find(params[:id])
     return unless allowed_to_view_item(@user, @item)
 
-    @item.mark_notifications_read_for_user(@user)
+    if @item.mark_notifications_read_for_user(@user)
+      @notificationCount = @user.notification_count
+    end
   
     if @item.blog_post?
       return redirect_to :controller => '/blog', :action => 'post', :course => @item.course_id, :id => @item.post_id
@@ -51,6 +53,9 @@ class PostController < ApplicationController
     @item_comment.user = session[:user]
     @item_comment.ip = session[:ip]
     @item = Item.add_comment(@item, @item_comment)
+
+    link = url_for(:action => 'view', :id => @item, :only_path => false)
+    Bj.submit "./script/runner ./jobs/comment_notify.rb #{@item.id} #{@user.id} \"#{link}\""
     
     redirect_to :action => 'view', :id => params[:id]
   end

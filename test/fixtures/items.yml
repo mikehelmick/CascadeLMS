@@ -6,6 +6,7 @@ item_one:
   course_id: null
   body: "post"
   body_html: "<p>post</p>"
+  post_id: 1
   enable_comments: true
   enable_reshare: true
   public: true

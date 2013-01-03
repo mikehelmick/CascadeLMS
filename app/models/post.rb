@@ -19,6 +19,7 @@ class Post < ActiveRecord::Base
   end
 
   def add_comment(comment)
+    item = nil
     transaction do
       save
       comment.post = self
@@ -27,6 +28,7 @@ class Post < ActiveRecord::Base
       item.comment_count = item.comment_count + 1
       item.save
     end
+    return item
   end
 
   def remove_comment(comment)

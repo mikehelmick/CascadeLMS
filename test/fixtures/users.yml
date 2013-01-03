@@ -37,3 +37,16 @@ student2:
   affiliation: Student
   personal_title: Mr.
   email: testuser2@system.com
+student3:
+  id: 4
+  uniqueid: testuser3
+  password: testuser3
+  preferred_name: T.U.3
+  first_name: Test
+  middle_name: B.
+  last_name: User
+  instructor: false
+  admin: false
+  affiliation: Student
+  personal_title: Ms.
+  email: testuser3@example.com

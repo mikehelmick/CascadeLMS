@@ -13,8 +13,9 @@ class FeedTest < ActiveSupport::TestCase
     item2 = Item.find(2)
     user = User.find(3)
 
-    item1.share_with_user(user)
-    item2.share_with_user(user)
+    time = Time.now()
+    item1.share_with_user(user, time)
+    item2.share_with_user(user, time)
 
     # check feed pagination
     page1 = user.feed.load_items(1,1) # 1 item per page, page 0

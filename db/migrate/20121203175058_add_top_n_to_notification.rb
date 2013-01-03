@@ -4,6 +4,6 @@ class AddTopNToNotification < ActiveRecord::Migration
   end
 
   def self.down
-    remove_Column(:notifications, :recent_users)
+    remove_column(:notifications, :recent_users)
   end
 end

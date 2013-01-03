@@ -59,7 +59,11 @@ class BlogController < ApplicationController
       @comment.ip = session[:ip]
       @comment.course_id = @course.id
       
-      @post.add_comment(@comment)
+      item = @post.add_comment(@comment)
+
+      link = url_for(:controller => '/post', :action => 'view', :id => item, :course => nil, :only_path => false)
+      Bj.submit "./script/runner ./jobs/comment_notify.rb #{item.id} #{@user.id} \"#{link}\""
+
       flash[:notice] = 'Your comment has been saved.'
       redirect_to :action => 'post', :course => @course, :id => @post
     rescue

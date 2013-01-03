@@ -20,6 +20,10 @@ class Item < ActiveRecord::Base
   
   before_save :transform_markup
 
+  # This may include the owner of the post, who is excluded from recent users
+  # when they are the one receiving the notification.
+  NUM_RECENT_USERS = 4
+
   def title
     return "Assignment '#{assignment.title}'" if assignment?
     return "Graded Assignment '#{graded_assignment.title}'" if graded_assignment?
@@ -36,6 +40,37 @@ class Item < ActiveRecord::Base
       note.acknowledged = true
       note.save
     end
+    return !notes.empty?
+  end
+
+  def get_recent_commenters()
+    return Array.new if self.recent_commenters.nil?
+    recent = Array.new
+    self.recent_commenters.split(',').each do |id|
+      begin
+        recent << User.find(id)
+      rescue
+        # If user was deleted, that's fine. Rely on cleanup job to patch up data.
+      end
+    end
+    return recent
+  end
+
+  def add_to_recent_commenters(user)
+    newRecentArray = Array.new
+    if self.recent_commenters.nil?
+      newRecentArray << user.id
+    else
+      newRecentArray = self.recent_commenters.split(',')
+      # Remove the new user, in case they're already there
+      # Stored as a list of strings, to_s is needed to make deletion work.
+      newRecentArray.delete(user.id.to_s) 
+      if newRecentArray.index(user.id).nil?
+        # not in the array, add it
+        newRecentArray = newRecentArray.reverse.push(user.id).reverse[0, NUM_RECENT_USERS]
+      end
+    end
+    self.recent_commenters = newRecentArray.join(',')
   end
 
   # Gets users that have done the APlus action on this post.
@@ -126,14 +161,7 @@ class Item < ActiveRecord::Base
     return noCacheItem
   end
 
-  def build_message(item, notification)
-    users = notification.get_recent_users()
-    names = Array.new
-    users.each do |u|
-      names << u.display_name
-    end
-
-    common = "give an A+ to your post, #{item.title}"
+  def unify_names_and_message(names, common, all_user_count)
     if names.size == 0
       return ""
     elsif names.size == 1
@@ -143,11 +171,128 @@ class Item < ActiveRecord::Base
     elsif names.size == 3
       return "#{names[0..-2].join(", ")} and #{names[-1]} #{common}"
     else
-      other_count = item.aplus_count - names.size
+      other_count = all_user_count - names.size
       user_word = 'user'
       user_word = 'users' if other_count > 1
       return "#{names.join(", ")} and #{other_count} other #{user_word} #{common}"
     end
+  end
+
+  def build_comment_message(recent_commenters, notify_user, item, num_commenters, owner_commented)
+    names = Array.new()
+    name_ids = Set.new
+    recent_commenters.each do |u|
+      unless u.id == notify_user.id
+        names << u.display_name()
+        name_ids << u.id
+      end
+    end
+    # The person receiving the notification may not be one of the 4 more recent
+    # commenters, but we only want to show them 3 names. 
+    names = names[0...(NUM_RECENT_USERS - 3)] if names.size >= NUM_RECENT_USERS
+
+    if item.user_id == notify_user.id
+      # This notification is for the owner.
+      user_count = if owner_commented
+                     num_commenters - 1
+                   else
+                     num_commenters
+                   end
+      return unify_names_and_message(names, "commented on your post, #{item.title}", user_count) 
+    else
+      # Case where this is a commenter.
+      if item.user_id == 0
+        return unify_names_and_message(names, "also commented on #{item.title}", num_commenters)
+      elsif name_ids.size == 1 && name_ids.member?(item.user_id)
+        return unify_names_and_message(names, "also commented on their post that you commented on, #{item.title}", num_commenters)
+      else 
+        return unify_names_and_message(names, "also commented on #{item.user.display_name}'s post that you commented on, #{item.title}", num_commenters)
+      end
+    end
+  end
+
+  def build_message(item, notification)
+    users = notification.get_recent_users()
+    names = Array.new
+    users.each do |u|
+      names << u.display_name
+    end
+
+    return unify_names_and_message(names, "give an A+ to your post, #{item.title}", item.aplus_count)
+  end
+
+  def notify_for_comment(comment_user, link)
+    # All other commenters need to be loaded to get the correct people to notify.
+    unique_commenters = Set.new
+    recent_commenters = nil
+    owner_commented = false
+    item = nil
+    
+    Item.transaction do
+      ActiveRecord::Base.uncached() do
+        # re-find the item, and lock. This blocks some other actions on the item. Be quick
+        item = Item.find(self.id, :lock => true)
+
+        # The comment user is the most recent commenter.
+
+        # All other commenters need to be loaded to get the correct people to notify.
+        # The recent commenters will be stored on the item. And the unique commenters
+        # count is re-calculated here.
+        unique_sql = "select distinct(user_id) from item_comments where item_id=#{item.id}"
+        if item.blog_post?
+          # Blog posts are special, as they use the legacy comment system.
+          unique_sql = "select distinct(user_id) from comments where post_id = #{item.post_id}"
+        end
+        connection.select_values(unique_sql).each do |id_as_string|
+          user_id = id_as_string.to_i
+          unique_commenters << user_id
+          owner_commented = true if user_id == item.user_id
+        end
+        # Update the distinct commenter count and recent commenters.
+        # The comment count is updated inline with the comment save.
+        item.unique_commenters = unique_commenters.size
+        item.add_to_recent_commenters(comment_user)
+        # Load the new set of recent commenters - needed to be consistent.
+        recent_commenters = item.get_recent_commenters()
+        
+        item.save
+        # Grab the timestamp so we can free this item
+        cutoff_timestamp = item.updated_at
+      end
+    end
+
+    # Send the notifications for each user in a separate transaction scope.
+    # First, the owner, then the commenters.
+    to_notify = Set.new
+    to_notify.merge(unique_commenters)
+    # Remove the person who made this comment
+    to_notify.delete(comment_user.id)
+    # Some legacy items have no owner.
+    to_notify.add(item.user_id) unless item.user_id == 0 || item.user_id == comment_user.id
+    to_notify.each do |notify_user_id|
+      unless notify_user_id == comment_user.id
+        Notification.transaction do
+          user = User.find(notify_user_id)
+          unless user.nil?
+            # See if there is a notification yet for this action
+            notification = Notification.find(:first, :conditions => ["user_id = ? and item_id = ? and comment = ?", notify_user_id, item.id, true], :lock => true)
+
+            if notification.nil?
+              notification = Notification.create_comment(item, user)
+              notification.item_id = item.id
+            else
+              # This may be an adjustment to an existing notification. Clear out ACK.
+              notification.emailed = false
+              notification.acknowledged = false
+            end
+            notification.link = link
+            notification.notification = build_comment_message(recent_commenters, user, item, unique_commenters.size, owner_commented)
+            notification.save
+          end
+        end  
+      end
+    end
+    return to_notify
   end
 
   def notify_for_aplus(aplus_user, link)

@@ -29,6 +29,16 @@ class Notification < ActiveRecord::Base
     return notification
   end
 
+  def Notification.create_comment(item, user)
+    notification = Notification.new
+    notification.user = user
+    notification.emailed = false
+    notification.acknowledged = false
+    notification.comment = true
+    notification.item = item
+    return notification
+  end
+
   # Recent users is a list of 3 most recent actors on a notification that would have caused an update.
   # Some other count must be used to derive the "and X others" text that will go in the notification.
   def get_recent_users()
