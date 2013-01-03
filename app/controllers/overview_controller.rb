@@ -1,5 +1,5 @@
 #            **** SOFTWARE LICENSE - New BSD License ****
-# Copyright (c) 2006-2012, Mike Helmick - mike.helmick@gmail.com
+# Copyright (c) 2006-2013, Mike Helmick - mike.helmick@gmail.com
 # All rights reserved.
 # 
 # Redistribution and use in source and binary forms, with or without modification, 
