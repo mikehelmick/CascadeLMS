@@ -41,7 +41,12 @@ This folder is a podcast: <%= link_to '<i class="icon-headphones"></i> Subscribe
 		  <td>
 		    <%= render :partial => '/documents/download_link', :locals => {:document => document, :course => @course}%>
 		  </td>
-		  <td><% unless document.folder %><%= link_to "#{document.filename}", :action => 'download', :course => @course.id, :id => document, :file => document.without_extension, :extension => document.extension %><% end %> &nbsp;</td>
+		  <td>
+			<% if document.link %>
+			  <a href="<%= document.url %>" target="_blank"><%= document.title %></a>
+		    <% elsif !document.folder %>
+			  <%= link_to "#{document.filename}", :action => 'download', :course => @course.id, :id => document, :file => document.without_extension, :extension => document.extension %>
+			<% end %> &nbsp;</td>
 		
 		<% else %>
 		
@@ -51,6 +56,8 @@ This folder is a podcast: <%= link_to '<i class="icon-headphones"></i> Subscribe
 		      <% if document.podcast_folder %>
 		        <%= link_to '<i class="icon-headphones"></i> Subscribe', :controller => '/public/documents', :action => 'subscribe', :course => @course.id, :id => document %>
 		      <% end %>
+		    <% elsif document.link %>
+		      <a href="<%= document.url %>" target="_blank"><%= document.filename %></a>
 		    <% else %>
 		      <%= link_to "<i class=\"#{document.icon_file}\"></i> #{document.title}", :controller => '/public/documents', :action => 'download', :course => @course.id, :id => document %>
 		    <% end %>
@@ -58,7 +65,7 @@ This folder is a podcast: <%= link_to '<i class="icon-headphones"></i> Subscribe
 		  <td><% unless document.folder %><%= link_to "#{document.filename}", :controller => '/public/documents', :action => 'download', :course => @course.id, :id => document %> <% end %>&nbsp;</td>
 		
 		<% end %>
-		<td><% unless document.folder %><%=h document.size_text %><% end %> &nbsp;</td>
+		<td><% unless document.folder || document.link %><%=h document.size_text %><% end %> &nbsp;</td>
 		<td><%=h document.created_at.to_formatted_s(:long) %></td>
 	  </tr>
 	  <% if !document.comments.nil? && !document.comments.eql?('') %>

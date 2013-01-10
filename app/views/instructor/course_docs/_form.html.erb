@@ -8,12 +8,23 @@
   </div>
 </div>
 
-<div class="control-group">
+<% if @document.link %>
+ <%= hidden_field 'document', 'link' %>
+ <div class="control-group">
+  <span class="help-block">Copy and past the URL For the Web page that you would like to link to. If the link is for a YouTube video we will attempt to embed the video right on the page.</span>
+  <label for="url" class="control-label">URL</label>
+  <div class="controls">
+    <%= text_area 'document', 'url', {:class => 'input-xlarge', :rows => 3} %>
+  </div>
+ </div>
+<% else %>
+ <div class="control-group">
   <label for="file" class="control-label">File</label>
   <div class="controls">
     <%= file_field_tag "file" %>
   </div>
-</div>
+ </div>
+<% end %>
 
 <div class="control-group">
   <label for="document_comments" class="control-label">Comments</label>

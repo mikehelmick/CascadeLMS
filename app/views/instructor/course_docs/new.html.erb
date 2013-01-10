@@ -1,4 +1,4 @@
-<h2>New Document</h2>
+<h2>New <% if @document.link %>Link<% else %>Document<% end %></h2>
 
 <% unless @folder.nil? %>
 <div class="alert alert-info">New document nested in <strong><%= @folder.relative_path() %></strong></div>

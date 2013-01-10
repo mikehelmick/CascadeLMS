@@ -31,9 +31,15 @@ class Instructor::CourseDocsController < Instructor::InstructorBase
     
     return unless load_folder( params[:id].to_i )
     
-    @title = "Upload new document: #{@course.title}"
     @document = Document.new
-    set_breadcrumb().text = 'New Document'
+    @document.link = params[:link]
+    if @document.link
+      @title = "New link: #{@course.title}"
+      set_breadcrumb().text = 'New Link'
+    else
+      @title = "Upload new document: #{@course.title}"
+      set_breadcrumb().text = 'New Document'
+    end
   end
 
   def create
@@ -46,13 +52,15 @@ class Instructor::CourseDocsController < Instructor::InstructorBase
     @document = Document.new(params[:document])
 
     # Check that a file was uploaded
-    file_field = params[:file]
-    if file_field.nil? || file_field.eql?('') || file_field.class.to_s.eql?('String')
-      @title = "Upload new document: #{@course.title}"
-      set_breadcrumb().text = 'New Document'
-      flash[:badnotice] = "You must select a file for upload."
-      render :action => 'new'
-      return
+    unless @document.link
+      file_field = params[:file]
+      if file_field.nil? || file_field.eql?('') || file_field.class.to_s.eql?('String')
+        @title = "Upload new document: #{@course.title}"
+        set_breadcrumb().text = 'New Document'
+        flash[:badnotice] = "You must select a file for upload."
+        render :action => 'new'
+        return
+      end
     end
     
     @document.course = @course
@@ -62,12 +70,17 @@ class Instructor::CourseDocsController < Instructor::InstructorBase
     @document.podcast_folder = false
     
     if @document.save
-      @document.create_file( params[:file], @app['external_dir'] )
+      unless @document.link
+        @document.create_file( params[:file], @app['external_dir'] )
+      end
        
       flash[:notice] = 'File was successfully uploaded.'
       redirect_to :action => 'index', :id => @folder_id
     else
       set_breadcrumb().text = 'New Document'
+      if @document.link
+        @breadcrumb.text = 'New Link'
+      end
       render :action => 'new'
     end
   end

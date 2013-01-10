@@ -8,7 +8,11 @@
     &nbsp;&nbsp;(<%= link_to '<i class="icon-edit"></i> Edit', :controller => '/instructor/course_docs', :action => 'edit', :course => course, :id => document %>)
   <% end %>
 <% else %>
-  <%= link_to "<i class=\"#{document.icon_file}\"></i> #{document.title}", :controller => '/documents', :action => 'download', :course => course.id, :id => document, :file => document.without_extension, :extension => document.extension %>
+  <% if document.link %>
+    <a href="<%= document.url %>" target="_blank"><%= document.title %></a>
+  <% else %>
+    <%= link_to "<i class=\"#{document.icon_file}\"></i> #{document.title}", :controller => '/documents', :action => 'download', :course => course.id, :id => document, :file => document.without_extension, :extension => document.extension %>
+  <% end %>
 
   <% if @instructor %>
     &nbsp;&nbsp;(<%= link_to '<i class="icon-edit"></i> Edit', :controller => '/instructor/course_docs', :action => 'edit_folder', :course => course, :id => document %>)

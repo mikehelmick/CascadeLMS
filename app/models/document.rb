@@ -4,15 +4,17 @@ class Document < ActiveRecord::Base
   belongs_to :course
   #acts_as_list :scope => :course
   acts_as_list :scope => 'course_id = #{course_id} AND document_parent = #{document_parent}'
-  
+
+  has_one :item
+
   validates_presence_of :title
-  
+
   before_save :transform_markup
 
   def create_item()
     instructors = self.course.instructors[0]
     inst_id = instructors[0].user_id rescue inst_id = 0
-    
+
     item = Item.new
     item.user_id = inst_id
     item.course_id = self.course_id
@@ -63,14 +65,16 @@ class Document < ActiveRecord::Base
   end
   
   def validate
-    errors.add_to_base("No file was given") if self.filename.nil? || self.filename.size == 0
-    
-    errors.add_to_base("Filenames cannot contain more than one period ('.') character") unless self.filename.index('.') == self.filename.rindex('.')
-    
-    unless self.folder
-      errors.add_to_base("All files must have an extension") if self.filename.index(".").nil?
+    if self.link
+      errors.add_to_base("No URL was given") if self.url.nil? || self.url.size == 0
+    else
+      errors.add_to_base("No file or links was given") if (self.filename.nil? || self.filename.size == 0)
+      errors.add_to_base("Filenames cannot contain more than one period ('.') character") unless self.filename.index('.') == self.filename.rindex('.')
+      unless self.folder
+        errors.add_to_base("All files must have an extension") if self.filename.index(".").nil?
+      end
     end
-    
+        
     ## don't let a folder become a podcast if it has subfolders
     if self.podcast_folder
       subs = Document.find(:all, :conditions => ["document_parent = ?", self.id] ) rescue subs = Array.new
@@ -176,7 +180,12 @@ class Document < ActiveRecord::Base
     end
   end
   
-  def set_file_props( file_field ) 
+  def set_file_props( file_field )
+    if self.link
+      self.filename = ''
+      self.content_type = 'url'
+      return
+    end
     self.filename = FileManager.base_part_of( file_field.original_filename )
     self.content_type = file_field.content_type.chomp rescue self.content_type = 'text'
     self.extension = self.filename.split('.').last
@@ -196,6 +205,8 @@ class Document < ActiveRecord::Base
   def icon_file
     if self.folder
       'icon-folder-open'
+    elsif self.link
+      'icon-circle-arrow-right'
     else
       FileManager.icon(self.extension)
     end

@@ -1,7 +1,8 @@
 <h2>Documents for <%= @course.title %></h2>
 
 <div class="btn-group">
- <%= link_to('<i class="icon-plus icon-white"></i> New document', {:action => 'new', :id => @folder_id}, {:class => 'btn btn-success'}) %> 
+ <%= link_to('<i class="icon-plus icon-white"></i> New document', {:action => 'new', :id => @folder_id}, {:class => 'btn btn-success'}) %>
+ <%= link_to('<i class="icon-circle-arrow-right icon-white"></i> New link', {:action => 'new', :id => @folder_id, :link => true}, {:class => 'btn btn-success'}) %>
  <% if @folder.nil? || (!@folder.nil? && !@folder.podcast_folder) %>
 	<%= link_to('<i class="icon-folder-open icon-white"></i> New Folder', {:action => 'new_folder', :id => @folder_id}, {:class => 'btn btn-success'}) %>
  <% end %>
@@ -37,6 +38,7 @@
  <thead>
   <tr>
 	<th>Title</th>
+	<th>Activity</th>
 	<th>Size</th>
     <th>Visible</th>
 	<th>Visible After</th>
@@ -56,7 +58,8 @@
 	  <% else %>
 	    <%=h document.title %>
 	  <% end %></td>
-    <td><% unless document.folder %><%=h document.size_text %><% end %>&nbsp;</td>
+	<td><% unless document.item.nil? %><%= link_to "#{document.item.aplus_count} A+ | #{document.item.comment_count} Comments", {:controller => '/post', :action => 'view', :id => document.item, :course => nil} %><% end %></td>
+    <td><% unless document.folder || document.link %><%=h document.size_text %><% end %>&nbsp;</td>
     <td id="published_<%= document.id %>"><%= render(:partial => 'published', :locals => {:document => document}) %></td>
     <td><%=h document.created_at.to_formatted_s(:long) %></td>
 
@@ -71,6 +74,8 @@
 	  <div class="btn-group">
 	  <% if document.folder %>
 	    <%= link_to('Open', {:action => 'index', :id => document}, {:class => 'btn btn-small'}) %>
+	  <% elsif document.link %>
+	    <a href="<%=h document.url %>" class="btn btn-small" target="_blank" />Follow Link</a>
 	  <% else %>
         <%= link_to('Download', {:action => 'download', :id => document, :file => document.without_extension, :extension => document.extension}, {:class => 'btn btn-small'}) %>
 	  <% end %>
