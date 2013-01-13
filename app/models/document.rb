@@ -12,8 +12,8 @@ class Document < ActiveRecord::Base
   before_save :transform_markup
 
   def create_item()
-    instructors = self.course.instructors[0]
-    inst_id = instructors[0].user_id rescue inst_id = 0
+    instructors = self.course.instructors
+    inst_id = instructors[0].id rescue inst_id = 0
 
     item = Item.new
     item.user_id = inst_id
