@@ -1,4 +1,6 @@
 <% day_ago = Time.now - 60*60*24 %>
 <% for feed_item in @feed_items %>
- <%= render :partial => '/post/post', :locals => {:item => feed_item.item, :day_ago => day_ago}%>
+ <% unless feed_item.item.nil? %>
+   <%= render :partial => '/post/post', :locals => {:item => feed_item.item, :day_ago => day_ago}%>
+ <% end %>
 <% end %>
