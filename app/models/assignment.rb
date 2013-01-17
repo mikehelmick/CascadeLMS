@@ -3,6 +3,7 @@ class Assignment < ActiveRecord::Base
   acts_as_list :scope => :course
   
   belongs_to :grade_category
+  belongs_to :user
   has_one :journal_field, :dependent => :destroy
   
   has_many :assignment_documents, :order => "position", :dependent => :destroy
@@ -38,8 +39,7 @@ class Assignment < ActiveRecord::Base
   before_save :transform_markup
 
   def create_item()
-    instructors = self.course.instructors
-    inst_id = instructors[0].id rescue inst_id = 0
+    inst_id = self.user.id rescue inst_id = 0
     
     item = Item.new
     item.user_id = inst_id

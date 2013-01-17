@@ -5,6 +5,7 @@ class Document < ActiveRecord::Base
   #acts_as_list :scope => :course
   acts_as_list :scope => 'course_id = #{course_id} AND document_parent = #{document_parent}'
 
+  belongs_to :user
   has_one :item
 
   validates_presence_of :title
@@ -12,8 +13,7 @@ class Document < ActiveRecord::Base
   before_save :transform_markup
 
   def create_item()
-    instructors = self.course.instructors
-    inst_id = instructors[0].id rescue inst_id = 0
+    inst_id = self.user.id rescue inst_id = 0
 
     item = Item.new
     item.user_id = inst_id

@@ -64,6 +64,7 @@ class Instructor::CourseDocsController < Instructor::InstructorBase
     end
     
     @document.course = @course
+    @document.user = @user
     @document.set_file_props( params[:file] ) unless params[:file].class.to_s.eql?('String')
     @document.document_parent = @folder_id
     @document.folder = false
@@ -113,6 +114,7 @@ class Instructor::CourseDocsController < Instructor::InstructorBase
     
     @document = Document.new(params[:document])
     @document.course = @course
+    @document.user = @user
     @document.filename = @document.title
     @document.folder = true
     @document.document_parent = @folder_id

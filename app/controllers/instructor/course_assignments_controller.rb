@@ -91,6 +91,7 @@ class Instructor::CourseAssignmentsController < Instructor::InstructorBase
     # create the assignment
     @assignment = Assignment.new( params[:assignment] )    
     @assignment.course = @course
+    @assignment.user = @user
     @assignment.grade_category_id = params[:grade_category_id].to_i
     do_exit = process_file( params[:file] )
     # see if we need to create a journal settings
