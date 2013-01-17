@@ -30,7 +30,12 @@ class BlogController < ApplicationController
     return unless allowed_to_see_course( @course, @user )
     
     @post = Post.find(params[:id])
-    return unless post_in_course( @course, @post )  
+    return unless post_in_course( @course, @post )
+
+    unless @post.visible?
+      redirect_to :controller => '/home', :course => nil, :id => nil
+      return
+    end
     
     @comment = Comment.new
     

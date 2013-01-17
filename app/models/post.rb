@@ -12,10 +12,16 @@ class Post < ActiveRecord::Base
   def publish
     transaction do
       save
-      item = create_item()
-      item.save
-      item.share_with_course(self.course, self.created_at)
+      if self.visible?
+        item = create_item()
+        item.save
+        item.share_with_course(self.course, self.created_at)
+      end
     end
+  end
+
+  def visible?
+    return self.published && self.created_at < Time.now
   end
 
   def add_comment(comment)
@@ -123,6 +129,5 @@ class Post < ActiveRecord::Base
     item.enable_reshare = false
     item.post_id = self.id
     return item
-  end
-  
+  end  
 end
