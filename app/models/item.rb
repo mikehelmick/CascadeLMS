@@ -6,7 +6,7 @@ class Item < ActiveRecord::Base
 
   has_many :item_comments, :order => 'created_at asc', :dependent => :destroy
 
-  has_many :a_plus, :dependent => :destroy
+  has_many :a_pluss, :dependent => :destroy
   
   belongs_to :course
   belongs_to :user
