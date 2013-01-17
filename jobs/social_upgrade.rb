@@ -108,8 +108,8 @@ class SocialUpgrade
           end
         end
 
-        # Wiki pages
-        wikis = Wiki.find(:all, :conditions => ["course_id = ?", course.id])
+        # Wiki pages - sorted in descending order for handling multiple revisions.
+        wikis = Wiki.find(:all, :conditions => ["course_id = ?", course.id], :order => ["created_at DESC"])
         wikis.each do |wiki|
           existing = Item.find(:first, :conditions => ["course_id = ? and id = ?", course.id, wiki.id])
           if existing.nil?
