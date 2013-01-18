@@ -17,6 +17,23 @@ class IndexController < ApplicationController
     showAds()
     render :layout => 'login'
   end
+
+  def tickle
+    status = Status.get_status('tickle')
+    
+    last_update = Time.at(status.value.to_i).to_i
+    now = Time.now.to_i
+    if (last_update + (15*60) < now)
+      Bj.submit "./script/runner ./jobs/publisher.rb"
+      
+      status.value = now.to_s
+      status.save
+      
+      render :text => "yes", :layout => false
+    else
+      render :text => "no", :layout => false
+    end
+  end
   
   def logged_in
     load_user_if_logged_in()
