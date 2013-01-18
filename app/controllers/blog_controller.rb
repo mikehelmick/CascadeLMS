@@ -29,7 +29,12 @@ class BlogController < ApplicationController
     return unless load_course( params[:course] )
     return unless allowed_to_see_course( @course, @user )
     
-    @post = Post.find(params[:id])
+    @post = Post.find(params[:id]) rescue @post = nil
+    if @post.nil?
+      flash[:badnotice] = 'The requested blog post does not exist.'
+      redirect_to :controller => '/home', :course => nil, :id => nil
+      return
+    end
     return unless post_in_course( @course, @post )
 
     unless @post.visible?

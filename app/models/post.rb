@@ -3,7 +3,7 @@ class Post < ActiveRecord::Base
   belongs_to :user
   belongs_to :course
 
-  has_one :item, :dependent => :destroy
+  #has_one :item, :dependent => :destroy
   
   validates_presence_of :title, :body
   
@@ -21,7 +21,7 @@ class Post < ActiveRecord::Base
   end
 
   def visible?
-    return self.published && self.created_at < Time.now
+    return self.published && self.created_at <= Time.now
   end
 
   def add_comment(comment)
@@ -108,18 +108,6 @@ class Post < ActiveRecord::Base
     Comment.count(:conditions => ["post_id = ?", self.id])
   end
 
-  protected
-    		
-	def transform_markup
-	  this_post = self.body
-	  this_post = this_post.apply_code_tag
-	  this_post = this_post.apply_quote_tag
-	  
-	  self.body_html = HtmlEngine.apply_textile(this_post)
-  end
-
-  private 
-
   def create_item()
     item = Item.new
     item.user_id = self.user_id
@@ -129,5 +117,15 @@ class Post < ActiveRecord::Base
     item.enable_reshare = false
     item.post_id = self.id
     return item
-  end  
+  end
+
+  protected
+    		
+	def transform_markup
+	  this_post = self.body
+	  this_post = this_post.apply_code_tag
+	  this_post = this_post.apply_quote_tag
+	  
+	  self.body_html = HtmlEngine.apply_textile(this_post)
+  end
 end
