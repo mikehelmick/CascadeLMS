@@ -21,7 +21,7 @@ class Feed < ActiveRecord::Base
   def load_items(limit = 25, page = 1)
     pages = ActionController::Base::Paginator.new(self, FeedsItems.count(:conditions => ["feed_id = ?", self.id]), limit, page)
     items = FeedsItems.find(:all, :conditions => ['feed_id = ?', self.id], :order => 'timestamp DESC, item_id DESC', :limit => limit, :offset => pages.current.offset)
-    return items
+    return pages, items
   end
   
   def validate

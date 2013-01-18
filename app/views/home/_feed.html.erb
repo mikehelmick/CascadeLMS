@@ -4,3 +4,13 @@
    <%= render :partial => '/post/post', :locals => {:item => feed_item.item, :day_ago => day_ago}%>
  <% end %>
 <% end %>
+
+<div class="pagination">
+ <ul>
+	<% 1.upto(@pages.page_count) do |i| %>
+	<li <%= 'class="active"' if i == @page %>>
+	  <%= link_to i, { :page => i } %>
+	</li>
+	<% end %>
+ </ul>
+</div>

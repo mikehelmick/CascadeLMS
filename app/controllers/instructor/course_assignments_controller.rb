@@ -139,6 +139,8 @@ class Instructor::CourseAssignmentsController < Instructor::InstructorBase
 
              gi.save
            end
+           
+           @assignment.publish()
 
            flash[:notice] = 'Assignment was successfully created, you may now upload additional documents and specify auto-grading parameters.'
 
@@ -157,11 +159,12 @@ class Instructor::CourseAssignmentsController < Instructor::InstructorBase
       flash[:badnotice] = "Filenames cannot contain more than one period ('.') character and must have an extension." unless params[:file].nil?
       @journal_field = JournalField.new if @journal_field.nil?
       @categories = GradeCategory.for_course( @course )
+      set_title
+      @breadcrumb.text = 'New Assignment'
       render :action => 'new'
     end
     # if @document.save
-    #  @document.create_file( params[:file], @app['external_dir'] )
-    
+    #  @document.create_file( params[:file], @app['external_dir'] ) 
   end
     
   def destroy

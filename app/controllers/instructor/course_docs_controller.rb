@@ -74,6 +74,7 @@ class Instructor::CourseDocsController < Instructor::InstructorBase
       unless @document.link
         @document.create_file( params[:file], @app['external_dir'] )
       end
+      @document.publish()
        
       flash[:notice] = 'File was successfully uploaded.'
       redirect_to :action => 'index', :id => @folder_id

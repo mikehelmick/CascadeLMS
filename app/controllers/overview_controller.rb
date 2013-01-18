@@ -46,8 +46,10 @@ class OverviewController < ApplicationController
     
     respond_to do |format|
       format.html {
+        @page = params[:page].to_i
+        @page = 1 if @page.nil? || @page == 0
         @feed_id = @course.feed.id
-        @feed_items = @course.feed.load_items
+        @pages, @feed_items = @course.feed.load_items(25, @page)
       }
       format.xml {
         @recent_activity = FreshItems.fresh( @course, @app['recent_items'].to_i, true, @user.id )

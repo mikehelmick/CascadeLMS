@@ -28,8 +28,10 @@ class HomeController < ApplicationController
     @announcements = Announcement.current_announcements
     @courses = @user.courses_in_term( @term )
 
+    @page = params[:page].to_i
+    @page = 1 if @page.nil? || @page == 0
     @feed_id = @user.feed.id
-    @feed_items = @user.feed.load_items
+    @pages, @feed_items = @user.feed.load_items(25, @page)
     
     @notifications = Notification.find(:all, :conditions => ["user_id = ? and acknowledged = ? and view_count < ?", @user, false, 5], :order => "updated_at desc" )
     begin

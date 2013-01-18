@@ -1,7 +1,7 @@
 require 'MyString'
 
 class Item < ActiveRecord::Base
-  has_many :feeds, :through => :feeds_items, :dependent => :destroy
+  has_many :feeds, :through => :feeds_items
   has_many :item_shares, :dependent => :destroy
 
   has_many :item_comments, :order => 'created_at asc', :dependent => :destroy
@@ -32,6 +32,10 @@ class Item < ActiveRecord::Base
     return "Blog '#{post.title}'" if blog_post?
     return "Wiki Page '#{wiki.page}'" if wiki?
     ""
+  end
+
+  def graded_assignment()
+    Assignment.find(self.graded_assignment_id)
   end
 
   def mark_notifications_read_for_user(user)

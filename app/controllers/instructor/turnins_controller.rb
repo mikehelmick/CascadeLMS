@@ -264,6 +264,14 @@ class Instructor::TurninsController < Instructor::InstructorBase
         flash[:badnotice] = "Error changing assignment comments status."
       end
 
+      if @assignment.released
+        @assignment.publish(true)
+      else
+        # Un-publish the stream item if it exists.
+        item = Item.find(:first, :conditions => ["graded_assignment_id = ?", @assignment.id])
+        item.destroy unless item.nil?
+      end
+
       unless @assignment.grade_item.nil?
         @assignment.grade_item.visible = @assignment.released
         @assignment.grade_item.save

@@ -18,11 +18,31 @@ class Document < ActiveRecord::Base
     item = Item.new
     item.user_id = inst_id
     item.course_id = self.course_id
-    item.body = "New document, '#{self.title}' published in #{self.course.short_description}. #{self.comments}"
+    doc_word = if self.link 
+                 'link'
+               else
+                 'document'
+               end
+    item.body = "New #{doc_word}, '#{self.title}' published in #{self.course.short_description}. #{self.comments}"
     item.enable_comments = true
     item.enable_reshare = false
     item.document_id = self.id
     return item
+  end
+
+  def publish()
+    published = false
+    time = Time.new
+    Item.transaction do
+      item = Item.find(:first, :conditions => ["document_id = ?", self.id], :lock => true)
+      if item.nil? && self.published && self.created_at < time
+        item = self.create_item()
+        item.save
+        item.share_with_course(self.course, self.created_at)
+        published = true
+      end
+    end
+    return published
   end
 
   def visible_to_students

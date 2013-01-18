@@ -53,9 +53,31 @@ class Assignment < ActiveRecord::Base
     return item
   end
 
+  def publish(graded_item = false)
+    published = false
+    Item.transaction do
+      # Double check there there is not an item
+      item = if graded_item
+               Item.find(:first, :conditions => ["graded_assignment_id = ?", self.id], :lock => true)
+             else
+               Item.find(:first, :conditions => ["assignment_id = ?", self.id], :lock => true)
+            end
+      if item.nil? && self.visible
+        item = if graded_item
+                 self.create_graded_item()
+               else
+                 self.create_item()
+               end
+        item.save
+        item.share_with_course(self.course, self.open_date)
+        published = true
+      end
+    end
+    return published
+  end
+
   def create_graded_item()
-    instructors = self.course.instructors[0]
-    inst_id = instructors[0].user_id rescue inst_id = 0
+    inst_id = self.user.id rescue inst_id = 0
     
     item = Item.new
     item.user_id = inst_id
