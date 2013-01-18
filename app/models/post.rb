@@ -3,7 +3,7 @@ class Post < ActiveRecord::Base
   belongs_to :user
   belongs_to :course
 
-  #has_one :item, :dependent => :destroy
+  has_one :item, :dependent => :destroy
   
   validates_presence_of :title, :body
   
