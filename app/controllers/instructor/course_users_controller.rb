@@ -53,6 +53,11 @@ class Instructor::CourseUsersController < Instructor::InstructorBase
         u.course_assistant = false if @utype.eql?('assistant')
         u.course_guest = false if @utype.eql?('guest')
         if u.any_user?
+          # Un-subscribe this user from from the course feed
+          unless @course.feed.nil?
+            subscription = FeedSubscription.find(:first, :conditions => ["feed_id = ? and user_id = ?", @course.feed.id, u.user_id])
+            subscription.destroy unless subscription.nil?
+          end
           u.save
         else
           u.destroy
@@ -109,6 +114,7 @@ class Instructor::CourseUsersController < Instructor::InstructorBase
         u.term_id = @course.term_id
         u.save
         @course.save
+        @course.feed.subscribe_user(User.find(params[:id]), false)
         added = true
       end
     end
@@ -125,7 +131,8 @@ class Instructor::CourseUsersController < Instructor::InstructorBase
       c.course_guest = true if @utype.eql?('guest')  
       c.term_id = @course.term_id
       @course.courses_users << c
-      @course.save   
+      @course.save 
+      @course.feed.subscribe_user(user, false)  
     end
     
     @showCRN = false

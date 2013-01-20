@@ -10,6 +10,7 @@ class Publisher
     publish_assignments()
     publish_documents()
     publish_blogs()
+    backfill_subscriptions()
 
     unpublish_items()
     cleanup_feeds()
@@ -28,6 +29,30 @@ class Publisher
   end
 
   private
+  # When someone subscribes to a feed
+  def backfill_subscriptions()
+    empty_subscriptions = FeedSubscription.find(:all, :conditions => ["caught_up = 0"])
+    empty_subscriptions.each do |feed_sub|
+      if feed_sub.feed.user_id.nil?
+        user = User.find(feed_sub.user_id)
+        puts "Populating new subscription to course feed id: #{feed_sub.feed_id} course: #{feed_sub.feed.course.title} for user id: #{user.id} #{user.display_name}"
+        user_feed_id = user.feed.id
+        # This is a course feed. Find all items shared with the course and place that item in the user's feed.
+        ItemShare.find_each(:batch_size => 2000, :conditions => ["course_id = ?", feed_sub.feed.course_id]) do |is|
+          FeedsItems.create(user_feed_id, is.item.id, is.item.created_at)
+        end
+
+        feed_sub.caught_up = true
+        feed_sub.save
+      else
+        # This is a user's feed.
+        # TODO(mikehelmick): Implement catching up on a user's feed.
+        # This will likely result in nothing, unless the other user has done a share w/ that user directly.
+        puts "Backfill to user feed not yet implemented."
+      end
+    end
+  end
+
   def unpublish_items()
     # Find items that are deleted, but still staged in user's streams.
     rm_feeditems = FeedsItems.find(:all,
@@ -67,10 +92,11 @@ class Publisher
       puts "Running garbage collection on feeds_items table."
       delete_count = 0;
       FeedsItems.find_each(:batch_size => 2000) do |feed_item|
-        unless feed_item.feed.course_id.nil?
+        unless feed_item.feed.user_id.nil? 
           user = feed_item.feed.user rescue user = nil
           item = feed_item.item rescue item = nil
           if user.nil? || item.nil? || !item.acl_check?(user)
+            puts "Destroying: #{feed_item.inspect}"
             feed_item.destroy
             delete_count = delete_count + 1
           end

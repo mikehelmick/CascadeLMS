@@ -7,7 +7,8 @@ class FeedsItems < ActiveRecord::Base
     fi.feed_id = feed_id
     fi.item_id = item_id
     fi.timestamp = timestamp
-    fi.save
+    # If the item is already there, just succeed the create.
+    fi.save rescue true
   end
 
   # Filter out items that this user can no longer see. This could be due

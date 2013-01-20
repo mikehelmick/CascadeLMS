@@ -27,6 +27,7 @@ class Document < ActiveRecord::Base
     item.enable_comments = true
     item.enable_reshare = false
     item.document_id = self.id
+    item.created_at = self.created_at
     return item
   end
 

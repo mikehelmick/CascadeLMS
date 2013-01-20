@@ -23,7 +23,7 @@ class IndexController < ApplicationController
     
     last_update = Time.at(status.value.to_i).to_i
     now = Time.now.to_i
-    if (last_update + (1*60) < now)
+    if (last_update + (2*60) < now)
       Bj.submit "./script/runner ./jobs/publisher.rb"
       
       status.value = now.to_s

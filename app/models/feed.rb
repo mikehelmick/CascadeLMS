@@ -8,12 +8,18 @@ class Feed < ActiveRecord::Base
   
   has_many :feed_subscriptions
 
-  def subscribe_user(user)
+  def subscribe_user(user, is_caught_up = false)
+    subscription = FeedSubscription.find(:first, :conditions => ["feed_id = ? and user_id = ?", self.id, user.id])
+    unless subscription.nil?
+      # already subscribed
+      return true
+    end
+    
     subscription = FeedSubscription.new
     subscription.feed = self
     subscription.user = user
     subscription.send_email = true
-    # could be an exception if the user is already subscribed.
+    subscription.caught_up = is_caught_up
     subscription.save rescue true
   end
 

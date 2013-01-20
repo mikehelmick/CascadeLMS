@@ -37,7 +37,7 @@ class SocialUpgrade
         # Subscribe the course users to the course feed.
         puts "Subscribing users to course feed."
         course.non_dropped_users.each do |user|
-          course_feed.subscribe_user(user)
+          course_feed.subscribe_user(user, true)
           puts " Subscribed #{user.display_name}"
         end
         
@@ -58,7 +58,7 @@ class SocialUpgrade
                 item = assignment.create_graded_item
                 item.save
                 # Don't actually have a good date for released.
-                item.share_with_course(course, assignment.close_date)
+                item.share_with_course(course, assignment.updated_at)
               end
             end
           end
@@ -102,6 +102,7 @@ class SocialUpgrade
             if existing.nil?
               puts "Forum post #{forum_post.id}"
               item = forum_post.create_item
+              item.created_at = forum_post.created_at
               item.save
               item.share_with_course(course, forum_post.created_at)
             end
@@ -115,6 +116,7 @@ class SocialUpgrade
           if existing.nil?
             puts "Wiki #{wiki.id}"
             item = wiki.create_item
+            item.created_at = wiki.created_at
             item.save
             item.share_with_course(course, wiki.created_at)
           end
