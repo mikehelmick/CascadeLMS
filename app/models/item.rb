@@ -138,9 +138,9 @@ class Item < ActiveRecord::Base
     return !self.wiki_id.nil? && self.wiki_id > 0
   end
 
-  def visible_to_user?(user)
+  def acl_check?(user)
     course_ids = Hash.new
-    user.courses.each { |c| course_ids[c.id] = true }
+    user.courses.each { |c| course_ids[c.id] = true if c.items_visible_to_user?(user) }
 
     self.item_shares.each do |share|
       return true if !share.user_id.nil? && share.user_id == user.id

@@ -19,6 +19,7 @@
 	
 	<% unless item.course.nil? %>
 	  / <%= link_to "#{h item.course.title}", :controller => '/overview', :course => item.course, :id => nil %>
+	    <%= "(#{item.course.term.semester})" unless item.course.term.current %>
 	<% end %>
 	
 	<% if !item.assignment_id.nil? && item.assignment_id > 0 %>

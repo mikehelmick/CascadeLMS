@@ -31,7 +31,7 @@ class HomeController < ApplicationController
     @page = params[:page].to_i
     @page = 1 if @page.nil? || @page == 0
     @feed_id = @user.feed.id
-    @pages, @feed_items = @user.feed.load_items(25, @page)
+    @pages, @feed_items = @user.feed.load_items(@user, 25, @page)
     
     @notifications = Notification.find(:all, :conditions => ["user_id = ? and acknowledged = ? and view_count < ?", @user, false, 5], :order => "updated_at desc" )
     begin

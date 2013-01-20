@@ -18,16 +18,16 @@ class FeedTest < ActiveSupport::TestCase
     item2.share_with_user(user, time)
 
     # check feed pagination
-    page1 = user.feed.load_items(1,1) # 1 item per page, page 0
+    pagination1, page1 = user.feed.load_items(user, 1,1) # 1 item per page, page 0
     assert page1.size == 1
     assert page1[0].item_id == item2.id # shared later
 
-    page2 = user.feed.load_items(1,2) # 1 item per page, page 1
+    pagination2, page2 = user.feed.load_items(user, 1,2) # 1 item per page, page 1
     assert page2.size == 1
     assert page2[0].item_id == item1.id
 
     # get them both on 1 page
-    allPosts = user.feed.load_items(5)
+    paginationAll, allPosts = user.feed.load_items(user, 5)
     assert allPosts.size == 2
     assert allPosts[0].item_id == item2.id
     assert allPosts[1].item_id == item1.id

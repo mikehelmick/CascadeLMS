@@ -12,6 +12,7 @@ class Publisher
     publish_blogs()
 
     unpublish_items()
+    cleanup_feeds()
   end
 
   def self.publish_post(post)
@@ -36,7 +37,7 @@ class Publisher
     
     rm_feeditems.each do |fi|
       puts " Removing feed_id = #{fi.feed_id}, item_id = #{fi.item_id}"
-      FeedsItems.delete_all(["feed_id = ? and item_id = ?", fi.feed_id, fi.item_id])
+      fi.destroy()
     end
 
     # Reomve the item shares
@@ -48,6 +49,36 @@ class Publisher
     rm_itemshares.each do |is|
       puts " Removing item_share, item_id = #{is.item_id}"
       is.destroy
+    end
+  end
+
+  # Find feed_items where the item ACL is no longer value for the user.
+  # This is rare, as it means that a user has been dropped from the course.
+  # This will only run order every 24 hours.
+  def cleanup_feeds()
+    status = Status.get_status('feed_item_cleanup')
+    last_update = Time.at(status.value.to_i).to_i
+    now = Time.now.to_i
+    if (last_update + (24*60*60) < now)
+      # Save the new status time first, since this could be a long cleanup.
+      status.value = now.to_s
+      status.save
+
+      puts "Running garbage collection on feeds_items table."
+      delete_count = 0;
+      FeedsItems.find_each(:batch_size => 2000) do |feed_item|
+        unless feed_item.feed.course_id.nil?
+          user = feed_item.feed.user rescue user = nil
+          item = feed_item.item rescue item = nil
+          if user.nil? || item.nil? || !item.acl_check?(user)
+            feed_item.destroy
+            delete_count = delete_count + 1
+          end
+        end
+      end
+      puts "Done. Delete #{delete_count} feeds_items."
+    else
+      puts "Skipping GC of feeds_items table."
     end
   end
 

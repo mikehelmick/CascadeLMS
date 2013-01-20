@@ -47,6 +47,14 @@ class Course < ActiveRecord::Base
     end
     return self.feed
   end
+
+  def items_visible_to_user?(user)
+    # Repeated calls will hit the query cache.
+    cu_rec = CoursesUser.find(:first,
+        :conditions => ["course_id = ? and user_id = ? and (course_student = ? or course_instructor = ? or course_guest = ? or course_assistant = ?)",
+          self.id, user.id, true, true, true, true])
+    return !cu_rec.nil?
+  end
   
   def share_with_user(user)
     new_share = CourseShare.new
@@ -55,7 +63,7 @@ class Course < ActiveRecord::Base
     new_share.save
     return new_share
   end
-  
+
   def sorted_grade_items
     items = self.grade_items
     items.sort do |a,b|

@@ -16,13 +16,9 @@ class ItemTest < ActiveSupport::TestCase
     assert !FeedsItems.find(:first, :conditions => ["item_id = ? and feed_id = ?", 1, user.feed.id]).nil?
 
     # Items in the feed
-    items = user.feed.load_items
+    pages, items = user.feed.load_items(user)
     assert items.size == 1
     assert item.id == items[0].item.id
-  end
-
-  def test_share_with_course
-    
   end
 
   def test_add_to_recent_commenters

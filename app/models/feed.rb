@@ -18,9 +18,10 @@ class Feed < ActiveRecord::Base
   end
 
   # Gets one page of items for this feed
-  def load_items(limit = 25, page = 1)
+  def load_items(user, limit = 25, page = 1)
     pages = ActionController::Base::Paginator.new(self, FeedsItems.count(:conditions => ["feed_id = ?", self.id]), limit, page)
     items = FeedsItems.find(:all, :conditions => ['feed_id = ?', self.id], :order => 'timestamp DESC, item_id DESC', :limit => limit, :offset => pages.current.offset)
+    items = FeedsItems.apply_acls(items, user)
     return pages, items
   end
   
