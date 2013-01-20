@@ -37,7 +37,9 @@ class PostController < ApplicationController
         @breadcrumb.text = 'Comments'
         @breadcrumb.link = url_for(:action => 'view', :id => @item)
       elsif @item.document?
-        @tab = "course_documents"
+        @tab = 'course_documents'
+      elsif @item.wiki?
+        @tab = 'course_wiki'
       end
     end
 

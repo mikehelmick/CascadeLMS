@@ -69,6 +69,7 @@ class WikiController < ApplicationController
     @pg.revision = @previous.revision + 1
     
     if @pg.save
+      @pg.publish(url_for(:controller => '/wiki', :action => 'page', :id => @pg.page, :course => @course, :only_path => false))
       flash[:notice] = "Page '#{@pg.page}' has been updated."
       redirect_to :action => 'page', :id => @pg.page
     else

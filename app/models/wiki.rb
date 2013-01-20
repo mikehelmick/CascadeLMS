@@ -6,6 +6,8 @@ class Wiki < ActiveRecord::Base
   belongs_to :user
   
   before_save :transform_markup
+
+  has_one :item, :dependent => :destroy
   
   def Wiki.find_or_create( course, user, page_name )
     cur_page = Wiki.find(:first, :conditions => ["course_id = ? and page = ?", course.id, page_name ], :order => "revision DESC" ) rescue cur_page = nil
@@ -23,18 +25,34 @@ class Wiki < ActiveRecord::Base
     return cur_page
   end
 
-  def create_item()
+  def create_item(link = nil)
     item = Item.new
     item.user_id = self.user_id
     item.course_id = self.course.id
     action = "Created"
     action = "Updated" if self.revision > 0
-    item.body = "#{action} the wiki page '#{self.page}' in #{self.course.short_description}."
+    item.body = 
+        if link.nil?
+          "#{action} the wiki page '#{self.page}' in #{self.course.short_description}."
+        else
+          "#{action} the wiki page '<a href=\"#{link}\">#{self.page}</a>' in #{self.course.short_description}. Revision #{self.revision}."
+        end
     item.enable_comments = true
     item.enable_reshare = false
     item.wiki_id = self.id
     item.created_at = self.created_at
     return item
+  end
+
+  def publish(link)
+    published = false
+    Item.transaction do
+      item = self.create_item(link)
+      item.save
+      item.share_with_course(self.course, self.created_at)
+      published = true
+    end
+    return published
   end
 
   def clone_to_course(course, user)

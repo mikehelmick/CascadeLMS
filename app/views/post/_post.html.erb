@@ -28,7 +28,9 @@
 	<% if !item.graded_assignment_id.nil? && item.graded_assignment_id > 0 %>
 	  / View Grades For: <%= link_to "#{item.graded_assignment().title}", {:controller => '/turnins', :course => item.course, :action => 'feedback', :assignment => item.graded_assignment_id} %>
     <% end %>
-	
+    <% if item.wiki? %>
+      / Wiki: <%= link_to("#{item.wiki.page}", {:controller => '/wiki', :action => 'page', :id => item.wiki.page, :course => item.course}) %>
+    <% end %>
 	<% if item.forum? %>
 	  / <%= link_to('Read Forum', {:controller => '/forums', :course => item.course, :action => 'read', :id => item.forum_post_id}) %>
 	<% end %>

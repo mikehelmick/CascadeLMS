@@ -24,7 +24,7 @@ class IndexController < ApplicationController
     last_update = Time.at(status.value.to_i).to_i
     now = Time.now.to_i
     if (last_update + (2*60) < now)
-      Bj.submit "./script/runner ./jobs/publisher.rb"
+      Bj.submit "./script/runner ./jobs/publisher.rb", :priority => 100
       
       status.value = now.to_s
       status.save

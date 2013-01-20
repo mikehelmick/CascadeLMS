@@ -1,7 +1,7 @@
 # Background job for finding unpublished items and populating streams.
 require 'MyString'
 
-class Publisher
+class Publisher < ActionController::Base
   def initialize()
     # nothing.
   end
