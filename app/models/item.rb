@@ -297,23 +297,26 @@ class Item < ActiveRecord::Base
     to_notify.add(item.user_id) unless item.user_id == 0 || item.user_id == comment_user.id
     to_notify.each do |notify_user_id|
       unless notify_user_id == comment_user.id
-        Notification.transaction do
-          user = User.find(notify_user_id)
-          unless user.nil?
-            # See if there is a notification yet for this action
-            notification = Notification.find(:first, :conditions => ["user_id = ? and item_id = ? and comment = ?", notify_user_id, item.id, true], :lock => true)
+        user = User.find(notify_user_id)
+        # Ensure that previous commenter still have visibility on the item.
+        if item.acl_check?(user)
+          Notification.transaction do
+            unless user.nil?
+              # See if there is a notification yet for this action
+              notification = Notification.find(:first, :conditions => ["user_id = ? and item_id = ? and comment = ?", notify_user_id, item.id, true], :lock => true)
 
-            if notification.nil?
-              notification = Notification.create_comment(item, user)
-              notification.item_id = item.id
-            else
-              # This may be an adjustment to an existing notification. Clear out ACK.
-              notification.emailed = false
-              notification.acknowledged = false
+              if notification.nil?
+                notification = Notification.create_comment(item, user)
+                notification.item_id = item.id
+              else
+                # This may be an adjustment to an existing notification. Clear out ACK.
+                notification.emailed = false
+                notification.acknowledged = false
+              end
+              notification.link = link
+              notification.notification = build_comment_message(recent_commenters, user, item, unique_commenters.size, owner_commented)
+              notification.save
             end
-            notification.link = link
-            notification.notification = build_comment_message(recent_commenters, user, item, unique_commenters.size, owner_commented)
-            notification.save
           end
         end  
       end
