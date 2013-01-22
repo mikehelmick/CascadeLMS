@@ -178,34 +178,38 @@ class ForumsController < ApplicationController
     
     if ( params[:id] ) 
       @post = ForumPost.find( params[:id] )
-    
+
       unless @user.id == @post.user_id || @user.instructor_in_course?( @course.id ) || @user.assistant_in_course_with_privilege?( @course.id, 'ta_course_blog_edit')
         flash[:badnotice] = "You don't have permission to edit this post."
         redirect_for_post( @post )
         return
       end
-    
-      @post.update_attributes( params[:post] ) 
-      
+
+      @post.update_attributes( params[:post] )   
       @post.post = "#{@post.post} \n <br/><i>Post edited by #{@user.display_name} at #{Time.now.to_formatted_s(:long)}</i>"
-      
-      
+          
       if @post.save
+        if @post.parent_post == 0
+          item = @post.item
+          unless item.nil?
+            item.body = @post.post
+            item.save
+          end
+        end
+        
         flash[:notice] = "Your post has been edited."
-        
-         redirect_for_post( @post )
-        
+        redirect_for_post( @post )
       else
         render :action => 'edit'
       end
-      
+
     else
       @post = ForumPost.new( params[:post] )
       @post.forum_topic = @topic
       @post.parent_post = 0
       @post.user = @user
-      
-      
+      @parent = nil
+
       if !params[:parent].nil? && !params[:parent].eql?('')
         @post.parent_post = params[:parent].to_i
         @parent = ForumPost.find( params[:parent].to_i )
@@ -220,12 +224,13 @@ class ForumsController < ApplicationController
         @topic.user = @user
         success = @topic.save
         success = @post.save && success
+        @post.publish()
         success = @parent.save && success unless @parent.nil?
       end
       
       if success
         flash[:notice] = 'New post created in this forum.'
-        
+
         link = ""
         if ( @post.parent_post == 0 ) 
           link = url_for(:controller => '/forums', :action => 'read', :id => @post.id, :course => @course, :only_path => false)
@@ -238,14 +243,25 @@ class ForumsController < ApplicationController
           else
             @post.parent_post
           end
+
+        # If this is a reply, we should notify the original author and other posters.
+        unless @parent.nil?
+          item = @parent.item
+          unless item.nil?
+            notification_link = url_for(:controller => '/post', :action => 'view', :id => item, :course => nil, :only_path => false)
+            Bj.submit "./script/runner ./jobs/comment_notify.rb #{item.id} #{@user.id} \"#{notification_link}\""
+          end
+        end
+          
         reply_link = url_for(:controller => '/forums', :action => 'reply', :id => @post.id, :parent => reply_parent, :course => @course, :only_path => false)
         unwatch_link = url_for(:controller => 'forums', :action => 'stop_watch', :id => @topic.id, :course => @course, :only_path => false)
         Bj.submit "./script/runner ./jobs/forum_topic_notifier.rb #{@topic.id} #{@post.id} \"#{link}\" \"#{reply_link}\" \"#{unwatch_link}\""
-        redirect_for_post( @post )
+        redirect_for_post(@post)
       else
+        init_breadcrumb('Forums')
+        flash[:badnotice] = 'Failed to save forum post.'
         render :action => 'new_post' 
       end
-      
     end
   end
   
@@ -367,8 +383,8 @@ class ForumsController < ApplicationController
     
     @page = params[:page].to_i
     @page = 1 if @page.nil? || @page == 0
-    @post_pages = Paginator.new self, ForumPost.count(:conditions => ["forum_topic_id = ? and parent_post = ?", @topic.id, @parent_post.id]), 15, @page
-    @posts = ForumPost.find(:all, :conditions => ["forum_topic_id = ? and parent_post = ?", @topic.id, @parent_post.id ], :order => 'created_at ASC', :limit => 15, :offset => @post_pages.current.offset)
+    @post_pages = Paginator.new self, ForumPost.count(:conditions => ["forum_topic_id = ? and parent_post = ?", @topic.id, @parent_post.id]), 50, @page
+    @posts = ForumPost.find(:all, :conditions => ["forum_topic_id = ? and parent_post = ?", @topic.id, @parent_post.id ], :order => 'created_at ASC', :limit => 50, :offset => @post_pages.current.offset)
     
     @title = @parent_post.headline
 

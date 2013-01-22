@@ -8,17 +8,27 @@ class ForumPost < ActiveRecord::Base
   validates_presence_of :headline, :post
   
   before_save :transform_markup
+
+  has_one :item
   
   def create_item()
     item = Item.new
     item.user_id = self.user_id
     item.course_id = self.forum_topic.course_id
-    item.body = self.post
+    item.body = "#{self.user.display_name} created a new post in the forum '#{self.forum_topic.topic}'.\n #{self.post}"
     item.enable_comments = false
     item.enable_reshare = false
     item.forum_post_id = self.id
     item.created_at = self.created_at
     return item
+  end
+
+  def publish()
+    if parent_post == 0
+      item = create_item()
+      item.save
+      item.share_with_course(self.forum_topic.course, self.created_at)
+    end
   end
 
   def last_user

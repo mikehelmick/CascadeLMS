@@ -9,6 +9,7 @@
 </div>
 
 <h2><%=h @topic.topic %> : '<%=h @parent_post.headline %>'</h2>
+<span id="iap<%= @parent_post.item.id %>"><%= render(:partial => '/post/aplus_btn', :locals => {:item => @parent_post.item, :user => @user}) %></span>
 
 <table class="table table-compact">
   <%= render :partial => "post", :locals => { :post => @parent_post, :parent => @parent_post, :controls => true } %> 

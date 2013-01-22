@@ -202,15 +202,35 @@ class Item < ActiveRecord::Base
                    else
                      num_commenters
                    end
-      return unify_names_and_message(names, "commented on your post, #{item.title}", user_count) 
+      message = if item.forum?
+                  "replied to your forum post, #{item.title}"
+                else
+                  "commented on your post, #{item.title}"
+                end
+      return unify_names_and_message(names, message, user_count) 
     else
       # Case where this is a commenter.
       if item.user_id == 0
-        return unify_names_and_message(names, "also commented on #{item.title}", num_commenters)
+        message = if item.forum?
+                    "also replied to the forum post #{item.title}"
+                  else
+                    "also commented on #{item.title}"
+                  end
+        return unify_names_and_message(names, message, num_commenters)
       elsif name_ids.size == 1 && name_ids.member?(item.user_id)
-        return unify_names_and_message(names, "also commented on their post that you commented on, #{item.title}", num_commenters)
-      else 
-        return unify_names_and_message(names, "also commented on #{item.user.display_name}'s post that you commented on, #{item.title}", num_commenters)
+        message = if item.forum?
+                    "also replied to their forum post that you replied to, #{item.title}"
+                  else
+                    "also commented on their post that you commented on, #{item.title}"
+                  end
+        return unify_names_and_message(names, message, num_commenters)
+      else
+        message = if item.forum?
+                    "also replied to #{item.user.display_name}'s forum post that you replied to, #{item.title}"
+                  else
+                    "also commented on #{item.user.display_name}'s post that you commented on, #{item.title}"
+                  end
+        return unify_names_and_message(names, message, num_commenters)
       end
     end
   end
@@ -246,6 +266,8 @@ class Item < ActiveRecord::Base
         if item.blog_post?
           # Blog posts are special, as they use the legacy comment system.
           unique_sql = "select distinct(user_id) from comments where post_id = #{item.post_id}"
+        elsif item.forum?
+          unique_sql = "select distinct(user_id) from forum_posts where parent_post=#{item.forum_post_id}"
         end
         connection.select_values(unique_sql).each do |id_as_string|
           user_id = id_as_string.to_i

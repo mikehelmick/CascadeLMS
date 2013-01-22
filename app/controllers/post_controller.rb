@@ -16,6 +16,8 @@ class PostController < ApplicationController
   
     if @item.blog_post?
       return redirect_to :controller => '/blog', :action => 'post', :course => @item.course_id, :id => @item.post_id
+    elsif @item.forum?
+      return redirect_to :controller => '/forums', :action => 'read', :course => @item.course_id, :id => @item.forum_post_id
     end
 
     return unless comments_open(@item)

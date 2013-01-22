@@ -32,7 +32,8 @@
       / Wiki: <%= link_to("#{item.wiki.page}", {:controller => '/wiki', :action => 'page', :id => item.wiki.page, :course => item.course}) %>
     <% end %>
 	<% if item.forum? %>
-	  / <%= link_to('Read Forum', {:controller => '/forums', :course => item.course, :action => 'read', :id => item.forum_post_id}) %>
+	  / Forum '<%= link_to("#{item.forum_post.forum_topic.topic}", {:controller => '/forums', :action => 'view_topic', :course => item.course, :id => item.forum_post.forum_topic}) %>' 
+	  / Post <%= link_to("#{item.forum_post.headline}", {:controller => '/forums', :course => item.course, :action => 'read', :id => item.forum_post}) %>
 	<% end %>
 	<% if item.document? %>
 	  <% if item.document.link %>
@@ -47,7 +48,7 @@
 	<%= item.body_html %>
    </div>
    <div class="stream-comment">
-   	     <span id="iap<%= item.id %>"><%= render(:partial => '/post/aplus_btn', :locals => {:item => item, :user => @user}) %></span> <% if item.enable_comments %>| <%= link_to "#{pluralize(item.comment_count, 'comment')}", :controller => '/post', :action => 'view', :id => item, :course => nil %><% end %> <% if item.forum? %>| <%= link_to('Read Forum', {:controller => '/forums', :course => item.course, :action => 'read', :id => item.forum_post_id}) %><% end %> 
+   	     <span id="iap<%= item.id %>"><%= render(:partial => '/post/aplus_btn', :locals => {:item => item, :user => @user}) %></span> <% if item.enable_comments %>| <%= link_to "#{pluralize(item.comment_count, 'comment')}", :controller => '/post', :action => 'view', :id => item, :course => nil %><% end %> <% if item.forum? %>| <%= link_to("#{pluralize(item.forum_post.replies, 'reply')}", {:controller => '/forums', :course => item.course, :action => 'read', :id => item.forum_post_id}) %><% end %> 
    </div>
  </div>
 </div>

@@ -10,7 +10,7 @@
     <p><strong><%= post.user.display_name %></strong><br/>
 	  <em><% if post.user.instructor_in_course?( @course.id ) %> <span class="label label-success">instructor</span>
 	  <% elsif post.user.assistant_in_course?( @course.id ) %> <span class="label label-success">assistant</span>
-	  <% elsif post.user.student_in_course?( @course.id ) %> <span class="label label-info">Info</span>student</span>
+	  <% elsif post.user.student_in_course?( @course.id ) %> <span class="label label-info">student</span>
 	  <% else %> <span class="label label-important">guest</span>
 	  <% end %></em>
 	  <br/>
