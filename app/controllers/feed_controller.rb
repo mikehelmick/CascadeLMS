@@ -12,6 +12,9 @@ class FeedController < ApplicationController
     return unless allowed_to_see_course( @course, @user )
     
     return unless course_allows_rss( @course )
+
+    @breadcrumb = Breadcrumb.for_course(@course)
+    @breadcrumb.text = 'RSS Subscribe'
   end
   
   def index
@@ -23,25 +26,18 @@ class FeedController < ApplicationController
     
     unless @user.nil?
       params[:format] = 'xml'
-      @course = load_course( params[:course] ) 
-      if @course
+      unless @course.nil?
         if course_allows_rss( @course )
           if allowed_to_see_course( @course, @user )     
             respond_to do |format| 
               format.xml {
-                 @recent_activity = FreshItems.fresh( @course, @app['recent_items'].to_i )
-                 #headers["Content-Type"] = "application/rss+xml"
-            
-                 @fresh_date = nil
-                 if ( @recent_activity.size > 0 )
-                   if ( @recent_activity[0].class.to_s.eql?('Assignment' ) ) 
-                     @fresh_date = @recent_activity[0].open_date
-                   else
-                     @fresh_date = @recent_activity[0].created_at
-                   end
-                 end
+                @pages, @feed_items = @course.feed.load_items(@user, 100, 1)
+                @fresh_date = nil
+                if (@feed_items.size > 0)
+                  @fresh_date = @feed_items[0].item.created_at
+                end
                }
-             end
+            end
           end
           #render_text( 'You are not authorized to view this RSS feed.', 401 ) 
         end
