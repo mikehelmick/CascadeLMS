@@ -120,6 +120,14 @@ class Post < ActiveRecord::Base
     return item
   end
 
+  def update_item()
+    item = self.item
+    unless item.nil?
+      item.body = self.body
+      item.save
+    end
+  end
+
   protected
     		
 	def transform_markup

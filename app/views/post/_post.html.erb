@@ -42,7 +42,9 @@
 	    / Download: <%= render :partial => '/documents/download_link', :locals => {:document => item.document, :course => item.course}%>
 	  <% end %>
 	<% end %>
-	
+	<% if item.blog_post? %>
+	  / Blog Post: <%= link_to("#{item.post.title}", {:controller => '/blog', :action => 'post', :course => item.course, :id => item.post}) %>
+	<% end %>	
 	</span>
 
 	<%= item.body_html %>

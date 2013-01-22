@@ -75,6 +75,8 @@ class Instructor::BlogController < Instructor::InstructorBase
     
     @post = Post.find(params[:id])
     if @post.update_attributes(params[:post])
+      @post.update_item()
+      
       flash[:notice] = 'Post was successfully updated.'
       set_highlight( "post_#{@post.id}" )
       redirect_to :action => 'index'
