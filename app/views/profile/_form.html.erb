@@ -1,0 +1,23 @@
+<%= error_messages_for('user_profile', :class => 'alert alert-error') %>
+
+<div class="control-group">
+  <label for="user_profile_major" class="control-label">Major</label>
+  <div class="controls">
+	<%= text_field 'user_profile', 'major' %>
+  </div>
+</div>
+
+<div class="control-group">
+  <label for="user_profile_year" class="control-label">Year/Class</label>
+  <div class="controls">
+	<%= text_field 'user_profile', 'year', {'data-provide' => 'typeahead',
+		'data-source' => '["Freshman", "Sophomore", "Junior", "Senior", "Graduate Student", "Ph.D. Student"]'} %>
+  </div>
+</div>
+
+<div class="control-group">
+  <label for="user_profile_body" class="control-label">About Me</label>
+  <div class="controls">
+    <%= text_area 'user_profile', 'about_me', {:class => 'input-xlarge', :rows => 10}  %>
+  </div>
+</div>

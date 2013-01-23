@@ -1,0 +1,38 @@
+<div class="row">	
+  <div class="span1"></div>
+  <div class="span3">
+  	<img src="<%= @user_profile.user.gravatar_url(request.ssl?, 300) %>">
+  </div>
+  <div class="span8">
+  	<h2><%= @user_profile.user.display_name %>'s Profile</h2>
+
+    <div class="well">
+	  <% unless @user_profile.major.nil? %>
+	    <dl>
+		  <dt>Major</dt>
+		  <dd><%=h @user_profile.major %></dd>
+	    </dl>
+	  <% end %>
+	  <% unless @user_profile.year.nil? %>
+	    <dl>
+		  <dt>Year / Class</dt>
+		  <dd><%=h @user_profile.year %></dd>
+		</dl>
+	  <% end %>
+	  <% unless @user_profile.about_me.nil? %>
+	    <dl>
+		  <dt>About Me</dt>
+		  <dd><%= @user_profile.about_me.to_html %></dd>
+		</dl>
+	  <% end %>
+	  
+      <% if @user_profile.empty? %>
+        <div class="alert"><%= @user_profile.user.display_name %> hasn't filled out their profile.</div>
+      <% end %>
+	
+  	  <% if @user_profile.user_id == @user.id %>
+        <%= link_to 'Edit', {:controller => '/profile', :action => 'edit', :id => nil}, {:class => 'btn btn-danger'} %>
+      <% end %>
+	</div>
+  </div>
+</div>

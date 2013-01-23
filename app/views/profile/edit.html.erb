@@ -1,0 +1,9 @@
+<h2>Edit Your Profile</h2>
+<div class="alert alert-info">Everything in your profile is visible to other users in the system.</div>
+
+<% form_tag( {:action => 'update'}, {:class => 'form-horizontal'} ) do %>
+  <%= render :partial => 'form' %>
+
+  <%= submit_tag('Save', :class => 'btn btn-primary') %>
+  <%= link_to('Cancel', {:action => 'index'}, {:class => 'btn'}) %>
+<% end %>
