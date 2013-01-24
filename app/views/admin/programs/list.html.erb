@@ -1,35 +1,23 @@
 <h2>Programs (Accreditation Groupings)</h2>
-
-
+<%= link_to 'New Program', {:action => 'new'}, {:class => 'btn btn-success'} %><br/><br/>
 <% if @programs.size == 0 %>
-  <p><i>There are no programs defined.</i></p>
+  <div class='alert alert-info'>There are no programs defined.</div>
 <% else %>
-
-<table class="fancy">
+<table class="table table-compact table-striped">
   <tr class="header">
     <th>Program Name</th>
     <th>Controls</th>
   </tr>
-  
-<% count = 0 %>
-<% for program in @programs %>
-<% count = count.next 
-   odd = "odd"
-   odd = "even" if count.even?
-%>
-
-  <tr class="<%=odd%> hover" id="language_<%=program.id%>">
+  <% for program in @programs %>
+  <tr id="prgm_<%=program.id%>">
     <td><%=h program.title %></td>
-    <td><%= link_to 'Edit', :action => 'edit', :id => program %> |
-        <%= link_to 'Edit Managers/Auditors', :action => 'managers', :id => program %>    
+    <td>
+	  <div class="btn-group">
+        <%= link_to 'Edit', {:action => 'edit', :id => program}, {:class => 'btn btn-small'} %>
+        <%= link_to 'Edit Managers/Auditors', {:action => 'managers', :id => program}, {:class => 'btn btn-small'} %>    
+      </div>
     </td>
   </tr>
 <% end %>
 </table>
-
 <% end %>
-
-<br />
-
-<%= link_to 'New Program', :action => 'new' %> |
-<%= link_to 'Back', :controller => '/admin' %>

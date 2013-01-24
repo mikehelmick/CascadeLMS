@@ -1,13 +1,13 @@
-<%= link_to_function(image_tag("arrow_up.png"), "new Effect.BlindUp('search_results')") %>
+<%= link_to_function('Dismiss <i class="icon-remove-circle"></i>', "new Effect.BlindUp('search_results')") %>
 <% if @invalid %>
-<div id="ErrorExplanation">You must enter at least 2 characters in your search term.</div>
+<div class="alert">You must enter at least 2 characters in your search term.</div>
 <% else %>
 
 <% if @users.size == 0 %>
-<div id="ErrorExplanation">No users matched your search term.</div>
+<div class="alert">No users match this search. The user must be enabled for auditor access first.</div>
 <% else %>
 
-<table class="fancy">
+<table class="table">
 
 <% count = 0 %>
 <% for user in @users %>

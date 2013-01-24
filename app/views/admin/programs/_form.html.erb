@@ -1,11 +1,12 @@
-<%= error_messages_for 'program' %>
+<%= error_messages_for('program', {:class => 'alert alert-error'}) %>
 
 
 <!--[form:programming_language]-->
-<div class="block">
-<p><label for="program_title" class="required">Program Name:</label>
-<%= text_field 'program', 'title'  %></p>
+<div class="control-group">
+  <label for="program_title" class="control-label">Program Name</label>
+  <div class="controls">
+    <%= text_field 'program', 'title', {:class => 'input-xlarge', 'data-provide' => 'typeahead',
+		'data-source' => "#{format_autocomplete(@majors)}" } %>
+  </div>
 </div>
-
 <!--[eoform:programming_language]-->
-

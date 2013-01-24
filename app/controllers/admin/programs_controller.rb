@@ -14,6 +14,7 @@ class Admin::ProgramsController < ApplicationController
 
   def list  
      @programs = Program.find(:all)
+     set_breadcrumb('Programs')
   end
 
   def show
@@ -22,6 +23,8 @@ class Admin::ProgramsController < ApplicationController
 
   def new
     @program = Program.new
+    load_majors()
+    set_breadcrumb('New Program')
   end
 
   def create
@@ -30,12 +33,16 @@ class Admin::ProgramsController < ApplicationController
       flash[:notice] = 'Program was successfully created.'
       redirect_to :action => 'list'
     else
+      load_majors()
+      set_breadcrumb('New Program')
       render :action => 'new'
     end
   end
 
   def edit
     @program = Program.find(params[:id])
+    load_majors()
+    set_breadcrumb('Edit Program')
   end
 
   def update
@@ -52,6 +59,7 @@ class Admin::ProgramsController < ApplicationController
     @program = Program.find(params[:id])
     @managers = @program.managers
     @auditors = @program.auditors
+    set_breadcrumb("Program Managers : #{@program.title}")
   end
   
   def search
@@ -117,14 +125,18 @@ class Admin::ProgramsController < ApplicationController
     @users = @program.managers if @utype.eql?('manager')
     @users = @program.auditors if @utype.eql?('auditor')
     
-    render :layout => false, :partial => 'userlist'
+    render :layout => false
   end
-  
+
+  private
   def set_tab 
     @title = 'Programs (Accreditation Categories)'
     @tab = 'administration'
   end
 
-  private :set_tab
+  def set_breadcrumb(extra_text)
+    @breadcrumb = Breadcrumb.for_admin()
+    @breadcrumb.text = extra_text
+  end
   
 end

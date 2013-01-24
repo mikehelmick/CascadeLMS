@@ -1,12 +1,8 @@
 <h2>Editing Program '<%= @program.title %>'</h2>
 
-<div id="form_area">
-<% form_tag( :action => 'update', :id => @program ) do %>
+<% form_tag({:action => 'update', :id => @program}, {:class => 'form-horizontal'}) do %>
   <%= render :partial => 'form' %>
-<div class="submit">
-  <%= submit_tag 'Edit' %>
-</div>
-<% end %>
 
-</div>
-<%= link_to 'Back', :action => 'list' %>
+  <%= submit_tag 'Edit', :class => 'btn btn-primary' %>
+  <%= link_to 'Back', {:action => 'list'}, {:class => 'btn'} %>
+<% end %>

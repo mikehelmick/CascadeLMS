@@ -122,7 +122,7 @@ class ApplicationController < ActionController::Base
 
   def load_majors()
     autocompletes = Autocomplete.find(:all, :conditions => ["category = ?", 'major'], :order => 'value ASC')
-    @majors = autocompletes.map { |ac| ac.value.format_autocomplete() }
+    @majors = autocompletes.map { |ac| ac.value }
   end
   
   def ApplicationController.external_dir

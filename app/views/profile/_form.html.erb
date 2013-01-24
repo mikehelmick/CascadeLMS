@@ -4,7 +4,7 @@
   <label for="user_profile_major" class="control-label">Major</label>
   <div class="controls">
 	<%= text_field 'user_profile', 'major', {'data-provide' => 'typeahead',
-		'data-source' => "#{majors_array(@majors)}" } %>
+		'data-source' => "#{format_autocomplete(@majors)}" } %>
   </div>
 </div>
 
