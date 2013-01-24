@@ -1,4 +1,7 @@
 class String
+  def format_autocomplete
+    return self.gsub('"', "'").gsub("'","\\'").gsub('&', '&amp;')
+  end
   
   def to_html
      html = ""

@@ -36,7 +36,7 @@ puts "Profile #{@user_profile}"
     @user_profile = @user.user_profile
     puts "Profile: #{@user_profile}"
     @user_profile = Profile.new if @user_profile.nil?
-    set_edit_title()
+    setup_edit()
   end
 
   def update
@@ -55,13 +55,16 @@ puts "Profile #{@user_profile}"
       redirect_to :controller => '/profile', :action => 'view'
     else
       flash[:badnotice] = 'There was an error saving your profile.'
-      set_edit_title()
+      setup_edit()
       render :action => 'edit'
     end
   end
 
   private
-  def set_edit_title()
+  def setup_edit()
+    # prepare for autocomplete
+    load_majors()
+
     @title = 'Edit Your Profile'
     @breadcrumb = Breadcrumb.new
     @breadcrumb.text = 'Edit'
