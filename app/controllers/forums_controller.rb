@@ -94,13 +94,29 @@ class ForumsController < ApplicationController
       
       unless @next.nil?
         success = false
-        ForumPost.transaction do 
+        ForumPost.transaction do
+          @next = ForumPost.find(@next.id, :lock => true)
+          
           @next.replies = @post.replies - 1
           @next.parent_post = 0
           @next.last_user_id = @user.id
           @next.save
+
+          @item = @post.item
+          unless @item.nil?
+            fake_item = @next.create_item()
+            # Copy applicable items over
+            @item.body = fake_item.body
+            @item.user_id = @next.user_id
+            @item.forum_post_id = @next.id
+            @item.created_at = fake_item.created_at
+            @item.save
+ 
+            # Adjust stream ordering
+            FeedsItems.update_all("timestamp = \"#{@item.created_at.to_formatted_s(:db)}\"", "item_id = #{@item.id}")
+          end
           
-          ForumPost.update_all( "parent_post = #{@next.id}","parent_post = #{@post.id}" )
+          ForumPost.update_all("parent_post = #{@next.id}", "parent_post = #{@post.id}")
         
           @topic.post_count = @topic.post_count - 1
           @topic.user = @user
@@ -122,6 +138,9 @@ class ForumsController < ApplicationController
         # there is no next
         success = false
         ForumPost.transaction do
+          # Only post, destroy the item
+          @item = @post.item
+          @item.destroy unless @item.nil?
           @post.destroy
           @topic.post_count = @topic.post_count - 1
           @topic.user = @user
@@ -142,12 +161,14 @@ class ForumsController < ApplicationController
       
       success = false
       ForumPost.transaction do
+        @topic = ForumTopic.find(@parent.forum_topic_id, :lock => true)
+        @parent = ForumPost.find(params[:parent], :lock => true)
         @post.destroy
-        
+
         @topic.post_count = @topic.post_count - 1
         @topic.user = @user
         @topic.save
-        
+
         @parent.replies = @parent.replies - 1
         @parent.last_user_id = @user.id
         @parent.save
@@ -162,9 +183,7 @@ class ForumsController < ApplicationController
         flash[:notice] = "Error deleting post."
         redirect_to :action => 'read', :id => @parent
       end
-      
     end
-    
   end
   
   def submit_post
