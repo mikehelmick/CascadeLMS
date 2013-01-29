@@ -46,6 +46,7 @@ class HomeController < ApplicationController
       @programs = @user.programs_under_audit()
       @audit_term = @term
     end
+    maybe_run_publisher(false)
     
     respond_to do |format|
       format.html

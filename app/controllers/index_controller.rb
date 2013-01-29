@@ -19,20 +19,7 @@ class IndexController < ApplicationController
   end
 
   def tickle
-    status = Status.get_status('tickle')
-    
-    last_update = Time.at(status.value.to_i).to_i
-    now = Time.now.to_i
-    if (last_update + (2*60) < now)
-      Bj.submit "./script/runner ./jobs/publisher.rb", :priority => 100
-      
-      status.value = now.to_s
-      status.save
-      
-      render :text => "yes", :layout => false
-    else
-      render :text => "no", :layout => false
-    end
+    maybe_run_publisher(true)
   end
   
   def logged_in

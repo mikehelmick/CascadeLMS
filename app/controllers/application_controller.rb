@@ -35,7 +35,7 @@ require 'MyActiveRecordHelper'
 # Likewise, all the methods added will be available for all controllers.
 class ApplicationController < ActionController::Base
   ## CSCW Application version
-  @@VERSION = '2.0.0 <em>alpha</em> (Jefferson) 20130122'
+  @@VERSION = '2.0.0 <em>alpha</em> (Jefferson) 20130128'
   
   ## Supress password logging
   filter_parameter_logging :password
@@ -93,6 +93,26 @@ class ApplicationController < ActionController::Base
           return false
         end
       end
+    end
+  end
+
+  # This is meant to be run via the /index/tickle operation,
+  # but just in case, it is also checked anytime a user visits
+  # the stream.
+  def maybe_run_publisher(do_redirects = true)
+    status = Status.get_status('tickle')
+    
+    last_update = Time.at(status.value.to_i).to_i
+    now = Time.now.to_i
+    if (last_update + (2*60) < now)
+      Bj.submit "./script/runner ./jobs/publisher.rb", :priority => 100
+      
+      status.value = now.to_s
+      status.save
+      
+      render :text => "yes", :layout => false if do_redirects
+    else
+      render :text => "no", :layout => false if do_redirects
     end
   end
   
