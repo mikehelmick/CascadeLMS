@@ -1,3 +1,4 @@
 <% carddata = "
-  #{link_to user.display_name, {:controller => '/profile', :action => 'view', :id => user, :course => nil}}<br/>
-  #{user.email}".gsub('"', '&quot;') %><a href="#" rel="popover" title="<%= user.display_name %>" data-trigger="hover" data-html="true" data-content="<%= carddata %>" data-placement="bottom"><img src="<%= user.gravatar_url(request.ssl?, size) %>" class="aplus_pic" /></a>
+  Year: #{h user.user_profile.year rescue '?'}<br/>
+  Major: #{h user.user_profile.major rescue '?'}
+  ".gsub('"', '&quot;') %><a href="#" rel="popover" title="<%= user.display_name %>" data-trigger="hover" data-html="true" data-content="<%= carddata %>" data-placement="bottom"><img src="<%= user.gravatar_url(request.ssl?, size) %>" class="aplus_pic" /></a>
