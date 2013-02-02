@@ -20,6 +20,14 @@
 
 </p>
 
+<% term_courses = @user.courses_in_term( @course.term ) %>
+<% if @course.course_open %>
+<% if term_courses.size > 1 %>
+<h2>Merge Courses</h2>
+  <%= link_to 'Merge your other courses from this term into this course.', {:controller => '/instructor/course_info', :course => @course} %>
+<% end %>
+<% end %>
+
 <%if request.path_parameters[:controller].eql?('instructor/index') %>
   <h2>Move Course</h2>
   <p>If this course spans multiple terms (long research project, senior project, etc...) you can have an administrator move the course for you, all course related information will be preserved.</p>

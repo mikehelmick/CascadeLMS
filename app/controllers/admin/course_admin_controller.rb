@@ -26,11 +26,13 @@ class Admin::CourseAdminController < ApplicationController
     @course = Course.new
     @course.term = @current_term
     @crn = ''
+    @breadcrumb.text = 'Create New Course'
   end
   
   def edit
     @course = Course.find(params[:id])
     @terms = Term.find(:all)
+    @breadcrumb.text = "Edit #{@course.title}"
   end
   
   def create
@@ -90,10 +92,10 @@ class Admin::CourseAdminController < ApplicationController
     
     begin
       course.merge(other, @app['external_dir'])
-      
+      maybe_run_publisher(false, true)
       flash[:notice] = "Courses have been merged successfully."
       redirect_to :action => 'edit', :id => course, :course => nil
-    rescue
+    rescue Exception => doh
       flash[:badnotice] = "There was an error merging the courses"
       redirect_to :action => 'edit', :id => course, :course => nil
     end
@@ -179,8 +181,9 @@ class Admin::CourseAdminController < ApplicationController
       c.course_assistant = true if @utype.eql?('assistant')
       c.course_guest = true if @utype.eql?('guest')  
       c.term_id = @course.term_id
+      @course.feed.subscribe_user(user, false)
       @course.courses_users << c
-      @course.save   
+      @course.save  
     end
     
     @users = @course.students if @utype.eql?('student')
@@ -195,6 +198,8 @@ class Admin::CourseAdminController < ApplicationController
     @title = 'Course Administration'
     @tab = 'administration'
     @current_term = Term.find_current
+    @breadcrumb = Breadcrumb.for_admin()
+    @breadcrumb.admin_course = true
   end
   
 end

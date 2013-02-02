@@ -69,7 +69,7 @@ class Assignment < ActiveRecord::Base
                  self.create_item()
                end
         item.save
-        item.share_with_course(self.course, self.open_date)
+        item.share_with_course(self.course, item.created_at)
         published = true
       end
     end
@@ -86,7 +86,7 @@ class Assignment < ActiveRecord::Base
     item.enable_comments = true
     item.enable_reshare = false
     item.graded_assignment_id = self.id
-    item.created_at = self.updated_at
+    item.created_at = Time.now
     return item  
   end
   

@@ -82,8 +82,6 @@ class Course < ActiveRecord::Base
   
   def merge( other, externalDir )
     Course.transaction do
-      #puts "in a transaction?"
-      
       # merge course details
       self.title = "#{self.title} #{other.title}"
       self.short_description = "#{self.short_description} #{other.short_description}"
@@ -160,11 +158,13 @@ class Course < ActiveRecord::Base
           contents = Document.find(:all, :conditions => ["course_id = ? and document_parent = ?", other.id, copy_from.id], :order => "position DESC")
           contents.each { |i| import_stack.push(i) }
         else
-          ## Need to actually copy the file
-          from_file_name = copy_from.resolve_file_name(externalDir)
-          to_file_name = new_doc.resolve_file_name(externalDir)
-          ## shell out to copy file
-          `cp #{from_file_name} #{to_file_name}`
+          unless copy_from.link
+            ## Need to actually copy the file
+            from_file_name = copy_from.resolve_file_name(externalDir)
+            to_file_name = new_doc.resolve_file_name(externalDir)
+            ## shell out to copy file
+            `cp #{from_file_name} #{to_file_name}`
+          end
         end
       end
       # Import assignments

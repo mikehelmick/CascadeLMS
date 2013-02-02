@@ -5,7 +5,7 @@
 <% for user in @users %>
   <li id="<%=@utype%>_user_<%=user.id%>">
 	<% unless @utype.eql?('dropped') %>
-	  <%= link_to_remote( image_tag('delete.png', :align => 'absmiddle' ), :url => { :action => 'deluser', :type => @utype, :course => @course.id, :id => user }, :confirm => "Remove user #{user.display_name} from this course?", :success => "new Effect.Puff( '#{@utype}_user_#{user.id}' )", :failure => "alert('There was an error removing the selected user from this course.');" ) %> 
+	  <%= link_to_remote( '<i class="icon-minus-sign"></i>', :url => { :action => 'deluser', :type => @utype, :course => @course.id, :id => user }, :confirm => "Remove user #{user.display_name} from this course?", :success => "new Effect.Puff( '#{@utype}_user_#{user.id}' )", :failure => "alert('There was an error removing the selected user from this course.');" ) %> 
 	<% end %><%=h user.display_name %> (<%=h user.email%>)
 	</li>
 <% end %>

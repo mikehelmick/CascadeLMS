@@ -1,19 +1,11 @@
-<p><%= link_to "#{image_tag 'arrow_left.png' } Back", :action => 'index' %></p>
-
-<div id="form_area">
 <h2>Editing course <%= @course.title %></h2>
 
-<% form_tag( :action => 'update', :id => @course ) do %>
+<%= error_messages_for('course', {:class => 'alert alert-error'}) %>
 
-<%= error_messages_for 'course' %>
-
-<%= render :partial => 'courseform' %>
-
-<div class="submit">
-  <%= submit_tag "Save Changes" %>
-</div>
+<% form_tag( {:action => 'update', :id => @course}, {:class => 'form-horizontal well'} ) do %>
+  <%= render :partial => 'courseform' %>
+  <%= submit_tag('Save Changes', {:class => 'btn btn-primary'}) %>
 <% end %>
-</div>
 
 <h2>CRN(s) for <%= @course.title %></h2>
 <div id="CRN_error"> </div>
@@ -76,5 +68,3 @@
 <%= render :partial => 'userlist' %>
 </div>
 
-<hr/>
-<p><%= link_to "#{image_tag 'arrow_left.png' } Back", :action => 'index' %>

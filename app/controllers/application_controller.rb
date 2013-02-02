@@ -99,12 +99,12 @@ class ApplicationController < ActionController::Base
   # This is meant to be run via the /index/tickle operation,
   # but just in case, it is also checked anytime a user visits
   # the stream.
-  def maybe_run_publisher(do_redirects = true)
+  def maybe_run_publisher(do_redirects = true, ignore_timestamp = false)
     status = Status.get_status('tickle')
     
     last_update = Time.at(status.value.to_i).to_i
     now = Time.now.to_i
-    if (last_update + (2*60) < now)
+    if (ignore_timestamp || last_update + (2*60) < now)
       Bj.submit "./script/runner ./jobs/publisher.rb", :priority => 100
       
       status.value = now.to_s

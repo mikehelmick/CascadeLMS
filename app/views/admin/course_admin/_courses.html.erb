@@ -1,24 +1,18 @@
 <% if @courses.size == 0 %>
-<p><b>The selected term has no courses</b></p>
+<div class="alert alert-info">The selected term has no courses</div>
 <% else %>
-<table class="fancy">
-  <tr class="header">
+<table class="table table-compact table-striped">
+   <tr>
     <th>CRN(s)</th>
     <th>Title</th>
     <th>Description
     <th>Open?</th>   
     <th>Instructor(s)</th>
     <th>Controls</th>
-  </tr>
+   </tr>
 
-<% count = 0 %>
 <% for course in @courses %>
-<% count = count.next 
-   odd = "odd"
-   odd = "even" if count.even?
-%>
-
-  <tr class="<%=odd%> hover" id="item_<%=course.id%>">
+  <tr id="item_<%=course.id%>">
     <td align="left" valign="top"><%= course.crns.join('<br/> ')%></td>
     <td nowrap="nowrap" align="left" valign="top"><%=h course.title%></td>
     <td nowrap="nowrap" align="left" valign="top"><%=h course.short_description%></td>  
@@ -27,10 +21,8 @@
       <%= render :partial => 'courseopen' %>
     </td>
     <td nowrap="nowrap" align="left" valign="top"><%= course.instructors.join(',<br/> ')%></td>
-    <td align="left" valign="top"><%= link_to 'edit', :action => 'edit', :id => course %></td>
+    <td align="left" valign="top"><%= link_to 'edit', {:action => 'edit', :id => course}, {:class => 'btn btn-mini'} %></td>
   </tr>
-
 <% end %>
-
 </table>
 <% end %>
