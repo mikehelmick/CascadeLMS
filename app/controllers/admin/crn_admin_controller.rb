@@ -51,6 +51,7 @@ class Admin::CrnAdminController < ApplicationController
   
   def new
     @crn = Crn.new
+    @breadcrumb.text = 'New CRN'
   end
 
   def create
@@ -112,6 +113,8 @@ private
      @title = 'Course Administration'
      @tab = 'administration'
      @current_term = Term.find_current
+     @breadcrumb = Breadcrumb.for_admin()
+     @breadcrumb.admin_crn = true
    end
   
 end

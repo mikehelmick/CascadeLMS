@@ -108,12 +108,15 @@
 	   <span class="divider">/</span>
 	 <% end %>
 	 <% if @breadcrumb.admin %>
-	   <%= link_to 'Administration', {:controller => '/admin', :id => nil, :course => nil} %><span class="divider">/</span>
+	   <%= link_to 'Administration', {:controller => '/admin', :id => nil, :course => nil} %> <span class="divider">/</span>
 	   <% if @breadcrumb.admin_announcements %>
-	     <%= link_to 'System Announcements', {:controller => '/admin/announcement', :action => nil, :id => nil} %><span class="divider">/</span>
+	     <%= link_to 'System Announcements', {:controller => '/admin/announcement', :action => nil, :id => nil} %> <span class="divider">/</span>
 	   <% end %>
 	   <% if @breadcrumb.admin_course %>
-	     <%= link_to 'Course Administration', {:controller => '/admin/course_admin', :action => nil, :id => nil} %><span class="divider">/</span>
+	     <%= link_to 'Course Administration', {:controller => '/admin/course_admin', :action => nil, :id => nil} %> <span class="divider">/</span>
+	   <% end %>
+	   <% if @breadcrumb.admin_crn %>
+	     <%= link_to 'CRN Administration', {:controller => '/admin/crn_admin', :action => nil, :id => nil} %> <span class="divider">/</span>
 	   <% end %>
 	 <% end %>
 	 <% if @breadcrumb.instructor %>

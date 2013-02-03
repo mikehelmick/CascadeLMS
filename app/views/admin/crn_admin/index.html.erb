@@ -1,32 +1,27 @@
 <h2>CRN Admin</h2>
-
-<p><b>Current Term:</b> <%= @term.semester %> (<%= @term.term %>) |
-<%= link_to "Create new CRN", :action => 'new' %></p>
+<div class="well"> 
+  <b>Current Term:</b> <%= @term.semester %> (<%= @term.term %>)
+</div>
+<%= link_to "Create new CRN", {:action => 'new'}, {:class => 'btn btn-success'} %><br/><br/>
 
 <% if @crns.size == 0 %>
-	<p><i>There are no CRNs in this term.</i></p>
+ <div class="alert alert-info">There are no CRNs in this term.</div>
 <% else %>
 
- <table class="fancy">
+ <table class="table table-compact table-striped">
 	<tr>
 	  <th><%= link_to "CRN", :action => 'index', :sort => 'crn' %></th>
 	  <th><%= link_to "Name", :action => 'index', :sort => 'name' %></th>
 	  <th><%= link_to "Title", :action => 'index', :sort => 'title' %></th>
+	  <th></th>
 	</tr>
 	
-	<% count = 0 %>
 	<% for crn in @crns %>
-	<% count = count.next 
-	   odd = "odd"
-	   odd = "even" if count.even?
-	%>
-
-	  <tr class="<%=odd%> hover" id="item_<%=crn.id%>">
-	    <td><%= link_to "#{image_tag('pencil.png', :align => 'absmiddle')} #{h crn.crn}", :action => 'edit', :id => crn.id %>
-		<%= link_to_remote( "#{image_tag('pencil_delete.png', :align => 'absmiddle')} Delete", :url => { :action => 'destroy', :id => @crn }, :confirm => "Delete CRN for course: '#{h crn.title}'?", :success => "new Effect.Puff( 'item_#{crn.id}' )", :failure => "alert('There was an error deleting the CRN.');" ) %>
-		</td>
+	  <tr id="item_<%=crn.id%>">
+	    <td><%= link_to "<i class=\"icon-edit\"></i> #{h crn.crn}", :action => 'edit', :id => crn.id %></td>
 	    <td><%= crn.name %></td>
 	    <td><%= crn.title %></td>
+	    <td><%= link_to_remote( 'Delete', :url => { :action => 'destroy', :id => @crn }, :confirm => "Delete CRN for course: '#{h crn.title}'?", :success => "new Effect.Puff( 'item_#{crn.id}' )", :failure => "alert('There was an error deleting the CRN.');", :html => {:class => 'btn btn-danger btn-mini'}) %></td>
 	  </tr>
 	<% end %>
  </table>
