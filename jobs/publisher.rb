@@ -39,7 +39,14 @@ class Publisher < ActionController::Base
         user_feed_id = user.feed.id
         # This is a course feed. Find all items shared with the course and place that item in the user's feed.
         ItemShare.find_each(:batch_size => 2000, :conditions => ["course_id = ?", feed_sub.feed.course_id]) do |is|
-          FeedsItems.create(user_feed_id, is.item.id, is.item.created_at)
+          begin
+            fitem = FeedsItems.find(:first, :conditions => ["feed_id = ? and item_id = ?", user_feed_id, is.item.id])
+            if fitem.nil?
+              FeedsItems.create(user_feed_id, is.item.id, is.item.created_at)
+            end
+          rescue
+            # This is OK - a duplicate key violation
+          end
         end
 
         feed_sub.caught_up = true

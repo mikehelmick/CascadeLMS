@@ -124,11 +124,12 @@ class Course < ActiveRecord::Base
           
           courseuser.save
           self.courses_users << courseuser
+          self.feed.subscribe_user(otheruser.user)
         end
         
         # destroy the courses_user record - not the course or the user...
         otheruser.destroy
-      end
+      end      
       
       # Import Content - Blog posts first
       other.posts.each do |post|
@@ -176,6 +177,9 @@ class Course < ActiveRecord::Base
       other.courses_users.clear
       other.save
       other.destroy
+
+      # Find all subscriptions to this course and mark them as not caught up - this will cause new items to publish.
+      FeedsItems.update_all('caught_up = 0', "feed_id = #{self.feed.id}")
       
       self.save
     end
