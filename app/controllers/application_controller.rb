@@ -35,7 +35,7 @@ require 'MyActiveRecordHelper'
 # Likewise, all the methods added will be available for all controllers.
 class ApplicationController < ActionController::Base
   ## CSCW Application version
-  @@VERSION = '2.0.0 <em>alpha</em> (Jefferson) 20130128'
+  @@VERSION = '2.0.0 <em>alpha</em> (Jefferson) 20130202'
   
   ## Supress password logging
   filter_parameter_logging :password
@@ -199,7 +199,7 @@ class ApplicationController < ActionController::Base
       redirect_to :controller => '/home'
       return false
     end
-    @isMuohio = !request.host.index("muohio.edu").nil?
+    @isMuohio = (!request.host.index("muohio.edu").nil? || !request.host.index("miamioh.edu").nil?)
     return true
   end
   
