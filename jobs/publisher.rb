@@ -36,7 +36,7 @@ class Publisher < ActionController::Base
       if feed_sub.feed.user_id.nil?
         user = User.find(feed_sub.user_id)
         puts "Populating new subscription to course feed id: #{feed_sub.feed_id} course: #{feed_sub.feed.course.title} for user id: #{user.id} #{user.display_name}"
-        user_feed_id = user.feed.id
+        user_feed_id = user.create_feed.id
         # This is a course feed. Find all items shared with the course and place that item in the user's feed.
         ItemShare.find_each(:batch_size => 2000, :conditions => ["course_id = ?", feed_sub.feed.course_id]) do |is|
           begin

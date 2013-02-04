@@ -6,7 +6,7 @@ class Feed < ActiveRecord::Base
 
   has_many :items, :through => :feeds_items
   
-  has_many :feed_subscriptions
+  has_many :feed_subscriptions, :dependent => :destroy
 
   def subscribe_user(user, is_caught_up = false)
     subscription = FeedSubscription.find(:first, :conditions => ["feed_id = ? and user_id = ?", self.id, user.id])

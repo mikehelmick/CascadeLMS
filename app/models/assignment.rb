@@ -100,6 +100,7 @@ class Assignment < ActiveRecord::Base
     dup.course_id = course_id
     dup.position = self.position
     dup.title = self.title
+    dup.user_id = self.user_id
     dup.open_date = Time.at( self.open_date + time_offset )
     dup.due_date = Time.at( self.due_date + time_offset )
     dup.close_date = Time.at( self.close_date + time_offset )

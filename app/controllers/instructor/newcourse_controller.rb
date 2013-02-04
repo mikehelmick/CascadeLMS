@@ -6,6 +6,8 @@ class Instructor::NewcourseController < Instructor::InstructorBase
     set_title()
     initialize_with_term(@current_term)
     @createTerm = @current_term
+
+    load_programs()
   end
 
   def change_term
@@ -32,6 +34,13 @@ class Instructor::NewcourseController < Instructor::InstructorBase
 
     createNoneCrn = crnsToAdd.empty?
     @course = Course.create_course(params[:course], params[:term], params[:crn], createNoneCrn)
+    program_id = params[:program_id].to_i rescue program_id = -1
+    if program_id > 0
+      @program = Program.find(program_id) rescue @program = nil
+      unless @program.nil?
+        @course.programs << @program
+      end
+    end    
     ## Add in the empty CRNs
     crnsToAdd.each { |c| @course.crns << c }
 
@@ -43,6 +52,8 @@ class Instructor::NewcourseController < Instructor::InstructorBase
       c.course_instructor = true
       c.term_id = @course.term_id
       c.save
+
+      @course.feed.subscribe_user(@user)
       
       flash[:notice] = "New course '#{@course.title}' has been created."
       redirect_to :controller => '/instructor/index', :course => @course
@@ -56,6 +67,11 @@ class Instructor::NewcourseController < Instructor::InstructorBase
   end
 
 private
+  def load_programs()
+    @programs = Program.find(:all, :order => 'title asc')
+    @program_id = nil
+  end
+
   def initialize_with_term(term)
     @terms = Term.find(:all)
     @course = Course.new

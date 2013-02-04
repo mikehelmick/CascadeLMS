@@ -51,7 +51,8 @@ class Instructor::CourseInfoController < Instructor::InstructorBase
       maybe_run_publisher(false, true)
       flash[:notice] = "Courses have been merged successfully."
       redirect_to :action => 'index', :id => @course
-    rescue
+    rescue Exception => doh
+      puts "Error: #{doh}"
       flash[:badnotice] = "There was an error merging the courses"
       redirect_to :action => 'index', :id => @course
     end

@@ -1,3 +1,6 @@
+<% if @feed_items.size == 0 %>
+  <div class="alert alert-info">No posts yet.</div>
+<% else %>
 <% day_ago = Time.now - 60*60*24 %>
 <% for feed_item in @feed_items %>
  <% unless feed_item.item.nil? %>
@@ -14,3 +17,4 @@
 	<% end %>
  </ul>
 </div>
+<% end %>

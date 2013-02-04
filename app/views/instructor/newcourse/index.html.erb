@@ -14,19 +14,27 @@ You can enter a new CRN if the one for your course is not available.
 <%= error_messages_for 'course', :class => 'alert alert-error' %>
 <fieldset>
  <div class="control-group <%= error_class_for(@course, 'title') %>">
-    <label for="course_title" class="control-label">Title:</label>
+    <label for="course_title" class="control-label">Title</label>
     <div class="controls">
      <%= text_field 'course', 'title' %>
      <p class="help-block">Course title is the short title (course number). For example, 'CSA101'.</p>
     </div>
  </div>
  <div class="control-group <%= error_class_for(@course, 'short_description') %>">
-    <label for="course_short_description" class="control-label">Description:</label>
+    <label for="course_short_description" class="control-label">Description</label>
     <div class="controls">
      <%= text_field 'course', 'short_description' %>
      <p class="help-block">Description is a more formal course title. For example 'Introduction to Computer Science'.</p>
     </div>
  </div>
+
+ <div class="control-group">
+   <label for="program" class="control-label">Program</label>
+   <div class="controls">
+	 <%= select_tag 'program_id', "<option value=\"-1\">-none-</option>#{options_from_collection_for_select(@programs, "id", "title", @program_id )}" %>
+   </div>
+ </div>
+ 
 
 
 <% if @isLdap %>

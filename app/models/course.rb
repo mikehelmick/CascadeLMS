@@ -15,7 +15,7 @@ class Course < ActiveRecord::Base
   has_many :assignments, :order => "position", :dependent => :destroy
   has_many :forum_topics, :order => "position", :dependent => :destroy
   
-  has_many :courses_users
+  has_many :courses_users, :dependent => :destroy
   has_many :users, :through => :courses_users
   has_many :posts, :order => "created_at", :dependent => :destroy
   
@@ -33,7 +33,7 @@ class Course < ActiveRecord::Base
   # rubrics are destroyed through the destruction of assignments
   has_many :rubrics
   
-  has_one :feed
+  has_one :feed, :dependent => :destroy
   
   before_create :solidify
 
@@ -80,7 +80,7 @@ class Course < ActiveRecord::Base
     return false
   end
   
-  def merge( other, externalDir )
+  def merge(other, externalDir)
     Course.transaction do
       # merge course details
       self.title = "#{self.title} #{other.title}"
@@ -173,14 +173,20 @@ class Course < ActiveRecord::Base
         new_asgn = cp_asgn.clone_to_course( self.id, 0, 0, externalDir )
         new_asgn.save
       end
-      
+
+      # Find all subscriptions to this course and mark them as not caught up - this will cause new items to publish.
+      FeedSubscription.update_all("caught_up=0", "feed_id=#{self.feed.id}")
+
+      # Detroy items
+      items = Item.find(:all, :conditions => ["course_id = ?", other.id])
+      items.each do |item|
+        item.destroy()
+      end
+
       other.courses_users.clear
       other.save
       other.destroy
 
-      # Find all subscriptions to this course and mark them as not caught up - this will cause new items to publish.
-      FeedsItems.update_all('caught_up = 0', "feed_id = #{self.feed.id}")
-      
       self.save
     end
   end

@@ -19,7 +19,7 @@ class NotificationsController < ApplicationController
   end
 
   def panel
-    @notifications = Notification.find(:all, :conditions => ["user_id = ?", @user.id], :order => "created_at desc", :limit => "5")
+    @notifications = Notification.find(:all, :conditions => ["user_id = ?", @user.id], :order => "created_at desc", :limit => 10)
     
     render :layout => false
   end

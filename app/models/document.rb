@@ -77,7 +77,7 @@ class Document < ActiveRecord::Base
     dup.folder = self.folder
     dup.link = self.link
     dup.url = self.url
-    dup.user_id = user_id
+    dup.user_id = self.user_id
     dup.document_parent = 0
     if time_offset.nil?
       dup.created_at = self.created_at
