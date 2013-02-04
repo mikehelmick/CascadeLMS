@@ -118,6 +118,9 @@
 	   <% if @breadcrumb.admin_crn %>
 	     <%= link_to 'CRN Administration', {:controller => '/admin/crn_admin', :action => nil, :id => nil} %> <span class="divider">/</span>
 	   <% end %>
+	   <% if @breadcrumb.admin_term %>
+         <%= link_to 'Term Administration', {:controller => '/admin/terms', :action => nil, :id => nil} %> <span class="divider">/</span>
+	   <% end %>
 	 <% end %>
 	 <% if @breadcrumb.instructor %>
 	   <%= link_to 'Instructor', {:controller => '/instructor/index', :course => @breadcrumb.course, :action => nil, :id => nil} %>

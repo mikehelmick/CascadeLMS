@@ -21,6 +21,7 @@ class Admin::TermsController < ApplicationController
     setup_years
     @term.year = @start_year
     @title = "Create new Term"
+    @breadcrumb.text = 'New Term'
   end
   
   def current
@@ -60,6 +61,7 @@ class Admin::TermsController < ApplicationController
     @term = Term.find(params[:id])
     setup_years
     @title = "Edit Term - #{@term.semester}"
+    @breadcrumb.text = 'Edit Term'
   end
 
   def update
@@ -76,6 +78,8 @@ class Admin::TermsController < ApplicationController
   def set_tab
      @tab = 'administration'
      @current_term = Term.find(:first, :conditions => ['current = 1'] )
+     @breadcrumb = Breadcrumb.for_admin()
+     @breadcrumb.admin_term = true
   end
   
   def setup_years

@@ -1,16 +1,9 @@
-<div id="form_area">
 <h2>Create a new academic term</h2>
 
-<% form_tag( :action => 'create' ) do %>
-<p class="blockintro">Enter the appropriate term information.  All terms are created open, but not current.  These settings can be changed on the term overview page. <br/> Term identifiers are suggested to be something sortable like '200610' for Fall 2005, '200620' for Spring 2006, and '200630' for Summer 2006.</p>
-  <div class="block">
+<% form_tag({:action => 'create'}, {:class => 'form-horizontal'}) do %>
+  <p class="help-block">Enter the appropriate term information.  All terms are created open, but not current.  These settings can be changed on the term overview page. <br/> Term identifiers are suggested to be something sortable like '200610' for Fall 2005, '200620' for Spring 2006, and '200630' for Summer 2006.</p>
 
   <%= render :partial => 'form' %>
-  </div>
-  <div class="submit">
-    <%= submit_tag "Create" %>
-  </div>
+  <%= submit_tag 'Create', :class => 'btn btn-success' %>
+  <%= link_to 'Cancel', {:action => 'list'}, {:class => 'btn'} %>
 <% end %>
-</div>
-
-<%= link_to 'Cancel', :action => 'list' %>

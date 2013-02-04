@@ -1,21 +1,26 @@
-<%= error_messages_for 'term' %>
+<%= error_messages_for('term', {:class => 'alert alert-error'}) %>
 
 <!--[form:terms]-->
-<p><label for="term_term" class="required">Term: </label> 
-	<%= text_field 'term', 'term'  %><br/>
-
-<label for="term_year" class="required">Year: </label>
-<%= select 'term', 'year', @years.collect { |p| [ p, p ] }, { :selected => @term.year } %><br/> </p>
-
+<div class="control-group">
+  <label for="term_term" class="control-label">Term</label> 
+  <div class="controls">
+	<%= text_field 'term', 'term' %>
+  </div>
 </div>
 
-<p class="blockintro">Semester is a descriptive term, like 'Fall 2005' or 'Spring 2006'.</p>
-  <div class="block">
+<div class="control-group">
+  <label for="term_year" class="control-label">Year</label>
+  <div class="controls">
+    <%= select 'term', 'year', @years.collect { |p| [ p, p ] }, { :selected => @term.year } %>
+  </div>
+</div>
 
-<label for="term_semester" class="required">Semester: </label>
-<%= text_field 'term', 'semester'  %><br/></p>
+<div class="control-group">
+  <label for="term_semester" class="control-label">Semester: </label>
+  <div class="controls">
+    <%= text_field 'term', 'semester' %>
+    <p class="help-block">Semester is a descriptive term, like 'Fall 2005' or 'Spring 2006'.</p>
+  </div>
+</div>
 
-<p>Current: No</p>
-<p>Open: Yes</p>
 <!--[eoform:terms]-->
-
