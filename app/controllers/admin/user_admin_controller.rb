@@ -10,7 +10,7 @@ class Admin::UserAdminController < ApplicationController
   def index
     session[:searchby] = 'uniqueid'
     session[:searchletter] = ''
-    set_tab
+    set_tab()
     
     render :layout => 'noright'
   end
@@ -140,6 +140,9 @@ class Admin::UserAdminController < ApplicationController
   def set_tab
      @tab = 'administration'
      @title = 'User Admin'
+     @breadcrumb = Breadcrumb.for_admin()
+     @breadcrumb.admin_users = true
+     @breadcrumb.text = 'View Users'
   end
   
 end

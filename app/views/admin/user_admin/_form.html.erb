@@ -1,50 +1,70 @@
-<%
-edit = false if edit.nil?
-%>
+<% edit = false if edit.nil? %>
+<%= error_messages_for('new_user', {:class => 'alert alert-error'}) %>
 
-<%= error_messages_for 'new_user' %>
-
-<p class="blockintro">Enter all information for a new user.   We will send an email to the email address that you enter and ask the user to select a password of their own choosing.</p>
-<div class="block">
-
-	<p><b>Uniqueid (Username):</b>
+<p class="help-block">Enter all information for a new user.   We will send an email to the email address that you enter and ask the user to select a password of their own choosing.</p>
+<div class="control-group">
+  <label for="user_uniqueid" class="control-label"> Uniqueid (Username)</label>
+  <div class="controls">
 	<% if edit %>
-	  <b><%= @new_user.uniqueid %></b> <br/><i>*UniqueID can not be changed</i></p>
+	  <p class="help-block"><strong><%= @new_user.uniqueid %><strong> <em>*UniqueID can not be changed</em></p>
 	<% else %>
 	  <%= text_field 'new_user', 'uniqueid'  %></p>      
 	<% end %>
+  </div>
+</div>
 
-	<p><label for="user_personal_title">Personal Title (Ms. Mr. Mrs. Dr.):</label>
-	<%= text_field 'new_user', 'personal_title'  %></p>
-
-	<p><label for="user_first_name" class="required">First Name:</label>
-	<%= text_field 'new_user', 'first_name'  %></p>
-	<p><label for="user_middle_name">Middle Name:</label>
-	<%= text_field 'new_user', 'middle_name'  %></p>
-	<p><label for="user_last_name" class="required">Last Name:</label>
-	<%= text_field 'new_user', 'last_name'  %></p>
-
-	<p><label for="user_email" class="required">Email:</label>
-	<%= text_field 'new_user', 'email'  %></p>
-	
+<div class="control-group">
+  <label for="user_personal_title" class="control-label">Personal Title (Ms. Mr. Mrs. Dr.)</label>
+  <div class="controls">
+    <%= text_field 'new_user', 'personal_title'  %>
+  </div>
+</div>
+<div class="control-group">
+  <label for="user_first_name" class="control-label">First Name</label>
+  <div class="controls">
+    <%= text_field 'new_user', 'first_name' %>
+  </div>
+</div>
+<div class="control-group">
+  <label for="user_middle_name" class="control-label">Middle Name</label>
+  <div class="controls">
+    <%= text_field 'new_user', 'middle_name' %>
+  </div>
+</div>
+<div class="control-group">
+  <label for="user_last_name" class="control-label">Last Name</label>
+  <div class="controls">
+	<%= text_field 'new_user', 'last_name'  %>
+  </div>
+</div>
+<div class="control-group">
+  <label for="user_email" class="control-label">Email</label>
+  <div class="controls">
+	<%= text_field 'new_user', 'email'  %>
+  </div>
 </div>
 
 	
-<p class="blockintro">The following information determines the privilege level for the user.  Instructors can not create new courses, but have total control over a course that has been created for them.</p>
-<div class="block">
-	<p><b>Instructor:</b>
-		<%= radio_button 'new_user', 'instructor', true %> Yes
-		<%= radio_button 'new_user', 'instructor', false %> No
-	</p>
-
-	<p><b>Auditor:</b>
-		<%= radio_button 'new_user', 'auditor', true %> Yes
-		<%= radio_button 'new_user', 'auditor', false %> No
-	</p>
-
-	<p><b>Administrator:</b> <i>*be careful who you give this to.</i>
-		<%= radio_button 'new_user', 'admin', true %> Yes
-		<%= radio_button 'new_user', 'admin', false %> No
-	</p>
-
+<p class="help-blocks">The following information determines the privilege level for the user. Instructors can create new courses, and have total control over a course that has been created for them. Auditors need to be given access to specific programs. If none of these items are checked, a student account is created.</p>
+<div class="control-group">
+ <label for="new_user_instructor" class="control-label">Instructor</label>
+ <div class="controls">
+   <%= radio_button 'new_user', 'instructor', true %> Yes
+   <%= radio_button 'new_user', 'instructor', false %> No
+ </div>
+</div>
+<div class="control-group">
+  <label for="new_user_auditor" class="control-label">Auditor</label>
+  <div class="controls">
+    <%= radio_button 'new_user', 'auditor', true %> Yes
+    <%= radio_button 'new_user', 'auditor', false %> No
+  </div>
+</div>
+<div class="control-group">
+  <label for="new_user_admin" class="control-label">Administrator</label>
+  <div class="controls">
+	<%= radio_button 'new_user', 'admin', true %> Yes
+	<%= radio_button 'new_user', 'admin', false %> No
+	<p class="help-block">*be careful who you give this to.</p>
+  </div>
 </div>

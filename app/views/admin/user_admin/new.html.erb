@@ -1,21 +1,14 @@
 <h2>Create a new User</h2>
-
 <% if @app['authtype'].eql?('ldap') && @app['allow_fallback_auth'].eql?(true.to_s) %>
-<p><b>Since LDAP is enabled, it is recommended that you only use this screen to create temporary auditor accounts.</b></p>
+<div class="alert alert-info">Since LDAP is enabled, it is recommended that you only use this screen to create temporary auditor accounts.</div>
 <% end %>
 
-<p><%= link_to 'Cancel', :action => 'index' %></p>
-
-<div id="form_area">
-<% form_tag( {:controller => "/admin/user_admin", :action => "create"}, :onsubmit => "new Element.toggle('button');new Element.toggle('spinner');"  ) do %>
+<% form_tag( {:controller => "/admin/user_admin", :action => "create"}, :onsubmit => "new Element.toggle('button');new Element.toggle('spinner');", :class => 'form-horizontal'  ) do %>
   <%= render :partial => 'form' %>
 
-<div class="submit">
-  <div id="button"><%= submit_tag "Create User" %></div>
+  <div id="button">
+    <%= submit_tag 'Create User', :class => 'btn btn-primary' %>
+    <%= link_to 'Cancel', :action => 'index', :class => 'btn' %>
+  </div>
   <div id="spinner" style="display: none;"><%= image_tag 'spinner.gif' %></div>
-</div>
-
 <% end %>
-</div>
-
-<p><%= link_to 'Cancel', :action => 'index' %></p>

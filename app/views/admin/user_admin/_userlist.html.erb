@@ -3,7 +3,7 @@
 <% if @users.size == 0 %><p><b>No users match your selection</b></p>
 <% else %>
 
-<table class="fancy">
+<table class="table table-compact table-striped">
   <tr class="header">
 	<th>&nbsp;</th>
     <th valign="bottom">Uniqueid</th>
@@ -23,14 +23,8 @@
 <% end %>
   </tr>
 
-<% count = 0 %>
 <% for user in @users %>
-<% count = count.next 
-   odd = "odd"
-   odd = "even" if count.even?
-%>
-
-  <tr class="<%=odd%> hover" id="item_<%=user.id%>">
+  <tr id="item_<%=user.id%>">
 	<td><img src="<%= user.gravatar_url(request.ssl?) %>" /></td>
     <td><%= user.uniqueid %></td>
     <td><%= user.first_name %></td>
