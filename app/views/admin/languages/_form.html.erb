@@ -1,42 +1,60 @@
-<%= error_messages_for 'programming_language' %>
-
+<%= error_messages_for('programming_language', {:class => 'alert alert-error'}) %>
 
 <!--[form:programming_language]-->
-<div class="block">
-<p><label for="programming_language_name" class="required">Language Name:</label>
-<%= text_field 'programming_language', 'name'  %></p>
-<p><label for="programming_language_extension" class="required">File Extension:</label>
-<%= text_field 'programming_language', 'extension'  %></p>
+<div class="control-group">
+  <label for="programming_language_name" class="control-label">Language Name</label>
+  <div class="controls">
+    <%= text_field 'programming_language', 'name'  %>
+  </div>
+</div>
+<div class="control-group">
+  <label for="programming_language_extension" class="control-label">File Extension</label>
+  <div class="controls">
+    <%= text_field 'programming_language', 'extension'  %>
+  </div>
 </div>
 
-<div class="blockintro"><p>This setting says wether your language is compiled or interpreted.   For a complied language, like Java, you will have a compile step <code>javac</code> and an execute step <code>java</code>.</p></div>
-<div class="block">
-<p><label for="programming_language_enable_compile_step">Enable compile step:</label>
-<%= radio_button 'programming_language', 'enable_compile_step', true %> Yes
-<%= radio_button 'programming_language', 'enable_compile_step', false %> No</p>
+<div class="help-blocl">This setting says wether your language is compiled or interpreted. For a complied language, like Java, you will have a compile step <code>javac</code> and an execute step <code>java</code>.</div>
+<div class="control-group">
+  <label for="programming_language_enable_compile_step" class="control-label">Enable compile step</label>
+  <div class="controls">
+    <%= radio_button 'programming_language', 'enable_compile_step', true %> Yes
+    <%= radio_button 'programming_language', 'enable_compile_step', false %> No
+  </div>
 </div>
 
-<div class="blockintro">For the actual compile and execute commands there are four variables that you may use.
+<div class="help-block">For the actual compile and execute commands there are four variables that you may use.
 <ol>
-  <li><code><b>{:mainfile}</b></code> To represent the entire submitted filename, i.e. 'Main.java'</li>
-  <li><code><b>{:basename}</b></code> To represent the part of the file name that comes before the extension, i.e. 'Main'</li>
-  <li><code><b>{:dotted}</b></code> To take the full file path and turn '/' characters to '.' characters.</li>
+  <li><code><strong>{:mainfile}</strong></code> To represent the entire submitted filename, i.e. 'Main.java'</li>
+  <li><code><strong>{:basename}</strong></code> To represent the part of the file name that comes before the extension, i.e. 'Main'</li>
+  <li><code><strong>{:dotted}</strong></code> To take the full file path and turn '/' characters to '.' characters.</li>
   <ul>
     <li>'studentid/Main' becomes 'studentid.Main'</li>
   </ul> 
-  <li><code><b>{:studentid}</b></code> Replaces this command with each student's uniqueid (used for login)</li>
+  <li><code><strong>{:studentid}</strong></code> Replaces this command with each student's uniqueid (used for login)</li>
 </ol>
-<i>You should use absolute paths for the compile and execute commands to avoid environment issues.</i>
+<em>You should use absolute paths for the compile and execute commands to avoid environment issues.</em>
 </div>
-<div class="block">
-<p><label for="programming_language_compile_command">Compile command:</label>
-<%= text_field 'programming_language', 'compile_command', :size => 100  %></p>
 
-<p><label for="programming_language_executable_name">Executable name:</label>
-<%= text_field 'programming_language', 'executable_name', :size => 100  %></p>
-
-<p><label for="programming_language_execute_command" class="required">Execute command:</label>
-<%= text_field 'programming_language', 'execute_command', :size => 100  %></p>
+<div class="control-group">
+  <label for="programming_language_compile_command" class="control-label">Compile command</label>
+  <div class="controls">
+    <%= text_field 'programming_language', 'compile_command', :size => 100  %>
+  </div>
 </div>
+
+<div class="control-group">
+  <label for="programming_language_executable_name" class="control-label">Executable name</label>
+  <div class="controls">
+    <%= text_field 'programming_language', 'executable_name', :size => 100  %>
+  </div>
+</div>
+
+<div class="control-group">
+  <label for="programming_language_execute_command" class="control-label" class="required">Execute command</label>
+  <div class="controls">
+    <%= text_field 'programming_language', 'execute_command', :size => 100  %>
+  </div>
+</div>
+
 <!--[eoform:programming_language]-->
-

@@ -6,6 +6,7 @@ class Breadcrumb
   attr_accessor :instructor, :program, :outcomes, :gradebook, :teams, :attendance
   attr_accessor :instructorblog, :instructordocs
   attr_accessor :admin, :admin_announcements, :admin_course, :admin_crn, :admin_term, :admin_users
+  attr_accessor :admin_languages
   # text to display at the end
   attr_accessor :text, :link
 

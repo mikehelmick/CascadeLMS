@@ -1,8 +1,8 @@
+<ul>
 <% for column in ProgrammingLanguage.content_columns %>
-<p>
-  <b><%= column.human_name %>:</b> <%=h @programming_language.send(column.name) %>
-</p>
+  <li><strong><%= column.human_name %>:</strong> <%=h @programming_language.send(column.name) %></li>
 <% end %>
+</ul>
 
-<%= link_to 'Edit', :action => 'edit', :id => @programming_language %> |
-<%= link_to 'Back', :action => 'list' %>
+<%= link_to 'Edit', {:action => 'edit', :id => @programming_language}, {:class => 'btn btn-success'} %>
+<%= link_to 'Cancel', {:action => 'list'}, {:class => 'btn'} %>

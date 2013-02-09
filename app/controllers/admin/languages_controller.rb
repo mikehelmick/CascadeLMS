@@ -18,6 +18,7 @@ class Admin::LanguagesController < ApplicationController
 
   def show
     @programming_language = ProgrammingLanguage.find(params[:id])
+    @breadcrumb.text = 'Details'
   end
 
   def new
@@ -36,13 +37,14 @@ class Admin::LanguagesController < ApplicationController
 
   def edit
     @programming_language = ProgrammingLanguage.find(params[:id])
+    @breadcrumb.text = 'Edit Language'
   end
 
   def update
     @programming_language = ProgrammingLanguage.find(params[:id])
     if @programming_language.update_attributes(params[:programming_language])
       flash[:notice] = 'ProgrammingLanguage was successfully updated.'
-      redirect_to :action => 'show', :id => @programming_language
+      redirect_to :action => 'list'
     else
       render :action => 'edit'
     end
@@ -56,6 +58,8 @@ class Admin::LanguagesController < ApplicationController
   def set_tab 
     @title = 'Programming Languages'
     @tab = 'administration'
+    @breadcrumb = Breadcrumb.for_admin()
+    @breadcrumb.admin_languages = true
   end
   
   private :set_tab
