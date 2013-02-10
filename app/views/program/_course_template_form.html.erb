@@ -1,11 +1,15 @@
-<p class="blockintro">The course name should be generally the program code, course number, and short title. For example 'CSA174 - Fundamentals of Programming and Problem Solving'</p>
-<div class="block">
-	<p><label for="course_tempalte_title" class="required">Course Name:</label>
-	<%= text_field 'course_template', 'title', :size => 50 %></p>
+<div class="control-group">
+  <label for="course_tempalte_title" class="control-label">Course Name</label>
+  <div class="controls">
+	<%= text_field 'course_template', 'title', :size => 50 %>
+    <p class="help-block">The course name should be generally the program code, course number, and short title. For example 'CS121 - Computer Science 1'</p>	
+  </div>
 </div>
 
-<p class="blockintro">The start date should be descriptive of the first time that this template is valid, for example 'Fall 2008' or 'Academic year 2009'.</p>
-<div class="block">
-	<p><label for="course_tempalte_start_date" class="required">Start Date:</label>
-	<%= text_field 'course_template', 'start_date'  %></p>
+<div class="control-group">
+  <label for="course_tempalte_start_date" class="control-label">Start Date</label>
+  <div class="controls">
+	<%= text_field 'course_template', 'start_date'  %>
+	<p class="help-block">The start date should be descriptive of the first time that this template is valid, for example 'Fall 2013' or 'Academic year 2013'.</p>
+  </div>
 </div>

@@ -5,6 +5,6 @@
 
   <%= render :partial => 'template_outcome_form' %>
  
-  <%= submit_tag "Create Course Template Outcome", :class => 'btn btn-primary' %>
-  <%= link_to 'Back', {:controller => '/program', :action => 'template_outcomes', :id => @program, :template => @course_template}, {:class => 'btn'} %>
+  <%= submit_tag 'Create Course Template Outcome', :class => 'btn btn-primary' %>
+  <%= link_to 'Cancel', {:controller => '/program', :action => 'template_outcomes', :id => @program, :template => @course_template}, {:class => 'btn'} %>
 <% end %>

@@ -1,13 +1,7 @@
-<%= link_to 'Back to Programs', :action => nil, :id => nil %>
-
-<div id="form_area">
-<% form_tag( {:action => :courses}, :method => 'get'  )do  %>
-<div id="block">
-<label for="id">Term:</label> <%= select_tag 'term', options_from_collection_for_select(@terms, "id", "semester", @current_term.id ) %> 
-<%= submit_tag( 'Change Term', :on_click => "new Effect.BlindUp('courses')" ) %><br/>
-</div>
+<% form_tag( {:action => :courses}, :method => 'get', :class => 'form-inline well' )do  %>
+<label for="id">Term</label> <%= select_tag 'term', options_from_collection_for_select(@terms, "id", "semester", @current_term.id ) %> 
+<%= submit_tag( 'Change Term', :on_click => "new Effect.BlindUp('courses')", :class => 'btn btn-primary' ) %><br/>
 <% end %>
-</div>
 
 <div class="SectionHeader"><div class="Full">
 <h2>Courses for <%= @program.title %> in <%= @current_term.semester %></h2>
@@ -15,31 +9,32 @@
 
 <br/>
 
-<table class="fancy" width="99%">
+<table class="table table-striped" width="99%">
   <tr class="header">
-	  <th width="80%">Course (mapped to program '<%= @program.title %>')</th>
+	  <th>Course (mapped to program '<%= @program.title %>')</th>
 	  <th>Controls</th>
 	</tr>
 
-  <% count = 0 %>
   <% for course in @courses %>	
-    <% count = count.next 
-       odd = "odd"
-       odd = "even" if count.even? %>
-    <tr class="<%=odd%> hover" id="course_<%=course.id%>">
-      <td valign="top" align="left"><%=h course.short_description %>) <%=h course.title %> -
+    <tr id="course_<%=course.id%>">
+      <td><%=h course.short_description %> <%=h course.title %><br/>
 	    <i>Instructor(s): <%=h course.instructors.join( ", " ) %></i>
 	  </td>
-      <td valign="top" align="left" nowrap="nowrap">
-	    <%= link_to 'View Outcomes', :controller => 'program', :action => 'view_course_outcomes', :id => @program, :course => course %>
-	    <%= link_to "#{image_tag 'report.png', :align => 'absmiddle'}", :controller => 'program', :action => 'view_course_outcomes', :id => @program, :course => course %> | 
-	    <%= link_to "Entry/Exit Surveys", :controller => 'program', :action => 'surveys', :id => @program, :course => course %> |
-	    <%= link_to 'Course / Program Outcomes Report', :controller => 'program', :action => 'view_course_to_program_outcomes', :id => @program, :course => course %> 
-		<%= link_to "#{image_tag 'report.png', :align => 'absmiddle'}", :controller => 'program', :action => 'view_course_to_program_outcomes', :id => @program, :course => course %>
-	    <%= link_to "#{image_tag 'page_white_excel.png', :align => 'absmiddle'}", :controller => 'program', :action => 'view_course_to_program_outcomes', :id => @program, :course => course, :format => 'csv' %> | 
-	    <%= link_to 'Course Rubrics Report', :controller => 'program', :action => 'view_course_rubrics_report', :id => @program, :course => course %>
-		<%= link_to "#{image_tag 'report.png', :align => 'absmiddle'}", :controller => 'program', :action => 'view_course_rubrics_report', :id => @program, :course => course %>
-	    <%= link_to "#{image_tag 'page_white_excel.png', :align => 'absmiddle'}", :controller => 'program', :action => 'view_course_rubrics_report', :id => @program, :course => course, :format => 'csv' %> 
+      <td>
+	   <div class="btn-toolbar">
+  	    <div class="btn-group">
+	     <%= link_to 'View Outcomes <i class="icon-indent-left"></i>', {:controller => 'program', :action => 'view_course_outcomes', :id => @program, :course => course}, {:class => 'btn btn-small'} %>
+	     <%= link_to "Entry/Exit Surveys", {:controller => 'program', :action => 'surveys', :id => @program, :course => course}, {:class => 'btn btn-small'} %> 
+	    </div>
+	    <div class="btn-group">
+  	      <%= link_to 'Program Outcomes Report <i class="icon-indent-left"></i>', {:controller => 'program', :action => 'view_course_to_program_outcomes', :id => @program, :course => course}, {:class => 'btn btn-small'} %>
+	      <%= link_to '(As CSV <i class="icon-list"></i>)', {:controller => 'program', :action => 'view_course_to_program_outcomes', :id => @program, :course => course, :format => 'csv'}, {:class => 'btn btn-small'} %>
+	    </div>
+	    <div class="btn-group">
+	      <%= link_to 'Course Rubrics Report <i class="icon-indent-left"></i>', {:controller => 'program', :action => 'view_course_rubrics_report', :id => @program, :course => course}, {:class => 'btn btn-small'} %>
+	      <%= link_to '(As CSV <i class="icon-list"></i>)', {:controller => 'program', :action => 'view_course_rubrics_report', :id => @program, :course => course, :format => 'csv'}, {:class => 'btn btn-small'} %> 
+	    </div>
+	   </div>
 	  </td>
 	</tr>
   <% end %>	

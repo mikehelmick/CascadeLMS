@@ -1,15 +1,13 @@
 <% if request.path_parameters['action'].eql?('users') %>
-<h2>Add Managers/Auditors</h2>
+<h3>Add Program Managers / Auditors</h3>
 <div id="search_area">
-<% form_remote_tag( :update => 'search_results', :url => { :action => :search, :id => @program }, :complete => "new Effect.BlindDown('search_results');" ) do %>
-	<label for="id">Search:</label> 
-	<%= text_field_tag 'searchterms', '' %>
-	<%= submit_tag 'Search' %><br/>
+<% form_remote_tag( :update => 'search_results', :url => { :action => :search, :id => @program }, :complete => "new Effect.BlindDown('search_results');", :html => {:class => 'form-search'} ) do %>
+	<%= text_field_tag 'searchterms', '', {:placeholder => 'Username / email', :class => 'input-medium search-query'} %>
+	<%= submit_tag 'Search', :class => 'btn btn-primary' %><br/>
 <% end %>
 <span id="spinner" style="display: none;"><%= image_tag 'spinner.gif' %></span>
 </div>
 
 <div id="search_results" style="display: none;">
-
 </div>
 <% end %>

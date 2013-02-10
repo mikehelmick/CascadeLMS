@@ -1,10 +1,10 @@
 <ul>
-<% if @users.nil? || @users.size == 0 %>
+<% if users.nil? || users.size == 0 %>
   <li>No users in this category</li>
 <% else %>	
-<% for user in @users %>
-  <li id="<%=@utype%>_user_<%=user.id%>">
-	<%= link_to_remote( image_tag('delete.png', :align => 'absmiddle' ), :url => { :action => 'deluser', :type => @utype, :id => @program.id, :user => user }, :confirm => "Remove user #{user.display_name} from this program?", :success => "new Effect.Puff( '#{@utype}_user_#{user.id}' )", :failure => "alert('There was an error removing the selected user from this program.');" ) %> <%=h user.display_name %> - <b><%=h user.uniqueid %></b> - (<%=h user.email%>)
+<% for user in users %>
+  <li id="<%=utype%>_user_<%=user.id%>">
+	<%= link_to_remote( '<i class="icon-minus-sign"></i>', :url => { :action => 'deluser', :type => utype, :id => program.id, :user => user }, :confirm => "Remove user #{user.display_name} from this program?", :success => "new Effect.Puff( '#{utype}_user_#{user.id}' )", :failure => "alert('There was an error removing the selected user from this program.');" ) %> <%=h user.display_name %> - <b><%=h user.uniqueid %></b> - (<%=h user.email%>)
 	</li>
 <% end %>
 <% end %>

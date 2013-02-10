@@ -16,7 +16,7 @@
 	<% for program in @course.programs %>
 	  <% for po in program.program_outcomes%>
 	    <th align="center" width="2%">
-		  <a href="#" rel="popover" data-placement="left" title="<%= program.title %>: <%= po.position %>" data-content="<%=h po.outcome %>"><%= program.title[0...1] %><%= po.position %></a>
+		  <a href="#" data-trigger="hover" rel="popover" data-placement="left" title="<%= program.title %>: <%= po.position %>" data-content="<%=h po.outcome %>"><%= program.title[0...1] %><%= po.position %></a>
 	    </th>
 	  <% end %>
 	<% end %>
@@ -42,7 +42,7 @@
 	    <% for po in program.program_outcomes%>
 	      <th align="center" nowrap="nowrap">
 	        <% if outcome.mapped_to_program_outcome?(po.id) %>
-	          <a href="#" rel="popover" data-placement="left" title="<%= program.title %>: <%= po.position %>" data-content="<%=h po.outcome %>"><i class="icon-ok-sign"></i><%= outcome.get_depth_level_short(po.id) %></acronym>
+	          <a href="#" rel="popover" data-trigger="hover" data-placement="left" title="<%= program.title %>: <%= po.position %>" data-content="<%=h po.outcome %>"><i class="icon-ok-sign"></i><%= outcome.get_depth_level_short(po.id) %></acronym>
 	        <% end %>
 	      </th>
 	    <% end %>

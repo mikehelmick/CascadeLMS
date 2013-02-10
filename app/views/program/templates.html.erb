@@ -3,23 +3,16 @@
   <div class="alert alert-info">There are no course templates for this program</div>
 <% else %>
 
-<%= link_to 'Back to Programs', {:action => nil, :id => nil}, {:class => 'btn'} %>
-<br/>&nbsp;<br/>
-
 <table class="table table-striped">
   <tr class="header">
-	  <th width="80%">Course Template</th>
+	  <th>Course Template</th>
 	  <th>Approval</th>
-	  <th width="15%">Start Date</th>
+	  <th>Start Date</th>
 	  <th>Controls</th>
 	</tr>
-	
-	<% count = 0 %>
+
 	  <% for course_template in @course_templates %>	
-	    <% count = count.next 
-	       odd = "odd"
-	       odd = "even" if count.even? %>
-	    <tr class="<%=odd%> hover" id="course_template_<%=course_template.id%>">
+	    <tr id="course_template_<%=course_template.id%>">
 	      <td><%=h course_template.title %></td>
 	      <td nowrap="nowrap">
 		    <% if !course_template.approved %>
@@ -28,43 +21,36 @@
 		  </td>
 	      <td nowrap="nowrap"><%=h course_template.start_date %></td>
 	      <td nowrap="nowrap">
-		    <%= link_to 'Edit', :action => 'edit_template', :id => @program, :template => course_template %> |
-		    <%= link_to 'Outcomes', :action => 'template_outcomes', :id => @program, :template => course_template %> |
-			
-			<%= link_to 'Outcome Mapping Report', :action => 'view_course_template_to_program_outcomes', :id => @program, :template => course_template %>
-		    (<%= link_to 'Export CSV', :action => 'view_course_template_to_program_outcomes', :id => @program, :template => course_template, :format => 'csv' %>) | 
-			
-			<%= link_to 'Clone', {:action => 'clone_template', :id => @program, :template => course_template}, :confirm => 'Are you sure you want to clone this course template, and all outcomes and outcome mappings?' %> |
+		   <div class="btn-group">
+		    <%= link_to 'Edit', {:action => 'edit_template', :id => @program, :template => course_template}, {:class => 'btn btn-small'} %>
+		    <%= link_to 'Outcomes', {:action => 'template_outcomes', :id => @program, :template => course_template}, {:class => 'btn btn-small'} %>
+			<%= link_to 'Outcome Mapping Report', {:action => 'view_course_template_to_program_outcomes', :id => @program, :template => course_template}, {:class => 'btn btn-small'} %>
+		    (<%= link_to 'Export CSV', {:action => 'view_course_template_to_program_outcomes', :id => @program, :template => course_template, :format => 'csv'}, {:class => 'btn btn-small'} %>)
+			<%= link_to 'Clone', {:action => 'clone_template', :id => @program, :template => course_template}, :confirm => 'Are you sure you want to clone this course template, and all outcomes and outcome mappings?', :class => 'btn btn-small' %>
 		    <% extended = "" 
 		       extended = "ATTENTION: This course template is shared by multiple programs.  Deleting it will delete it from all programs!\n" if course_template.programs.length > 1 %>
-		    <%= link_to 'Delete', {:action => 'delete_template', :id => @program, :template => course_template}, :confirm => "#{extended}Are you sure you want to delete this course template, and all outcomes and outcome mappings?  This action cannot be undone." %>
+		    <%= link_to 'Delete', {:action => 'delete_template', :id => @program, :template => course_template}, :confirm => "#{extended}Are you sure you want to delete this course template, and all outcomes and outcome mappings?  This action cannot be undone.", :class => 'btn btn-danger btn-small' %>
+		   </div>
 		  </td>
 	    </tr>
 	  <% end %>
-
   </table>
-
 <% end %>
 
-
-
-<br/>
-<p><%= link_to_function 'Create new course template.', "blindToggle('create_new')", {:class => 'btn btn-success'} %></p>
-
-<div id="create_new" style="display:none;">
-<div class="SectionHeader"><div class="Full">
-<h2>Add new Course Template for <%= @program.title %></h2>
-</div></div>
-
-<div id="form_area">
-  <%= error_messages_for 'course_template' %>	
-  <% form_tag( :action => 'create_template', :id => @program ) do %>
-
-  <%= render :partial => 'course_template_form' %>
- 
-  <div class="submit">
-	<%= submit_tag "Save New Course Template" %>
-  </div>
-  <% end %>	
+<hr/>
+<div class="btn-toolbar">
+ <div class="btn-group">
+  <%= link_to_function 'Create new course template.', "blindToggle('create_new')", {:class => 'btn btn-success'} %>
+ </div>
+ <div class="btn-group">
+  <%= link_to 'Back to Programs', {:controller => '/program', :action => nil, :id => nil}, {:class => 'btn'} %>
+ </div>
 </div>
+<div id="create_new" style="display:none;">
+ <h2>Add new Course Template for <%= @program.title %></h2>
+ <%= error_messages_for('course_template', {:class => 'alert alert-error'}) %>	
+ <% form_tag({:action => 'create_template', :id => @program}, {:class => 'form-horizontal'}) do %>
+   <%= render :partial => 'course_template_form' %>
+   <%= submit_tag 'Save New Course Template', {:class => 'btn btn-primary'} %>
+ <% end %>	
 </div>

@@ -38,6 +38,8 @@ class ProgramController < ApplicationController
     
     @program_outcome = ProgramOutcome.find params['outcome'] rescue @program_outcome = ProgramOutcome.new
     return unless outcome_for_program( @program, @program_outcome )
+    set_tab(@program)
+    @breadcrumb.text = 'Edit Program Outcome'
   end
 
   def update_outcome
@@ -88,6 +90,8 @@ class ProgramController < ApplicationController
     return unless allowed_to_manage_program( @program, @user )
     @managers = @program.managers
     @auditors = @program.auditors
+    set_tab(@program)
+    @breadcrumb.text = 'Program Users'
   end
 
   def search
@@ -159,7 +163,7 @@ class ProgramController < ApplicationController
     @users = @program.managers if @utype.eql?('manager')
     @users = @program.auditors if @utype.eql?('auditor')
     
-    render :layout => false, :partial => 'userlist'
+    render :layout => false, :partial => 'userlist', :locals => {:users => @users, :program => @program, :utype => @utype}
   end
 
   def templates
@@ -203,7 +207,9 @@ class ProgramController < ApplicationController
     return unless load_template( params[:template] )
     return unless template_in_program( @course_template, @program )
     
-    @all_programs = Program.find(:all, :order => 'title asc')    
+    @all_programs = Program.find(:all, :order => 'title asc')  
+    set_tab(@program)
+    @breadcrumb.text = 'Edit Course Template'   
   end
 
   def update_template
@@ -291,7 +297,9 @@ class ProgramController < ApplicationController
     return unless allowed_to_manage_program( @program, @user )
     return unless load_template( params[:template] )
     return unless template_in_program( @course_template, @program )
-  
+
+    set_tab(@program)
+
     @course_template_outcome = CourseTemplateOutcome.find(params[:outcome])
     return unless outcome_in_template( @course_template_outcome, @course_template )
   end
@@ -518,11 +526,12 @@ class ProgramController < ApplicationController
   def courses
     return unless load_program( params[:id] )
     return unless allowed_to_manage_program( @program, @user )
-    
+
     @current_term = Term.find(params[:term]) rescue @current_term = Term.find_current
     @terms = Term.find(:all, :order => 'term desc')
     
     @courses = Course.find_by_sql(["select * from courses left join (courses_programs) on (courses.id = courses_programs.course_id) where courses.term_id = ? and courses_programs.program_id = ? order by title asc;", @current_term.id, @program.id])
+    set_tab(@program)
     
     render :layout => 'noright'
   end

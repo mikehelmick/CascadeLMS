@@ -5,7 +5,11 @@
 <% else %>
 
 <div id="master">
-<p><%= link_to_function 'Reorder Outcomes for this Program', "new Element.toggle('master');new Element.toggle('reorder');" %></p>
+<div class="btn-toolbar">
+ <div class="btn-group">
+  <%= link_to_function '<i class="icon-random"></i> Reorder Outcomes for this Program', "new Element.toggle('master');new Element.toggle('reorder');", {:class => 'btn'} %>
+ </div>
+</div>
 
 <table class="table table-striped">
   <tr class="header">
@@ -21,8 +25,10 @@
     <tr class="<%=odd%> hover" id="outcome_<%=outcome.id%>">
       <td><%= count %>) <%=h outcome.outcome %></td>
       <td nowrap="nowrap">
-	      <%= link_to 'Edit', :action => 'edit', :id => @program, :outcome => outcome %> | 
-	      <%= link_to 'Delete', { :action => 'destroy', :id => @program, :outcome => outcome }, :confirm => "Are you sure you want to delete the program outcome '#{outcome.outcome}' and all of it's associated data? This action can not be undone." %>
+	    <div class="btn-group">
+	      <%= link_to '<i class="icon-edit"></i> Edit', {:action => 'edit', :id => @program, :outcome => outcome}, {:class => 'btn btn-small'} %> 
+	      <%= link_to '<i class="icon-minus-sign icon-white"></i> Delete', { :action => 'destroy', :id => @program, :outcome => outcome }, :confirm => "Are you sure you want to delete the program outcome '#{outcome.outcome}' and all of it's associated data? This action can not be undone.", :class => 'btn btn-small btn-danger' %>
+	    </div>
 	  </td>
 	</tr>
   <% end %>	
