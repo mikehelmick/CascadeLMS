@@ -77,8 +77,49 @@ class IndexController < ApplicationController
     redirect_to :action => 'index', :out => 'out'
   end
 
+  def register
+    return unless ensure_basic_auth()
+
+    @new_user = User.new
+    render :layout => 'login'
+  end
+
+  def create
+    return unless ensure_basic_auth()
+
+    @new_user = User.new(params[:new_user])
+    @new_user.activation_token = User.gen_token
+    @new_user.password = User.gen_token(1024) ### Not a real password, basically impossible to guess
+    # Double check the defualt are put in correctly.
+    @new_user.instructor = false
+    @new_user.admin = false
+    @new_user.auditor = false
+
+    unless valid_registration_domain(@new_user, @app['auth_self_registration_domain'])
+      render :action => 'register'
+      return
+    end
+
+    if @new_user.save
+      # send email
+      link = url_for :controller => '/index', :action => 'activate', :id => @new_user.id, :seq => @new_user.activation_token, :only_path => false
+      
+      send_user = User.new
+      send_user.first_name = 'CascadeLMS'
+      send_user.last_name = @app['organization']
+      send_user.email = @app['email']
+      
+      Notifier::deliver_send_create( @new_user, send_user, link, @app['organization'] )
+      
+      flash[:notice] = "Please check your email for account activation instructions."
+      redirect_to :action => 'index'
+    else
+      render :action => 'register'
+    end
+  end
+
   def forgot
-    sreturn unless ensure_basic_auth
+    return unless ensure_basic_auth
     
     render :layout => 'login'
   end
@@ -229,6 +270,21 @@ class IndexController < ApplicationController
   end
 
   private
+
+  def valid_registration_domain(user, domains)
+    if domains.nil? || ''.eql?(domains)
+      return true
+    end
+
+    # Actually validate
+    domains.split(',').each do |domain|
+      if user.email.ends_with?(domain)
+        return true
+      end
+    end
+    flash[:badnotice] = 'The email address entered is not in the allowed domains for this installation. Please contact your instructor with questions.'
+    return false
+  end
 
   def showAds
     # Random selection of public courses

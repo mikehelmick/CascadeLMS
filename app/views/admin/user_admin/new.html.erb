@@ -8,7 +8,7 @@
 
   <div id="button">
     <%= submit_tag 'Create User', :class => 'btn btn-primary' %>
-    <%= link_to 'Cancel', :action => 'index', :class => 'btn' %>
+    <%= link_to 'Cancel', {:action => 'index'}, :class => 'btn' %>
   </div>
   <div id="spinner" style="display: none;"><%= image_tag 'spinner.gif' %></div>
 <% end %>

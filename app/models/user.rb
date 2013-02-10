@@ -2,8 +2,10 @@ require 'digest/sha1'
 require 'md5'
 
 class User < ActiveRecord::Base
-  validates_uniqueness_of :uniqueid
+  validates_uniqueness_of :uniqueid, :message => 'That username is already taken.'
+  validates_uniqueness_of :email, :message => 'That email address is already registered.'
   validates_presence_of :uniqueid, :password, :first_name, :last_name, :email
+  validates_length_of :uniqueid, :within => 4..99, :too_long => 'Your username must be less than 100 characters in length.', :too_short => 'Your username must be at least 4 characters in length.'
   validates_format_of :email, :with => /^([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})$/i, :on => :create
   
   has_many :courses_users

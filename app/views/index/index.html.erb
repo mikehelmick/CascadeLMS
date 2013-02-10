@@ -26,9 +26,11 @@
 	</div>
   </fieldset>
 
-<% if @app['authtype'].eql?('basic') %>
-  <p><%= link_to 'I forgot my password...', :controller => '/index', :action => 'forgot' %></p>
-<% end %> 
-
-  <%= submit_tag 'Login', 'tabindex' => '3', :class => 'btn-large btn-primary' %>
+  <%= submit_tag 'Login', 'tabindex' => '3', :class => 'btn btn-large btn-primary' %>
+  <% if @app['authtype'].eql?('basic') %>
+    <%= link_to 'Help! I forgot my password!', {:controller => '/index', :action => 'forgot'}, :class => 'btn btn-large btn-warning' %>
+  <% end %>
+  <% if @app['auth_self_registration'].eql?('true') %>
+    <%= link_to 'Create a new account.', {:controller => '/index', :action => 'register'}, :class => 'btn btn-large btn-success' %>
+  <% end %>
 <% end %>

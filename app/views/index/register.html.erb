@@ -1,0 +1,51 @@
+<h2>Create a new account</h2>
+
+<%= error_messages_for('new_user', {:class => 'alert alert-error'}) %>
+
+<% form_tag( {:action => "create"}, :onsubmit => "new Element.toggle('button');new Element.toggle('spinner');", :class => 'form-horizontal'  ) do %>
+
+<p class="help-block">Enter all of the information on this form. Then we'll send you an email to verify your account and select a password.</p>
+<div class="control-group">
+  <label for="user_uniqueid" class="control-label">Username</label>
+  <div class="controls">
+	<%= text_field 'new_user', 'uniqueid'  %>
+  </div>
+</div>
+
+<div class="control-group">
+  <label for="user_personal_title" class="control-label">Optional Personal Title (Ms., Mr., Mrs., Dr.)</label>
+  <div class="controls">
+    <%= text_field 'new_user', 'personal_title'  %>
+  </div>
+</div>
+<div class="control-group">
+  <label for="user_first_name" class="control-label">First Name</label>
+  <div class="controls">
+    <%= text_field 'new_user', 'first_name' %>
+  </div>
+</div>
+<div class="control-group">
+  <label for="user_middle_name" class="control-label">Middle Name</label>
+  <div class="controls">
+    <%= text_field 'new_user', 'middle_name' %>
+  </div>
+</div>
+<div class="control-group">
+  <label for="user_last_name" class="control-label">Last Name</label>
+  <div class="controls">
+	<%= text_field 'new_user', 'last_name'  %>
+  </div>
+</div>
+<div class="control-group">
+  <label for="user_email" class="control-label">Email</label>
+  <div class="controls">
+	<%= text_field 'new_user', 'email'  %>
+  </div>
+</div>
+
+  <div id="button">
+    <%= submit_tag 'Create My Account', :class => 'btn btn-primary' %>
+    <%= link_to 'Cancel', {:action => 'index'}, :class => 'btn' %>
+  </div>
+  <div id="spinner" style="display: none;"><%= image_tag 'spinner.gif' %></div>
+<% end %>

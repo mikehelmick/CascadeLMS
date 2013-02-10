@@ -5,7 +5,7 @@ class Admin::SettingsController < ApplicationController
   before_filter :set_tab
 
   def index
-    @settings = Setting.find(:all, :order => 'id asc')
+    @settings = Setting.find(:all, :order => 'name asc')
     @breadcrumb = Breadcrumb.for_admin()
     @breadcrumb.text = 'Application Settings'
   end

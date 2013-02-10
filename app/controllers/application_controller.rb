@@ -35,7 +35,7 @@ require 'MyActiveRecordHelper'
 # Likewise, all the methods added will be available for all controllers.
 class ApplicationController < ActionController::Base
   ## CSCW Application version
-  @@VERSION = '2.0.0 <em>beta</em> (Jefferson) 20130209'
+  @@VERSION = '2.0.001 <em>beta</em> (Jefferson) 20130209'
   
   ## Supress password logging
   filter_parameter_logging :password
@@ -223,6 +223,10 @@ class ApplicationController < ActionController::Base
   
   def nil_or_empty( str )
     return str.nil? || str.eql?('')
+  end
+
+  def is_domain_restrict()
+    return !@app['authtype']
   end
   
   def ensure_basic_auth
