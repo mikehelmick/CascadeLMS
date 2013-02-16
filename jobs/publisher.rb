@@ -135,7 +135,7 @@ class Publisher < ActionController::Base
         :conditions => ["documents.published = true and documents.folder = false and items.id is null"])
     puts "#{documents.size} documents to publish to stream."
     return if documents.empty?
-    
+
     documents.each do |document|
       if document.publish()
         puts "Published document: #{document.id} (#{document.title}) course: #{document.course.id} (#{document.course.title})"
