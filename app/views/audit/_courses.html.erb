@@ -1,16 +1,10 @@
-<div class="SectionHeader"><div class="Full">
 <h2><%= @program.title %> courses in <%= @audit_term.semester %></h2>
-</div></div>
 <% if @courses.size == 0 %>
-  <p><em>There are no courses for <%= @program.title %> in <%= @term.semester %>.</em></p>
+  <div class="alert alert-info">There are no courses for <%= @program.title %> in <%= @term.semester %>.</div>
 <% else %>
-<table class="fancy" width="99%">
-  <% count = 0 %>
+<table class="table table-condensed table-striped">
   <% for course in @courses %>	
-    <% count = count.next 
-       odd = "odd"
-       odd = "even" if count.even? %>
-    <tr class="<%=odd%> hover" id="course_<%=course.id%>">
+    <tr id="course_<%=course.id%>">
       <td valign="middle" align="left"><%=h course.short_description %>) <%=h course.title %><br/>
 	    <ul>
 	     <li><strong>Instructor(s):</strong> <%=h course.instructors.join( ", " ) %></li>

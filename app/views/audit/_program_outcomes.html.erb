@@ -1,8 +1,6 @@
-<div class="SectionHeader"><div class="Full">
 <h2>Program outcomes for <%= @program.title %></h2>
-</div></div>
 <% if @program.program_outcomes.length == 0 %>
-  <p><em>There are no outcomes defined for this program.</em></p>
+  <div class="alert alert-info">There are no outcomes defined for this program.</div>
 <% else %>
 <ul>
 <% count = 0 %>

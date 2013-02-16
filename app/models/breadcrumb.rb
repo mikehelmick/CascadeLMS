@@ -7,6 +7,7 @@ class Breadcrumb
   attr_accessor :instructorblog, :instructordocs
   attr_accessor :admin, :admin_announcements, :admin_course, :admin_crn, :admin_term, :admin_users
   attr_accessor :admin_languages
+  attr_accessor :auditor, :audit_program
   # text to display at the end
   attr_accessor :text, :link
 
@@ -20,6 +21,12 @@ class Breadcrumb
   def self.for_admin()
     b = Breadcrumb.new()
     b.admin = true
+    return b
+  end
+
+  def self.for_auditor()
+    b = Breadcrumb.new()
+    b.auditor = true
     return b
   end
 

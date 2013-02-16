@@ -1,14 +1,17 @@
-<p><%= link_to 'Back', :controller => '/audit', :action => 'program', :id => @program, :course => nil %></p>
-
-<div class="SectionHeader"><div class="Full">
 <h2>Course Outcomes to Program Outcomes report<br/>
 <%= @course.title %> (<%= @course.short_description %>), <%= @program.title %>, <%= @audit_term.semester %></h2>
-</div></div>
 
-<p><%= link_to "#{image_tag 'page_white_excel.png', :align => 'absmiddle'} Export this report as a spreadsheet", :controller => '/audit', :course => @course, :action => 'course_outcomes', :id => @program, :format => 'csv' %></p>
+<div class="btn-toolbar">
+ <div class="btn-group">
+   <%= link_to '<i class="icon-download"></i> Export this report as a spreadsheet', {:controller => '/audit', :course => @course, :action => 'course_outcomes', :id => @program, :format => 'csv'}, {:class => 'btn'} %>
+ </div>
+ <div class="btn-group">
+   <%= link_to 'Back', {:controller => '/audit', :action => 'program', :id => @program, :course => nil}, {:class => 'btn'} %>
+ </div>
+</div>
 
 <% all_outcomes = @course.ordered_outcomes %>
-<table class="fancy">	
+<table class="table table-condensed table-striped">	
   <tr class="header">
 	<th>Course Outcomes \ Program Outcomes (<%= @program.title %>)</th>
 	  <% for po in @program.program_outcomes%>

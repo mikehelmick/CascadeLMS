@@ -1,6 +1,6 @@
 <h2>Program Auditor's Dashboard</h2>
 <% if @programs.size == 0 %>
- <p><i>You are not an auditor for any programs. Please contact the appropriate program managers for access.</i></p>
+ <div class="alert alert-info">You are not an auditor for any programs. Please contact the appropriate program managers for access.</div>
 <% else %>
  <% for prog_user in @programs %>
  <table class="table table-striped">

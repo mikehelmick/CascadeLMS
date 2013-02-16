@@ -18,6 +18,7 @@ class AuditController < ApplicationController
     @courses = @program.courses_in_term(@audit_term)
     
     @title = "Auditing for '#{@program.title}'"
+    @breadcrumb.audit_program = @program
   end
 
   def change_term
@@ -43,7 +44,11 @@ class AuditController < ApplicationController
     @title = "Course outcomes (#{@course.title}), Program outcomes (#{@program.title})"
 
     respond_to do |format|
-        format.html { render :layout => 'noright' }
+        format.html { 
+          @breadcrumb.audit_program = @program
+          @breadcrumb.text = 'Course Outcomes'
+          render :layout => 'noright'
+        }
         format.csv  { 
           response.headers['Content-Type'] = 'text/csv; charset=iso-8859-1; header=present'
           response.headers['Content-Disposition'] = "attachment; filename=#{@course.title}_course_outcomes_report.csv"
@@ -407,6 +412,7 @@ class AuditController < ApplicationController
 private
   def set_tab
     @tab = 'audit'
+    @breadcrumb = Breadcrumb.for_auditor()
   end
 
   def build_opt_in_hash()

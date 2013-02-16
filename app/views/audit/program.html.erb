@@ -1,11 +1,7 @@
-<div id="form_area">
-<% form_remote_tag( :update => 'courses', :url => { :controller => '/audit', :action => :change_term, :id => @program }, :complete => "new Effect.Highlight('courses', { duration: 3.0 });" )do  %>
-<div id="block">
-<label for="id">Term:</label> <%= select_tag 'term', options_from_collection_for_select(@terms, "id", "semester", @audit_term.id ) %> 
-<%= submit_tag( 'Change Term' ) %><br/>
-</div>
+<% form_remote_tag( :update => 'courses', :url => { :controller => '/audit', :action => :change_term, :id => @program }, :complete => "new Effect.Highlight('courses', { duration: 3.0 });", :html => {:class => "form-inline well"} )do  %>
+ <label for="id">Term</label> <%= select_tag 'term', options_from_collection_for_select(@terms, "id", "semester", @audit_term.id ) %> 
+<%= submit_tag( 'Change Term', :class => 'btn btn-warning' ) %><br/>
 <% end %>
-</div>
 
 <div id="courses">
 <%= render :partial => 'courses' %>
