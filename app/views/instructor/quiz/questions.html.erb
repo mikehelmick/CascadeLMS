@@ -1,5 +1,3 @@
-<p><%= link_to 'Back to All Assignments', :controller => '/instructor/course_assignments', :course => @course, :action => nil, :id => nil %></p>
-
 <div class="SectionHeader"><div class="Full">
 <h2>Edit Questions for 
 <% if @assignment.quiz.survey %>
@@ -12,44 +10,56 @@
 
 <% @show_controls = true %>
 
-<% if @assignment.upcoming? && ! @assignment.quiz.entry_exit %>
-  <p><%= link_to "#{image_tag 'add.png', :align => 'absmiddle'} New Question", :action => 'new_question', :course => @course, :id => @assignment %> |
- 	 <%= link_to "#{image_tag 'application_edit.png', :align => 'absmiddle'} Edit Quiz Details", :action => 'edit', :course => @course, :id => @assignment %> 
-     <% if !@quiz.show_elapsed %> |
-        <%= link_to "Generate Self-reported Quiz Time", {:action => 'gen_quiz_time_question', :course => @course, :id => @assignment }, :method => :post %>
-     <% end %>
-  </p>
+
+<% if @assignment.upcoming? && !@assignment.quiz.entry_exit %>
+ <div class="btn-toolbar">
+ <div class="btn-group">
+  <%= link_to '<i class="icon-plus-sign"></i> New Question', {:action => 'new_question', :course => @course, :id => @assignment}, {:class => 'btn'} %>
+  <%= link_to '<i class="icon-edit"></i> Edit Quiz Details', {:action => 'edit', :course => @course, :id => @assignment}, {:class => 'btn'} %> 
+  <% if !@quiz.show_elapsed %>
+    <%= link_to 'Generate Self-reported Quiz Time Question', {:action => 'gen_quiz_time_question', :course => @course, :id => @assignment }, :method => :post, :class => 'btn' %>
+  <% end %>
+ </div></div>
 
 <% elsif @assignment.quiz.entry_exit %>
-  <p class="errorExplanation">You cannot modify the questions on an automatically generated entry or exit survey.</p>
+  <div class="alert alert-error">You cannot modify the questions on an automatically generated entry or exit survey.</div>
   <% @show_controls = false %>
-  <p><%= link_to "#{image_tag 'application_edit.png', :align => 'absmiddle'} Edit Quiz Details", :action => 'edit', :course => @course, :id => @assignment %></p>
+  <div class="btn-toolbar">
+    <div class="btn-group">
+      <%= link_to '<i class="icon-edit"></i> Edit Quiz Details', {:action => 'edit', :course => @course, :id => @assignment}, {:class => 'btn'} %>
+    </div>
+  </div>
 <% else %>
-  <p class="errorExplanation">You cannot edit or create questions for this quiz since it is already available to students.</p>
+  <div class="alert alert-error">You cannot edit or create questions for this quiz since it is already available to students.</div>
   <% @show_controls = false %>
-  <p><%= link_to "#{image_tag 'application_edit.png', :align => 'absmiddle'} Edit Quiz Details", :action => 'edit', :course => @course, :id => @assignment %></p>
+  <div class="btn-toolbar">
+    <div class="btn-group">
+      <%= link_to '<i class="icon-edit"></i> Edit Quiz Details', {:action => 'edit', :course => @course, :id => @assignment}, {:class => 'btn'} %>
+    </div>
+  </div>
 <% end %>
 
 <% if ! @quiz.survey %>
   <% unless @quiz.assignment.grade_item.nil? %>
-    <p>This quiz is worth <i><%= @quiz.assignment.grade_item.points %></i> points.<br/>
+   <div class="well">
+    <p>This quiz is worth <em><%= @quiz.assignment.grade_item.points %></em> points.<br/>
 	<% if @quiz.linear_score %>
-	   Each question is worth <i><%= @quiz.number_of_questions %> points, and the total score will automatically adjust when you add or remove questions.
+	   Each question is worth <em><%= @quiz.number_of_questions %></em> points, and the total score will automatically adjust when you add or remove questions.
 	<% end %>
 	</p>
+   </div>
   <% end %>
 <% end %>
 
-
 <% if @quiz.quiz_questions.length == 0 %>
-  <p><i>There are no questions for this quiz.</i></p>
+  <div class="alert">There are no questions for this quiz.</div>
 <% else %>
  
   <% if @show_controls %> 
-  <p><%= link_to "#{image_tag 'arrow_switch.png'} Reorder Questions", :action => 'reorder', :course => @course, :id => @assignment %></p>
+  <p><%= link_to '<i class="icon-random"></i> Reorder Questions', :action => 'reorder', :course => @course, :id => @assignment %></p>
   <% end %>
 
-  <table class="fancy" width="99%">
+  <table class="table table-condensed table-striped">
   <tr class="header">
 	  <th align="center">#</th>
 	  <th align="center">Type</th>
@@ -81,7 +91,7 @@
 		     <% for answer in question.quiz_question_answers %>
 		       <li><% if answer.correct %>
 			         <b><font color="green">Correct</font>
-			         <%= image_tag 'accept.png' %></b>: 
+			         <i class="icon-ok-sign"></i></b>: 
 			       <% end %><%= answer.answer_text_html %></li>
 		     <% end %>
 		   </ul>
@@ -90,17 +100,17 @@
 	<% if @show_controls %> 
 	   <td valign="top" nowrap="nowrap">
 		 <% if @assignment.upcoming? %>
-		   <%= link_to "#{image_tag 'application_edit.png'} Edit Question", :action => 'edit_question', :course => @course, :id => @assignment, :question => question %> <br/>
+		   <%= link_to '<i class="icon-edit"></i> Edit Question', :action => 'edit_question', :course => @course, :id => @assignment, :question => question %> <br/>
 		   <% unless question.text_response %>
-	  	     <%= link_to "#{image_tag 'arrow_switch.png'} Reorder Answers", :action => 'reorder_answers', :course => @course, :id => @assignment, :question => question %> <br/>
+	  	     <%= link_to '<i class="icon-random"></i> Reorder Answers', :action => 'reorder_answers', :course => @course, :id => @assignment, :question => question %> <br/>
 	       <% end %>
-		   <%= link_to "#{image_tag 'delete.png'} Delete Question", {:action => 'delete_question', :course => @course, :id => @assignment, :question => question}, :method => "post", :confirm => "Are you sure you want to delete this question and all associated answers?" %>
+		   <%= link_to '<i class="icon-minus-sign"></i> Delete Question', {:action => 'delete_question', :course => @course, :id => @assignment, :question => question}, :method => "post", :confirm => "Are you sure you want to delete this question and all associated answers?" %>
 		 <% else %>
-		   <s><%= image_tag 'application_edit.png' %> Edit Question</s><br/>
+		   <s><i class="icon-edit"></i> Edit Question</s><br/>
 		   <% unless question.text_response %>
-			 <%= link_to "#{image_tag 'arrow_switch.png'} Reorder Answers", :action => 'reorder_answers', :course => @course, :id => @assignment, :question => question %> <br/>
+			 <%= link_to '<i class="icon-random"></i> Reorder Answers', :action => 'reorder_answers', :course => @course, :id => @assignment, :question => question %> <br/>
 		   <% end %>
-		   <s><%= image_tag 'delete.png' %> Delete Question</s>
+		   <s><i class="icon-minus-sign"></i> Delete Question</s>
 		 <% end %>
 	   </td>  
 	<% end %>

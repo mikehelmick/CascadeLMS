@@ -35,6 +35,8 @@ class Instructor::QuizController < Instructor::InstructorBase
     @new_quiz = true
         
     @title = "Duplicate Quiz/Survey - #{@course.title}"    
+    @breadcrumb = Breadcrumb.for_course(@course, true)
+    @breadcrumb.text = 'Duplicate Quiz/Survey'
   end
   
   def clone
@@ -173,6 +175,9 @@ class Instructor::QuizController < Instructor::InstructorBase
     
     @new_quiz = true
     @auto_gen_checked = false
+
+    @breadcrumb = Breadcrumb.for_course(@course, true)
+    @breadcrumb.text = 'New Quiz/Survey'
   end
   
   def create
@@ -186,6 +191,7 @@ class Instructor::QuizController < Instructor::InstructorBase
     ## actually create the assignment, make it a quiz, and setup the quiz
     @assignment = Assignment.new( params[:assignment] )
     @assignment.course = @course
+    @assignment.user = @user
     @assignment.grade_category_id = params[:grade_category_id].to_i
     @assignment.make_quiz
     
@@ -222,6 +228,9 @@ class Instructor::QuizController < Instructor::InstructorBase
         @gradeItem.assignment = @assignment unless @gradeItem.nil?
         success = @gradeItem.save unless @gradeItem.nil?
         raise 'error' unless success
+
+        # Not likely to do anything, since a quiz if usually created in the future.
+        @assignment.publish()
         
         ## See if we should automatically generate the quiz
         unless params[:generate_survey].nil?
@@ -287,6 +296,10 @@ class Instructor::QuizController < Instructor::InstructorBase
     @categories = GradeCategory.for_course( @course )
     
     @title = "Edit Quiz - #{@assignment.title}"
+
+    @breadcrumb = Breadcrumb.for_course(@course, true)
+    @breadcrumb.assignment = @assignment
+    @breadcrumb.text = 'New Quiz/Survey'
   end
   
   def update
@@ -342,6 +355,9 @@ class Instructor::QuizController < Instructor::InstructorBase
     end
     
     @title = "Edit Quiz Questions : '#{@assignment.title}'"
+    @breadcrumb = Breadcrumb.for_course(@course, true)
+    @breadcrumb.assignment = @assignment
+    @breadcrumb.text = 'Edit Questions'
   end
   
   def new_question
@@ -355,6 +371,11 @@ class Instructor::QuizController < Instructor::InstructorBase
     
     @quiz_question = QuizQuestion.new
     create_blank_answers
+
+    @breadcrumb = Breadcrumb.for_course(@course, true)
+    @breadcrumb.assignment = @assignment
+    @breadcrumb.text = 'New Question'
+    @title = "New Question for #{@assignment.title}"
   end
   
   def create_question
@@ -479,6 +500,11 @@ class Instructor::QuizController < Instructor::InstructorBase
     @answer_13 = answers[12] unless answers[12].nil?
     @answer_14 = answers[13] unless answers[13].nil?
     @answer_15 = answers[14] unless answers[14].nil?
+
+    @breadcrumb = Breadcrumb.for_course(@course, true)
+    @breadcrumb.assignment = @assignment
+    @breadcrumb.text = 'Edit Question'
+    @title = "Edit Question for #{@assignment.title}"
   end
   
   def update_question
@@ -586,6 +612,11 @@ class Instructor::QuizController < Instructor::InstructorBase
     return unless assignment_is_quiz( @assignment )
     
     @quiz = @assignment.quiz
+
+    @breadcrumb = Breadcrumb.for_course(@course, true)
+    @breadcrumb.assignment = @assignment
+    @breadcrumb.text = 'Reorder Questions'
+    @title = "Reorder Questions for #{@assignment.title}"
   end
   
   def sort
@@ -627,7 +658,11 @@ class Instructor::QuizController < Instructor::InstructorBase
       redirect_to :action => 'questions', :course => @course, :id => @assignment
       return
     end
-    
+
+    @breadcrumb = Breadcrumb.for_course(@course, true)
+    @breadcrumb.assignment = @assignment
+    @breadcrumb.text = 'Reorder Answers'
+    @title = "Reorder Answers for question"    
   end
   
   def sort_answers

@@ -1,51 +1,58 @@
-<%= error_messages_for 'quiz_question' %>
-<%= error_messages_for 'answer_01' %>
-<%= error_messages_for 'answer_02' %> 
-<%= error_messages_for 'answer_03' %>
-<%= error_messages_for 'answer_04' %>
-<%= error_messages_for 'answer_05' %> 
-<%= error_messages_for 'answer_06' %>
-<%= error_messages_for 'answer_07' %>
-<%= error_messages_for 'answer_08' %> 
-<%= error_messages_for 'answer_09' %>
-<%= error_messages_for 'answer_10' %>
-<%= error_messages_for 'answer_11' %>
-<%= error_messages_for 'answer_12' %>
-<%= error_messages_for 'answer_13' %>
-<%= error_messages_for 'answer_14' %>
-<%= error_messages_for 'answer_15' %>
+<%= error_messages_for('quiz_question', :class => 'alert alert-error') %>
+<%= error_messages_for('answer_01', :class => 'alert alert-error') %>
+<%= error_messages_for('answer_02', :class => 'alert alert-error') %> 
+<%= error_messages_for('answer_03', :class => 'alert alert-error') %>
+<%= error_messages_for('answer_04', :class => 'alert alert-error') %>
+<%= error_messages_for('answer_05', :class => 'alert alert-error') %> 
+<%= error_messages_for('answer_06', :class => 'alert alert-error') %>
+<%= error_messages_for('answer_07', :class => 'alert alert-error') %>
+<%= error_messages_for('answer_08', :class => 'alert alert-error') %> 
+<%= error_messages_for('answer_09', :class => 'alert alert-error') %>
+<%= error_messages_for('answer_10', :class => 'alert alert-error') %>
+<%= error_messages_for('answer_11', :class => 'alert alert-error') %>
+<%= error_messages_for('answer_12', :class => 'alert alert-error') %>
+<%= error_messages_for('answer_13', :class => 'alert alert-error') %>
+<%= error_messages_for('answer_14', :class => 'alert alert-error') %>
+<%= error_messages_for('answer_15', :class => 'alert alert-error') %>
 
-<p class="blockintro">Create question text and question type.  There are 3 types of questions, free form text response, multiple choice and multiple checkbox.   If a quiz contains no free form text responses, it will be automatically graded.</p>
-<div class="block">
-	
-	<%= render :partial => '/forums/formatting'%>
-	<p><label for="quiz_question_question" class="required">Question:</label>
-	   <%= text_area 'quiz_question', 'question', "cols" => 80, "rows" => 5  %></p>
-	
-	<p><label for="quiz_question_type" class="required">Question Type:</label><br/>
-		
-	 
-	   <%= radio_button_tag 'question_type', 'multiple_choice', @quiz_question.multiple_choice, :onclick => 'new Effect.SlideDown("answers_area")' %> Multiple choice (allow selection of one answer)<br/>
-	   <%= radio_button_tag 'question_type', 'checkbox', @quiz_question.checkbox, :onclick => 'new Effect.SlideDown("answers_area")' %> Multiple choice (allow selection of multiple answers)<br/>
-	   <%= radio_button_tag 'question_type', 'text_response', @quiz_question.text_response, :onclick => 'new Effect.Puff("answers_area")' %> Free form text response<br/>
-	   <% unless @assignment.quiz.survey %>
-	     <i>Free form text response is discouraged for quizzes.  It prevents your quiz from being automatically assessed and limits a student's ability to know if they should attempt the quiz again.</i><br/>
-	   <% end %>
-	   </p>
-	
-	<% unless @assignment.quiz.survey %>	
-	<p><label for="quiz_question_score_question" class="required">Automatically Score (mutliple choice questions only):</label><br/>		
-		<p><%= radio_button 'quiz_question', 'score_question', true %> Yes
-	       <%= radio_button 'quiz_question', 'score_question', false %> No</p>
-    <% end %>
+<div class="help-inline">Create question text and question type. There are 3 types of questions, free form text response, multiple choice and multiple checkbox. If a quiz contains no free form text responses, it will be automatically graded.</div>
+
+<%= render :partial => '/forums/formatting'%>
+<div class="control-group">
+  <label for="quiz_question_question" class="control-label">Question</label>
+  <div class="controls">
+    <%= text_area 'quiz_question', 'question', :class => 'input-xlarge', :rows => 5  %>
+  </div>
 </div>
+
+<div class="control-group">
+  <label for="quiz_question_type" class="control-label">Question Type</label>
+  <div class="controls">
+	<label class="radio"><%= radio_button_tag 'question_type', 'multiple_choice', @quiz_question.multiple_choice, :onclick => 'new Effect.SlideDown("answers_area")' %> Multiple choice (allow selection of one answer)</label>
+	<label class="radio"><%= radio_button_tag 'question_type', 'checkbox', @quiz_question.checkbox, :onclick => 'new Effect.SlideDown("answers_area")' %> Multiple choice (allow selection of multiple answers)</label>
+	<label class="radio"><%= radio_button_tag 'question_type', 'text_response', @quiz_question.text_response, :onclick => 'new Effect.Puff("answers_area")' %> Free form text response</label>
+    <% unless @assignment.quiz.survey %>
+	  <p class="help-block">Free form text response is discouraged for quizzes.  It prevents your quiz from being automatically assessed and limits a student's ability to know if they should attempt the quiz again.</p>
+	<% end %>
+  </div>
+</div>
+
+<% unless @assignment.quiz.survey %>
+  <div class="control-group">
+    <label for="quiz_question_score_question" class="control-label">Automatically Score (multiple choice questions only)</label>
+    <div class="controls">
+      <label class="radio"><%= radio_button 'quiz_question', 'score_question', true %> Yes</label>
+      <label class="radio"><%= radio_button 'quiz_question', 'score_question', false %> No</label>
+    </div>
+  </div>
+<% end %>
 
 <% style = "" 
    style = "display:none" if @quiz_question.text_response %>
 
 <div id="answers_area" style="<%= style %>">
- <p class="blockintro">Define answers that will be valid for this quiz/survey.   You can enter as few as 1 answer, and as many as 15.  Question answers may be formatted with the below guidelines. <%= render :partial => '/forums/formatting'%></p>
- <div class="block">
+ <p class="help-inline">Define answers that will be valid for this quiz/survey. You can enter as few as 1 answer, and as many as 15.  Question answers may be formatted with the below guidelines. <%= render :partial => '/forums/formatting'%></p>
+
   <%= render :partial => 'answer_form', :locals => { :answer => @answer_1, :obj_name => 'answer_1', :number => 1 } %><hr/>
   <%= render :partial => 'answer_form', :locals => { :answer => @answer_2, :obj_name => 'answer_2', :number => 2 } %><hr/>
   <%= render :partial => 'answer_form', :locals => { :answer => @answer_3, :obj_name => 'answer_3', :number => 3 } %><hr/>
@@ -61,5 +68,4 @@
   <%= render :partial => 'answer_form', :locals => { :answer => @answer_13, :obj_name => 'answer_13', :number => 13 } %><hr/>
   <%= render :partial => 'answer_form', :locals => { :answer => @answer_14, :obj_name => 'answer_14', :number => 14 } %><hr/>
   <%= render :partial => 'answer_form', :locals => { :answer => @answer_15, :obj_name => 'answer_15', :number => 15 } %>
- </div>
 </div>

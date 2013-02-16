@@ -1,8 +1,16 @@
-<p><label for="<%=obj_name%>_answer_text" class="required">Answer <%= number %>:</label>
-   <%= text_area obj_name, 'answer_text', "cols" => 80, "rows" => 3  %></p>
+<div class="control-group">
+  <label for="<%=obj_name%>_answer_text" class="control-label">Answer <%= number %></label>
+  <div class="controls">
+    <%= text_area obj_name, 'answer_text', :class => 'input-xlarge', :rows => 2  %>
+  </div>
+</div>
 
 <% unless @assignment.quiz.survey %>
-<p><label for="<%=obj_name%>_correct" class="required">Answer <%= number %> is correct:</label>
-   	<p><%= radio_button obj_name, 'correct', true %> Yes
-       <%= radio_button obj_name, 'correct', false %> No</p>
+<div class="control-group">
+  <label for="<%=obj_name%>_correct" class="control-label">Answer <%= number %> is correct</label>
+  <div class="controls">
+    <label class="radio"><%= radio_button obj_name, 'correct', true %> Yes</label>
+    <label class="radio"><%= radio_button obj_name, 'correct', false %> No</label>
+  </div>
+</div>
 <% end %>

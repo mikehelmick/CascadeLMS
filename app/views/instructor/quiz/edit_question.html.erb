@@ -1,6 +1,3 @@
-<p><%= link_to 'Back to Quiz/Survey', :controller => '/instructor/quiz', :course => @course, :action => 'questions', :id => @assignment %></p>
-
-<div class="SectionHeader"><div class="Full">
 <h2>Edit Question for
 <% if @assignment.quiz.survey %>
   Survey:
@@ -8,15 +5,10 @@
   Quiz:
 <% end %>
 '<%= @assignment.title %>'</h2>
-</div></div>
 
-<div id="form_area">  
-  <% form_tag( :action => 'update_question', :course => @course, :id => @assignment, :question => @quiz_question ) do %>
-
+<% form_tag({:action => 'update_question', :course => @course, :id => @assignment, :question => @quiz_question}, {:class => 'form-horizontal'}) do %>
   <%= render :partial => 'question_form' %>
- 
-  <div class="submit">
-	<%= submit_tag "Save Changes to Question" %>
-  </div>
-  <% end %>	
-</div>
+
+  <%= submit_tag 'Save Changes to Question', {:class => 'btn btn-primary'} %>
+  <%= link_to 'Back to Quiz/Survey', {:controller => '/instructor/quiz', :course => @course, :action => 'questions', :id => @assignment}, {:class => 'btn'} %>
+<% end %>	

@@ -1,25 +1,21 @@
-<p><%= link_to 'Back to Quiz/Survey', :controller => '/instructor/quiz', :course => @course, :action => 'questions', :id => @assignment %></p>
-
-<div class="SectionHeader"><div class="Full">
 <h2>Reorder Answers for a question in 
 <% if @assignment.quiz.survey %>
-  Survey:<br/>
+  Survey:
 <% else %>
-  Quiz:<br/>
+  Quiz:
 <% end %>
 '<%= @assignment.title %>'</h2>
-</div></div>
 
 <div id="reorder">
   <p>Drag and Drop the answers to reorder.</p>
 
-  <p><b><%= link_to "I'm done reordering answers.", :action => 'questions', :course => @course, :id => @assignment %></b></p>
+  <%= link_to "I'm done reordering answers.", {:action => 'questions', :course => @course, :id => @assignment}, {:class => 'btn btn-success'} %><br/><br/>
 
   <p><b>Question:</b> <%= @question.question %></p>
 
   <ul id="answer-order">
     <% for answer in @question.quiz_question_answers %>
-      <li id="answer_<%= answer.id %>"><%= image_tag 'arrow_switch.png', :align => 'absmiddle' %>
+      <li id="answer_<%= answer.id %>"><i class="icon-random"></i>
         <b><%= answer.answer_text %></b>
       </li>
     <% end %>

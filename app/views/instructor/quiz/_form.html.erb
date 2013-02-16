@@ -1,46 +1,62 @@
-<%= error_messages_for 'assignment' %>
-<%= error_messages_for 'quiz' %>
-
+<%= error_messages_for('assignment', :class => 'alert alert-error') %>
+<%= error_messages_for('quiz', :class => 'alert alert-error') %>
 
 <% if clone %>
- <div class="blockintro">Duplicate the questions from a previous quiz/survey.</div>
- <div class="block">
- <p><label for="term" class="required">Quiz to copy:</label> <%= select_tag 'copy_from_id', options_from_collection_for_select(@quizzes, "id", "title" ) %></p>
+ <div class="well">
+   <h3>Duplicate the questions from a previous quiz/survey.</h3>
+   <div class="control-group">
+	 <label for="term" class="control-label">Quiz to copy</label>
+	 <div class="controls">
+	   <%= select_tag 'copy_from_id', options_from_collection_for_select(@quizzes, "id", "title" ) %>
+	 </div>
+	</div>
  </div>
-
- <div class="blockintro">Details for cloned version of quiz.</div>
-<% else %>
- <div class="blockintro">Create a new quiz for this course.</div>
+ <h4>Details for cloned version of quiz.</h4>
 <% end %>
 
-<div class="block">
-<p><label for="assignment[title]" class="required">Quiz name:</label>
-<%= text_field 'assignment', 'title'  %></p>
-<p><label for="term" class="required">Category:</label> <%= select_tag 'grade_category_id', options_from_collection_for_select(@categories, "id", "category", @assignment.grade_category_id ) %></p>
+<div class="control-group">
+  <label for="assignment[title]" class="control-label">Quiz name</label>
+  <div class="controls">
+    <%= text_field 'assignment', 'title'  %>
+  </div>
+</div>
+<div class="control-group">
+  <label for="term" class="control-label">Category</label>
+  <div class="controls">
+    <%= select_tag 'grade_category_id', options_from_collection_for_select(@categories, "id", "category", @assignment.grade_category_id ) %>
+  </div>
 </div>
 
-<div class="blockintro">For the dates of a quiz: the available date allows to set up an quiz in this system without allowing students to see it until a certain point in time.  The due date and the close date allow you to set a time that the quiz is due, but still allow it to be taken for a slightly longer period of time.</div>
-<div class="block">
+<p class="help-inline">For the dates of a quiz: the available date allows to set up an quiz in this system without allowing students to see it until a certain point in time.  The due date and the close date allow you to set a time that the quiz is due, but still allow it to be taken for a slightly longer period of time.</p>
 
-<table border="0" cellspacing="2" cellpadding="2">
- <tr>
-  <td align="right" class="required"><b>Date available to students:</b></td>
-  <td align="left" nowrap="nowrap"><%= datetime_select 'assignment', 'open_date'  %></td>
- </tr>
- <tr>
-  <td align="right" class="required"><b>Quiz due date:</b></td>
-  <td align="left" nowrap="nowrap"><%= datetime_select 'assignment', 'due_date'  %></td>
- </tr>
- <tr>
-  <td align="right" class="required"><b>Last time the quiz can be taken (close date):</b></td>
-  <td align="left" nowrap="nowrap"><%= datetime_select 'assignment', 'close_date'  %></td>
- </tr>
-</table>
-
-    <p><label for="assignment[description]" class="required">Quiz Description (optional):</label>
-      <%= text_area 'assignment', 'description', :rows => '5', :cols => '60'  %></p>
-
+<div class="control-group">
+  <label for="assignment[open_date]" class="control-label">Date available to students</label>
+  <div class="controls">
+    <%= datetime_select 'assignment', 'open_date', {}, {:class => 'input-small'} %>
   </div>
+</div>
+
+<div class="control-group">
+  <label for="assignment[due_date]" class="control-label">Quiz due date</label>
+  <div class="controls">
+    <%= datetime_select 'assignment', 'due_date', {}, {:class => 'input-small'} %>
+  </div>
+</div>
+
+<div class="control-group">
+  <label for="assignment[close_date" class="control-label">Last time the quiz can be taken</label>
+  <div class="controls">
+    <%= datetime_select 'assignment', 'close_date', {}, {:class => 'input-small'} %>
+  </div>
+</div>
+
+<div class="control-group">
+  <label for="assignment[description]" class="control-label">Quiz Description (optional)</label>
+  <div class="controls">
+    <%= text_area 'assignment', 'description', :class => 'input-xlarge', :rows => '5', :cols => '60'  %>
+  </div>
+</div>
+
 
 <% quiz_style = 'display: block;'
    survey_style = 'display: none;'
@@ -51,94 +67,119 @@
    end
 %>
 
+<div class="help-inline">A quiz can be a traditional kind of online quiz, or can be a survey.  Surveys are not assigned a point value by default, although an instructor can do this manually.</div>
 
-<div class="blockintro">A quiz can be a traditional kind of online quiz, or can be a survey.  Surveys are not assigned a point value by default, although an instructor can do this manually.</div>
-<div class="block">
-  <p><label for="survey" class="required">Quiz or Survey:</label>
-	<% if edit_mode %>
-	   <% if @quiz.survey %>
-	      <%= radio_button 'quiz', 'survey', true %> Survey
-	   <% else %>
-	      <%= radio_button 'quiz', 'survey', false %> Quiz
-	   <% end %>
-	   <br/><b><i>Once created - you cannot change between a quiz and a survey.</i></b>
+<div class="control-group">
+  <label for="survey" class="control-label">Quiz or Survey</label>
+  <div class="controls">
+  <% if edit_mode %>
+    <% if @quiz.survey %>
+	  <label class="radio"><%= radio_button 'quiz', 'survey', true %> Survey</label>
 	<% else %>
-	  <%= radio_button 'quiz', 'survey', false, :onclick => 'new Effect.Puff("survey_settings");new Effect.SlideDown("quiz_settings")' %> Quiz
-	  <%= radio_button 'quiz', 'survey', true, :onclick => 'new Effect.Puff("quiz_settings");new Effect.SlideDown("survey_settings")' %> Survey
+      <label class="radio"><%= radio_button 'quiz', 'survey', false %> Quiz</label>
 	<% end %>
-	</p>
+	<p class="help">Once created, you cannot change between a quiz and a survey.</p>
+  <% else %>
+	<label class="radio"><%= radio_button 'quiz', 'survey', false, :onclick => 'new Effect.Puff("survey_settings");new Effect.SlideDown("quiz_settings")' %> Quiz</label>
+	<label class="radio"><%= radio_button 'quiz', 'survey', true, :onclick => 'new Effect.Puff("quiz_settings");new Effect.SlideDown("survey_settings")' %> Survey</label>
+  <% end %>
+  </div>
 </div>
-
-<div id="quiz_settings" style="<%=quiz_style%>" >
-
-	<div class="blockintro">Enter the number of attempts that a student may have for this quiz - enter a negative number to allow for unlimited attempts (default).</div>
-	<div class="block">
-		<p><label for="quiz[attempt_maximum]" class="required">Quiz Attempts:</label>
-	      <%= text_field 'quiz', 'attempt_maximum'  %></p>
-	</div>
-
-
-	<div class="blockintro">Should student's see the elapsed time while taking the quiz?  They will always be able to see how long it has been since they saved their answers.</div>
-	<div class="block">
-		<p><label for="quiz[show_elapsed]" class="required">Show elapsed time?:</label>
-	       <%= radio_button 'quiz', 'show_elapsed', true %> Yes
-		   <%= radio_button 'quiz', 'show_elapsed', false %> No</p>
-	</div>
-
-	<% if @new_quiz || (!edit_mode || (edit_mode && !@quiz.assignment.grade_item.nil?)) %>
-	<div class="blockintro">If you enter a point value, a GradeBook item will be created and associated with this quiz.  All questions will be weighted equally.  Quizzes that do not have any free form text response questions will be automatically scored.</div>
-	<div class="block">
-	<%= radio_button 'quiz', 'linear_score', false, :onclick => 'new Effect.Puff("scale_score");new Effect.SlideDown("total_score")' %> Overall Point Total
-	<%= radio_button 'quiz', 'linear_score', true, :onclick => 'new Effect.Puff("total_score");new Effect.SlideDown("scale_score")' %> Scale Points w/ Number of Questions	
 	
-	  <% total_score_style = 'display: block;' 
-	     scale_score_style = 'display: none;'
-	     if @quiz.linear_score 
-			total_score_style = 'display: none;'
-			scale_score_style = 'display: block;' 
-		 end %>
-		
-	  <div id="total_score" style="<%= total_score_style %>">			
-		<p><label for="point_value" class="required">Points:</label>
+<div id="quiz_settings" style="<%=quiz_style%>">
+  <div class="control-group">
+	<label for="quiz[attempt_maximum]" class="control-label">Quiz Attempts</label>
+	<div class="controls">
+	  <%= text_field 'quiz', 'attempt_maximum'  %>
+	  <p class="help-block">Enter the number of attempts that a student may have for this quiz - enter a negative number to allow for unlimited attempts (default).</p>
+	</div>
+  </div>
+
+  <div class="control-group">
+	<label for="quiz[show_elapsed]" class="control-label">Show elapsed time?</label>
+	<div class="controls">
+	  <label class="radio"><%= radio_button 'quiz', 'show_elapsed', true %> Yes</label>
+	  <label class="radio"><%= radio_button 'quiz', 'show_elapsed', false %> No</label>
+	  <p class="help-block">Should student's see the elapsed time while taking the quiz?  They will always be able to see how long it has been since they saved their answers.</p>
+	</div>
+  </div>
+
+  <% if @new_quiz || (!edit_mode || (edit_mode && !@quiz.assignment.grade_item.nil?)) %>
+	<p class="help-inline">If you enter a point value, a GradeBook item will be created and associated with this quiz. All questions will be weighted equally.  Quizzes that do not have any free form text response questions will be automatically scored.</p>
+	
+	<div class="controls">
+	  <label for="quiz[linear_score]" class="control-label">Scoring Method</label>
+	  <div class="controls">
+	    <label class="radio"><%= radio_button 'quiz', 'linear_score', false, :onclick => 'new Effect.Puff("scale_score");new Effect.SlideDown("total_score")' %> Overall Point Total</label>
+	    <label class="radio"><%= radio_button 'quiz', 'linear_score', true, :onclick => 'new Effect.Puff("total_score");new Effect.SlideDown("scale_score")' %> Scale Points w/ Number of Questions<label>
+	  </div>
+	</div>
+	
+	<% total_score_style = 'display: block;' 
+       scale_score_style = 'display: none;'
+       if @quiz.linear_score 
+		 total_score_style = 'display: none;'
+		 scale_score_style = 'display: block;' 
+	   end %>	
+	<div id="total_score" style="<%= total_score_style %>">
+	  <div class="control-group">
+		<label for="point_value" class="control-label">Points:</label>
+		<div class="controls">
 			<% if edit_mode %>
 			  <%= text_field_tag 'point_value', @quiz.assignment.grade_item.points %>
 			<% else %>
 	  		  <%= text_field_tag 'point_value', @points %>
-	        <% end %></p>
-	  </div>
-	
-	  <div id="scale_score" style="<%= scale_score_style %>">
-		<p><label for="point_value" class="required">Points Per Question:</label>
-	  		<%= text_field 'quiz', 'number_of_questions'  %></p>
+	        <% end %>
+	    </div>
 	  </div>
 	</div>
-	<% end %>
+
+    <div id="scale_score" style="<%= scale_score_style %>">
+	  <div class="control-group">
+		<label for="point_value" class="control-label">Points Per Question</label>
+		<div class="controls">
+	  	  <%= text_field 'quiz', 'number_of_questions'  %>
+	    </div>
+	  </div>
+	</div>
+  <% end %>
 </div>
 
 <div id="survey_settings" style="<%=survey_style%>">
   <% if @course.course_setting.enable_outcomes %>	
-    <p class="blockintro">If this is an entry/exit survey based on the course outcomes, then you might want to make it available to accreditation auditors.   You can also automatically generate a standard entry/exit survey based on the already defined course outcomes.</p>
-    <div class="block">
-      <label for="quiz[available_to_auditors]" class="required">Available to Auditors:</label>
-	    <p><%= radio_button 'quiz', 'available_to_auditors', true %> Yes
-	       <%= radio_button 'quiz', 'available_to_auditors', false %> No</p>
+    <div class="help-inline">If this is an entry/exit survey based on the course outcomes, then you might want to make it available to accreditation auditors.   You can also automatically generate a standard entry/exit survey based on the already defined course outcomes.</div>
 
-      <label for="quiz[anonymous]" class="required">Make survey anonymous:</label>
-        <p><%= radio_button 'quiz', 'anonymous', true %> Yes
-	       <%= radio_button 'quiz', 'anonymous', false %> No</p>
+    <div class="control-group">
+      <label for="quiz[available_to_auditors]" class="control-label">Available to Auditors</label>
+      <div class="controls">
+	    <label class="radio"><%= radio_button 'quiz', 'available_to_auditors', true %> Yes</label>
+	    <label class="radio"><%= radio_button 'quiz', 'available_to_auditors', false %> No</label>
+	  </div>
+	</div>
 
-     <% unless clone %>
-     <% if @new_quiz %>
-      <label for="generate_survey">Automatically Generate Entry/Exit survey:</label>
-        <p><%= check_box_tag "generate_survey", 1, @auto_gen_checked %></p>		
-     <% end %>
-     <% end %>
-    </div>
+    <div class="control-group">
+      <label for="quiz[anonymous]" class="control-label">Make survey anonymous</label>
+      <div class="controls">
+        <label class="radio"><%= radio_button 'quiz', 'anonymous', true %> Yes</label>
+	    <label class="radio"><%= radio_button 'quiz', 'anonymous', false %> No</label>
+	  </div>
+	</div>
+
+    <% unless clone %>
+      <% if @new_quiz %>
+        <div class="control-group">
+	      <div class="controls">
+		    <label class="checkbox">
+			  <%= check_box_tag "generate_survey", 1, @auto_gen_checked %>
+              Automatically Generate Entry/Exit survey
+            </label>
+          </div>
+        </div>	
+      <% end %>
+    <% end %>
 
   <% else %>
-    <div class="GoodMessage">
-		<p><b>You will continue your survey configuration on the next screen.</b></p>
-	</div>
+    <div class="alert alert-info">You will continue your survey configuration on the next screen.</div>
   <% end %>
 </div>
  

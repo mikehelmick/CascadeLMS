@@ -23,7 +23,16 @@
 	<% end %>
 	
 	<% if !item.assignment_id.nil? && item.assignment_id > 0 %>
-	  / Assignment: <%= link_to "#{item.assignment.title}", {:controller => '/assignments', :course => item.assignment.course, :action => 'view', :id => item.assignment_id} %>
+	  <% unless item.assignment.quiz.nil? %>
+	    <% if item.assignment.quiz.survey %>
+	     / Survey:
+	    <% else %>
+	     / Quiz:
+	    <% end %>
+	    <%= link_to "#{h item.assignment.title}", {:controller => '/quiz', :action => 'start', :course => item.assignment.course, :id => item.assignment_id} %>
+	  <% else %>
+	    / Assignment: <%= link_to "#{h item.assignment.title}", {:controller => '/assignments', :course => item.assignment.course, :action => 'view', :id => item.assignment_id} %>
+	  <% end %>
 	<% end %>
 	<% if !item.graded_assignment_id.nil? && item.graded_assignment_id > 0 %>
 	  / View Grades For: <%= link_to "#{item.graded_assignment().title}", {:controller => '/turnins', :course => item.course, :action => 'feedback', :assignment => item.graded_assignment_id} %>

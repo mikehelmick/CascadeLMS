@@ -234,7 +234,10 @@ class Instructor::CourseAssignmentsController < Instructor::InstructorBase
     ## setup some basics 
     @assignment = Assignment.new
     @assignment.default_dates
-    
+
+    set_title
+    @breadcrumb.text = 'New Assignment'
+    @title = "New Assignment"
     @duplicate = true
     
     @title = "Duplicate Assignment - #{@course.title}"    
@@ -289,7 +292,8 @@ class Instructor::CourseAssignmentsController < Instructor::InstructorBase
     @duplicate = false
 
     set_title
-    @breadcrumb.text = "Edit '#{@assignment.title}'"
+    @breadcrumb.text = 'Edit'
+    @breadcrumb.assignment = @assignment
     @title = "Edit Assignment"
   end
   

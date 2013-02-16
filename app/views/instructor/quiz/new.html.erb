@@ -1,18 +1,11 @@
 <h2>New Quiz/Survey for <%= @course.title %></h2>
 
-<div id="form_area">
-
-<% form_tag( { :action => 'create' }, :multipart => true, :onsubmit => "new Element.toggle('button'); new Element.toggle( 'spinner');" ) do %>
-
+<% form_tag( { :action => 'create' }, :multipart => true, :onsubmit => "new Element.toggle('button'); new Element.toggle( 'spinner');", :class => 'form-horizontal' ) do %>
   <%= render :partial => 'form', :locals => { :edit_mode => false, :clone => false } %>
 
-
-<div class="submit">
-  <div id="button"><%= submit_tag "Create" %></div>
+  <div id="button">
+    <%= submit_tag 'Create', :class => 'btn btn-primary' %>
+    <%= link_to 'Cancel', {:controller => '/instructor/course_assignments', :action => 'index', :course => @course, :id => nil, :assignment => nil}, {:class => 'btn'} %>
+  </div>
   <div id="spinner" style="display: none;"><%= image_tag 'spinner.gif' %></div>
-</div>
 <% end %>
-
-<p><%= link_to 'Cancel', :controller => '/instructor/course_assignments', :action => 'index', :course => @course, :id => nil, :assignment => nil %></p>
-
-</div>
