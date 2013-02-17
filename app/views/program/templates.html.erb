@@ -16,7 +16,7 @@
 	      <td><%=h course_template.title %></td>
 	      <td nowrap="nowrap">
 		    <% if !course_template.approved %>
-		      <%= link_to "#{image_tag 'cart_add.png'} Approve", {:controller => '/program', :action => 'approve', :id => @program, :template => course_template}, :confirm => 'Are you sure you want to approve this course template?  This will make it available for importing into courses.', :method => :post %>
+		      <%= link_to '<i class="icon-check"></i> Approve', {:controller => '/program', :action => 'approve', :id => @program, :template => course_template}, :confirm => 'Are you sure you want to approve this course template?  This will make it available for importing into courses.', :method => :post %>
 		    <% end %>
 		  </td>
 	      <td nowrap="nowrap"><%=h course_template.start_date %></td>

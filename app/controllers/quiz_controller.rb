@@ -66,6 +66,10 @@ class QuizController < ApplicationController
       flash[:notice] = "All previous work has been saved.  You can continue taking the quiz, including chaning previous answer."
       load_quiz_dependencies
     end
+
+    set_title
+    @breadcrumb = Breadcrumb.for_course(@course)
+    @breadcrumb.assignment = @assignment
     
     render :action => 'start'
   end

@@ -1,5 +1,6 @@
 class CourseTemplateOutcome < ActiveRecord::Base
   validates_presence_of :outcome
+  before_destroy :delete_program_outcome_mappings
   
   belongs_to :course_template
   
@@ -41,4 +42,7 @@ class CourseTemplateOutcome < ActiveRecord::Base
     return 'N'
   end
   
+  def delete_program_outcome_mappings()
+    CourseTemplateOutcomesProgramOutcome.delete_all("course_template_outcome_id = #{self.id}")
+  end
 end

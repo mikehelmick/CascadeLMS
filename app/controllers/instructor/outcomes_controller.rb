@@ -321,7 +321,7 @@ class Instructor::OutcomesController < Instructor::InstructorBase
       
       @course.programs.each do |program|
         message = "A new course template '#{@new_template.title}' has been exported by #{@user.display_name} and requires your approval."
-        link = url_for :controller => '/program', :action => 'template', :id => program.id, :course => nil rescue link = nil      
+        link = url_for :controller => '/program', :action => 'templates', :id => program.id, :course => nil rescue link = nil      
         Notification.create( message, program.users, link )        
       end
       
