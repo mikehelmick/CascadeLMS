@@ -1,12 +1,12 @@
 <h2>Assignment/Outcome report '<%=h @course.title%>' </h2>
 
 <% all_outcomes = @course.ordered_outcomes %>
-<table class="table table-striped table-compact">
+<table class="table table-striped table-compact table-bordered">
   <tr class="header">
 	<th>Assignments \ Outcomes</th>
 	<% for outcome in all_outcomes %>
 	  <th align="center">
-		<a href="#" rel="popover" title="Course Outcome #<%= @numbers[outcome.id] %>" data-placement="bottom" data-content="<%=h outcome.outcome %>"><%= @numbers[outcome.id] %></a>
+		<a href="#" rel="popover" title="Course Outcome #<%= @numbers[outcome.id] %>" data-trigger="hover" data-placement="left" data-content="<%=h outcome.outcome %>"><%= @numbers[outcome.id] %></a>
 	  </th>
 	<% end %>
   </tr>
@@ -27,7 +27,7 @@
 	        <% for asgn_outcome in rubric.course_outcomes %>
 	          <% if outcome.id == asgn_outcome.id && !selected %>
 	            <% selected = true %>
-	            <acronym title="<%=h outcome.outcome %>"><%= image_tag 'accept.png' %></acronym>
+	            <a href="#" rel="popover" title="<%=h "Assignment #{assignment.title} - Outcome #{@numbers[outcome.id]}" %>" data-trigger="hover" data-placement="left" data-content="<%=h outcome.outcome %>">Yes</a>
 	          <% end %>
 	        <% end %>
 	      <% end %>

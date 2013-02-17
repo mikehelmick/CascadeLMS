@@ -28,8 +28,11 @@ class Instructor::ResultsController < Instructor::InstructorBase
     quest_arrays.each { |arr| same_length = same_length && quest_arrays[0].length==arr.length}
     
     flash[:badnotice] = "The entry/exit surveys are not identical, comparisons are unreliable." if (!same_length)
-    # more extensive validation...  
-       
+    # more extensive validation...
+
+    @breadcrumb = Breadcrumb.for_course(@course, true)
+    @breadcrumb.outcomes = true
+    @breadcrumb.text = 'Entry/Exit Surveys'
   end
 
   def quiz_summary

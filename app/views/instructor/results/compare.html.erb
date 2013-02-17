@@ -1,21 +1,18 @@
-<p><%= link_to 'Back to course outcomes', :controller => '/instructor/outcomes', :course => @course, :action => nil, :id => nil %></p>
+<%= link_to 'Back to course outcomes', {:controller => '/instructor/outcomes', :course => @course, :action => nil, :id => nil}, {:class => 'btn'} %></p>
 
-<div class="SectionHeader"><div class="Full">
 <h2>Entry/Exit Survey Results '<%= @course.title %>'</h2>
-</div></div>
 
 <% if @surveys[0].quiz_questions.length == 0 %>
-  <p><i>There are no questions for this survey.</i></p>
+  <div class="alert alert-error">There are no questions for this survey.</div>
 <% else %>
 
 <% if @surveys[0].anonymous %>
-<div class="GoodMessage">This survey is anonymous, individual student responses are not available.</div>
+<div class="alert alert-info">This survey is anonymous, individual student responses are not available.</div>
 <% end %>
-
 
   <p>Here are the aggregate survey responses for all students.  You can also view the by-student responses for a question or view the entire survey for a given student.</p>
  
-  <table class="fancy" width="99%">
+  <table class="table">
   <tr class="header">
 	  <th align="center">#</th>
 	  <th align="center" width="90%">Question</th>
@@ -24,19 +21,18 @@
 
    <% row_count = 0 %>
    <% for question in @surveys[0].quiz_questions %>
-	 <% row_count = row_count.next 
-	    odd = "odd"
-        odd = "even" if row_count.even? %>
-     <tr class="<%=odd%> hover" id="quiz_question_<%=question.id%>">
+	 <% row_count = row_count.next %>
+     <tr id="quiz_question_<%=question.id%>">
 	   <td valign="top"><%= row_count %></td>
 	   <td valign="top"><%=h question.question %></td>
 	   <td valign="top" nowrap="nowrap"><% if !@surveys[0].anonymous %><%= link_to 'Expand', :action => 'survey_question', :class => @class, :assignment => @assignment, :id => question %><% end %></td>
 	 </tr>
-	 <tr class="<%=odd%> hover" id="quiz_question_<%=question.id%>_answers">
+	 <tr id="quiz_question_<%=question.id%>_answers">
 	   <td>&nbsp;</td>
 	   <td colspan="2">
 	    
-	   <table><tr><% for survey in @surveys %><td><b><%= survey.assignment.title %></b><br/>
+	   <table class="table table-condensed table-striped">
+		 <tr><% for survey in @surveys %><td><b><%= survey.assignment.title %></b><br/>
 	   	 
 		
 		  <% if question.text_response %>
@@ -92,12 +88,9 @@
 </div></div>
 <p>&nbsp;</p>
 <div class="Section">
-<table class="fancy">
+<table class="table">
 <% 0.upto( @column1.length-1) do |i| %>
-  <% odd = "odd"
-	 odd = "even" if i.even?
-	  %>
-  <tr class="<%=odd%> hover">
+  <tr>
 	<td width="50%"><%= link_to "#{@column1[i].display_name} (#{@column1[i].uniqueid})", :id => @column1[i].id, :action => 'for_student', :course => @course, :assignment => @assignment %></td>
 	<td width="50%"><%= link_to( "#{@column2[i].display_name} (#{@column2[i].uniqueid})", :id => @column2[i].id, :action => 'for_student', :course => @course, :assignment => @assignment) rescue "&nbsp;" %></td>
   </tr>
