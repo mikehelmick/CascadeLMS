@@ -1,13 +1,8 @@
-<div class="SectionHeader"><div class="Full">
 <h1>Entry/Exit Survey Results '<%= @course.title %>' (<%= @course.term.semester %>)</h1>
-</div></div>
 
-<div class="SectionHeader"><div class="Full">
 <h2><%= @entry.assignment.title %> (Administered: <%= @entry.assignment.close_date.to_formatted_s(:short) %>)</h2>
-</div></div>
-<br/>
 
-<table class="fancy">
+<table class="table table-condensed table-striped table-bordered">
  <tr>
    <th>Course</th>
    <th>Question</th>
@@ -29,47 +24,41 @@
  <% row_count = 0 %>
  <% for question in @entry.quiz_questions %>
    <% counter = counter.next %>
-   <% row_count = row_count.next 
-      odd = "odd"
-      odd = "even" if row_count.even? %>
- <tr class="<%=odd%> hover">
+   <% row_count = row_count.next %>
+ <tr>
    <td><%= @course.title %></td>
-   <td><%= counter %></td>
+   <td class="align-right"><%= counter %></td>
    <% total = 0.0 %>
    <% for answer in @entry.quiz_questions[row_count-1].quiz_question_answers %>
-     <td><%= @all_answer_count_maps[@entry.id][answer.id] %></td>
+     <td class="align-right"><%= @all_answer_count_maps[@entry.id][answer.id] %></td>
      <% total = total + @all_answer_count_maps[@entry.id][answer.id]  %>
    <% end %> 
-   <td><%= @quest_outcome_number[question.id] %></td>
-   <td><%= @all_question_answer_totals[@entry.id][@entry.quiz_questions[row_count-1].id] %></td>
-   <td>
+   <td class="align-right"><%= @quest_outcome_number[question.id] %></td>
+   <td class="align-right"><%= @all_question_answer_totals[@entry.id][@entry.quiz_questions[row_count-1].id] %></td>
+   <td class="align-right">
 	 <% answer1 = @entry.quiz_questions[row_count-1].quiz_question_answers[0].id %>
 	 <% answer2 = @entry.quiz_questions[row_count-1].quiz_question_answers[1].id %>
 	 <%= sprintf("%6.2f%%", (@all_answer_count_maps[@entry.id][answer1] + @all_answer_count_maps[@entry.id][answer2]) / total * 100.0 ) rescue "?.?%" %>   	
    </td>
-   <td>
+   <td class="align-right">
  	 <% answer1 = @entry.quiz_questions[row_count-1].quiz_question_answers[2].id %>
 	 <%= sprintf("%6.2f%%", (@all_answer_count_maps[@entry.id][answer1]) / total * 100.0 ) rescue "?.?%" %>   	
    </td>
-   <td>
+   <td class="align-right">
 	 <% answer1 = @entry.quiz_questions[row_count-1].quiz_question_answers[3].id %>
 	 <% answer2 = @entry.quiz_questions[row_count-1].quiz_question_answers[4].id %>
 	
    	 <%= sprintf("%6.2f%%", (@all_answer_count_maps[@entry.id][answer1] + @all_answer_count_maps[@entry.id][answer2]) / total * 100.0 ) rescue "?.?%" %>   	
    </td>	 
-   <td>
+   <td class="align-right">
 	 <% answer1 = @entry.quiz_questions[row_count-1].quiz_question_answers[5].id %>
      <%= sprintf("%6.2f%%", (@all_answer_count_maps[@entry.id][answer1]) / total * 100.0 ) rescue "?.?%" %>   	
    </td>
  </tr> 
  <% end %>
-
 </table>
 
-<div class="page_break"><p>&nbsp;</p></div>
-
 <div id="entry_chart_div"></div>
-
 <script type="text/javascript">
   google.load("visualization", "1", {packages:["columnchart"]});
   google.setOnLoadCallback(drawChart);
@@ -97,17 +86,12 @@
   }
 </script>
 
-
-<div class="page_break"><p>&nbsp;</p></div>
+<hr/>
 
 <% unless @exit.nil? %>
- <div class="SectionHeader"><div class="Full">
  <h2><%= @exit.assignment.title %> (Administered: <%= @exit.assignment.close_date.to_formatted_s(:short) %>)</h2>
- </div></div>
 
-<br/>
-
-<table class="fancy">
+<table class="table table-condensed table-striped table-bordered">
  <tr>
    <th>Course</th>
    <th>Question</th>
@@ -134,43 +118,38 @@
       odd = "even" if row_count.even? %>
  <tr class="<%=odd%> hover">
    <td><%= @course.title %></td>
-   <td><%= counter %></td>
+   <td class="align-right"><%= counter %></td>
    <% total = 0.0 %>
    <% for answer in @exit.quiz_questions[row_count-1].quiz_question_answers %>
-     <td><%= @all_answer_count_maps[@exit.id][answer.id] %></td>
+     <td class="align-right"><%= @all_answer_count_maps[@exit.id][answer.id] %></td>
      <% total = total + @all_answer_count_maps[@exit.id][answer.id]  %>
    <% end %> 
-   <td><%= @quest_outcome_number[question.id] %></td>
-   <td><%= @all_question_answer_totals[@exit.id][@exit.quiz_questions[row_count-1].id] %></td>
-   <td>
+   <td class="align-right"><%= @quest_outcome_number[question.id] %></td>
+   <td class="align-right"><%= @all_question_answer_totals[@exit.id][@exit.quiz_questions[row_count-1].id] %></td>
+   <td class="align-right">
 	 <% answer1 = @exit.quiz_questions[row_count-1].quiz_question_answers[0].id %>
 	 <% answer2 = @exit.quiz_questions[row_count-1].quiz_question_answers[1].id %>
 	 <%= sprintf("%6.2f%%", (@all_answer_count_maps[@exit.id][answer1] + @all_answer_count_maps[@exit.id][answer2]) / total * 100.0 ) rescue "?.?%" %>   	
    </td>
-   <td>
+   <td class="align-right">
  	 <% answer1 = @exit.quiz_questions[row_count-1].quiz_question_answers[2].id %>
 	 <%= sprintf("%6.2f%%", (@all_answer_count_maps[@exit.id][answer1]) / total * 100.0 ) rescue "?.?%" %>   	
    </td>
-   <td>
+   <td class="align-right">
 	 <% answer1 = @exit.quiz_questions[row_count-1].quiz_question_answers[3].id %>
 	 <% answer2 = @exit.quiz_questions[row_count-1].quiz_question_answers[4].id %>
 
    	 <%= sprintf("%6.2f%%", (@all_answer_count_maps[@exit.id][answer1] + @all_answer_count_maps[@exit.id][answer2]) / total * 100.0 ) rescue "?.?%" %>   	
    </td>	 
-   <td>
+   <td class="align-right">
 	 <% answer1 = @exit.quiz_questions[row_count-1].quiz_question_answers[5].id %>
      <%= sprintf("%6.2f%%", (@all_answer_count_maps[@exit.id][answer1]) / total * 100.0 ) rescue "?.?%" %>   	
    </td>
  </tr> 
  <% end %>
-
 </table>
 
-<div class="page_break"><p>&nbsp;</p></div>
-
 <div id="exit_chart_div"></div>
-
-
 <script type="text/javascript">
   google.load("visualization", "1", {packages:["columnchart"]});
   google.setOnLoadCallback(drawChart);
@@ -198,18 +177,11 @@
   }
 </script>
 
-<div class="page_break"><p>&nbsp;</p></div>
+<hr/>
 
-<div class="SectionHeader"><div class="Full">
 <h2>Survey of Learning Outcomes: <%= @course.title %></h2>
-</div></div>
-
-<br/>
 
 <div id="compare_chart"></div>
-
-<div class="page_break"><p>&nbsp;</p></div>
-
 <div id="compare_table"></div>
 
 <script type="text/javascript">
@@ -243,27 +215,19 @@
   }
 </script>
 
-<div class="page_break"><p>&nbsp;</p></div>
-
 <% end %>
 
-
-<div class="SectionHeader"><div class="Full">
+<hr/>
 <h2>Course Outcomes</h2>
-</div></div>
 
-<br/>
 
 <%= render :partial => '/program/course_outcomes_part' %>
 
-<div class="page_break"><p>&nbsp;</p></div>
+<hr/>
 
-<div class="SectionHeader"><div class="Full">
 <h2>Survey Questions</h2>
-</div></div>
 
-<br/>
-<table class="fancy" width="99%">
+<table class="table table-condensed table-striped">
   <tr class="header">
 	  <th width="90%">Question</th>
 	  <th>Outcome #</th>

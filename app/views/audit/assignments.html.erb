@@ -1,8 +1,5 @@
-<p><%= link_to "Back", :controller => '/audit', :action => 'program', :id => @program, :course => nil %></p>
+<h2>Students eligible for audit <%= link_to_function '<i class="icon-resize-full"></i>', visual_effect(:toggle_slide, 'students' ) %></h2>
 
-<div class="SectionHeader"><div class="Full">
-<h2>Students eligible for audit <%= link_to_function "#{image_tag 'eye.png', :align => 'absmiddle'}", visual_effect(:toggle_slide, 'students' ) %></h2>
-</div></div>
 <div id="students">
 <%= render :partial => 'students', :locals => {:students => @students} %>
 </div>
@@ -12,10 +9,10 @@
 Program: <%= @program.title %></h2>
 </div></div>
 
-<p><strong>Notes:</strong> <em>Please use discretion when viewing and using student work for auditing purposes. This work has not anonymized, and no scores will be shown. Online quizzes are not available for viewing.</em></p>
+<p><strong>Notes:</strong> <em>Please use discretion when viewing and using student work for auditing purposes. This work has not been anonymized, and no scores will be shown. Online quizzes are not available for auditing.</em></p>
 
 <% if @assignments.size == 0%>
- <p><em>There are no assignments in this course. Please work with the instructor or department administrators to obtain samples of student work.</em></p>
+ <div class="alert alert-info">There are no assignments in this course. Please work with the instructor or department administrators to obtain samples of student work.</div>
 
 <% else %>
  <div id="assignments"><ul>

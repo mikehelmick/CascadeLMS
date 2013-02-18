@@ -1,6 +1,7 @@
 <% unless error.nil? %><p><em><%= error %></em></p><% end %>
 <% unless user.nil? %>
-<%= check_box_tag("user_#{user.user.id}_course_#{course.id}", !user.audit_opt_in, user.audit_opt_in, {:onchange => remote_function(:update => "user_#{user.user.id}", :url => { :action => :toggle_opt_in, :course => course, :user => user.user.id, :id => program.id }, :success => visual_effect(:highlight, "user_#{user.user.id}" ))} ) %>   
+<label class="checkbox">
+<%= check_box_tag("user_#{user.user.id}_course_#{course.id}", !user.audit_opt_in, user.audit_opt_in, {:onchange => remote_function(:update => "user_#{user.user.id}", :url => { :action => :toggle_opt_in, :course => course, :user => user.user.id, :id => program.id }, :success => visual_effect(:highlight, "user_#{user.user.id}" ))} ) %>
  <% if user.audit_opt_in %><strong><%= user.user.uniqueid%> : <%= user.user.display_name %></strong>
- <% else %><%= user.user.uniqueid%> : <%= user.user.display_name %><% end %>
+ <% else %><%= user.user.uniqueid%> : <%= user.user.display_name %><% end %></label>
 <% end %>

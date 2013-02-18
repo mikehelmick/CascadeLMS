@@ -1044,3 +1044,8 @@ form.well {
           border-radius: 6px;
 	margin-right: 2px;
 }
+
+.table th.align-right,
+.table td.align-right {
+	text-align: right;
+}

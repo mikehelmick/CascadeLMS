@@ -1,12 +1,12 @@
 <% if @student.nil? %>
- <div class="errorExplination">Invalid request</div>
+ <div class="alert alert-error">Invalid request</div>
 <% else %>
 
  <% if @journals.length == 0 %>
-  <p><em>There are no journals entries for <%= @student.display_name %>.</em></p>
+  <div class="alert">There are no journals entries for <%= @student.display_name %>.</div>
  <% else %>
 
- <table cellpadding="0" cellspacing="0" class="fancy">
+ <table class="table table-condensed">
  <%= render :partial => '/instructor/turnins/journalheader' %>
  <% count = 0 %>
  <% for journal in @journals %>

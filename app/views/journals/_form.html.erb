@@ -3,27 +3,27 @@
 <fieldset>
 <% if @assignment.journal_field.start_time %>
  <div class="control-group">
-  <label for="journal_start_time" class="control-label">Start time:</label>
+  <label for="journal_start_time" class="control-label">Start time</label>
   <div class="controls">
-    <%= datetime_select( 'journal', 'start_time', {}, {:class => 'span1'}) %>
+    <%= datetime_select( 'journal', 'start_time', {}, {:class => 'input-small'}) %>
   </div>
  </div>
 <% end %>
 <% if @assignment.journal_field.end_time %>
  <div class="control-group">
-  <label for="journal_end_time" class="control-label">&nbsp;End time:</label>
+  <label for="journal_end_time" class="control-label">&nbsp;End time</label>
   <div class="controls">
-    <%= datetime_select('journal', 'end_time', {:default => 1.hour.from_now}, {:class => 'span1'}) %>
+    <%= datetime_select('journal', 'end_time', {:default => 1.hour.from_now}, {:class => 'input-small'}) %>
   </div>
  </div>
 <% end %>
 
 <% if @assignment.journal_field.interruption_time %>
 <div class="control-group">
- <label for="journal_interruption_time" class="control-label">Interruption time:</label>
+ <label for="journal_interruption_time" class="control-label">Interruption time</label>
  <div class="controls">
   <div class="input-append">
-    <%= text_field 'journal', 'interruption_time', {:class => 'span1'} %><span class="add-on">minutes</span>
+    <%= text_field 'journal', 'interruption_time', {:class => 'input-small'} %><span class="add-on">minutes</span>
   </div>
  </div>
 </div>
@@ -31,7 +31,7 @@
 
 <% if @assignment.journal_field.completed %>
  <div class="control-group">
-  <label for="journal_completed" class="control-label">Completed:</label>
+  <label for="journal_completed" class="control-label">Completed</label>
   <div class="controls">
  	<label class="radio"><%= radio_button 'journal', 'completed', true %> Yes</label>
 	<label class="radio"><%= radio_button 'journal', 'completed', false %> No</label>
@@ -41,7 +41,7 @@
 
 <% if @assignment.journal_field.comments %>
  <div class="control-group">
-  <label for="journal_comments" class="control-label">Comments:</label>
+  <label for="journal_comments" class="control-label">Comments</label>
   <div class="controls">
    <%= text_area 'journal', 'comments', {:class => 'input-xlarge', :rows => 8} %></p>
   </div>
@@ -50,7 +50,7 @@
 
 <% if @assignment.journal_field.task %>
  <div class="control-group">
-   <label for="journal_tasks" class="control-label">Tasks performed:</label>
+   <label for="journal_tasks" class="control-label">Tasks performed</label>
    <div class="controls">
     <% for task in @journal_tasks %>
       <label class="checkbox"><%= check_box_tag "task_id_#{task.id}", task.id, @journal.has_task?(task.id) %><%=h task.task %></label>
@@ -61,7 +61,7 @@
 
 <% if @assignment.journal_field.reason_for_stopping %>
   <div class="control-group">
-    <label for="journal_stop_reason" class="control-label">Reason for stopping:</label>
+    <label for="journal_stop_reason" class="control-label">Reason for stopping</label>
     <div class="controls"> 
     <% for stop_reason in @journal_stop_reasons %>
       <label class="checkbox"><%= check_box_tag "stop_reason_id_#{stop_reason.id}", stop_reason.id, @journal.has_stop_reason?(stop_reason.id) %><%=h stop_reason.reason %></label>

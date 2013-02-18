@@ -1,46 +1,42 @@
-<p><%= link_to "Back", :controller => '/audit', :action => 'program', :id => @program, :course => nil %></p>
-<div class="SectionHeader"><div class="Full">
 <h2>Entry/Exit Surveys for <%= @course.title %> (<%= @course.term.semester %>)<br/>
 Program: <%= @program.title %></h2>
-</div></div>
 
 <p>Select the surveys that you would like to export, and the format that you would like. 
 The HTML view will automatically generate comparison graphs.
-<i>It make take up to 2 minutes to render survey data.</i>
+<em>It make take up to 2 minutes to render survey data.</em>
 </p>
 
 <% has_hidden_surveys = 0 %>
-<div id="form_area">
-  <% form_tag( :action => 'compare_surveys', :course => @course, :id => @program ) do %>
-  <div class="blockintro">Select the surveys that you want to include in your report (max of 2).</div>
-  <div class="block"><ul>
+  <% form_tag({:action => 'compare_surveys', :course => @course, :id => @program}, {:class => 'form-horizontal'}) do %>
+  <div class="control-block">
+    <p class="help-block">Select the surveys that you want to include in your report (max of 2).</p>
+	<div class="controls">	
 	<% for survey in @surveys %>
 	  <% if survey.available_to_auditors %>
-	  <li>
+	  <label class="checkbox">
 	    <%= check_box_tag "survey_#{survey.id}", survey.id, false %>
 	    <%= survey.assignment.title %> 
 	    (<%= survey.assignment.close_date.to_formatted_s(:short) %>)
-      </li>
+      </label>
       <% else %>
         <% has_hidden_surveys = has_hidden_surveys + 1 %>
       <% end %>
 	<% end %>
-	</ul>
+	</div>
 	<% if has_hidden_surveys > 0 %>
-	  <p><em>This course has <%= pluralize(has_hidden_surveys, 'hidden survey') %>. Please contact the instructor, program manager, or department chair to get access to hidden surveys or to find out why these surveys are not available to auditors.</em></p>
+	  <p class="help-block">This course has <%= pluralize(has_hidden_surveys, 'hidden survey') %>. Please contact the instructor, program manager, or department chair to get access to hidden surveys or to find out why these surveys are not available to auditors.</p>
 	<% end %>
   </div> 
 
-  <div class="blockintro">Select the format for your report HTML (in browser with graphs) or export to Excel (CSV format) <i>coming soon</i>.</div>
-  <div class="block">
-    <label for="format" class="required">Select Format:</label>
-	<p><%= radio_button_tag 'format', 'html', true %> HTML / In Browser<br/>
-	   <%= radio_button_tag 'format', 'printer', false %> Printer Friendly<br/>	
-	   <%= radio_button_tag 'format', 'csv', false %> Export to Excel (CSV format) (<i>Charts will not be included</i>)</p>
+  <div class="control-blocl">
+    <p class="help-block">Select the format for your report HTML (in browser with graphs) or export to Excel (CSV format).</p>
+    <div class="controls">
+	  <label class="radio"><%= radio_button_tag 'format', 'html', true %> HTML / In Browser</label>
+	  <label class="radio"><%= radio_button_tag 'format', 'printer', false %> Printer Friendly</label>	
+	  <label class="radio"><%= radio_button_tag 'format', 'csv', false %> Export to Excel (CSV format) (<i>Charts will not be included</i>)</label>
+	</div>
   </div>
 
-  <div class="submit">
-	<%= submit_tag "Generate Survey Report" %>
-  </div>
-  <% end %>	
-</div>
+  <%= submit_tag 'Generate Survey Report', :class => 'btn btn-primary' %>
+  <%= link_to 'Cancel', {:controller => '/audit', :action => 'program', :id => @program}, {:class => 'btn'} %>
+  <% end %>

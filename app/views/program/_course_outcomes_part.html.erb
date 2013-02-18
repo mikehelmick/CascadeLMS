@@ -34,7 +34,7 @@
           <%=h outcome.outcome %>
 	
 	      <% if outcome.program_outcomes.size > 0 %>
-	        &nbsp;(<%= link_to_function( "#{image_tag('application_side_expand.png', :align => 'absmiddle' )} mappings", "blindToggle( 'outcome_details_#{outcome.id}' )" ) %>)
+	        &nbsp;(<%= link_to_function( '<i class="icon-resize-full"></i> mappings', "blindToggle( 'outcome_details_#{outcome.id}' )" ) %>)
 	      <% end%>
 	
 	      <br/>

@@ -8,6 +8,7 @@ class AuditController < ApplicationController
   # Lists all available 
   def index
     @programs = @user.programs_under_audit()
+    @title = 'Audit'
   end
 
   def program
@@ -64,7 +65,9 @@ class AuditController < ApplicationController
     return unless course_in_program?( @course, @program )
     @title = "Entry/Exit surveys for #{@course.title}, program: #{@program.title}"
 
-    load_surveys( @course.id )  
+    load_surveys( @course.id )
+    @breadcrumb.audit_program = @program
+    @breadcrumb.text = 'Compare Surveys'
   end
   
   def compare_surveys
@@ -74,9 +77,11 @@ class AuditController < ApplicationController
     return unless course_in_program?( @course, @program )
 
     @title = "Entry/Exit survey comparison for #{@course.title}, program: #{@program.title}"
+    @breadcrumb.audit_program = @program
+    @breadcrumb.text = 'Compare Surveys'
 
     error_url = url_for(:action => 'surveys', :id => @program, :course => @course)
-    entry_exit_survey_compare(error_url)    
+    entry_exit_survey_compare(error_url)
   end
 
   def rubric_report
@@ -92,7 +97,11 @@ class AuditController < ApplicationController
     build_course_rubrics_report()
     
     respond_to do |format|
-        format.html { render :layout => 'noright' }
+        format.html {
+          @breadcrumb.audit_program = @program
+          @breadcrumb.text = 'Rubric Report'
+          render :layout => 'noright'
+        }
         format.csv  { 
           response.headers['Content-Type'] = 'text/csv; charset=iso-8859-1; header=present'
           response.headers['Content-Disposition'] = "attachment; filename=#{@course.short_description}_course_outcomes_rubrics_report.csv"
@@ -108,6 +117,8 @@ class AuditController < ApplicationController
     return unless course_in_program?( @course, @program )
     
     @title = "Assignments for #{@course.title}, program: #{@program.title}"
+    @breadcrumb.audit_program = @program
+    @breadcrumb.text = 'Review Student Work'
 
     @assignments = @course.assignments
     # Filter out quizzes and surveys
@@ -189,6 +200,8 @@ class AuditController < ApplicationController
 
     # outcome numbers needed to display rubrics
     @numbers = load_outcome_numbers(@course) if @assignment.rubrics.size > 0 
+    @breadcrumb.audit_program = @program
+    @breadcrumb.text = "Audit Assignment #{@assignment.title}"
   end
 
   def journals

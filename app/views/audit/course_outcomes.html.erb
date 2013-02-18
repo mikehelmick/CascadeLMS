@@ -11,12 +11,12 @@
 </div>
 
 <% all_outcomes = @course.ordered_outcomes %>
-<table class="table table-condensed table-striped">	
-  <tr class="header">
+<table class="table table-condensed table-striped table-bordered">	
+  <tr>
 	<th>Course Outcomes \ Program Outcomes (<%= @program.title %>)</th>
 	  <% for po in @program.program_outcomes%>
-	    <th align="center" width="2%">
-	      <u><acronym title="<%=h po.outcome %>"><%= po.position %></acronym></u>
+	    <th>
+	      <a href="#" rel="popover" title="Program Outcome <%= po.position %>" data-trigger="hover" data-placement="left" data-content="<%=h po.outcome %>">#<%= po.position %></a>
 	    </th>
 	  <% end %>
   </tr>
@@ -39,7 +39,7 @@
 	  <% for po in @program.program_outcomes%>
 	    <th align="center" nowrap="nowrap">
 	      <% if outcome.mapped_to_program_outcome?(po.id) %>
-	        <acronym title="<%=h po.outcome %>"><%= image_tag 'accept.png', :align => 'absmiddle' %><%= outcome.get_depth_level_short(po.id) %></acronym>
+	        <a href="#" rel="popover" title="Program Outcome <%= po.position %>" data-trigger="hover" data-placement="left" data-content="<%=h po.outcome %>"><i class="icon-ok-sign"></i> <%= outcome.get_depth_level_short(po.id) %></a>
 	      <% end %>
 	    </th>
 	 <% end %>	  
@@ -53,7 +53,6 @@
 <li><strong>E</strong> = <em>extensive</em></li>
 </ul></p>
 
-<h3>Program Outcomes for <%= @program.title %></h3>
 <div id="program_outcomes">
 <%= render :partial => 'program_outcomes' %>
 </div>
