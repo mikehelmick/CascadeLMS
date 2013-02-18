@@ -1843,6 +1843,10 @@ table {
   border-top: 1px solid #dddddd;
 }
 
+.table td.noborder {
+	border-top: none;
+}
+
 .table th {
   font-weight: bold;
 }
@@ -2112,11 +2116,35 @@ table [class*=span],
   background-color: #dff0d8;
 }
 
+.table tbody tr td.success {
+  background-color: #dff0d8;
+}
+
+.table tbody tr th.success {
+  background-color: #dff0d8;
+}
+
 .table tbody tr.error td {
   background-color: #f2dede;
 }
 
+.table tbody tr td.error {
+  background-color: #f2dede;
+}
+
+.table tbody tr th.error {
+  background-color: #f2dede;
+}
+
 .table tbody tr.warning td {
+  background-color: #fcf8e3;
+}
+
+.table tbody tr td.warning {
+  background-color: #fcf8e3;
+}
+
+.table tbody tr th.warning {
   background-color: #fcf8e3;
 }
 

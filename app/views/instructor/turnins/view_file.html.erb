@@ -52,44 +52,50 @@
 <% else %>
   <p><%= link_to "Collapse all comments / style guides", :action => 'view_file', :course => @course, :assignment => @assignment, :student => @student, :id => @utf, :expand => nil %></p>
 <% end %>
-<table class="table-compact codetable" cellpadding="0" cellspacing="0" width="99%">
+<table class="table table-condensed codetable">
   <tr class="header">
    <th nowrap="nowrap" width="30px">Line#</th>
-   <th class="has_comment" nowrap="nowrap" width="50px">Comments</th>
-   <th class="has_style" nowrap="nowrap" width="50px">Style</th>
+   <th class="success" nowrap="nowrap" width="50px">Comments</th>
+   <th class="error" nowrap="nowrap" width="50px">Style</th>
    <th align="center" nowrap="nowrap">Line from file</th>
   </tr>
 
   <% line_num = 0 %>
   <% for line in @lines %>
     <% line_num = line_num.next 
-	   odd = "odd"
-	   odd = "even" if line_num.even?
+       clazz = ''
+	   if @comments[line_num]
+		 clazz = 'success'
+	   elsif @styles[line_num]
+		 clazz = 'error'
+	   end
   	%>
-	<tr class="<%=odd%> hover" id="line_<%=line_num%>">
-	  <td align="right" nowrap="nowrap" <%= 'class="has_comment"' if @comments[line_num] %>><%=line_num%></td>
-	  <td align="center" id="status_<%=line_num%>" <%= 'class="has_comment"' if @comments[line_num] %>>
+  
+
+	<tr class="<%= 'success' if @comments[line_num] %>" id="line_<%=line_num%>">
+	  <td align="right" nowrap="nowrap" class="noborder"><%=line_num%></td>
+	  <td align="center" id="status_<%=line_num%>" class="noborder">
 	    <% if @comments[line_num] %>
 	      <%= link_to_function "view", visual_effect(:toggle_slide, "comments_line_#{line_num}" ) %>
 	    <% else %>
 	      <%= link_to_function "new", visual_effect(:toggle_slide, "comments_line_#{line_num}" ) %>	      
 	    <% end %>
 	  </td>
-	    <% style_color = ""
+	    <% style_color = "noborder "
 		   if @styles[line_num]
-	         style_color = "has_style" 
+	         style_color = "#{style_color} error" 
 	         for fs in @styles[line_num]
-		       style_color = "hidden_style" if fs.suppressed
+		       style_color = "#{style_color} warning" if fs.suppressed
 		     end
 	       end
 	     %>
 	
-	  <td align="center" id="style_<%=line_num%>" <%= "class=\"#{style_color}\"" if @styles[line_num] %>>
+	  <td align="center" id="style_<%=line_num%>" class="<%= style_color %>">
 		<% if @styles[line_num] %>
 		  <%= link_to_function "view - #{@styles[line_num].size}", visual_effect(:toggle_appear, "style_line_#{line_num}") %>
 		<% end %>
 	  </td>
-      <td><code><%= line %></code></td>
+      <td class="code_noborder noborder"><%= line %></td>
     </tr>
   
     <% comment_style = 'display: none;'
@@ -98,13 +104,13 @@
        end %>
     <tr id="comments_line_<%=line_num%>" style="<%= comment_style %>">
       <td colspan="4" class="formcell">
- 		<% form_remote_tag( :url => { :controller => "/instructor/turnins", :action => "file_comment", :course => @course, :assignment => @assignment, :student => @student, :id => @utf.id }, :success => "new Effect.Highlight( 'line_#{line_num}' );", :failure => "alert('There was an error saving the comment for line #{line_num}, please refresh the page.');", :update => "status_#{line_num}" ) do %>
+ 		<% form_remote_tag( :url => { :controller => "/instructor/turnins", :action => "file_comment", :course => @course, :assignment => @assignment, :student => @student, :id => @utf.id }, :success => "new Effect.Highlight( 'line_#{line_num}' );", :failure => "alert('There was an error saving the comment for line #{line_num}, please refresh the page.');", :update => "status_#{line_num}", :class => 'form-inline' ) do %>
            <%= hidden_field_tag 'line', line_num.to_s %>
            <% if @comments[line_num] %>
              <i>Comment by <%= @comments[line_num].user.display_name %></i><br/>
              <%= text_area_tag 'comments', @comments[line_num].comments, {:class => 'input-xlarge', :rows => 5} %> 
            <% else %>
-             <%= text_area_tag 'comments', '', {:class => 'input-xlarge', :rows => 5, :placeholder => 'Your Comment'}%>
+             <%= text_area_tag 'comments', '', {:class => 'input-xlarge', :rows => 2, :cols => 200, :placeholder => 'Your Comment'}%>
            <% end %>
            <%= submit_tag "Save Comments for line #{line_num}", :class => 'btn btn-primary' %>
         <% end %>
