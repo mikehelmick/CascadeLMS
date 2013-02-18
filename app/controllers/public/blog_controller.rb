@@ -1,6 +1,5 @@
 class Public::BlogController < ApplicationController
-  
-  layout 'public'
+
   before_filter :set_tab
   before_filter :load_user_if_logged_in
   
@@ -16,6 +15,7 @@ class Public::BlogController < ApplicationController
     @featured = Post.find(:all, :conditions => ['course_id = ? and published = ? and featured = ?', @course.id, true, true], :order => 'created_at DESC' )
     
     set_title
+    get_breadcrumb().text = 'Blog'
   end
   
   def post
@@ -23,7 +23,10 @@ class Public::BlogController < ApplicationController
     return unless course_is_public( @course )
     
     @post = Post.find(params[:id])
-    return unless post_in_course( @course, @post )  
+    return unless post_in_course(@course, @post)
+
+    @title = @post.title
+    get_breadcrumb().post = @post
   end
   
   def set_tab
@@ -44,7 +47,13 @@ class Public::BlogController < ApplicationController
     end
     return true
   end
+
+  def get_breadcrumb()
+    @breadcrumb = Breadcrumb.for_course(@course)
+    @breadcrumb.public_access = true
+    return @breadcrumb
+  end
   
-  private :post_in_course, :set_title, :set_tab
+  private :post_in_course, :set_title, :set_tab, :get_breadcrumb
   
 end

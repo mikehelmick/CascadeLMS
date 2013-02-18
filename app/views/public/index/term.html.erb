@@ -1,29 +1,25 @@
 <h2>Courses that offer public access</h2>
 
+<div class="well">
 <%
 options = ""
 @terms.each { |x| options = "#{options} <option value=\"#{x.id}\" #{"selected=\"selected\"" if @term.id==x.id}> #{x.semester.capitalize} #{ '(CURRENT)' if x.current }</option>" }
 %>
-
-<% form_tag( { :action => 'cterm', :id => nil}, :method => :post ) do %>
-<p><b>View Term: <%= select_tag 'id', options %></b> <%= submit_tag "Change" %>
-<% end %>
+<% form_tag( { :action => 'cterm', :id => nil}, :method => :post, :class => 'form-inline' ) do %>
+ View Term <%= select_tag 'id', options %> <%= submit_tag 'Change', :class => 'btn btn-primary' %><% end %></div>
 
 <% if @term.current %>
-  <div class="GoodMessage" align="center"><b>'<%=@term.semester%>' is the current term.</b></div>
+  <div class="alert alert-info" align="center">'<%=@term.semester%>' is the current term.</div>
 <% else %>
-  <div class="errorExplanation" align="center"><b>'<%=@term.semester%>' is not the current term.</b></div>
+  <div class="alert alert-warning" align="center">'<%=@term.semester%>' is not the current term.</div>
 <% end %>
 
-<div class="SectionHeader"><div class="Full">
 <h2>Public viewable courses in this term</h2>
-</div></div>
 
 <% if @courses.size == 0 %>
-  <i>Sorry - there are no courses available in this term.</i>
+  <div class="alert alert-error">There are no courses available in this term.</div>
 <% else %>
-<div class="Section" style="padding-top: 10px;">
-  <table class="fancy">
+  <table class="table table-striped">
     <tr class="header">
       <th>Course</th>
       <th>Title</th>
@@ -42,5 +38,4 @@ options = ""
       </tr>
     <% end %>
   </table>
-</div>
 <% end %>

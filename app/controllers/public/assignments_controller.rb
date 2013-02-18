@@ -1,29 +1,50 @@
 class Public::AssignmentsController < ApplicationController
-  
-  layout 'public'
+
   before_filter :set_tab
   before_filter :load_user_if_logged_in
-  
+
   def index
     return unless load_course( params[:course] )
     return unless course_is_public( @course )
-  
+
+    # Request assignments for an invalid user - this may hide some assignments from the public.
+    # Specifically assignments that 
     @assignments = @course.assignments_for_user( 0 )
-  
+    
+    @current_assignments = Array.new
+    @upcoming_assignments = Array.new
+    @complete_assignments = Array.new
+
+    @assignments.each do |a|
+      if a.current?
+        @current_assignments << a
+      elsif a.upcoming?
+        @upcoming_assignments << a
+      else
+        @complete_assignments << a
+      end
+    end
+    
+    RubricLevel.for_course(@course)
+
     set_title
     @public = true
+    get_breadcrumb().text = 'Assignments'
   end
-  
+
   def view
     return unless load_course( params[:course] )
     return unless course_is_public( @course )
-    
+
     @assignment = Assignment.find(params[:id]) rescue @assignment = Assignment.new
     return unless assignment_in_course( @assignment, @course )
     return unless assignment_available( @assignment )
-    
+    RubricLevel.for_course(@course)
+    @numbers = load_outcome_numbers(@course) if @assignment.rubrics.size > 0 
+
     @now = Time.now
     set_title
+    get_breadcrumb().assignment = @assignment
   end
 
   def download
@@ -87,6 +108,10 @@ private
     @title = "#{@course.title} (Course Assignments)"
     @title = "#{@assignment.title} - #{@course.title}" unless @assignment.nil?
   end
-  
-  
+
+  def get_breadcrumb
+    @breadcrumb = Breadcrumb.for_course(@course)
+    @breadcrumb.public_access = true
+    return @breadcrumb
+  end  
 end

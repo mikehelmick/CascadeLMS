@@ -1,0 +1,46 @@
+<div class="row" style="padding: 2px; margin-bottom: 10px;">
+ <div class="span1"></div>
+ <div class="span1">
+	<% unless item.user.nil? %>
+	  <img id="avatar" src="<%= item.user.gravatar_url(request.ssl?) %>" /><br/>
+	<% end %>
+ </div>
+ <div class="span9">
+   <div class="stream-item">
+	<span class="stream-item-label">
+    <% unless item.user.nil? %>
+      By: <%= link_to "#{item.user.display_name}", :controller => '/public/profile', :action => 'view', :id => item.user.id, :course => nil, :assignment => nil %> /
+    <% end %>
+    <% if item.created_at > day_ago %>
+      <%= link_to "#{item.created_at.to_formatted_s(:social_time)}", :controller => '/public/post', :id => item.id, :course => nil, :assignment => nil, :action => 'view' %>
+	<% else %>
+	  <%= link_to "#{item.created_at.to_formatted_s(:social_date)}", :controller => '/public/post', :id => item.id, :course => nil, :assignment => nil, :action => 'view' %>
+	<% end %>
+	
+	<% unless item.course.nil? %>
+	  / <%= link_to "#{h item.course.title}", :controller => '/public/overview', :course => item.course, :id => nil %>
+	    <%= "(#{item.course.term.semester})" unless item.course.term.current %>
+	<% end %>
+	
+	<% if !item.assignment_id.nil? && item.assignment_id > 0 %>
+	    / Assignment: <%= link_to "#{h item.assignment.title}", {:controller => '/public/assignments', :course => item.assignment.course, :action => 'view', :id => item.assignment_id} %>
+	<% end %>
+	<% if item.document? %>
+	  <% if item.document.link %>
+	    / View Link: <%= render :partial => '/public/documents/download_link', :locals => {:document => item.document, :course => item.course}%>
+	  <% else %>
+	    / Download: <%= render :partial => '/public/documents/download_link', :locals => {:document => item.document, :course => item.course}%>
+	  <% end %>
+	<% end %>
+	<% if item.blog_post? %>
+	  / Blog Post: <%= link_to("#{item.post.title}", {:controller => '/public/blog', :action => 'post', :course => item.course, :id => item.post}) %>
+	<% end %>	
+	</span>
+
+	<%= item.body_html %>
+   </div>
+   <div class="stream-comment">
+   	     <span id="iap<%= item.id %>"><span class="btn btn-mini">A+</span> <%= item.aplus_count %></span>
+   </div>
+ </div>
+</div>

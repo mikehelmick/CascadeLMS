@@ -50,6 +50,9 @@ class Assignment < ActiveRecord::Base
     item.enable_reshare = false
     item.assignment_id = self.id
     item.created_at = self.open_date
+    if self.quiz
+      item.public = false
+    end
     return item
   end
 
@@ -87,6 +90,7 @@ class Assignment < ActiveRecord::Base
     item.enable_reshare = false
     item.graded_assignment_id = self.id
     item.created_at = Time.now
+    item.public = false
     return item  
   end
   

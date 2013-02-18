@@ -2,4 +2,11 @@
 
 <h2>Assignments for <%= @course.title %></h2>
 
-<%= render :partial => '/assignments/assignment_list', :locals => { :assignments => @assignments, :public => true } %>
+<h2>Current Assignments for <%= @course.title %></h2>
+<%= render :partial => '/assignments/assignment_list', :locals => { :assignments => @current_assignments, :public => true } %>
+
+<h2>Upcoming Assignments for <%= @course.title %></h2>
+<%= render :partial => '/assignments/assignment_list', :locals => { :assignments => @upcoming_assignments, :public => true } %>
+
+<h2>Past Due Assignments for <%= @course.title %></h2>
+<%= render :partial => '/assignments/assignment_list', :locals => { :assignments => @complete_assignments, :public => true } %>

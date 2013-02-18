@@ -1,8 +1,5 @@
 <%= render :partial => '/public/enrolled' %>
 
-<h2><%= @course.title %> 
-<% if @course.short_description %>, <%= @course.short_description %><%end%></h2>
+<h2><%= @course.title %><% if @course.short_description %>, <%= @course.short_description %><%end%></h2>
 
-<i>Course Blog comments are excluded to protect student identities.</i>
-
-<%= render :partial => "/overview/fresh", :locals => { :public => true } %>
+<%= render :partial => '/home/feed', :locals => {:public_mode => true} %>

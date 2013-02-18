@@ -20,6 +20,7 @@ class ForumPost < ActiveRecord::Base
     item.enable_reshare = false
     item.forum_post_id = self.id
     item.created_at = self.created_at
+    item.public = false
     return item
   end
 

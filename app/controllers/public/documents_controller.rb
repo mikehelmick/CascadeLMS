@@ -1,6 +1,6 @@
 class Public::DocumentsController < ApplicationController
   
-  layout 'public', :except => [:podcast, :podcast_download]
+  layout 'application', :except => [:podcast, :podcast_download]
   before_filter :set_tab, :except => [:podcast, :podcast_download]
   before_filter :load_user_if_logged_in
   
@@ -15,6 +15,7 @@ class Public::DocumentsController < ApplicationController
     @documents = Document.find(:all, :conditions => ['course_id = ? and published = ? and document_parent = ?', @course.id, true, @folder_id], :order => 'position', :limit => 25, :offset => @document_pages.current.offset)  
    
     set_title
+    get_breadcrumb().text = 'Documents'
   end
   
   def podcast_download
@@ -60,6 +61,7 @@ class Public::DocumentsController < ApplicationController
       flash[:badnotice] = "The selected folder is not a podcast."
       redirect_to :action => 'index'
     end
+    get_breadcrumb().text = 'Subscribe To Podcast'
   end
   
   def download
@@ -121,7 +123,13 @@ class Public::DocumentsController < ApplicationController
     end
     return true
   end
+
+  def get_breadcrumb()
+    @breadcrumb = Breadcrumb.for_course(@course)
+    @breadcrumb.public_access = true
+    return @breadcrumb
+  end
   
-  private :set_tab, :set_title, :load_folder
+  private :set_tab, :set_title, :load_folder, :get_breadcrumb
   
 end

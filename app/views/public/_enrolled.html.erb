@@ -1,7 +1,7 @@
 <% unless session[:user] && session[:user].student_in_course?(@course.id) %>
-<div class="errorExplanation" align="center"><b>You are not enrolled in this course.</b></div>
+<div class="alert alert-warning" align="center"><strong>You are not enrolled in this course.</strong> Some information is redacted to protect student identities.</div>
 <% end  %>
 
 <% if session[:user] && session[:user].student_in_course?(@course.id) %>
-<div class="GoodMessage" align="center"><b>You are a student in this class, but are viewing the limited public version.  You may <%= link_to 'access the full version.', :controller => '/overview', :course => @course, :assignment => nil %></b></div>
+<div class="alert alert-success" align="center"><b>You are a student in this class, but are viewing the limited public version.  You may <%= link_to 'access the full version.', :controller => '/overview', :course => @course, :assignment => nil %></b></div>
 <% end %>

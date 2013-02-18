@@ -1,7 +1,12 @@
 <% if !@show_course_tabs.nil? && @show_course_tabs && !@course.nil? %>
 <li class="nav-header"><%= h @course.title %>: <%= @course.short_description %></li>
+
+<% if @breadcrumb.nil? || !@breadcrumb.public_access %>
+ <!-- normal, logged in access -->
 <% active = tab_active(@tab, 'course_overview') %>
-<li class="<%= 'active ' if active %>"><%= link_to "<i class=\"icon-picture #{'icon-white' if active}\"></i> #{h @course.title}", :controller => '/overview', :course => @course %></li>
+<li class="<%= 'active ' if active %>">
+  <%= link_to "<i class=\"icon-picture #{'icon-white' if active}\"></i> #{h @course.title}", :controller => '/overview', :course => @course %>
+</li>
 <% if @course.course_setting.enable_blog %>
      <% active = tab_active(@tab, 'course_blog') %>
      <li class="<%= 'active ' if active %>"><%= link_to "<i class=\"icon-list-alt #{'icon-white' if active}\"></i> Course Blog", {:controller => '/blog', :course => @course, :assignment => nil } %></li> 
@@ -33,7 +38,23 @@
    <% if !@user.nil? && (@user.instructor_in_course?(@course.id) || @user.assistant_in_course?(@course.id)) %>
      <% active = tab_active(@tab, 'course_instructor') %>
      <li class="<%= 'active ' if active %>"><%= link_to "<i class=\"icon-barcode #{'icon-white' if active}\"></i> Instructor", { :controller => '/instructor/index', :course => @course, :assignment => nil } %></li>
-   <% end %>		
+   <% end %>
+		
+<% else %>
+ <!-- public access -->
+ <% active = tab_active(@tab, 'course_overview') %>
+ <li class="<%= 'active ' if active %>">
+   <%= link_to "<i class=\"icon-picture #{'icon-white' if active}\"></i> #{h @course.title}", :controller => '/public/overview', :course => @course %>
+ </li>
+ <% if @course.course_setting.enable_blog %>
+   <% active = tab_active(@tab, 'course_blog') %>
+   <li class="<%= 'active ' if active %>"><%= link_to "<i class=\"icon-list-alt #{'icon-white' if active}\"></i> Course Blog", {:controller => '/public/blog', :course => @course, :assignment => nil } %></li> 
+ <% end %>
+ <% active = tab_active(@tab, 'course_documents') %>
+ <li class="<%= 'active ' if active %>"><%= link_to "<i class=\"icon-folder-open #{'icon-white' if active}\"></i> Documents", :controller => '/public/documents', :course => @course, :assignment => nil %></li>
+ <% active = tab_active(@tab, 'course_assignments') %>
+ <li class="<%= 'active ' if active %>"><%= link_to "<i class=\"icon-calendar #{'icon-white' if active}\"></i> Assignments", :controller => '/public/assignments', :course => @course, :assignment => nil %></li>
+<% end %>
 <% end %>
 
 <% unless @user.nil? %>

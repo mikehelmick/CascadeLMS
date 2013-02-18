@@ -14,8 +14,13 @@ class FeedsItems < ActiveRecord::Base
   # Filter out items that this user can no longer see. This could be due
   # to remove from a course.
   def self.apply_acls(feeds_items, user)
-    # nil items should be removed, and items where the ACL check is false should be removed.
-    feeds_items.select { |feeds_items| !feeds_items.item.nil? && feeds_items.item.acl_check?(user) }
+    if user.nil?
+      # If user is nil, then this is public access.
+      feeds_items.select { |feeds_items| feeds_items.item.public }
+    else
+      # nil items should be removed, and items where the ACL check is false should be removed.  
+      feeds_items.select { |feeds_items| !feeds_items.item.nil? && feeds_items.item.acl_check?(user) }
+    end
   end
 
   def self.update_timestamp(item_id, timestamp)

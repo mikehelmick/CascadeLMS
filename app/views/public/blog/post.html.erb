@@ -1,15 +1,7 @@
 <%= render :partial => '/public/enrolled' %>
 
-<p><%= link_to "Back", :action => 'index' %></p>
-
 <%= render :partial => '/blog/article', :locals => { :post => @post, :single => true, :public => true } %>
-
-
 <div id="leave_comment">
 <h2>Comments</h2>
-<p><i>Comments are disabled for the public and hidden to protect student identities.</i>  If you are in this course and want to post, please log in.</p>	
-
+<div class="alert">Comments are disabled for the public and hidden to protect student identities. If you are in this course and want to post, please log in.</div>	
 </div>
-
-
-<p><%= link_to "Back", :action => 'index' %></p>

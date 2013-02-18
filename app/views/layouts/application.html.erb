@@ -84,7 +84,9 @@
  <% if flash[:highlight] %> 
   <%= javascript_tag visual_effect(:highlight, "#{flash[:highlight]}", :duration => 3.5 )  %>
  <% end %>
- <%= javascript_include_tag "notifyme" %>
+ <% unless !@breadcrumb.nil? && @breadcrumb.public_access %>
+   <%= javascript_include_tag "notifyme" %>
+ <% end %>
 </body>
 </html>
 
