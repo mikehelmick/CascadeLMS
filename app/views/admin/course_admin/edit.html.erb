@@ -4,6 +4,22 @@
 
 <% form_tag( {:action => 'update', :id => @course}, {:class => 'form-horizontal well'} ) do %>
   <%= render :partial => 'courseform' %>
+
+  <div class="control-group">
+	<label class="control-label">Program(s)</label>
+	<div class="controls">
+	  <ul>
+	   <% if @course.programs.size == 0 %>
+	     <li>Not mapped to any programs, the instructor can do this.</li>
+	   <% else %>
+	     <% for program in @course.programs %>
+	       <li><%= program.title %></li>
+	     <% end %>
+	   <% end %>
+	  </ul>
+	</div>
+  </div> 
+
   <%= submit_tag('Save Changes', {:class => 'btn btn-primary'}) %>
 <% end %>
 

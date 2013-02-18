@@ -12,5 +12,12 @@
     </div>
   </div>
 
+ <div class="control-group">
+   <label for="program" class="control-label">Program</label>
+   <div class="controls">
+	 <%= select_tag 'program_id', "<option value=\"-1\">-none-</option>#{options_from_collection_for_select(@programs, "id", "title", @program_id )}" %>
+   </div>
+ </div>
+
   <%= submit_tag 'Create', :class => 'btn btn-primary' %>
 <% end %>

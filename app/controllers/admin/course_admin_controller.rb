@@ -27,6 +27,7 @@ class Admin::CourseAdminController < ApplicationController
     @course.term = @current_term
     @crn = ''
     @breadcrumb.text = 'Create New Course'
+    load_programs()
   end
   
   def edit
@@ -39,11 +40,20 @@ class Admin::CourseAdminController < ApplicationController
     @course = Course.create_course(params[:course], params[:term], params[:crn], true)
 
     if @course.save
+      program_id = params[:program_id].to_i rescue program_id = -1
+      if program_id > 0
+        @program = Program.find(program_id) rescue @program = nil
+        unless @program.nil?
+          @course.programs << @program
+        end
+      end
+
       flash[:notice] = "New course '#{@course.title}' has been created.  Please edit this course to add an instructor to it."
       redirect_to :action => 'index'
     else
       @terms = Term.find(:all)
       @crn = params[:crn]
+      load_programs()
       render :action => 'new'
     end
   end
@@ -201,5 +211,9 @@ class Admin::CourseAdminController < ApplicationController
     @breadcrumb = Breadcrumb.for_admin()
     @breadcrumb.admin_course = true
   end
-  
+
+  def load_programs()
+    @programs = Program.find(:all, :order => 'title asc')
+    @program_id = nil
+  end
 end
