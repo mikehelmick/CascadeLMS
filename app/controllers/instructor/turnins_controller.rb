@@ -1331,7 +1331,10 @@ class Instructor::TurninsController < Instructor::InstructorBase
     @count = params['diffcount'].to_i rescue count = 10
     @differences = DiffCount.assignment_diff( @app['diff_command'], @app['wc_command'], @files_to_check, @count )
 
-
+    @title = 'Compare Student Work'
+    @breadcrumb = Breadcrumb.for_assignment(@assignment)
+    @breadcrumb.instructor = true
+    @breadcrumb.text = @title
   end
   
   def sidebyside
@@ -1339,17 +1342,16 @@ class Instructor::TurninsController < Instructor::InstructorBase
     return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_grade_individual', 'ta_view_student_files', 'ta_grade_individual' )
     @assignment = Assignment.find( params[:assignment] )
     return unless assignment_in_course( @course, @assignment )
-    
+
     @utf1 = UserTurninFile.find( params['file1'].to_i ) rescue utf1 = nil
     @utf2 = UserTurninFile.find( params['file2'].to_i ) rescue utf2 = nil
-    
+
     if @utf1.nil? || @utf2.nil? || @utf1.user_turnin.assignment_id != @assignment.id || @utf2.user_turnin.assignment_id != @assignment.id
       flash[:notice] = "Invalid files requested"
       redirect_to :action => 'index', :course => @course, :assignment => @assignment, :id => nil
       return
     end
-    
-    
+
     @turnin1 = @utf1.user_turnin
     @turnin2 = @utf2.user_turnin
     
@@ -1410,7 +1412,11 @@ class Instructor::TurninsController < Instructor::InstructorBase
   
     @max = @lines1.size
     @max = @lines2.size if @lines2.size > @lines1.size
-    
+
+    @title = 'Compare Files'
+    @breadcrumb = Breadcrumb.for_assignment(@assignment)
+    @breadcrumb.instructor = true
+    @breadcrumb.text = @title
   end
   
   

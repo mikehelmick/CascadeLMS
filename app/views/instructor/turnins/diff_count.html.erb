@@ -1,24 +1,29 @@
+<div class="btn-toolbar">
+ <div class="btn-group">
+  <%= link_to '<i class="icon-chevron-left icon-white"></i> Back to turnins', {:action => 'index', :course => @course, :assignment => @assignment}, {:class => 'btn btn-info'} %>
+ </div>
+</div>
 
 <h2>Files with less than <%= @count %> differences.</h2>
 <h3>'<%= @assignment.title %>' in class <%= @course.title %></h3>
 
-<p><%= link_to 'Back to turnins', :action => 'index', :course => @course, :assignment => @assignment %>
 
-<p><%= image_tag 'table_relationship.png' %> Look for similarities in submissions: 
-	<% form_tag( :action => 'diff_count', :course => @course, :assignment => @assignment, :id => nil ) do %>
+<div class="well">
+ <i class="icon-facetime-video"></i> Look for similarities in submissions: 
+	<% form_tag({:action => 'diff_count', :course => @course, :assignment => @assignment, :id => nil}, {:class => 'form-inline'}) do %>
 			File Extension: <%= select_tag 'extension', options_for_select(@textfiles,'java') %>
 			Max Differences: <%= select_tag 'diffcount', options_for_select(@diffsize,@count) %>
-			<%= submit_tag 'Look for differences' %>
+			<%= submit_tag 'Look for differences', :class => 'btn btn-primary' %>
 	<% end %>
-</p>
+</div>
 
 <% if @differences.size == 0 %>
- <p><i>There are no pars of files with less than <%= @count %> differences between them.</i></p>
+ <div class="alert alert-warning">There are no pars of files with less than <%= @count %> differences between them.</div>
 <% else %>
 
-<p>There are <%= @differences.size %> pairs of files with less than <%= @count %> differences.</p>
+<div class="alert alert-error">There are <%= @differences.size %> pairs of files with less than <%= @count %> differences.</div>
 
-<table class="fancy">
+<table class="table table-condensed table-striped">
   <tr class="header">
 	  <th>View</th>
 	  <th>Differences</th>

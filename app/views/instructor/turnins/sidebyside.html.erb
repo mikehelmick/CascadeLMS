@@ -65,11 +65,11 @@
 	   style = "background: red;" unless aDifference
   	%>
 	<tr>
-	  <td align="right"><%= i unless skipI %></td>
-	  <td class="fixedFont"><%= @lines1[i].to_html rescue '' unless skipI %></td>
-	  <td style="<%=style%>"><%= action %></td>
-	  <td align="right"><%= j unless skipJ %></td>
-	  <td class="fixedFont"><%= @lines2[j].to_html rescue '' unless skipJ %></td>
+	  <td align="right" class="noborder"><%= i unless skipI %></td>
+	  <td class="code_noborder noborder"><%= @lines1[i].to_html rescue '' unless skipI %></td>
+	  <td style="<%=style%>" class="noborder"><%= action %></td>
+	  <td align="right" class="noborder"><%= j unless skipJ %></td>
+	  <td class="code_noborder noborder"><%= @lines2[j].to_html rescue '' unless skipJ %></td>
 	<% 
 	   i = i + 1 unless skipI
 	   j = j + 1 unless skipJ

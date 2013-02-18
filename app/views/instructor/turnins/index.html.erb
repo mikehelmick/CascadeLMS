@@ -27,11 +27,11 @@
 
 <% if ( @assignment.programming )%>
 <div class="well">
-  <%= image_tag 'table_relationship.png' %> Look for similarities in submissions: 
-	<% form_tag( {:action => 'diff_count', :course => @course, :assignment => @assignment, :id => nil} ) do %>
+  <i class="icon-facetime-video"></i> Look for similarities in submissions: 
+	<% form_tag( {:action => 'diff_count', :course => @course, :assignment => @assignment, :id => nil}, :class => 'form-inline' ) do %>
 		File Extension: <%= select_tag 'extension', options_for_select(@textfiles,'java') %>
 		Max Differences: <%= select_tag 'diffcount', options_for_select(@diffsize,@count) %>
-		<%= submit_tag 'Look for differences' %>
+		<%= submit_tag 'Look for differences', :class => 'btn btn-primary' %>
 	<% end %>
  </div>
 <% end %>
