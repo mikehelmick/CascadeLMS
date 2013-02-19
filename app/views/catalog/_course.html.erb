@@ -2,8 +2,23 @@
   <div class="span8">
     <h4><%= link_to "#{h course.title}", :action => 'course', :id => course %></h4>
     <p><%=h course.short_description %></p>
+
+    <% if extended %>
+      <dl>
+	    <dt>Meeting Days</dt>
+	    <dd><%=h course.course_information.meeting_days %></dd>
+		<dt>Meeting Times</dt>
+		<dd><%=h course.course_information.meeting_time %></dd>
+	  </dl>
+	
+	
+    <h5>Course Outcomes</h5>
+    <%= render :partial => '/outcomes/outcomes' %>
+    <% end %>
+    
   </div>
   <div class="span4">
+	<em>Instructor</em><br/>
 	<% for instructor in course.instructors %>
 	   <img src="<%= instructor.gravatar_url(request.ssl?, 64) %>" align="middle" /><br/><%= instructor.to_s %><br/>
 	 <% end %>

@@ -1,0 +1,17 @@
+<h2><%=h @program.title %></h2>
+
+<h3>Program Outcomes</h3>
+
+<% if @program.program_outcomes.size == 0 %>
+ <div id="alert alert-info">No program outcomes are defined.</div>
+<% else %>
+ <ol>
+   <% for po in @program.program_outcomes %>
+     <li><%=h po.outcome %></li>
+   <% end %>
+ </ol>
+<% end %>
+
+<hr/>
+<h3>Courses</h3>
+<%= render :partial => 'program', :locals => {:program => @program, :courses => @courses} %>

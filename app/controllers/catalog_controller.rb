@@ -19,6 +19,16 @@ class CatalogController < ApplicationController
 
   def course
     @course = Course.find(params[:id])
+    load_outcome_numbers(@course)
+    @breadcrumb.text = "#{@course.title}"
+    @breadcrumb.link = url_for :action => 'course', :id => @course.id
+  end
+
+  def program
+    @program = Program.find(params[:id])
+    @courses = @program.courses_in_term(@term)
+    @breadcrumb.text = "#{@program.title}"
+    @breadcrumb.link = url_for :action => 'program', :id => @program.id
   end
 
   private

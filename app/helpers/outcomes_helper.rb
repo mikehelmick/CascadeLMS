@@ -1,0 +1,2 @@
+module OutcomesHelper
+end

@@ -1,6 +1,6 @@
-<%= render :partial => 'course', :locals => {:course => @course} %>
-
 <div class="well">
  <h2>Interested in Joining <%=h @course.title %>?</h2>
  <p>Registration coming soon...</p>
 </div>
+
+<%= render :partial => 'course', :locals => {:course => @course, :extended => true} %>

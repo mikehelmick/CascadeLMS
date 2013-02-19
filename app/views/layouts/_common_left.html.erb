@@ -7,6 +7,12 @@
 <li class="<%= 'active ' if active %>">
   <%= link_to "<i class=\"icon-picture #{'icon-white' if active}\"></i> #{h @course.title}", :controller => '/overview', :course => @course %>
 </li>
+<% if @course.course_outcomes.size > 0 %>
+  <% active = tab_active(@tab, 'course_outcomes') %>
+  <li class="<%= 'active ' if active %>">
+    <%= link_to "<i class=\"icon-indent-left #{'icon-white' if active}\"></i> Course Outcomes", :controller => '/outcomes', :course => @course %>
+  </li>
+<% end %>
 <% if @course.course_setting.enable_blog %>
      <% active = tab_active(@tab, 'course_blog') %>
      <li class="<%= 'active ' if active %>"><%= link_to "<i class=\"icon-list-alt #{'icon-white' if active}\"></i> Course Blog", {:controller => '/blog', :course => @course, :assignment => nil } %></li> 
