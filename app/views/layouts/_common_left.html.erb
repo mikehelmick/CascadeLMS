@@ -73,6 +73,10 @@
 <% end %>
 <li><%= link_to "View courses from past semesters...", :controller => "home", :action => "courses", :id => nil%></li>
 
+<li class="nav-header">Find a Course</li>
+ <% active = tab_active(@tab, 'catalog') %>
+ <li class="<%= 'active ' if active %>"><%= link_to 'Browse Course Catalog', {:controller => '/catalog', :action => nil, :id => nil, :course => nil, :assignment => nil} %></li>
+
 <% if @user.auditor %>
 <li class="nav-header">Programs You Audit</li>
 <% programs = @user.programs_under_audit() %>
@@ -80,7 +84,7 @@
  <li><i class="icon-info-sign"></i><em>You are not an auditor for any programs. Please contact the appropriate program managers for access.</em></li>
 <% else %>
  <% for prog_user in programs %>
-   <li><%= link_to "<b>#{prog_user.program.title}</b>", :controller => "/audit", :action => 'program', :id => prog_user.program_id %></li>
+   <li><%= link_to "#{prog_user.program.title}", :controller => "/audit", :action => 'program', :id => prog_user.program_id %></li>
  <% end %>
 <% end %>
 <% end %>

@@ -1,0 +1,9 @@
+<h3><%=h program.title %></h3>
+
+<% if courses.nil? || courses.size == 0 %>
+  <div class="alert alert-info">No courses in this term</div>
+<% else %>
+  <% for course in courses %>
+    <%= render :partial => 'course', :locals => {:course => course} %>
+  <% end %>
+<% end %>

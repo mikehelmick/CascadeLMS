@@ -9,6 +9,7 @@ class Breadcrumb
   attr_accessor :admin_languages
   attr_accessor :auditor, :audit_program
   attr_accessor :public_access
+  attr_accessor :catalog
   # text to display at the end
   attr_accessor :text, :link
 

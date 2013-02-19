@@ -1,0 +1,39 @@
+<div class="hero-unit">
+ <h2>Courses in <%= @term.semester %></h2>
+ <p><strong>Interested in learning something new?</strong> Find a course that is being offered this term, and let the instructor know you're interested.</p>
+</div>
+
+<% if @programs.size == 0 && @other_courses.size == 0 %>
+ <div class="alert">There are no courses in the current term.</div>
+<% else %>
+
+<h2>Browse By Program</h2>
+<div class="row-fluid">
+ <div class="span6">
+   <% 0.upto(@half_size) do |i| %>
+     <%= render :partial => 'program', :locals => {:program => @programs[i], :courses => @courses[@programs[i].id]} %>
+   <% end %>
+ </div>
+ <div class="span6">
+   <% (@half_size + 1).upto(@programs.size - 1) do |i| %>
+     <%= render :partial => 'program', :locals => {:program => @programs[i], :courses => @courses[@programs[i].id]} %>
+   <% end %>
+ </div>
+</div>
+
+<hr/>
+
+<h2>Other Courses</h2>
+<div class="row-fluid">
+ <div class="span6">
+   <% 0.upto(@oc_half_size) do |i| %>
+     <%= render :partial => 'course', :locals => {:course => @other_courses[i]} %>
+   <% end %>
+ </div>
+ <div class="span6">
+   <% (@oc_half_size + 1).upto(@other_courses.size - 1) do |i| %>
+     <%= render :partial => 'course', :locals => {:course => @other_courses[i]} %>
+   <% end %>
+ </div>	
+</div>
+<% end %>

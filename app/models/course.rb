@@ -190,6 +190,10 @@ class Course < ActiveRecord::Base
       self.save
     end
   end
+
+  def self.courses_in_term_without_a_program(term)
+    Course.find_by_sql("select * from courses left join (courses_programs) on (courses.id = courses_programs.course_id) where courses.term_id = #{term.id} and courses_programs.program_id is null;")
+  end
     
   def course_open_text
     return 'Yes' if self.course_open

@@ -1,0 +1,12 @@
+<div class="row-fluid">
+  <div class="span8">
+    <h4><%= link_to "#{h course.title}", :action => 'course', :id => course %></h4>
+    <p><%=h course.short_description %></p>
+  </div>
+  <div class="span4">
+	<% for instructor in course.instructors %>
+	   <img src="<%= instructor.gravatar_url(request.ssl?, 64) %>" align="middle" /><br/><%= instructor.to_s %><br/>
+	 <% end %>
+  </div>
+</div>
+<hr/>
