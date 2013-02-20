@@ -21,7 +21,6 @@ class ProfileController < ApplicationController
       @user_profile = @user.user_profile if @user_profile.nil?
       @user_profile = UserProfile.new if @user_profile.nil?
     end
-puts "Profile #{@user_profile}"
 
     profilename = @user_profile.user.display_name rescue @user.display_name
     @title = "Profile for #{profilename}"
@@ -34,8 +33,7 @@ puts "Profile #{@user_profile}"
 
   def edit
     @user_profile = @user.user_profile
-    puts "Profile: #{@user_profile}"
-    @user_profile = Profile.new if @user_profile.nil?
+    @user_profile = UserProfile.new if @user_profile.nil?
     setup_edit()
   end
 
