@@ -1,6 +1,15 @@
 <div class="well">
  <h2>Interested in Joining <%=h @course.title %>?</h2>
- <p>Registration coming soon...</p>
+
+ <% if @course.course_open%>
+ <% form_tag( { :action => 'register', :id => @course}, :method => :post, :class => 'form-inline' ) do %>
+   Register as <%= select_tag 'type', '<option value="student">student</option><option value="guest">guest</option>', :class => 'input-medium' %>
+   <%= submit_tag 'Sign me up!', :class => 'btn btn-primary' %>
+   <p class="help-block">If you're signed up for the class, request a student registration. Otherwise, guest access is more appropriate. The instructor can change your registration type later.</p>
+ <% end %>
+ <% else %>
+  <div class="alert">This course it not accepting registration requests at this time.</div>
+ <% end %>
 </div>
 
 <%= render :partial => 'course', :locals => {:course => @course, :extended => true} %>

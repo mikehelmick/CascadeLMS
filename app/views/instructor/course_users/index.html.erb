@@ -1,10 +1,46 @@
-<div class="btn-group">
+<div class="btn-toolbar"><div class="btn-group">
 <% if @show_images %>
   <%= link_to("Hide user pictures", {:controller => '/instructor/course_users', :action => nil, :course => @course, :id => nil}, {:class => 'btn btn-info btn-small'}) %>
 <% else %>
   <%= link_to("Show user pictures", {:controller => '/instructor/course_users', :action => nil, :course => @course, :id => nil, :show_images => true}, {:class => 'btn btn-info btn-small'}) %>
 <% end %>
-</div>
+</div></div>
+
+<% if @access_requests.size > 0 %>
+ <div class="well">
+	<h2>Course Access Requests</h2>
+	<table class="table table-condensed">
+	  <tr>
+		<th></th>
+		<th>User</th>
+		<th>Access Requested</th>
+		<th>Current Access</th>
+		<th>Controls</th>
+	  </tr>
+
+      <% for cu in @access_requests %>
+        <tr id="cu<%= cu.id %>">
+	      <td><img src="<%= cu.user.gravatar_url(request.ssl?) %>" align="top" /></td>
+	      <td><%= link_to "#{h cu.user.display_name}", {:controller => '/profile', :action => 'view', :id => cu.user} %></td>
+	      <td><% if cu.propose_student %><span class="label label-warning">student</span>
+		      <% else %><span class="label label-warning">guest</span>
+		      <% end %>
+		  </td>
+		  <td>
+		    <% if cu.course_student %><span class="label label-success">student</span><% end %>
+            <% if cu.course_instructor %><span class="label label-success">instructor</span><% end %>
+            <% if cu.course_guest %><span class="label label-success">guest</span><% end %>
+            <% if cu.course_assistant %><span class="label label-success">assistant</span><% end %>
+		  </td>
+		  <td>
+			<%= link_to( '<i class="icon-thumbs-up icon-white"></i> Approve', {:action => 'approve_proposal', :course => @course.id, :id => cu.id}, :confirm => "Are you sure you want to approve this access request?", :method => 'post', :class => 'btn btn-success' ) %>
+			<%= link_to( '<i class="icon-thumbs-down icon-white"></i> Reject', {:action => 'reject_proposal', :course => @course.id, :id => cu.id }, :method => 'post', :class => 'btn btn-danger' ) %>
+		  </td>	
+	    </tr>
+      <% end %>
+	</table>
+ </div>
+<% end %>
 
 <h2>Instructor(s) for <%= @course.title %></h2>
 <div id="instructor_error"> </div>
@@ -53,3 +89,13 @@
 <% @utype = 'dropped' %>
 <%= render :partial => 'userlist' %>
 </div>
+
+<hr/>
+<h2>Rejected access requests for <%= @course.title %></h2>
+<div id="rejected_error"> </div>
+<div id="rejected">
+<% @users = @rejected_requests %>
+<% @utype = 'rejected' %>
+<%= render :partial => 'userlist' %>
+</div>
+

@@ -17,6 +17,18 @@ class Notification < ActiveRecord::Base
     end
   end
 
+  def Notification.create_proposal(user, text, link, course)
+    notification = Notification.new
+    notification.notification = text
+    notification.user = user
+    notification.link = link
+    notification.emailed = false
+    notification.acknowledged = false
+    notification.course_id = course.id
+    notification.proposal = true
+    notification.save
+  end
+
   # The notification text and link need to be filled in by the caller.
   def Notification.create_aplus(item, user, aplus_user)
     notification = Notification.new

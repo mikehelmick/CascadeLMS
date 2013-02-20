@@ -13,6 +13,23 @@ class Instructor::CourseUsersController < Instructor::InstructorBase
     @show_images = true if params[:show_images]
     @showCRN = false
 
+    @access_requests = Array.new
+    @rejected_requests = Array.new
+    @course.courses_users.each do |cu|
+      # Find access requests that haven't been rejected.
+      if (cu.propose_student && !cu.reject_propose_student) || (cu.propose_guest && !cu.reject_propose_guest)
+        @access_requests << cu
+      elsif (cu.reject_propose_student || cu.reject_propose_guest)
+        @rejected_requests << cu.user
+      end
+      
+    end
+    # If there are any access requests - then clear the notifications
+    if @access_requests.size > 0
+      Notification.update_all("acknowledged=1", "user_id=#{@user.id} and course_id=#{@course.id} and proposal=1")
+      @notificationCount = @user.notification_count
+    end
+
     @breadcrumb = Breadcrumb.for_course(@course, true)
     @breadcrumb.text = 'Course Users'
     @breadcrumb.link = url_for(:action => 'index', :show_images => @show_images)
@@ -38,8 +55,59 @@ class Instructor::CourseUsersController < Instructor::InstructorBase
   
     render :layout => false
   end
+
+  def approve_proposal
+    return unless load_course( params[:course] )
+    return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_users' )
+
+    cu = CoursesUser.find(params[:id])
+    if cu.propose_student
+      cu.course_student = true
+    elsif cu.propose_guest
+      cu.course_guest = true
+    end
+    # clear proposal fields
+    cu.propose_student = false
+    cu.reject_propose_student = false
+    cu.propose_guest = false
+    cu.reject_propose_guest = false
+
+    if cu.save
+      flash[:notice] = "Course access approved for #{cu.user.display_name}"
+    else
+      flash[:badnotice] = "There was an error approving this access request."
+    end
+
+    redirect_to :action => 'index', :id => nil, :course => @course
+  end
+
+  def reject_proposal
+    return unless load_course( params[:course] )
+    return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_users' )
+
+    cu = CoursesUser.find(params[:id])
+    if cu.propose_student
+      cu.reject_propose_student = true
+    end
+    if cu.propose_guest
+      cu.reject_propose_guest = true
+    end
+    cu.propose_student = false
+    cu.propose_guest = false
+
+    if cu.save
+      flash[:notice] = "Course access rejected for #{cu.user.display_name}. This user will not be able to propose access again."
+    else
+      flash[:badnotice] = "There was an error rejecting this access request."
+    end
+
+    redirect_to :action => 'index', :id => nil, :course => @course
+  end
   
   def deluser
+    return unless load_course( params[:course] )
+    return unless ensure_course_instructor_or_ta_with_setting( @course, @user, 'ta_course_users' )
+
     @utype = params[:type]
     @course = Course.find(params[:course])
     @course.courses_users.each do |u|
@@ -112,6 +180,10 @@ class Instructor::CourseUsersController < Instructor::InstructorBase
         u.course_assistant = true if @utype.eql?('assistant')
         u.course_guest = true if @utype.eql?('guest')
         u.term_id = @course.term_id
+        u.propose_student = false
+        u.reject_propose_student = false
+        u.propose_guest = false
+        u.reject_propose_guest = false
         u.save
         @course.save
         @course.feed.subscribe_user(User.find(params[:id]), false)
@@ -144,6 +216,5 @@ class Instructor::CourseUsersController < Instructor::InstructorBase
     @users = @course.instructors if @utype.eql?('instructor')
     
     render :layout => false, :partial => 'userlist'
-  end
-  
+  end  
 end

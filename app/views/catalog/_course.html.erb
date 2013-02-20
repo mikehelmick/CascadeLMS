@@ -6,9 +6,9 @@
     <% if extended %>
       <dl>
 	    <dt>Meeting Days</dt>
-	    <dd><%=h course.course_information.meeting_days %></dd>
+	    <dd><%=h course.course_information.meeting_days rescue '' %></dd>
 		<dt>Meeting Times</dt>
-		<dd><%=h course.course_information.meeting_time %></dd>
+		<dd><%=h course.course_information.meeting_time rescue '' %></dd>
 	  </dl>
 	
 	
