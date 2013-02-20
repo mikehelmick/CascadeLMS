@@ -37,21 +37,21 @@
 	<% if !item.graded_assignment_id.nil? && item.graded_assignment_id > 0 %>
 	  / View Grades For: <%= link_to "#{item.graded_assignment().title}", {:controller => '/turnins', :course => item.course, :action => 'feedback', :assignment => item.graded_assignment_id} %>
     <% end %>
-    <% if item.wiki? %>
+    <% if item.wiki? && !item.wiki.nil? %>
       / Wiki: <%= link_to("#{item.wiki.page}", {:controller => '/wiki', :action => 'page', :id => item.wiki.page, :course => item.course}) %>
     <% end %>
-	<% if item.forum? %>
+	<% if item.forum? && !item.forum_post.nil? %>
 	  / Forum '<%= link_to("#{item.forum_post.forum_topic.topic}", {:controller => '/forums', :action => 'view_topic', :course => item.course, :id => item.forum_post.forum_topic}) %>' 
 	  / Post <%= link_to("#{item.forum_post.headline}", {:controller => '/forums', :course => item.course, :action => 'read', :id => item.forum_post}) %>
 	<% end %>
-	<% if item.document? %>
+	<% if item.document? && !item.document.nil? %>
 	  <% if item.document.link %>
 	    / View Link: <%= render :partial => '/documents/download_link', :locals => {:document => item.document, :course => item.course}%>
 	  <% else %>
 	    / Download: <%= render :partial => '/documents/download_link', :locals => {:document => item.document, :course => item.course}%>
 	  <% end %>
 	<% end %>
-	<% if item.blog_post? %>
+	<% if item.blog_post? && !item.post.nil? %>
 	  / Blog Post: <%= link_to("#{item.post.title}", {:controller => '/blog', :action => 'post', :course => item.course, :id => item.post}) %>
 	<% end %>	
 	</span>
