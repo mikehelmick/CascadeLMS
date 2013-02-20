@@ -6,7 +6,7 @@ class Document < ActiveRecord::Base
   acts_as_list :scope => 'course_id = #{course_id} AND document_parent = #{document_parent}'
 
   belongs_to :user
-  has_one :item
+  has_one :item, :dependent => :destroy
 
   validates_presence_of :title
 

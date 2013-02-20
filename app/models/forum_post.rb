@@ -9,7 +9,7 @@ class ForumPost < ActiveRecord::Base
   
   before_save :transform_markup
 
-  has_one :item
+  has_one :item, :dependent => :destroy
   
   def create_item()
     item = Item.new

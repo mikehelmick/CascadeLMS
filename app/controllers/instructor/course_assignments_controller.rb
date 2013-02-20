@@ -177,7 +177,12 @@ class Instructor::CourseAssignmentsController < Instructor::InstructorBase
     
     @assignment.assignment_documents.each { |x| x.delete_file( @app['external_dir'] ) }
     
+    item = Item.find(:first, :conditions => ["graded_assignment_id = ?", @assignment.id])
     @assignment.destroy
+    unless item.nil?
+      item.destroy
+    end
+    
     flash[:notice] = 'Assignment Deleted'
     redirect_to :action => 'index'
   end
