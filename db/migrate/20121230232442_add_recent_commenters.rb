@@ -1,6 +1,6 @@
 class AddRecentCommenters < ActiveRecord::Migration
   def self.up
-    add_column(:items, :recent_commenters, :string, :null => false, :default = '')
+    add_column(:items, :recent_commenters, :string, :null => false, :default => '')
     add_column(:items, :unique_commenters, :int, :null => false, :default => 0)
   end
 
