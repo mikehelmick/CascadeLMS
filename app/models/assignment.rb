@@ -65,7 +65,7 @@ class Assignment < ActiveRecord::Base
              else
                Item.find(:first, :conditions => ["assignment_id = ?", self.id], :lock => true)
             end
-      if item.nil? && self.visible && self.open_date >= Time.now
+      if item.nil? && self.visible && self.open_date <= Time.now
         item = if graded_item
                  self.create_graded_item()
                else
