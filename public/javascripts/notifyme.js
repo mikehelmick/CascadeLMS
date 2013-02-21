@@ -77,6 +77,7 @@ jQuery(document).ready(
 		$("i[rel=tooltip]").tooltip();
 		$("a[rel=popover]").popover();
 		$('.tabs a:first').tab('show');
+		$('textarea[rel=wysihtml5]').wysihtml5();
 		
 		prettyPrint();
 

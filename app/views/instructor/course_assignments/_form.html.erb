@@ -23,6 +23,43 @@
    <% end %>
   </div>
  </div>
+
+ <p class="help-inline">You may either describe this assignment with text or upload a file.  If you choose to upload a file, you will be able to add additional files after the assignment is created.</p>
+
+<% desc_style = 'display: block;'
+   file_style = 'display: none;'
+   if @assignment.file_uploads
+	 t = file_style
+	 file_style = desc_style
+	 desc_style = t
+   end
+%>
+
+  <div id="asgn_desc" style="<%=desc_style%>">
+	<p class="help-inline"><strong>Use Description</strong> | <%= link_to_function 'Use File', "new Effect.Puff('asgn_desc'); new Effect.Appear('asgn_file');" %></p>
+
+      <div class="control-group">
+	    <label for="assignment[description]" class="control-label">Assignment Description</label>
+	    <div class="controls">
+		  <%= text_area 'assignment', 'description', {:class => 'input-xxlarge', :rows => 20, :rel => 'wysihtml5'} %>
+	    </div>
+	  </div>
+  </div>
+  <div id="asgn_file" style="<%=file_style%>">
+    <p class="help-inline"><%= link_to_function 'Use Description', "new Effect.Puff('asgn_file'); new Effect.Appear('asgn_desc');" %> | <strong>Use File</strong></p>
+
+    <div class="control-group">
+      <% if edit_mode %>
+        <label for="file" class="control-label">Upload additional assignment file</label>
+      <% else %>
+        <label for="file" class="control-label">Assignment File</label>
+      <% end %>
+      <div class="controls">
+ 	    <%= file_field_tag "file" %>
+      </div>
+    </div>
+  </div>
+
  <div class="control-group">
   <label for="term" class="control-label">Category</label>
   <div class="controls">
@@ -72,42 +109,6 @@
   </div>	
  </div>
 <% end %>
-
- <p class="help-inline">You may either describe this assignment with text or upload a file.  If you choose to upload a file, you will be able to add additional files after the assignment is created.</p>
-
-<% desc_style = 'display: block;'
-   file_style = 'display: none;'
-   if @assignment.file_uploads
-	 t = file_style
-	 file_style = desc_style
-	 desc_style = t
-   end
-%>
-
-  <div id="asgn_desc" style="<%=desc_style%>">
-	<p class="help-inline"><strong>Use Description</strong> | <%= link_to_function 'Use File', "new Effect.Puff('asgn_desc'); new Effect.Appear('asgn_file');" %></p>
-
-      <div class="control-group">
-	    <label for="assignment[description]" class="control-label">Assignment Description</label>
-	    <div class="controls">
-		  <%= text_area 'assignment', 'description', {:class => 'input-xlarge', :rows => 8, :cols => 200} %>
-	    </div>
-	  </div>
-  </div>
-  <div id="asgn_file" style="<%=file_style%>">
-    <p class="help-inline"><%= link_to_function 'Use Description', "new Effect.Puff('asgn_file'); new Effect.Appear('asgn_desc');" %> | <strong>Use File</strong></p>
-
-    <div class="control-group">
-      <% if edit_mode %>
-        <label for="file" class="control-label">Upload additional assignment file</label>
-      <% else %>
-        <label for="file" class="control-label">Assignment File</label>
-      <% end %>
-      <div class="controls">
- 	    <%= file_field_tag "file" %>
-      </div>
-    </div>
-  </div>
 
 <% if edit_mode %>
 <div class="block">
