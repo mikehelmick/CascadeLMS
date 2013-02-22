@@ -12,7 +12,7 @@ Want to be notified any time there is a new document, announcement, or assignmen
  <li><strong>Instructor<%= 's' if @course.instructors.size > 1 %>:</strong>
   <ul>
  <% for instructor in  @course.instructors %>
-   <li><img src="<%= instructor.gravatar_url(request.ssl?) %>" align="middle" /> <%= instructor.to_s %></li>
+   <li><img src="<%= instructor.gravatar_url(request.ssl?) %>" align="middle" /> <%= link_to "#{h instructor.to_s}", {:controller => '/profile', :action => 'view', :id => instructor.id} %></li>
  <% end %>
   </ul>
  </li>
@@ -21,7 +21,7 @@ Want to be notified any time there is a new document, announcement, or assignmen
  <li><strong>Assistant(s):</strong>
   <ul>
  <% for assistant in  tas %>
-    <li><img src="<%= assistant.gravatar_url(request.ssl?) %>" align="middle" /> <%= assistant.to_s %></li>
+    <li><img src="<%= assistant.gravatar_url(request.ssl?) %>" align="middle" /> <%= link_to "#{h assistant.to_s}", {:controller => '/profile', :action => 'view', :id => assistant.id} %></li>
  <% end %>
   </ul>
  </li>
