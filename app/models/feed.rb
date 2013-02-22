@@ -11,6 +11,10 @@ class Feed < ActiveRecord::Base
   def subscribe_user(user, is_caught_up = false)
     subscription = FeedSubscription.find(:first, :conditions => ["feed_id = ? and user_id = ?", self.id, user.id])
     unless subscription.nil?
+      if (is_caught_up == false)
+        subscription.caught_up = is_caught_up
+        subscription.save rescue true
+      end
       # already subscribed
       return true
     end

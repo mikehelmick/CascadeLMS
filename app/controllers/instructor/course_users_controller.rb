@@ -66,6 +66,8 @@ class Instructor::CourseUsersController < Instructor::InstructorBase
     elsif cu.propose_guest
       cu.course_guest = true
     end
+    # Subscribe and catch up to course feed
+    @course.feed.subscribe_user(cu.user, false)
     # clear proposal fields
     cu.propose_student = false
     cu.reject_propose_student = false
