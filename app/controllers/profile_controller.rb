@@ -16,6 +16,8 @@ class ProfileController < ApplicationController
         end
       rescue
         flash[:badnotice] = 'The requested profile could not be found'
+        redirect_to :controller => '/home', :action => nil, :id => nil
+        return
       end
     else
       @user_profile = @user.user_profile if @user_profile.nil?
