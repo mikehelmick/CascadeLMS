@@ -3,38 +3,32 @@
 <table class="table table-compact table-striped"> 
 
   <tr>
-	<th>General:</th>
-	<td><i class="icon-info-sign"></i>
-	  	<% if @user.instructor_in_course?( @course.id ) || @course.course_setting.ta_course_information %>
-		  <%= link_to 'Course Information', :controller => '/instructor/course_info', :course => @course %>
-		<% else %>
-		  <s>Course Information</s>
-		<% end %>
+	<td><b>Communication:</b></td>
+	<td><i class="icon-list-alt"></i>
+	  <% if @user.instructor_in_course?(@course.id) || @course.course_setting.ta_course_blog_post %>
+	    <%= link_to 'Course Blog', :controller => '/instructor/blog', :course => @course %>
+	  <% else %>
+	    <s>Course Blog</s>
+	  <% end %>
 	</td>
-	<td><i class="icon-cog"></i>
-	  	<% if  @user.instructor_in_course?( @course.id ) || @course.course_setting.ta_course_settings %>
-		  <%= link_to 'Course Settings', :controller => '/instructor/course_setting', :course => @course %>
-		<% else %>
-		  <s>Course Settings</s>
-		<% end %>
+	<td><i class="icon-envelope"></i>
+	  <% if @user.instructor_in_course?(@course.id) || @course.course_setting.ta_send_email %>
+	    <%= link_to 'Send Email', :controller => '/instructor/email', :course => @course %>
+	  <% else %>
+	    <s>Send Email</s>
+	  <% end %>	
 	</td>
-  </tr>	
+  </tr>
   <tr>
 	<td></td>
-	<td><i class="icon-user"></i>
-		<% if @user.instructor_in_course?( @course.id ) || @course.course_setting.ta_course_users %>
-	  	  <%= link_to 'Course Users', :controller => '/instructor/course_users', :course => @course %>
-	    <% else %>
-	      <s>Course Users</s>
-	    <% end %>
+	<td><i class="icon-folder-open"></i>
+	  <% if @user.instructor_in_course?(@course.id) || @course.course_setting.ta_course_documents %>
+	    <%= link_to 'Documents', :controller => '/instructor/course_docs', :course => @course %>
+	  <% else %>
+	    <s>Documents</s>
+	  <% end %>	
 	</td>
-	<td><i class="icon-share-alt"></i>
-	    <% if @user.instructor_in_course?( @course.id ) || @course.course_setting.ta_course_users %>
-	  	  <%= link_to 'Sharing', :controller => '/instructor/sharing', :course => @course %>
-	    <% else %>
-	      <s>Sharing</s>
-	    <% end %>
-	</td>
+	<td></td>
   </tr>
   <tr>
 	<td><b>Assessment:</b></td>
@@ -105,6 +99,40 @@
 	  <% end %>			
 	</td>
   </tr>
+  <tr>
+	<th>General:</th>
+	<td><i class="icon-info-sign"></i>
+	  	<% if @user.instructor_in_course?( @course.id ) || @course.course_setting.ta_course_information %>
+		  <%= link_to 'Course Information', :controller => '/instructor/course_info', :course => @course %>
+		<% else %>
+		  <s>Course Information</s>
+		<% end %>
+	</td>
+	<td><i class="icon-cog"></i>
+	  	<% if  @user.instructor_in_course?( @course.id ) || @course.course_setting.ta_course_settings %>
+		  <%= link_to 'Course Settings', :controller => '/instructor/course_setting', :course => @course %>
+		<% else %>
+		  <s>Course Settings</s>
+		<% end %>
+	</td>
+  </tr>	
+  <tr>
+	<td></td>
+	<td><i class="icon-user"></i>
+		<% if @user.instructor_in_course?( @course.id ) || @course.course_setting.ta_course_users %>
+	  	  <%= link_to 'Course Users', :controller => '/instructor/course_users', :course => @course %>
+	    <% else %>
+	      <s>Course Users</s>
+	    <% end %>
+	</td>
+	<td><i class="icon-share-alt"></i>
+	    <% if @user.instructor_in_course?( @course.id ) || @course.course_setting.ta_course_users %>
+	  	  <%= link_to 'Sharing', :controller => '/instructor/sharing', :course => @course %>
+	    <% else %>
+	      <s>Sharing</s>
+	    <% end %>
+	</td>
+  </tr>
   <tr> 
 	<td><b>Customization:</b></td>
 	<td><i class="icon-cog"></i>
@@ -132,34 +160,6 @@
 		<% end %>		
 	</td>
 	<td>&nbsp;</td>
-  </tr>
-  <tr>
-	<td><b>Communication:</b></td>
-	<td><i class="icon-list-alt"></i>
-	  <% if @user.instructor_in_course?(@course.id) || @course.course_setting.ta_course_blog_post %>
-	    <%= link_to 'Course Blog', :controller => '/instructor/blog', :course => @course %>
-	  <% else %>
-	    <s>Course Blog</s>
-	  <% end %>
-	</td>
-	<td><i class="icon-envelope"></i>
-	  <% if @user.instructor_in_course?(@course.id) || @course.course_setting.ta_send_email %>
-	    <%= link_to 'Send Email', :controller => '/instructor/email', :course => @course %>
-	  <% else %>
-	    <s>Send Email</s>
-	  <% end %>	
-	</td>
-  </tr>
-  <tr>
-	<td></td>
-	<td><i class="icon-folder-open"></i>
-	  <% if @user.instructor_in_course?(@course.id) || @course.course_setting.ta_course_documents %>
-	    <%= link_to 'Documents', :controller => '/instructor/course_docs', :course => @course %>
-	  <% else %>
-	    <s>Documents</s>
-	  <% end %>	
-	</td>
-	<td></td>
   </tr>
   <% if @user.instructor_in_course?( @course.id ) && @app['enableTwitter'].eql?('true') %>
   <tr>

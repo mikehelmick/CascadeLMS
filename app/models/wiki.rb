@@ -76,7 +76,7 @@ class Wiki < ActiveRecord::Base
   end
   
   def transform_markup
-	  self.content_html = HtmlEngine.apply_textile( self.content )
+	  self.content_html = HtmlEngine.apply_textile( self.content.apply_code_tag )
   end
   
   protected :transform_markup

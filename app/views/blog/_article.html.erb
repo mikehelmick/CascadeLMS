@@ -11,11 +11,12 @@
 <%= post.body_html %>
 </p>
 <p class="summary">
-  <% unless post.item.nil? || public %>
+  <% is_public = public rescue is_public = false %>
+  <% unless post.item.nil? || is_public %>
 	 <span id="iap<%= post.item.id %>"><%= render(:partial => '/post/aplus_btn', :locals => {:item => post.item, :user => @user}) %></span>
   <% end %>  
 	
-  <% if post.enable_comments && @course.course_setting.blog_comments && !public %>
+  <% if post.enable_comments && @course.course_setting.blog_comments && !is_public %>
     <% if single %>
       <% count = post.number_of_comments %>
         | <%= link_to_function( "Leave a comment <i class=\"icon-comment\"></i>", "blindToggle( 'leave_comment' )" ) %>
@@ -24,7 +25,7 @@
       | <%= link_to "#{pluralize(count, 'Comment')}", :action => 'post', :course => @course, :id => post %>
     <% end %>	
   <% else %>
-    <% unless public %>
+    <% unless is_public %>
       <i>Comments disabled for this post</i>
     <% else %>
       <div class="alert">comments hidden to protect student identities.</div>
