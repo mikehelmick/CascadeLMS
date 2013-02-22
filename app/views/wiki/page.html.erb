@@ -2,7 +2,9 @@
 
 <%= error_messages_for('page', :class => 'alert alert-error') %>
 
+<% unless @page.item.nil? %>
 <span id="iap<%= @page.item.id %>"><%= render(:partial => '/post/aplus_btn', :locals => {:item => @page.item, :user => @user}) %></span> | <%= link_to "#{pluralize(@page.item.comment_count, 'comment')}", :controller => '/post', :action => 'view', :id => @page.item, :course => nil %>
+<% end %>
 
 <h2><%= @page.page %></h2>
 
