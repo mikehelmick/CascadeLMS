@@ -15,6 +15,7 @@ class Instructor::NewcourseController < Instructor::InstructorBase
     
     @createTerm = Term.find(params[:id])
     initialize_with_term(@createTerm)
+    load_programs()
     render :action => 'index'
   end
 
