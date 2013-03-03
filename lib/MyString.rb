@@ -44,9 +44,29 @@ class String
     end
     return html    
   end
+
+  # Turn <pre></pre> into [code][/code]
+  # In that section Revert &gt and &lt commands inserted by the browser
+  def turn_pre_to_code
+    output = self
+    
+    pre_s = output.index(/\<pre\>/)
+    pre_e = output.index(/\<\/pre\>/, pre_s) unless pre_s.nil?
+    while (!pre_s.nil? && !pre_e.nil? && pre_e > pre_s)
+      # turn these into [code] tags
+      temp = output[0...pre_s] + '[code]'
+      temp = temp + output[pre_s+5...pre_e].gsub('&gt;', '>').gsub('&lt;', '<')
+      temp = temp + '[/code]' + output[pre_e+6..-1]
+      output = temp
+
+      pre_s = output.index(/\<pre\>/)
+      pre_e = output.index(/\<\/pre\>/, pre_s) unless pre_s.nil?
+    end
+    return output
+  end
   
   def apply_code_tag
-    output = self
+    output = self.turn_pre_to_code()
     # transform others
 	  code_s = output.index(/\[code\]/)
 	  code_e = output.index(/\[\/code\]/, code_s ) unless code_s.nil?
