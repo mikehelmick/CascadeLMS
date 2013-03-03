@@ -35,7 +35,7 @@ require 'MyActiveRecordHelper'
 # Likewise, all the methods added will be available for all controllers.
 class ApplicationController < ActionController::Base
   ## CSCW Application version
-  @@VERSION = '2.0.025 <em>beta</em> (Jefferson) 20130227'
+  @@VERSION = '2.0.026 <em>beta</em> (Jefferson) 20130302'
   
   ## Supress password logging
   filter_parameter_logging :password

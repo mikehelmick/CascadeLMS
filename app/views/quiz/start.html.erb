@@ -33,7 +33,7 @@
   <% for question in @questions do %>  
     <% count = count.next %>
 
-    <fieldset><div class="well">
+    <fieldset><div>
 	  <legend>Question #<%=count %> of <%= @questions.length %></legend>
 	  <label>
 	     <% if !question.score_question %><em>This question does not count against your score.</em><br/><% end %>

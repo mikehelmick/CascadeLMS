@@ -27,6 +27,13 @@
   </div>
 </div>
 
+<div class="control-group">
+  <label for="assignment[description]" class="control-label">Quiz Description (optional)</label>
+  <div class="controls">
+    <%= text_area 'assignment', 'description', {:class => 'input-xxlarge', :rows => 8, :rel => 'wysihtml5'} %>
+  </div>
+</div>
+
 <p class="help-inline">For the dates of a quiz: the available date allows to set up an quiz in this system without allowing students to see it until a certain point in time.  The due date and the close date allow you to set a time that the quiz is due, but still allow it to be taken for a slightly longer period of time.</p>
 
 <div class="control-group">
@@ -47,13 +54,6 @@
   <label for="assignment[close_date" class="control-label">Last time the quiz can be taken</label>
   <div class="controls">
     <%= datetime_select 'assignment', 'close_date', {}, {:class => 'input-small'} %>
-  </div>
-</div>
-
-<div class="control-group">
-  <label for="assignment[description]" class="control-label">Quiz Description (optional)</label>
-  <div class="controls">
-    <%= text_area 'assignment', 'description', :class => 'input-xlarge', :rows => '5', :cols => '60'  %>
   </div>
 </div>
 

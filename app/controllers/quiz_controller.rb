@@ -118,6 +118,8 @@ class QuizController < ApplicationController
     @title = "Quiz Results"
     @show_course_tabs = true
     @tab = "course_assignments"
+    @breadcrumb = Breadcrumb.for_course(@course)
+    @breadcrumb.assignment = @assignment
   end
   
   def abort
