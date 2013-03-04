@@ -41,6 +41,8 @@
      <% active = tab_active(@tab, 'course_attendance') %>
      <li class="<%= 'active ' if active %>"><%= link_to "<i class=\"icon-check #{'icon-white' if active}\"></i> Attendance", :controller => '/attendance', :course => @course, :assignment => nil %></li>
    <% end %>
+   <% active = tab_active(@tab, 'course_roster') %>
+   <li class="<%= 'active ' if active %>"><%= link_to '<i class="icon-user"></i> Class Roster', :controller => '/roster', :course => @course %></li>
    <% if !@user.nil? && (@user.instructor_in_course?(@course.id) || @user.assistant_in_course?(@course.id)) %>
      <% active = tab_active(@tab, 'course_instructor') %>
      <li class="<%= 'active ' if active %>"><%= link_to "<i class=\"icon-barcode #{'icon-white' if active}\"></i> Instructor", { :controller => '/instructor/index', :course => @course, :assignment => nil } %></li>

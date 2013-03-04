@@ -1,24 +1,39 @@
 <h2>Manage Feed Subscriptions</h2>
 
+<h3>Subscriptions to course feeds</h3>
+
+<div class="alert alert-info">You cannot unsubscribe from a course feed while you are enrolled in the course.</div>
 <table class="table table-condensed table-striped">
  <thead>
   <tr>
+   <td>Feed</td>
    <td>Subscribed</td>
    <td>Get Email</td>
-   <td>Feed</td>
   </tr>
  </thead>
 
+ <% user_feeds = Array.new %>
  <% for fs in @user.feed_subscriptions %>
+  <% if !fs.feed.course_id.nil? %>
    <tr>
+	<td>
+	  Course: <%= fs.feed.course.title %>, (<%= fs.feed.course.term.semester %>)
+	</td>
 	<td>Yes</td>
 	<td><% if fs.send_email %>Yes<% else %>No<% end %></td>
-	<td>
-	  <% if !fs.feed.course_id.nil? %>
-	    Course: <%= fs.feed.course.title %>
-	  <% else %>
-	    User: <%= fs.feed.user.display_name %>
-	  <% end %>
-	</td>
+   </tr>
+  <% else %>
+    <% user_feeds << fs.feed.user %>
+  <% end %>
  <% end %>
 </table>
+
+<h3>Other people that you're following</h3>
+
+<% if user_feeds.size == 0 %>
+  <div class="alert alert-info">You are not following any people, check out the class roster for your courses to find people to follow.</div>
+
+<% else %>
+  <%= render :partial => '/roster/users', :locals => {:half_size => user_feeds.size / 2, :users => user_feeds}%>
+<% end %>
+

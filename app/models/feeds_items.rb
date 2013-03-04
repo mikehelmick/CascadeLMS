@@ -3,12 +3,16 @@ class FeedsItems < ActiveRecord::Base
   belongs_to :item
 
   def self.create(feed_id, item_id, timestamp = Time.now)
-    fi = FeedsItems.new
-    fi.feed_id = feed_id
-    fi.item_id = item_id
-    fi.timestamp = timestamp
-    # If the item is already there, just succeed the create.
-    fi.save rescue true
+    fi = FeedsItems.find(:first, :conditions => ["feed_id = ? and item_id = ?", feed_id, item_id])
+    if fi.nil?
+      fi = FeedsItems.new
+      fi.feed_id = feed_id
+      fi.item_id = item_id
+      fi.timestamp = timestamp
+      # If the item is already there, just succeed the create.
+      fi.save rescue true
+    end
+    true
   end
 
   # Filter out items that this user can no longer see. This could be due

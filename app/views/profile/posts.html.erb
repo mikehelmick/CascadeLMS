@@ -1,0 +1,27 @@
+<div class="btn-toolbar">
+  <div class="btn-group">
+    <%= link_to 'Profile', {:controller => '/profile', :action => 'view', :id => @user_profile.user.id}, {:class => 'btn'} %>
+    <%= link_to 'View Posts', {:controller => '/profile', :action => 'posts', :id => @user_profile.user.id}, {:class => 'btn btn-info'} %>
+  </div>
+</div>
+
+<h2>Posts by <%=h @user_profile.user.display_name %></h2>
+
+<% if @items.size == 0 %>
+  <div class="alert alert-info"><%=h @user_profile.user.display_name%> hasn't shared any posts.</div>
+<% else %>
+<% day_ago = Time.now - 60*60*24 %>
+<% for item in @items %>
+ <%= render :partial => '/post/post', :locals => {:item => item, :day_ago => day_ago} %>
+<% end %>
+
+<div class="pagination">
+ <ul>
+	<% 1.upto(@pages.page_count) do |i| %>
+	<li <%= 'class="active"' if i == @page %>>
+	  <%= link_to i, { :page => i } %>
+	</li>
+	<% end %>
+ </ul>
+</div>
+<% end %>

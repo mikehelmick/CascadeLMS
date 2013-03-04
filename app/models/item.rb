@@ -24,6 +24,18 @@ class Item < ActiveRecord::Base
   # when they are the one receiving the notification.
   NUM_RECENT_USERS = 4
 
+  # Filter out items that this user can no longer see. This could be due
+  # to remove from a course.
+  def self.apply_acls(items, user)
+    if user.nil?
+      # If user is nil, then this is public access.
+      items.select { |item| item.public }
+    else
+      # nil items should be removed, and items where the ACL check is false should be removed.  
+      items.select { |item| !item.nil? && item.acl_check?(user) }
+    end
+  end
+
   def title
     return "Assignment '#{assignment.title}'" if assignment?
     return "Graded Assignment '#{graded_assignment.title}'" if graded_assignment?

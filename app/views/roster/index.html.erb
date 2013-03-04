@@ -1,0 +1,13 @@
+<h2><%= pluralize(@instructors.size, 'Instructor') %></h2>
+<% if @instructors.size > 0 %>
+  <%= render :partial => 'users', :locals => {:half_size => @instructors.size/2, :users => @instructors} %>
+<% else %>
+  <div class="alert">This course has no instructors, that's kind of strange.</div>
+<% end %>
+
+<h2><%= pluralize(@students.size, 'Student') %></h2>
+<% if @students.size > 0 %>
+  <%= render :partial => 'users', :locals => {:half_size => @students.size/2, :users => @students} %>
+<% else %>
+  <div class="alert">This course has no students enrolled, must be quiet.</div>
+<% end %>

@@ -1,0 +1,7 @@
+<span id="follow<%=user.id%>">
+<% if feed_subscription.nil? %>
+ <%= link_to_remote( "Follow", :url => { :controller => '/profile', :action => 'follow', :id => user.id }, :update => "follow#{user.id}", :html => {:class => 'btn'} ) %>
+<% else %>
+ <%= link_to_remote( "Following", :url => { :controller => '/profile', :action => 'follow', :id => user.id }, :update => "follow#{user.id}", :html => {:class => 'btn btn-success'} ) %>
+<% end %>
+</span>

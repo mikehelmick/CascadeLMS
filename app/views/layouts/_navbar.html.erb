@@ -26,6 +26,10 @@
 		       <li>
 		         <%= link_to "<i class=\"icon-picture\"></i> #{h cu.course.title}", :controller => '/overview', :course => cu.course %>
 			   </li>
+			   <% if cu.course.course_setting.enable_outcomes %>
+			     <li><%= link_to '<i class="icon-indent-left"></i> Course Outcomes', {:controller => '/instructor/outcomes', :action => 'index', :id => nil, :course => @course} %></li>
+			   <% end %>
+			   
 		       <% if cu.course.course_setting.enable_blog %>
 			     <li><%= link_to '<i class="icon-list-alt"></i> Course Blog', :controller => '/blog', :course => cu.course, :assignment => nil %></li> 
 	           <% end %>
@@ -46,6 +50,7 @@
                <% if !@user.nil? && @user.student_in_course?(cu.course.id) && cu.course.course_setting.enable_attendance %>
 		  	     <li><%= link_to '<i class="icon-check"></i> Attendance', :controller => '/attendance', :course => cu.course, :assignment => nil %></li>
 		       <% end %>
+		       <li><%= link_to '<i class="icon-user"></i> Class Roster', :controller => '/roster', :course => cu.course %></li>
                <% if !@user.nil? && (@user.instructor_in_course?(cu.course.id) || @user.assistant_in_course?(cu.course.id)) %>
 		         <li><%= link_to '<i class="icon-barcode"></i> Instructor', { :controller => '/instructor/index', :course => cu.course, :assignment => nil, :id => nil} %></li>
 		       <% end %>
@@ -89,7 +94,7 @@
 			  <b class="caret"></b>
 		    </a>
 		    <ul class="dropdown-menu">
-			  <li><%= link_to 'Edit Profile <i class="icon-user"></i>', :controller => '/profile', :action => 'edit', :course => nil, :assignment => nil, :id => nil %></li>
+			  <li><%= link_to 'Edit Profile <i class="icon-user"></i>', :controller => '/profile', :action => 'view', :course => nil, :assignment => nil, :id => nil %></li>
 	          <li><%= link_to 'Manage Subscriptions <i class="icon-inbox"></i>', :controller => '/home', :action => 'feeds', :course => nil, :id => nil, :assignment => nil %>		
 	          <li><%= link_to 'Account Settings <i class="icon-cog"></i>', :controller => '/home', :action => 'account' %></li>
 			  
@@ -183,6 +188,9 @@
      <% unless @breadcrumb.forum.nil? %>
         <%= link_to "Forums", :controller => '/forums', :course => @course, :action => nil, :id => nil %> <span class="divider">/</span>
         <%= link_to "#{h @breadcrumb.forum.topic}", :controller => '/forums', :course => @course, :action => 'view_topic', :id => @breadcrumb.forum.id %> <span class="divider">/</span>
+     <% end %>
+     <% unless @breadcrumb.roster.nil? %>
+        <%= link_to 'Class Roster', :controller => '/roster', :course => @course %> <span class="divider">/</span>
      <% end %>
      <% unless @breadcrumb.program.nil? %>
         <%= link_to 'Programs', :controller => '/program', :action => nil, :id => nil, :course => nil %> <span class="divider">/</span>

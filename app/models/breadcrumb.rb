@@ -2,7 +2,7 @@ class Breadcrumb
   
   # team is studnet view
   # teams is instructor view
-  attr_accessor :course, :assignment, :document, :forum, :post, :team, :wiki
+  attr_accessor :course, :assignment, :document, :forum, :post, :team, :wiki, :roster
   attr_accessor :instructor, :program, :outcomes, :gradebook, :teams, :attendance
   attr_accessor :instructorblog, :instructordocs
   attr_accessor :admin, :admin_announcements, :admin_course, :admin_crn, :admin_term, :admin_users

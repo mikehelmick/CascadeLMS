@@ -51,6 +51,26 @@ class Notification < ActiveRecord::Base
     return notification
   end
 
+  def Notification.create_followed(user, text, link, following_user)
+    notification = Notification.new
+    notification.user = user
+    notification.notification = text
+    notification.link = link
+    notification.emailed = false
+    notification.acknowledged = false
+    notification.followed_by_user_id = following_user.id
+    return notification
+  end
+
+  def Notification.mark_following_notification_read(user, followed_by_user)
+    notifications = Notification.find(:all, :conditions => ["user_id = ? and acknowledged = ? && followed_by_user_id = ?", user.id, false, followed_by_user.id])
+    notifications.each do |note|
+      note.acknowledged = true
+      note.save
+    end
+    return notifications.size > 0
+  end
+
   # Recent users is a list of 3 most recent actors on a notification that would have caused an update.
   # Some other count must be used to derive the "and X others" text that will go in the notification.
   def get_recent_users()

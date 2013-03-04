@@ -27,6 +27,11 @@ class Feed < ActiveRecord::Base
     subscription.save rescue true
   end
 
+  # Returns a FeedSubscirption object if the specified user is subscribed to this feed, otherwise nil.
+  def get_subscription(user)
+    FeedSubscription.find(:first, :conditions => ["feed_id = ? and user_id = ?", self.id, user.id])
+  end
+
   # Gets one page of items for this feed
   def load_items(user, limit = 25, page = 1)
     pages = ActionController::Base::Paginator.new(self, FeedsItems.count(:conditions => ["feed_id = ?", self.id]), limit, page)

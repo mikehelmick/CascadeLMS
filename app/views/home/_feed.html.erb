@@ -8,6 +8,43 @@
  end
 %>
 
+<% unless public_feed %>
+<div class="row" style="padding: 2px; margin-bottom: 10px;">
+ <div class="span1"></div>
+ <div class="span1">
+	<img id="avatar" src="<%= @user.gravatar_url(request.ssl?) %>" />
+ </div>
+ <div class="span9">
+   <div class="stream-item">
+     <span class="stream-item-label">Share an update with your friends and classmates</span>
+     <%= text_area_tag('initial-status', '', {:class => 'input-xxlarge', :rows => 1, :placeholder => "What's on your mind?", :id => 'initial-status', :onfocus => 'new Element.toggle("initial-status"); new Element.toggle("status-pane")'}) %>
+
+     <div id="status-pane" style="display: none;">
+     <% form_tag({:controller => 'profile', :action => 'status', :feed => @feed_id}, :class => 'form-horizontal') do %>
+	  <div class="control-group">
+		<label></label>
+	    <div class="controls">
+	     <%= text_area_tag('status', '', {:class => 'input-xxlarge', :rows => 4, :placeholder => "What's on your mind?", :rel => 'wysihtml5'}) %>
+	    </div>
+	  </div>
+	  <div class="control-group">
+		<label class="control-label">Share to</label>
+		<div class="controls">
+		  <%= check_box_tag('followers', true, @feed_id == @user.feed.id) %> Your Followers
+		  <% for cu in @user.courses_in_term( @term ) %>
+		     <%= check_box_tag("c#{cu.course_id}", true, @feed_id == cu.course.feed.id) %> <%=h cu.course.title %>
+		  <% end %>
+		  <p class="help-block">Posts shared with your follows are public to any user.</p>
+		</div>
+	  </div>
+	  <%= submit_tag 'Post Update', :class => 'btn btn-primary' %>
+	 <% end %>
+     </div>
+   </div>
+ </div>
+</div>
+<% end %>
+
 <% if @feed_items.size == 0 %>
   <div class="alert alert-info">No posts yet.</div>
 <% else %>
