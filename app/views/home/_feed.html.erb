@@ -21,21 +21,14 @@
 
      <div id="status-pane" style="display: none;">
      <% form_tag({:controller => 'profile', :action => 'status', :feed => @feed_id}, :class => 'form-horizontal') do %>
+	  <%= text_area_tag('status', '', {:class => 'input-xxlarge', :rows => 4, :placeholder => "What's on your mind?", :rel => 'wysihtml5'}) %>
 	  <div class="control-group">
-		<label></label>
-	    <div class="controls">
-	     <%= text_area_tag('status', '', {:class => 'input-xxlarge', :rows => 4, :placeholder => "What's on your mind?", :rel => 'wysihtml5'}) %>
-	    </div>
-	  </div>
-	  <div class="control-group">
-		<label class="control-label">Share to</label>
-		<div class="controls">
+		Share to
 		  <%= check_box_tag('followers', true, @feed_id == @user.feed.id) %> Your Followers
 		  <% for cu in @user.courses_in_term( @term ) %>
 		     <%= check_box_tag("c#{cu.course_id}", true, @feed_id == cu.course.feed.id) %> <%=h cu.course.title %>
 		  <% end %>
 		  <p class="help-block">Posts shared with your follows are public to any user.</p>
-		</div>
 	  </div>
 	  <%= submit_tag 'Post Update', :class => 'btn btn-primary' %>
 	 <% end %>
