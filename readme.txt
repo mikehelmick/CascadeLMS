@@ -1,21 +1,13 @@
 
-** The master branch now contains an early version of CascadeLMS 2.0. This version is not suitable for a production deployment.
-
-
-Branching:
- * master - active devlopment
- * relX.Y - release branch 
-
 Current status:
- * master branch is being used for development of CascadeLMS 2.0 (alpha release)
- * For production systems, the rel1.4 branch is what you want.
-
+ * master branch is being used for development of CascadeLMS 2.0 (now in beta - ready for use)
+ * For older systems, the rel1.4 branch contains a stable (but no longer maintained) version
 
 --------------------------
 
 CascadeLMS (Learning Management System) an integrated online courseware application.
 
-CascadeLMS covers most aspects of course management for all kinds of courses.
+CascadeLMS covers most aspects of course management for all kinds of courses and is no social!
 
 In addition, CascadeLMS is capable of automatically grading 
 some student computer programs (currently just in Java).
