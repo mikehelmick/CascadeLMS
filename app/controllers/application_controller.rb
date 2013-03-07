@@ -35,7 +35,7 @@ require 'MyActiveRecordHelper'
 # Likewise, all the methods added will be available for all controllers.
 class ApplicationController < ActionController::Base
   ## CSCW Application version
-  @@VERSION = '2.0.028 <em>beta</em> (Jefferson) 20130306'
+  @@VERSION = '2.0.029 <em>beta</em> (Jefferson) 20130307'
   
   ## Supress password logging
   filter_parameter_logging :password
@@ -137,6 +137,9 @@ class ApplicationController < ActionController::Base
     if session[:user] && session[:user].notice
       flash[:notice] = "#{flash[:notice]} #{session[:user].notice}"
       session[:user].notice = nil
+    end
+    if session[:user]
+      logger.info("sessionid: #{request.session_options[:id]}")
     end
   end
 
