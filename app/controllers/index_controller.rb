@@ -96,7 +96,7 @@ class IndexController < ApplicationController
     @new_user.auditor = false
 
     unless valid_registration_domain(@new_user, @app['auth_self_registration_domain'])
-      render :action => 'register'
+      render :action => 'register', :layout => 'login'
       return
     end
 
@@ -114,7 +114,7 @@ class IndexController < ApplicationController
       flash[:notice] = "Please check your email for account activation instructions."
       redirect_to :action => 'index'
     else
-      render :action => 'register'
+      render :action => 'register', :layout => 'login'
     end
   end
 

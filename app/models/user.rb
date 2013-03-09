@@ -2,11 +2,12 @@ require 'digest/sha1'
 require 'md5'
 
 class User < ActiveRecord::Base
-  validates_uniqueness_of :uniqueid, :message => 'That username is already taken.'
+  # TODO(mikehelmick): validate format of middle name if present
+  validates_uniqueness_of :uniqueid, :message => 'That username is already taken. '
   validates_uniqueness_of :email, :message => 'That email address is already registered.'
   validates_presence_of :uniqueid, :password, :first_name, :last_name, :email
-  validates_format_of :first_name, :last_name, :with => /^[a-zA-Z0-9 '-.][a-zA-Z0-9 '-.]*$/, :message => 'First and last name may only contains letters, numbers, "\'", spaces and "-" characters.'
-  validates_length_of :uniqueid, :within => 4..99, :too_long => 'Your username must be less than 100 characters in length.', :too_short => 'Your username must be at least 4 characters in length.'
+  validates_format_of :first_name, :last_name, :with => /^[a-zA-Z0-9 '-.][a-zA-Z0-9 '-.]*$/, :message => 'name may only contains letters, numbers, "\'", spaces and "-" characters.'
+  validates_length_of :uniqueid, :within => 4..99, :too_long => ' Your username must be less than 100 characters in length.', :too_short => 'Your username must be at least 4 characters in length.'
   validates_format_of :email, :with => /^([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})$/i
   
   has_many :courses_users

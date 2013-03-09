@@ -5,41 +5,41 @@
 <% form_tag( {:action => "create"}, :onsubmit => "new Element.toggle('button');new Element.toggle('spinner');", :class => 'form-horizontal'  ) do %>
 
 <p class="help-block">Enter all of the information on this form. Then we'll send you an email to verify your account and select a password.</p>
-<div class="control-group">
+<div class="control-group <%= error_class(@new_user, :uniqueid) %>">
   <label for="user_uniqueid" class="control-label">Username</label>
   <div class="controls">
-	<%= text_field 'new_user', 'uniqueid'  %>
+	<%= text_field 'new_user', 'uniqueid' %><%= error_help(@new_user, :uniqueid) %>
   </div>
 </div>
 
 <div class="control-group">
-  <label for="user_personal_title" class="control-label">Optional Personal Title (Ms., Mr., Mrs., Dr.)</label>
+  <label for="user_personal_title <%= error_class(@new_user, :personal_title) %>" class="control-label">Optional Personal Title (Ms., Mr., Mrs., Dr.)</label>
   <div class="controls">
-    <%= text_field 'new_user', 'personal_title'  %>
+    <%= text_field 'new_user', 'personal_title'  %><%= error_help(@new_user, :personal_title) %>
   </div>
 </div>
-<div class="control-group">
+<div class="control-group <%= error_class(@new_user, :first_name) %>">
   <label for="user_first_name" class="control-label">First Name</label>
   <div class="controls">
-    <%= text_field 'new_user', 'first_name' %>
+    <%= text_field 'new_user', 'first_name' %><%= error_help(@new_user, :first_name) %>
   </div>
 </div>
-<div class="control-group">
+<div class="control-group <%= error_class(@new_user, :middle_name) %>">
   <label for="user_middle_name" class="control-label">Middle Name</label>
   <div class="controls">
-    <%= text_field 'new_user', 'middle_name' %>
+    <%= text_field 'new_user', 'middle_name' %><%= error_help(@new_user, :middle_name) %>
   </div>
 </div>
-<div class="control-group">
+<div class="control-group <%= error_class(@new_user, :last_name) %>">
   <label for="user_last_name" class="control-label">Last Name</label>
   <div class="controls">
-	<%= text_field 'new_user', 'last_name'  %>
+	<%= text_field 'new_user', 'last_name'  %><%= error_help(@new_user, :last_name) %>
   </div>
 </div>
-<div class="control-group">
+<div class="control-group <%= error_class(@new_user, :email) %>">
   <label for="user_email" class="control-label">Email</label>
   <div class="controls">
-	<%= text_field 'new_user', 'email'  %>
+	<%= text_field 'new_user', 'email'  %><%= error_help(@new_user, :email) %>
   </div>
 </div>
 
