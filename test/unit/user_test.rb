@@ -43,4 +43,15 @@ class UserTest < ActiveSupport::TestCase
     
     assert User.find(1).valid_password?("Password1")
   end
+
+  def test_invalid_characters_in_name
+    user = User.new
+    user.email = 'test@example.com'
+    user.uniqueid = 'abc123abc123abc123abc123unique'
+    user.first_name = "/test\\"
+    user.last_name = "-.-\\//"
+    assert !user.valid?
+    assert user.errors.invalid?(:first_name)
+    assert user.errors.invalid?(:last_name)
+  end
 end
