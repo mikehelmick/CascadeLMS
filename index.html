@@ -1,1 +1,158 @@
-New CascadeLMS Pages
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>CascadeLMS</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="Mike Helmick">
+
+    <!-- Le styles -->
+    <link href="assets/css/bootstrap.css" rel="stylesheet">
+    <link href="assets/css/bootstrap-responsive.css" rel="stylesheet">
+    <link href="assets/css/bootstrap-marketing.css" rel="stylesheet">
+
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="assets/js/html5shiv.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+
+
+
+    <!-- NAVBAR
+    ================================================== -->
+    <div class="navbar-wrapper">
+      <!-- Wrap the .navbar in .container to center it within the absolutely positioned parent. -->
+      <div class="container">
+
+        <div class="navbar navbar-inverse">
+          <div class="navbar-inner">
+            <!-- Responsive Navbar Part 1: Button for triggering responsive navbar (not covered in tutorial). Include responsive CSS to utilize. -->
+            <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+            <a class="brand" href="#">CascadeLMS</a>
+            <!-- Responsive Navbar Part 2: Place all navbar contents you want collapsed withing .navbar-collapse.collapse. -->
+            <div class="nav-collapse collapse">
+              <ul class="nav">
+                <li class="active"><a href="#myCarousel">Home</a></li>
+                <li><a href="features.html">Features</a></li>
+                <li><a href="install.html">Installation</a></li>
+                <li><a href="hosted.html">Hosted</a></li>
+                <li><a href="contribute.html">Contribute</a></li>
+                <li><a href="research.html">Publications</a></li>
+              </ul>
+            </div><!--/.nav-collapse -->
+          </div><!-- /.navbar-inner -->
+        </div><!-- /.navbar -->
+
+      </div> <!-- /.container -->
+    </div><!-- /.navbar-wrapper -->
+
+
+
+    <!-- Carousel
+    ================================================== -->
+    <div id="myCarousel" class="carousel slide">
+      <div class="carousel-inner">
+        <div class="item active">
+          <img src="assets/img/slide01.jpg" alt="">
+          <div class="container">
+            <div class="carousel-caption">
+              <h1>Online Learning Community</h1>
+              <p class="lead">CascadeLMS provides everything you need to deliver course materials online. Works with traditional and fully online courses.</p>
+              <a class="btn btn-large btn-primary" href="features.html">View Features</a>
+            </div>
+          </div>
+        </div>
+        <div class="item">
+          <img src="assets/img/slide02.jpg" alt="">
+          <div class="container">
+            <div class="carousel-caption">
+              <h1>Learning Is Social</h1>
+              <p class="lead">CascadeLMS is a social network for your classroom and beyond.</p>
+              <a class="btn btn-large btn-primary" href="features.html#social">Learn more</a>
+            </div>
+          </div>
+        </div>
+        <div class="item">
+          <img src="assets/img/slide03.jpg" alt="">
+          <div class="container">
+            <div class="carousel-caption">
+              <h1>Outcomes Based Assessment</h1>
+	              <p class="lead">We believe that assessment is important, really important.</p>
+	              <a class="btn btn-large btn-primary" href="features.html#assessment">Learn more</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <a class="left carousel-control" href="#myCarousel" data-slide="prev">&lsaquo;</a>
+      <a class="right carousel-control" href="#myCarousel" data-slide="next">&rsaquo;</a>
+    </div><!-- /.carousel -->
+
+
+
+    <!-- Marketing messaging and featurettes
+    ================================================== -->
+    <!-- Wrap the rest of the page in another container to center all the content. -->
+
+    <div class="container marketing">
+
+      <!-- Three columns of text below the carousel -->
+      <div class="row">
+        <div class="span4">
+          <h2>Social</h2>
+          <p>Life is social, learning is social. CascadeLMS provided powerful social networking features for connecting students with each other and encouraging shared learning.</p>
+          <p><a class="btn" href="features.html#social">View details &raquo;</a></p>
+        </div><!-- /.span4 -->
+        <div class="span4">
+          <h2>Assessment</h2>
+          <p>CascadeLMS combines program outcomes, course outcomes and assignment rubrics to give you insight into how your students are progressing.</p>
+          <p><a class="btn" href="features.html#assessment">View details &raquo;</a></p>
+        </div><!-- /.span4 -->
+        <div class="span4">
+          <h2>Open Source</h2>
+          <p>CascadeLMS is open source. Our technology is your technology. That means that you're free to customize, add on, and contributed back to the community.</p>
+          <p><a class="btn" href="contribute.html">View details &raquo;</a></p>
+        </div><!-- /.span4 -->
+      </div><!-- /.row -->
+
+
+      <!-- START THE FEATURETTES -->
+
+      <hr class="featurette-divider">
+
+      <!-- /END THE FEATURETTES -->
+
+
+      <!-- FOOTER -->
+      <footer>
+        <p class="pull-right"><a href="#">Back to top</a></p>
+        <p>&copy; 2013 Mike Helmick. &middot; <img src="assets/img/cascade.png"></p>
+      </footer>
+
+    </div><!-- /.container -->
+
+
+
+    <!-- Le javascript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="assets/js/jquery.js"></script>
+    <script src="assets/js/bootstrap.js"></script>
+	<script>
+      !function ($) {
+        $(function(){
+          // carousel demo
+          $('#myCarousel').carousel()
+        })
+      }(window.jQuery)
+    </script>
+  </body>
+</html>
