@@ -29,6 +29,6 @@ class Announcement < ActiveRecord::Base
 	protected
 		
 		def transform_markup
-		    self.text_html = HtmlEngine.apply_textile( self.text )
+		    self.text_html = self.text.apply_markup()
     end
 end

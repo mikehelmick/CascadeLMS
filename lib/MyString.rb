@@ -123,5 +123,8 @@ class String
     
     return output
   end
-  
+
+  def apply_markup
+    return HtmlEngine.apply_textile(self.apply_code_tag).remove_breaks_from_pre()
+  end
 end

@@ -241,7 +241,7 @@ class Document < ActiveRecord::Base
   end
 
   def transform_markup
-	  self.comments_html = HtmlEngine.apply_textile( self.comments )
+	  self.comments_html = self.comments.apply_markup()
 	  
 	  #self.podcast_folder = false if self.folder == false
   end

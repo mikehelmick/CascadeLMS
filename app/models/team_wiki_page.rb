@@ -24,7 +24,7 @@ class TeamWikiPage < ActiveRecord::Base
   end
   
   def transform_markup
-	  self.content_html = HtmlEngine.apply_textile( self.content )
+	  self.content_html = self.content.apply_markup()
   end
   
   protected :transform_markup

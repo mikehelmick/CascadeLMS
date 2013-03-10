@@ -13,10 +13,7 @@ class QuizQuestion < ActiveRecord::Base
   end
   
   def transform_markup
-    this_question = self.question
-    this_question = question.apply_code_tag
-    
-	  self.question_html = HtmlEngine.apply_textile(this_question)
+	  self.question_html = self.question.apply_markup()
 	  self.question_html = self.question_html[3..-1] if self.question_html[0..2].eql?("<p>")
 	  self.question_html = self.question_html[0...-4] if self.question_html[-4..-1].eql?("</p>")
   end

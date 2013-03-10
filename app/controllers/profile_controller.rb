@@ -165,7 +165,8 @@ class ProfileController < ApplicationController
         item.share_with_user(@user, item.created_at)
       end
       flash[:notice] = 'Your update has been shared.'
-    rescue
+    rescue RuntimeError => re
+      logger.error("Error posting update: #{re.inspect}")
       flash[:badnotice] = 'There was an error saving your update.'
     end
 

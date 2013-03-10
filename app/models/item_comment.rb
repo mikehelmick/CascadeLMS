@@ -5,7 +5,7 @@ class ItemComment < ActiveRecord::Base
   before_save :transform_markup
 
   def transform_markup
-	  self.body_html = HtmlEngine.apply_textile( self.body )
+	  self.body_html = self.body.apply_markup()
   end
   
   protected :transform_markup

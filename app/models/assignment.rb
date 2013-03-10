@@ -405,13 +405,7 @@ class Assignment < ActiveRecord::Base
   
   def transform_markup
     unless self.description.nil?
-      temp_description = self.description
-      temp_description = temp_description.apply_code_tag
-      puts "A: #{temp_description}"
-      temp_description = HtmlEngine.apply_textile(temp_description)
-      puts "B: #{temp_description}"
-      self.description_html = temp_description.remove_breaks_from_pre()
-      puts "C: #{self.description_html}"
+      self.description_html = self.description.apply_markup()
     end
   end
   

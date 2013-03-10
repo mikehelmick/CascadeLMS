@@ -49,12 +49,7 @@ class ForumPost < ActiveRecord::Base
   end
   
   def transform_markup
-	  
-	  temp_post = self.post
-	  temp_post = temp_post.apply_code_tag
-    temp_post = temp_post.apply_quote_tag
-    
-    self.post_html = HtmlEngine.apply_textile( temp_post )
+	  self.post_html = self.post.apply_markup()
   end
   
   protected :transform_markup

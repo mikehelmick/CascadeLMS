@@ -36,7 +36,7 @@ class Comment < ActiveRecord::Base
   end
   
   def transform_markup
-	  self.body_html = HtmlEngine.apply_textile( self.body )
+	  self.body_html = self.body.apply_markup()
   end
   
   protected :transform_markup
