@@ -74,7 +74,10 @@ class AssignmentsController < ApplicationController
           @journals.each do |journal|
             interruption = journal.interruption_time
             interruption = 0 if interruption.nil?
-            elapsed += journal.end_time - journal.start_time - interruption*60
+            begin
+              elapsed += journal.end_time - journal.start_time - interruption*60
+            rescue
+            end
           end
           elapsed = (elapsed / 60).truncate #down to minutes
           @minutes = elapsed % 60

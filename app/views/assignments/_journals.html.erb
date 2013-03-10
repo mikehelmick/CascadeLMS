@@ -6,7 +6,7 @@
 <% end %>
 
 <% width = 0 %>
- <table class="table">
+ <table class="table table-condensed table-striped">
   <thead>
    <tr>
 	 <th>Entry</th>
@@ -38,9 +38,9 @@
 	<% count = count.next %>
      <tr id="journal_<%=journal.id%>">
 	   <th><%= count %></th>
-       <% if @assignment.journal_field.start_time %><td nowrap="nowrap"><%=h journal.start_time.to_formatted_s(:short) %></td><% end %>
-       <% if @assignment.journal_field.end_time %><td nowrap="nowrap"><%=h journal.end_time.to_formatted_s(:short) %></td><% end %>
-       <% if @assignment.journal_field.interruption_time %><td nowrap="nowrap"><%=h journal.interruption_time %></td><% end %>
+       <% if @assignment.journal_field.start_time %><td nowrap="nowrap"><%=h journal.start_time.to_formatted_s(:short) rescue '' %></td><% end %>
+       <% if @assignment.journal_field.end_time %><td nowrap="nowrap"><%=h journal.end_time.to_formatted_s(:short) rescue '' %></td><% end %>
+       <% if @assignment.journal_field.interruption_time %><td nowrap="nowrap"><%=h journal.interruption_time rescue '' %></td><% end %>
        <% if @assignment.journal_field.task %><td>
 	     <ul>
          <% for task in journal.journal_tasks %>
