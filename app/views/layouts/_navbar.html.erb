@@ -27,7 +27,7 @@
 		         <%= link_to "<i class=\"icon-picture\"></i> #{h cu.course.title}", :controller => '/overview', :course => cu.course %>
 			   </li>
 			   <% if cu.course.course_setting.enable_outcomes %>
-			     <li><%= link_to '<i class="icon-indent-left"></i> Course Outcomes', {:controller => '/instructor/outcomes', :action => 'index', :id => nil, :course => @course} %></li>
+			     <li><%= link_to '<i class="icon-indent-left"></i> Course Outcomes', {:controller => '/outcomes', :action => nil, :id => nil, :course => cu.course} %></li>
 			   <% end %>
 			   
 		       <% if cu.course.course_setting.enable_blog %>
