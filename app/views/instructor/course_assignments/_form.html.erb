@@ -24,20 +24,9 @@
   </div>
  </div>
 
- <p class="help-inline">You may either describe this assignment with text or upload a file.  If you choose to upload a file, you will be able to add additional files after the assignment is created.</p>
+ <p class="help-inline">The assignment description is required, unless you also upload a file. You can attach additional files after creating the assignment.</p>
 
-<% desc_style = 'display: block;'
-   file_style = 'display: none;'
-   if @assignment.file_uploads
-	 t = file_style
-	 file_style = desc_style
-	 desc_style = t
-   end
-%>
-
-  <div id="asgn_desc" style="<%=desc_style%>">
-	<p class="help-inline"><strong>Use Description</strong> | <%= link_to_function 'Use File', "new Effect.Puff('asgn_desc'); new Effect.Appear('asgn_file');" %></p>
-
+  <div id="asgn_desc">
       <div class="control-group">
 	    <label for="assignment[description]" class="control-label">Assignment Description</label>
 	    <div class="controls">
@@ -45,9 +34,7 @@
 	    </div>
 	  </div>
   </div>
-  <div id="asgn_file" style="<%=file_style%>">
-    <p class="help-inline"><%= link_to_function 'Use Description', "new Effect.Puff('asgn_file'); new Effect.Appear('asgn_desc');" %> | <strong>Use File</strong></p>
-
+  <div id="asgn_file">
     <div class="control-group">
       <% if edit_mode %>
         <label for="file" class="control-label">Upload additional assignment file</label>
@@ -56,6 +43,9 @@
       <% end %>
       <div class="controls">
  	    <%= file_field_tag "file" %>
+        <% unless edit_mode %>
+          <span class="help-block">You can attach additional files after the assignment is created.</span>
+        <% end %>
       </div>
     </div>
   </div>
@@ -111,10 +101,8 @@
 <% end %>
 
 <% if edit_mode %>
-<div class="block">
-<div class="sub_form">
 <p>Files attached to this assignment.   You can select one or more files to be automatically added to a student turnin.   This allows common test code to be automatically includes for all students (helpful for programming assignments).</p>
-<table class="fancy">
+<table class="table table-condensed">
   <tr class="header">
     <th align="left" valign="bottom">#</th>
     <th align="left" valign="bottom">Filename</th>
@@ -131,7 +119,7 @@
 	  %>
 	  <tr class="<%=odd%> hover" id="assignment_document_<%=asgn_doc.id%>">
 	    <td><%=h asgn_doc.position %></td>
-	    <td><%= link_to "#{image_tag asgn_doc.icon_file, :align => 'absmiddle'} #{h asgn_doc.filename}", :action => 'download', :id => @assignment, :course => @course, :document => asgn_doc.id, :file => asgn_doc.without_extension, :extension => asgn_doc.extension %></td>
+	    <td><%= link_to "<i class=\"#{asgn_doc.icon_file}\"></i> #{h asgn_doc.filename}", :action => 'download', :id => @assignment, :course => @course, :document => asgn_doc.id, :file => asgn_doc.without_extension, :extension => asgn_doc.extension %></td>
 	    <td>
 	    	<% if asgn_doc.add_to_all_turnins %>
 	           <b>Yes</b> (<%= link_to 'Remove', :action => 'toggle_auto_add', :id => @assignment, :course => @course, :document => asgn_doc.id %>)
@@ -154,7 +142,6 @@
 	  </tr>
   <% end %>
 </table>
-</div></div>
 <% end %>
 
 <div class="control-group">

@@ -112,7 +112,7 @@ class Instructor::CourseAssignmentsController < Instructor::InstructorBase
       Assignment.transaction do
         if !do_exit && @assignment.save
            unless @asgm_document.nil?
-             if ! @asgm_document.create_file( params[:file], @app['external_dir'] )
+             if ! @asgm_document.create_file(params[:file], @app['external_dir'])
                flash[:badnotice] = "Filenames cannot contain more than one period ('.') character and must have an extension."
                raise "filename" 
              end

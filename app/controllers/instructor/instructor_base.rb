@@ -29,7 +29,6 @@ class Instructor::InstructorBase < ApplicationController
         @asgm_document.set_file_props( file_param )
         @assignment.assignment_documents << @asgm_document
         @assignment.file_uploads = true
-        @assignment.description = nil
         return false
       end
     end
