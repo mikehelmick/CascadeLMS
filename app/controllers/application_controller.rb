@@ -553,7 +553,13 @@ class ApplicationController < ActionController::Base
     rescue SecurityError => doh
       logger.info("Security error, uniqueid: #{user.uniqueid}, error => #{doh}")
       if !force_basic && @app['allow_fallback_auth'].eql?(true.to_s)
-        return authenticate( user, redirect, true )
+        if user.ever_ldap_auth
+          @login_error = "Invalid username, or password doesn't match"
+          user.password = ''
+          render :action => 'index', :layout => 'login'
+        else
+          return authenticate( user, redirect, true )
+        end
       else
         if redirect
 

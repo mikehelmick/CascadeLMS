@@ -126,7 +126,8 @@ class LdapAuthentication
     unless new_password.nil?
       user.update_password( new_password )
     end
-    
+
+    user.ever_ldap_auth = true
     if ! user.save
       raise SecurityError, "Unable to save user: #{user.errors.full_messages.join(', ')}", caller
     end
