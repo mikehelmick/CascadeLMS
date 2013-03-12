@@ -24,7 +24,6 @@ class SocialUpgrade
 
     upgrade_users()
     
-    Course.transaction do
     courses = Course.find(:all, :order => "term_id DESC, id DESC")
     puts "Upgrading #{courses.size} courses to social"
 
@@ -125,10 +124,7 @@ class SocialUpgrade
       setting.value = '1'
       setting.save
       end #transaction 
-    end
-  
   end
-  
 end
 
   
