@@ -241,8 +241,9 @@ class Document < ActiveRecord::Base
   end
 
   def transform_markup
-	  self.comments_html = self.comments.apply_markup()
-	  
+    unless self.comments.nil?
+      self.comments_html = self.comments.apply_markup()
+	  end
 	  #self.podcast_folder = false if self.folder == false
   end
   
@@ -257,6 +258,5 @@ class Document < ActiveRecord::Base
     end
     
     return parentDocs.reverse
-  end
-  
+  end  
 end
