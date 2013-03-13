@@ -1,5 +1,4 @@
-# Upgrades from CascadeLMS 1.4 to 1.5
-# 
+# Upgrades from CascadeLMS 1.4 to 2.0
 require 'MyString'
 
 class SocialUpgrade
@@ -55,9 +54,12 @@ class SocialUpgrade
               if existing.nil?
                 puts "Assignment released #{assignment.id}"
                 item = assignment.create_graded_item
-                item.save
-                # Don't actually have a good date for released.
-                item.share_with_course(course, assignment.updated_at)
+                begin
+                  item.save
+                  # Don't actually have a good date for released.
+                  item.share_with_course(course, assignment.updated_at)
+                rescue
+                end
               end
             end
           end
@@ -102,8 +104,11 @@ class SocialUpgrade
               puts "Forum post #{forum_post.id}"
               item = forum_post.create_item
               item.created_at = forum_post.created_at
-              item.save
-              item.share_with_course(course, forum_post.created_at)
+              begin
+                item.save
+                item.share_with_course(course, forum_post.created_at)
+              rescue
+              end
             end
           end
         end
@@ -111,7 +116,7 @@ class SocialUpgrade
         # Wiki pages - sorted in descending order for handling multiple revisions.
         wikis = Wiki.find(:all, :conditions => ["course_id = ?", course.id], :order => ["created_at DESC"])
         wikis.each do |wiki|
-          existing = Item.find(:first, :conditions => ["course_id = ? and id = ?", course.id, wiki.id])
+          existing = Item.find(:first, :conditions => ["course_id = ? and wiki_id = ?", course.id, wiki.id])
           if existing.nil?
             puts "Wiki #{wiki.id}"
             item = wiki.create_item
