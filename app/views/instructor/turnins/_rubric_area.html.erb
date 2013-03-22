@@ -80,7 +80,7 @@ function toggle_custom_score_rubric_<%=rubric.id%>() {
 	%>
 	
 	<%= check_box_tag( "rubric_#{rubric.id}_custom_score", "true", @rubric_entry_map[rubric.id].custom_score, :onclick => "toggle_custom_score_rubric_#{rubric.id}();" ) %> Use custom score: <%= text_field_tag( "rubric_#{rubric.id}_score", custom_score_value, {:disabled => !@rubric_entry_map[rubric.id].custom_score, :class => 'input-small', :onchange => "custom_score_change_rubric#{rubric.id}(); set_form_needs_checked();", :onkeypress => "return handleEnter(event);"}) %> <span id="rubric_<%= rubric.id %>_warning"></span><br/>
- 		 <%= text_area_tag("rubric_#{rubric.id}_comments", @rubric_entry_map[rubric.id].comments, { :class => 'input-large', :rows => 3, :onchange => 'set_form_needs_checked();', :placeholder => 'Comments...'} ) %>
+ 		 <%= text_area_tag("rubric_#{rubric.id}_comments", @rubric_entry_map[rubric.id].comments, { :class => 'input-xxlarge', :rows => 5, :onchange => 'set_form_needs_checked();', :placeholder => 'Comments...'} ) %>
     </div>
    </div>
   <% end %>	
