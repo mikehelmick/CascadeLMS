@@ -71,14 +71,6 @@
 			   <li <%= 'class="active"' if !@tab.nil? && @tab.eql?('audit') %>>
 			     <%= link_to 'Audit', {:controller => '/audit', :action => 'index', :id => nil} %></li> 
 			<% end %>
-			<% if @user.program_manager? %>
-			   <li <%= 'class="active"' if !@tab.nil? && @tab.eql?('programs') %>>
-			     <%= link_to 'Programs', {:controller => '/program', :course => nil, :assignment => nil, :id => nil} %></li>
-			<% end %>
-			<% if @user.admin %>
-			   <li <%= 'class="active"' if !@tab.nil? && @tab.eql?('administration') %>>
-			     <%= link_to 'Administration', {:controller => '/admin', :course => nil, :assignment => nil} %></li>
-			<% end %>
 		  <% end %>
 		  <li class="divider-vertical"></li>
 		  <li>
@@ -99,6 +91,16 @@
 	          <li><%= link_to 'Account Settings <i class="icon-cog"></i>', :controller => '/home', :action => 'account' %></li>
 			  
 			  <li><a href="https://en.gravatar.com/site/signup/" target="_blank">Change Profile Picture <i class="icon-user"></i></a></li>
+			  <% if @user.program_manager? %>
+			    <li>
+			     <%= link_to 'Programs', {:controller => '/program', :course => nil, :assignment => nil, :id => nil} %></li>
+			  <% end %>
+			  <% if @user.admin %>
+			   <li>
+			     <%= link_to 'Administration', {:controller => '/admin', :course => nil, :assignment => nil} %></li>
+			  <% end %>
+
+			
 			  <li><%= link_to 'Log Out <i class="icon-lock"></i>', :controller => '/index', :action => 'logout' %></li>
 		    </ul>
 		  </li>
