@@ -447,7 +447,7 @@ class Instructor::TurninsController < Instructor::InstructorBase
     @title = "#{@student.display_name} (#{@student.uniqueid}) - #{@assignment.title}"
     @breadcrumb = Breadcrumb.for_assignment(@assignment)
     @breadcrumb.instructor = true
-    @breadcrumb.text = "Grade Student Work"
+    @breadcrumb.text = "Grade <strong>#{@student.display_name}</strong>"
     @checkForm = true
   end
   
