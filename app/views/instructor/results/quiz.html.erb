@@ -1,9 +1,4 @@
-<p><%= link_to 'Back to All Assignments', :controller => '/instructor/course_assignments', :course => @course, :action => nil, :id => nil, :assignment => nil %></p>
-
-<div class="SectionHeader"><div class="Full">
 <h2>Quiz Submissions '<%= @assignment.title %>'</h2>
-</div></div>
-
 
 <p>This page is an overview of quiz scores for students.  You can view individual student responses and assign grades to text response questions from this screen.</p>
 
@@ -12,9 +7,9 @@
 <% end %>
 
 <% if @assignment.released %>
-   <div class="GoodMessage">Comments and scores are available to students.  (<%= link_to 'change', :controller => '/instructor/turnins', :action => 'toggle_released', :course => @course, :assignment => @assignment %>)</div>
+   <div class="alert alert-success">Comments and scores are available to students.  (<%= link_to 'change', :controller => '/instructor/turnins', :action => 'toggle_released', :course => @course, :assignment => @assignment %>)</div>
 <% else %>
-   <div class="errorExplanation">Comments and scores are NOT available to students.  (<%= link_to 'change', :controller => '/instructor/turnins', :action => 'toggle_released', :course => @course, :assignment => @assignment %>)</div>
+   <div class="alert">Comments and scores are NOT available to students.  (<%= link_to 'change', :controller => '/instructor/turnins', :action => 'toggle_released', :course => @course, :assignment => @assignment %>)</div>
 <% end %>
 
 <% if @assignment.grade_item %>
@@ -40,9 +35,9 @@
  <% end %>
 <% end %>
 
-<% form_tag( :controller => '/instructor/turnins', :action => 'save_all_grades', :course => @course, :assignment => @assignment, :id => nil ) do %>
+<% form_tag( {:controller => '/instructor/turnins', :action => 'save_all_grades', :course => @course, :assignment => @assignment, :id => nil}, {:style => 'form-inline'} ) do %>
 
-<table class="fancy" width="99%">
+<table class="table table-condensed table-striped">
   <tr class="header">
     <th valign="bottom">UniqueID</th>
     <th valign="bottom">Student</th>
@@ -133,7 +128,7 @@
   <tr class="none">
 	<td colspan="3" class="none">&nbsp;</td>
 	<td colspan="3" class="none">
-	    <%= submit_tag "Save All Grades" %>
+	    <%= submit_tag 'Save All Grades', :class => 'btn btn-primary' %>
 	</td>
   </tr>
   <% end %>

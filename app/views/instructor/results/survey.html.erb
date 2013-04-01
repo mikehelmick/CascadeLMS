@@ -1,15 +1,14 @@
-<p><%= link_to 'Back to All Assignments', :controller => '/instructor/course_assignments', :course => @course, :action => nil, :id => nil, :assignment => nil %></p>
+<div class="btn-toolbar"><div class="btn-group">
+<%= link_to 'Back to All Assignments', {:controller => '/instructor/course_assignments', :course => @course, :action => nil, :id => nil, :assignment => nil}, {:class => 'btn'} %></div></div>
 
-<div class="SectionHeader"><div class="Full">
 <h2>Survey Results '<%= @assignment.title %>'</h2>
-</div></div>
 
 <% if @quiz.quiz_questions.length == 0 %>
-  <p><i>There are no questions for this survey.</i></p>
+  <div class="alert">There are no questions for this survey.</div>
 <% else %>
 
 <% if @quiz.anonymous %>
-<div class="GoodMessage">This survey is anonymous, individual student responses are not available.</div>
+  <div class="alert alert-info">This survey is anonymous, individual student responses are not available.</div>
 <% end %>
 
 
@@ -19,7 +18,7 @@
 	<li><%= image_tag 'page_excel.png', :align => 'absmiddle' %> <%= link_to 'Export survey results to Excel', :controller => '/instructor/results', :action => 'survey_export', :course => @course, :assignment => @assignment %></li>
   </ul> 
 
-  <table class="fancy" width="99%">
+  <table class="table table-condensed">
   <tr class="header">
 	  <th align="center">#</th>
 	  <th align="center" width="90%">Question</th>

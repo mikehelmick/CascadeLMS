@@ -115,6 +115,10 @@ class Instructor::ResultsController < Instructor::InstructorBase
   def survey
     survey_results_common( params )
     @title = "Survey Results - #{@assignment.title}"
+
+    @breadcrumb = Breadcrumb.for_course(@course, true)
+    @breadcrumb.assignment = @assignment
+    @breadcrumb.text = 'Survey Resuls'
   end
   
   def survey_question
@@ -203,6 +207,9 @@ class Instructor::ResultsController < Instructor::InstructorBase
     end
 
     @title = "Results for #{@quiz.assignment.title}"
+    @breadcrumb = Breadcrumb.for_course(@course, true)
+    @breadcrumb.assignment = @assignment
+    @breadcrumb.text = 'Quiz Submissions'
   end
   
   def for_student
@@ -246,6 +253,9 @@ class Instructor::ResultsController < Instructor::InstructorBase
       
     @questions = @quiz.quiz_questions  
     @title = "Results for #{@student.display_name} - '#{@assignment.title}'"
+    @breadcrumb = Breadcrumb.for_course(@course, true)
+    @breadcrumb.assignment = @assignment
+    @breadcrumb.text = "Quiz Resuls for #{@student.display_name}"
   end
   
   def remove_attempt

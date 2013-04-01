@@ -625,7 +625,11 @@ class Instructor::TurninsController < Instructor::InstructorBase
     if @extension.nil? 
       @extension = Extension.new
       @extension.extension_date = @assignment.due_date
-    end  
+    end
+
+    @breadcrumb = Breadcrumb.for_assignment(@assignment)
+    @breadcrumb.instructor = true
+    @breadcrumb.text = "Manage Extension for #{@student.display_name}"
   end
   
   def update_grant

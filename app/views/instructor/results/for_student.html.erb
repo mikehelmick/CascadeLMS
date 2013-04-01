@@ -1,115 +1,91 @@
-<p>
+<div class="btn-toolbar"><div class="btn-group">
  <% if @assignment.quiz.survey %>
-   <%= link_to 'Back to all students', :controller => '/instructor/results', :action => 'survey', :course => @course, :assignment => @assignment %>
+   <%= link_to 'Back to all students', {:controller => '/instructor/results', :action => 'survey', :course => @course, :assignment => @assignment}, {:class => 'btn'} %>
  <% else %>
-   <%= link_to 'Back to all students', :controller => '/instructor/results', :action => 'quiz', :course => @course, :assignment => @assignment %> |
-   <%= link_to "Grade overview for #{@student.display_name}", :controller => '/instructor/course_gradebook', :action => 'for_student', :course => @course, :id => @student.id %>
+   <%= link_to 'Back to all students', {:controller => '/instructor/results', :action => 'quiz', :course => @course, :assignment => @assignment}, {:class => 'btn'} %> |
+   <%= link_to "Grade overview for #{@student.display_name}", {:controller => '/instructor/course_gradebook', :action => 'for_student', :course => @course, :id => @student.id}, {:class => 'btn'} %>
  <% end %> 
-   </p>
-
-<div class="SectionHeader"><div class="Full">
-  <h2>
-	<% if @assignment.quiz.survey %>Survey
-	<% else %>Quiz<% end %>
-	Results for <%= @student.display_name %><br/>
-	'<%= @assignment.title %>'</h2>
 </div></div>
 
+<h2><% if @assignment.quiz.survey %>Survey <% else %>Quiz<% end %> Results for <%= @student.display_name %>, '<%= @assignment.title %>'</h2>
+
 <% if @quiz.attempt_maximum >= 1 %>
-<p>This quiz allows a maximum of only <%= @quiz.attempt_maximum %> attempts.  
+<div class="alert alert-info">This quiz allows a maximum of only <%= @quiz.attempt_maximum %> attempts.  
 	You can give this student another attempt (by deleting this one).  
 	<%= link_to "Delete this attempt, and allow #{@student.display_name} to retake the quiz again.  This action cannot be undone and the students answers (but not current grate) will be lost.", 
 	            {:controller => '/instructor/results', :action => 'remove_attempt', :course => @course, :assignment => @assignment, :id => @student},
-	            :confirm => "Are you sure you want to delete this quiz attempt? This action cannot be undone.", :post => true %>
+	            :confirm => "Are you sure you want to delete this quiz attempt? This action cannot be undone.", :post => true %></div>
 <% end %>
 
-<p>&nbsp;</p>
 <% if @attempt.nil? %>
-<div class="errorExplanation">This student has not submitted any quiz attempts.</div>
+<div class="alert alert-error">This student has not submitted any quiz attempts.</div>
 <% end %>
-
 
 <!-- begin grade area -->
 <% unless @assignment.quiz.survey %>
-<div class="SectionHeader"><div class="Full">
-  <h2>Grade</h2>
-</div></div>
+<h2>Grade</h2>
 
 <% unless @assignment.grade_item %>
-  <p><i>Warning - this assignment is not connected with an entry in the GradeBook.</i></p>
+  <div class="alert">Warning - this assignment is not connected with an entry in the GradeBook.</div>
 <% else %>
-  <div id="form_area">
-  <% form_tag( :controller => '/instructor/turnins', :action => 'submit_grade', :id => @student, :course => @course, :assignment => @assignment ) do %>
-	<div class="submit">
-	  <div id="button">
-	     <%= submit_tag "Save Grade" %>
-	     <%= submit_tag "Save Grade and Go to Next Student" %>
-	     <%= submit_tag "Skip and Go to Next Student" %>
-	  </div>
-	</div>
-
+  <% form_tag( {:controller => '/instructor/turnins', :action => 'submit_grade', :id => @student, :course => @course, :assignment => @assignment}, {:class => 'form-horizontal'} ) do %>
+	<%= submit_tag "Save Grade", {:class => 'btn btn-primary'} %>
+	<%= submit_tag "Save Grade and Go to Next Student", {:class => 'btn btn-primary'} %>
+	<%= submit_tag "Skip and Go to Next Student", {:class => 'btn btn-primary'} %>
+	
     <%= error_messages_for 'grade_entry' %>    
     
-	<p class="blockintro">You can enter comments here, which will be available to the student. (A score for any multiple choice questions has already been calculated.)</p>
-	<div class="block">
+	<p class="help-block">You can enter comments here, which will be available to the student. (A score for any multiple choice questions has already been calculated.)</p>
+
 <% if @assignment.rubrics.size > 0 %>
-<p><strong>Be cautious when adjusting rubric on a quiz. Selecting or changing a rubric level will adjust the student's score on the quiz.</strong></p>
+<p class="help-block"><strong>Be cautious when adjusting rubric on a quiz. Selecting or changing a rubric level will adjust the student's score on the quiz.</strong></p>
 <% end %>		
 <%= render :partial => '/instructor/turnins/rubric_area' %>
 		
-	  <p><label for="document_title">Points:</label>
+	<div class="control-group">
+	  <label for="document_title" class="control-label">Points</label>
+	  <div class="controls">
 	    <%= text_field 'grade_entry', 'points', :size => 10  %> / <%= sprintf("%0.1f", @assignment.grade_item.points ) %>
-      </p>
-
-      <p><label for="document_comments">General comments:</label><br/>
-
-      <%= text_area 'grade_entry', 'comment', "cols" => 90, "rows" => 6, :class=>'short'  %><br/>
-      <%= link_to_function "More room to type", "Form.Element.toggleHeight(this, 'grade_entry_comment'); return false;", :class => 'bottab more' %>
-</p>
-
-    </div>
-
-  	<div class="submit">
-	  <div id="button">
-	     <%= submit_tag "Save Grade" %>
-	     <%= submit_tag "Save Grade and Go to Next Student" %>
-	     <%= submit_tag "Skip and Go to Next Student" %>
 	  </div>
 	</div>
+
+    <div class="control-group">
+      <label for="document_comments" class="control-label">General comments</label>
+      <div class="controls">
+        <%= text_area 'grade_entry', 'comment', "rows" => 6, :class=> 'input-xxlarge' %>
+      </div>
+    </div>
+
+    <%= submit_tag "Save Grade", {:class => 'btn btn-primary'} %>
+    <%= submit_tag "Save Grade and Go to Next Student", {:class => 'btn btn-primary'} %>
+    <%= submit_tag "Skip and Go to Next Student", {:class => 'btn btn-primary'} %>
   <% end %>
-  </div>
 
 <% end %>
 <% end %>
 <!-- END GRADE AREA -->
 
-<div class="SectionHeader"><div class="Full">
-  <h2><% if @assignment.quiz.survey %>Survey
-	  <% else %>Quiz<% end %> Responses</h2>
-</div></div>
-
+<hr/>
+<h2><% if @assignment.quiz.survey %>Survey <% else %>Quiz<% end %> Responses</h2>
 
 <% if @attempt.nil? %>
-  <p><b>Student has not attempted this quiz.</b></p>
+  <div class="alert">Student has not attempted this quiz.</div>
 <% else %>
 
-<div id="form_area">
-  <p class="blockintro"><b>Quiz Metrics:<b/></p>	
-  <div class="block">
-    <p><b>Start time: </b> <%= @attempt.created_at.to_formatted_s(:long) %><br/>	
-	   <b>End time: </b> <%= @attempt.updated_at.to_formatted_s(:long) %><br/>
-	   <b>Elapsed Time: </b> <%= distance_of_time_in_words( @attempt.created_at, @attempt.updated_at ) %>
-	
-  </div>
-
+  <h3>Quiz Metrics:</h3>	
+   <ul>
+	 <li><b>Start time: </b> <%= @attempt.created_at.to_formatted_s(:long) %></li>	
+	 <li><b>End time: </b> <%= @attempt.updated_at.to_formatted_s(:long) %></li>
+	 <li><b>Elapsed Time: </b> <%= distance_of_time_in_words( @attempt.created_at, @attempt.updated_at ) %></li>
+   </ul>
 	
   <% count = 0 %>
   <% for question in @questions do %>  
     <% count = count.next %>
 
-    <p class="blockintro"><b>Question #<%=count %> of <%= @questions.length %></b></p>
-    <div class="block">
-	   <p><label for="" class="required"><%= question.question %></label><br/>
+    <div class="well">
+    <h4>Question #<%=count %> of <%= @questions.length %></h4>
+	<p><%= question.question %></p>
 	
 	   <% if question.text_response %>
 		  <% answer = ""
@@ -176,11 +152,8 @@
 	   <% else %>
 	      <br/><b>NO INPUT METHOD SPECIFIED FOR THIS QUESTION.</b>
 	   <% end %>
-	
-	   </p>
 	</div>
 
   <% end %>
 
-</div>
 <% end %>
