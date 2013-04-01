@@ -1,17 +1,12 @@
-<%= link_to 'Cancel / Back to Grade Book', :controller => '/instructor/course_gradebook', :course => @course %> 
-
 <h2>Enter grades for '<%= @grade_item.name %>'</h2>
 <h3>for course '<%= @course.title %>'</h3>
 
-
-<% form_tag( :action => 'save_grades', :course => @course, :id => @grade_item ) do %>
-<div class="block">
-
+<% form_tag( {:action => 'save_grades', :course => @course, :id => @grade_item}, {:class => 'form-horizontal'} ) do %>
 <% if @students.size == 0 %>
-  <p>There are no students enrolled in this class.</p>
+  <div class="alert alert-info">There are no students enrolled in this class.</div>
 <% else %>
 
-<table class="fancy"> 
+<table class="table table-condensed table-striped"> 
   <tr class="header"> 
    <th>ID</th>
    <th>Student Name</th>
@@ -45,12 +40,8 @@
 </table>
 <% end %>
 
-</div>
- 
-<div class="submit">
-  <%= submit_tag 'Save Grades' %>
-</div>
+ <%= submit_tag 'Save Grades', :class => 'btn btn-primary' %>
+ <%= link_to 'Cancel', {:controller => '/instructor/course_gradebook', :course => @course, :action => 'index'}, {:class => 'btn'} %>
 <% end %>
 
 
-<%= link_to 'Cancel / Back to Grade Book', :controller => '/instructor/course_gradebook', :course => @course, :action => 'index' %>

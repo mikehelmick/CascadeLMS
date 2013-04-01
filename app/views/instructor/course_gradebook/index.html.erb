@@ -27,9 +27,17 @@
 	  Points: <%= gi.points %><br/>
 	    <span rel="tooltip" title="Delete Item"><%= link_to '<i class="icon-remove-sign"></i>', { :action => 'delete_item', :course => @course, :id => gi.id}, :confirm => "Are you sure you want to delete the item '#{gi.name}'?  All entered student grade will be deleted.  This action can not be undone." %></span>
 	   <% if gi.visible %>
-	     <span rel="tooltip" title="Visible to Students"><i class="icon-eye-open"></i></span>
+	     <% if gi.assignment.nil? %>
+	       <span rel="tooltip" title="Visible to Students"><%= link_to '<i class="icon-eye-open"></i>', :action => 'item', :course => @course, :id => gi.id %></span>
+	     <% else %>
+	       <span rel="tooltip" title="Visible to Students"><%= link_to '<i class="icon-eye-open"></i>', :controller => '/instructor/turnins', :action => 'toggle_released', :course => @course, :assignment => gi.assignment, :gradebook => true %></span>
+	     <% end %>
 	   <% else %>
-	     <span rel="tooltip" title="Hidden from Students"><i class="icon-eye-close"></i></span>
+	     <% if gi.assignment.nil? %>
+	       <span rel="tooltip" title="Visible to Students"><%= link_to '<i class="icon-eye-close"></i>', :action => 'item', :course => @course, :id => gi.id %></span>
+	     <% else %>
+	       <span rel="tooltip" title="Visible to Students"><%= link_to '<i class="icon-eye-close"></i>', :controller => '/instructor/turnins', :action => 'toggle_released', :course => @course, :assignment => gi.assignment, :gradebook => true %></span>
+	     <% end %>
 	   <% end %>
 	   <span rel="tooltip" title="Edit Item Information">
 	     <%= link_to '<i class="icon-edit"></i>', :action => 'item', :course => @course, :id => gi.id %>

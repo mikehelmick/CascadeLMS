@@ -166,6 +166,9 @@ class Instructor::CourseGradebookController < Instructor::InstructorBase
     @grade_item.grade_entries.each do |ge|
       @grade_matrix[ge.user_id] = ge.points
     end
+
+    set_breadcrumb(@course)
+    @breadcrumb.text = "Enter Grades"
   end
   
   def save_grades

@@ -277,8 +277,13 @@ class Instructor::TurninsController < Instructor::InstructorBase
         @assignment.grade_item.save
       end
     end
-      
-    if @assignment.quiz.nil?  
+
+    if !params[:gradebook].nil?
+      message = "now visible to students."
+      message = "no longer visible to students." unless @assignment.released
+      flash[:notice] = "Grades for assignment '#{@assignment.title}' are #{message}"
+      redirect_to :controller => '/instructor/course_gradebook', :action => nil, :course => @course, :assignment => nil
+    elsif @assignment.quiz.nil?  
       redirect_to :action => 'index', :course => @course, :assignment => @assignment
     else
       redirect_to :controller => '/instructor/results', :action => 'quiz', :course => @course, :assignment => @assignment
