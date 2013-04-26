@@ -1,7 +1,7 @@
 class AddUrlForDocuments < ActiveRecord::Migration
   def self.up
     add_column(:documents, :link, :boolean, :null => false, :default => false)
-    add_column(:documents, :url, :text, :null => false)
+    add_column(:documents, :url, :text, :null => true)
   end
 
   def self.down

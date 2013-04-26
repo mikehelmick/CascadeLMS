@@ -1,7 +1,7 @@
 class AddAssignmentUpdated < ActiveRecord::Migration
   def self.up
-    add_column(:assignments, :created_at, :datetime, :null => false)
-    add_column(:assignments, :updated_at, :datetime, :null => false)
+    add_column(:assignments, :created_at, :datetime, :null => false, :default => 0)
+    add_column(:assignments, :updated_at, :datetime, :null => false, :default => 0)
   end
 
   def self.down
