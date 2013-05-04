@@ -30,12 +30,13 @@ require 'LdapAuthentication'
 require 'yaml'
 require 'MyString'
 require 'MyActiveRecordHelper'
+require 'Browser'
 
 # Filters added to this controller will be run for all controllers in the application.
 # Likewise, all the methods added will be available for all controllers.
 class ApplicationController < ActionController::Base
   ## CSCW Application version
-  @@VERSION = '2.0.036 <em>beta</em> (Jefferson) 20130331'
+  @@VERSION = '2.0.037 <em>beta</em> (Jefferson) 20130503'
   
   ## Supress password logging
   filter_parameter_logging :password
@@ -294,6 +295,8 @@ class ApplicationController < ActionController::Base
     # duplicate user - to keep session down
     @user = User.find(session[:user].id)
     @notificationCount = @user.notification_count
+    # Load @browser object, some user agent detection stuff.
+    browser()
     return true
   end
   

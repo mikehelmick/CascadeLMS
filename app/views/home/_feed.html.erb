@@ -21,7 +21,7 @@
 
      <div id="status-pane" style="display: none;">
      <% form_tag({:controller => 'profile', :action => 'status', :feed => @feed_id}, :class => 'form-horizontal') do %>
-	  <%= text_area_tag('status', '', {:class => 'input-xxlarge', :rows => 4, :placeholder => "What's on your mind?", :rel => 'wysihtml5'}) %>
+	  <%= text_area_tag('status', '', {:class => 'input-xxlarge', :rows => 4, :placeholder => "What's on your mind?", :rel => editor_rel()}) %>
 	  <div class="control-group">
 		Share to
 		  <%= check_box_tag('followers', true, @feed_id == @user.feed.id) %> Your Followers

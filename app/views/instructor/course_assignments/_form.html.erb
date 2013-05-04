@@ -30,7 +30,7 @@
       <div class="control-group">
 	    <label for="assignment[description]" class="control-label">Assignment Description</label>
 	    <div class="controls">
-		  <%= text_area 'assignment', 'description', {:class => 'input-xxlarge', :rows => 20, :rel => 'wysihtml5'} %>
+		  <%= text_area 'assignment', 'description', {:class => 'input-xxlarge', :rows => 20, :rel => editor_rel()} %>
 	    </div>
 	  </div>
   </div>

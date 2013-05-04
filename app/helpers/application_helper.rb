@@ -3,6 +3,11 @@ require 'MyString'
 # Methods added to this helper will be available to all templates in the application.
 module ApplicationHelper
 
+  def editor_rel
+    return '' if @browser.android? || @browser.ios?
+    return 'wysihtml5'
+  end
+
   def format_autocomplete(items)
     sane_items = items.map { |i| i.format_autocomplete() }
     return "[\"#{items.join('", "')}\"]"

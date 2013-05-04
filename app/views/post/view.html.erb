@@ -18,7 +18,7 @@
 		  <div class="control-group">
 			<label></label>
 		    <div class="controls">
-		     <%= text_area('item_comment', 'body', {:class => 'input-xxlarge', :rows => 10, :rel => 'wysihtml5'}) %>
+		     <%= text_area('item_comment', 'body', {:class => 'input-xxlarge', :rows => 10, :rel => editor_rel()}) %>
 		    </div>
 		   </div>
 		   <%= submit_tag 'Post Comment', :class => 'btn btn-primary' %>
