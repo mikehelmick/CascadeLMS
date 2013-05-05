@@ -6,7 +6,7 @@
  </div>
  <div class="span6">
    <% (half_size + 1).upto(users.size - 1) do |i| %>
-     <img src="<%= users[i].gravatar_url(request.ssl?, 64) %>" align="middle" /> - <%= link_to "#{h users[i].to_s}", {:controller => '/profile', :action => 'view', :id => users[i].id, :course => nil} %> <%= render :partial => '/profile/following', :locals => {:feed_subscription => users[i].feed.get_subscription(@user), :user => users[i]} %><hr/>
+     <img src="<%= users[i].gravatar_url(request.ssl?, 64) %>" align="middle" /> <%= link_to "#{h users[i].to_s}", {:controller => '/profile', :action => 'view', :id => users[i].id, :course => nil} %> <%= render :partial => '/profile/following', :locals => {:feed_subscription => users[i].feed.get_subscription(@user), :user => users[i]} %><hr/>
    <% end %>
  </div>
 </div>

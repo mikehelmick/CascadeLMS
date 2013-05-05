@@ -1,0 +1,14 @@
+<div class="well">
+  <% form_tag( { :controller => '/people', :action => 'search' }, :class => 'form-search' ) do %>
+    <%= text_field_tag 'searchterms', '', {:placeholder => 'People Search', :class => 'input-medium search-query'} %> <%= submit_tag 'Search', :class => 'btn btn-primary' %>
+  <% end %>
+</div>
+
+<% if @invalid %>
+  <div alert="alert alert-error">You must enter at least 3 characters in your search terms.</div>
+<% end %>
+
+<h2><%= pluralize(@users.size, 'person', 'people') %> found</h2>
+<% if @users.size > 0 %>
+  <%= render :partial => '/roster/users', :locals => {:half_size => @users.size/2, :users => @users} %>
+<% end %>

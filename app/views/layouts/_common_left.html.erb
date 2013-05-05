@@ -85,6 +85,13 @@
  <% active = tab_active(@tab, 'catalog') %>
  <li class="<%= 'active ' if active %>"><%= link_to 'Browse Course Catalog', {:controller => '/catalog', :action => nil, :id => nil, :course => nil, :assignment => nil} %></li>
 
+<li class="nav-header">Find People</li>
+ <li class="">
+   <% form_tag( { :controller => '/people', :action => 'search' }, :class => 'form-search' ) do %>
+		<%= text_field_tag 'searchterms', '', {:placeholder => 'People Search', :class => 'input-medium search-query'} %>
+  <% end %> 	
+ </li>
+
 <% if @user.auditor %>
 <li class="nav-header">Programs You Audit</li>
 <% programs = @user.programs_under_audit() %>
