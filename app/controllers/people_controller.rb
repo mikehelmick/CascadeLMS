@@ -7,6 +7,7 @@ class PeopleController < ApplicationController
       sv = "%#{st}%"
       @users = User.find(:all, :conditions => ["LOWER(uniqueid) like ? or LOWER(first_name) like ? or LOWER(last_name) like ? or LOWER(preferred_name) like ?", sv, sv, sv, sv ], :order => "uniqueid asc")
     else
+      @users = Array.new
       @invalid = true
     end
 
