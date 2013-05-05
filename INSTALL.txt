@@ -179,6 +179,9 @@ Install the twitter gem
 
 sudo gem install twitter
 
+Install the browser gem
+
+sudo gem install browser
 
 
 ** At this point we are ready to actually install and configure the application.
