@@ -25,4 +25,34 @@ class ActiveSupport::TestCase
   self.use_instantiated_fixtures  = false
 
   # Add more helper methods to be used by all tests here...
+
+  # Creates a test user, with a valid password, can be used for login tests.
+  def create_test_user(uniqueid, firstname, lastname, email, password,
+        instructor = false, admin = false, auditor = false)
+    user = User.new(:uniqueid => uniqueid, :first_name => firstname,
+        :last_name => lastname, :email => email)
+    user.instructor = instructor
+    user.admin = admin
+    user.auditor = auditor
+    user.password = 'first'
+    unless user.save
+      raise "Unable to create test user #{uniqueid}"
+    end
+    user.update_password(password)
+    user.save
+    return user
+  end
+
+  def create_student(uniqueid)
+    create_test_user(uniqueid, uniqueid, uniqueid, "#{uniqueid}@cascadelms.org", uniqueid)
+  end
+
+  def create_instructor(uniqueid)
+    create_test_user(uniqueid, uniqueid, uniqueid, "#{uniqueid}@cascadelms.org", uniqueid, true)
+  end
+
+  def create_admin(uniqueid)
+    create_test_user(uniqueid, uniqueid, uniqueid, "#{uniqueid}@cascadelms.org", uniqueid, true, true)
+    
+  end
 end

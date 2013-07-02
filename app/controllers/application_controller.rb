@@ -548,7 +548,7 @@ class ApplicationController < ActionController::Base
       elsif redirect # && !session[:post_login].index("/redirect/").nil? 
         redirect_to session[:post_login] if redirect
       elsif redirect
-        redirect_to :controller => 'home' 
+        redirect_to :controller => 'home'
       end
       # Ensures that there is a feed for each user
       @user.create_feed
