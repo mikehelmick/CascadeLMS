@@ -10,7 +10,7 @@ You can enter a new CRN if the one for your course is not available.
 
 <% form_tag( {:action => 'create'}, {:class => 'form-horizontal'} ) do %>
 <legend><h3>Create a New Course</h3></legend>
-<%= hidden_field_tag('term', @term.id) %>
+<%= hidden_field_tag('term', @createTerm.id) %>
 <%= error_messages_for 'course', :class => 'alert alert-error' %>
 <fieldset>
  <div class="control-group <%= error_class_for(@course, 'title') %>">

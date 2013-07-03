@@ -1,6 +1,11 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
-one:
+authtype:
   id: 1
   name: "authtype"
   value: "basic"
   description: ""
+session_limit:
+  id: 2
+  name: session_limit
+  value: 604800
+  description: ''

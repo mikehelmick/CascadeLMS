@@ -53,6 +53,14 @@ class ActiveSupport::TestCase
 
   def create_admin(uniqueid)
     create_test_user(uniqueid, uniqueid, uniqueid, "#{uniqueid}@cascadelms.org", uniqueid, true, true)
-    
+  end
+
+  # Meant for integration tests, performs a login
+  def login(uniqueid)
+    get '/'
+    assert_response :success
+
+    post_via_redirect '/index/login', :user => {:uniqueid => uniqueid, :password => uniqueid}
+    assert_equal '/home', path
   end
 end

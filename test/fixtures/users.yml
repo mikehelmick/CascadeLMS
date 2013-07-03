@@ -2,7 +2,7 @@
 student:
   id: 1
   uniqueid: testuser
-  password: testuser
+  password: fa224faad1bd097cae1e683c56948f798333718d
   preferred_name: T.U.
   first_name: Test
   middle_name: A.
@@ -15,7 +15,7 @@ student:
 instructor:
   id: 2
   uniqueid: instructor
-  password: instructor
+  password: 92bada6ae491dbb86cf5d59340d1b5da0f57afdd
   first_name: Im
   middle_name: A.
   last_name: Teacher
@@ -27,7 +27,7 @@ instructor:
 student2:
   id: 3
   uniqueid: testuser2
-  password: testuser2
+  password: 9f1e6bb1b2e3c1b4cfdf1aa59f78a92c283b008d
   preferred_name: T.U.
   first_name: Test
   middle_name: A.
@@ -40,7 +40,7 @@ student2:
 student3:
   id: 4
   uniqueid: testuser3
-  password: testuser3
+  password: ace09c9bb643db356a98d25dc51968b4e62ba746
   preferred_name: T.U.3
   first_name: Test
   middle_name: B.

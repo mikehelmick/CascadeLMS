@@ -1,11 +1,13 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
-first:
+spring:
   id: 1
   term: 1
-  year: 2010
-  semester: 1
-another:
+  year: 2012
+  semester: Spring 2013
+  current: false
+fall:
   id: 2
   term: 2
-  year: 2010
-  semester: 2
+  year: 2013
+  semester: Fall 2013
+  current: true
