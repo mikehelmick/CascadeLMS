@@ -26,20 +26,17 @@
 
 require 'action_controller'
 require 'BasicAuthentication'
-require 'LdapAuthentication'
 require 'yaml'
 require 'MyString'
 require 'MyActiveRecordHelper'
 require 'browser'
+require 'bj'
 
-# Filters added to this controller will be run for all controllers in the application.
-# Likewise, all the methods added will be available for all controllers.
 class ApplicationController < ActionController::Base
-  ## CSCW Application version
-  @@VERSION = '2.0.038 <em>beta</em> (Jefferson) 20130504'
-  
-  ## Supress password logging
-  filter_parameter_logging :password
+  protect_from_forgery
+
+  ## CascadeLMS Application version
+  @@VERSION = '2.1.0 <em>beta</em> (Jefferson) 20130711'
   
   layout 'application' rescue puts "couldn't load default layout"
   
@@ -855,16 +852,4 @@ class ApplicationController < ActionController::Base
   end
   
   protected :log_error
-
-end
-
-class TrueClass
-  def yes_no
-    "Yes"
-  end
-end
-class FalseClass
-  def yes_no
-    "No"
-  end
 end

@@ -1,49 +1,71 @@
-ActionController::Routing::Routes.draw do |map|
-  # The priority is based upon order of creation: first created -> highest priority.
+CascadeLMS::Application.routes.draw do
+  match '' => 'index#index'
+  match '/course/:course/assignment/:assignment/student/:student/:controller/:action/:id' => 'home#index'
+  match '/course/:course/assignment/:assignment/:controller/:action/:id' => 'assignment/index#index'
+  match '/course/:course/:controller/:action/:id/:file.:extension' => '#podcast_download'
+  match '/course/:course/:controller/:action/:id' => 'overview#index'
+  match '/redirect/type/:type/:id' => 'redirect#index'
+  match '/public/redirect/type/:type/:id' => 'public/redirect#index'
+  match '/admin/course_admin/:action/:id/course/:course' => 'admin/course_admin#index'
+  match '/admin' => 'admin/index#index'
+  match '/public' => 'public/index#index'
+  match ':controller/service.wsdl' => '#wsdl'
+  match '/:controller(/:action(/:id))'
   
+  # The priority is based upon order of creation:
+  # first created -> highest priority.
+
   # Sample of regular route:
-  # map.connect 'products/:id', :controller => 'catalog', :action => 'view'
+  #   match 'products/:id' => 'catalog#view'
   # Keep in mind you can assign values other than :controller and :action
 
   # Sample of named route:
-  # map.purchase 'products/:id/purchase', :controller => 'catalog', :action => 'purchase'
+  #   match 'products/:id/purchase' => 'catalog#purchase', :as => :purchase
   # This route can be invoked with purchase_url(:id => product.id)
 
-  # You can have the root of your site routed by hooking up '' 
-  # -- just remember to delete public/index.html.
-  # map.connect '', :controller => "welcome"
-  
-  map.connect '', :controller => 'index'
-  
-  map.connect '/course/:course/assignment/:assignment/student/:student/:controller/:action/:id',
-      :controller => 'home', :action => 'index', :id => nil
+  # Sample resource route (maps HTTP verbs to controller actions automatically):
+  #   resources :products
 
-  map.connect '/course/:course/assignment/:assignment/:controller/:action/:id',
-      :controller => 'assignment/index', :action => 'index', :id => nil
+  # Sample resource route with options:
+  #   resources :products do
+  #     member do
+  #       get 'short'
+  #       post 'toggle'
+  #     end
+  #
+  #     collection do
+  #       get 'sold'
+  #     end
+  #   end
 
-  map.connect '/course/:course/:controller/:action/:id/:file.:extension',
-      :action => 'podcast_download', :id => nil  
-  
-  map.connect '/course/:course/:controller/:action/:id',
-    :controller => 'overview', :action => 'index', :course => nil, :id => nil
-    
-  map.connect '/redirect/type/:type/:id',
-    :controller => 'redirect', :action => 'index', :type => nil, :id => nil
-    
-  map.connect '/public/redirect/type/:type/:id',
-    :controller => 'public/redirect', :action => 'index', :type => nil, :id => nil
-  
-  map.connect '/admin/course_admin/:action/:id/course/:course',
-    :controller => 'admin/course_admin', :action => 'index'
+  # Sample resource route with sub-resources:
+  #   resources :products do
+  #     resources :comments, :sales
+  #     resource :seller
+  #   end
 
-  map.connect '/admin', :controller => 'admin/index'
+  # Sample resource route with more complex sub-resources
+  #   resources :products do
+  #     resources :comments
+  #     resources :sales do
+  #       get 'recent', :on => :collection
+  #     end
+  #   end
 
-  map.connect '/public', :controller => 'public/index'
-  
-  # Allow downloading Web Service WSDL as a file with an extension
-  # instead of a file named 'wsdl'
-  map.connect ':controller/service.wsdl', :action => 'wsdl'
+  # Sample resource route within a namespace:
+  #   namespace :admin do
+  #     # Directs /admin/products/* to Admin::ProductsController
+  #     # (app/controllers/admin/products_controller.rb)
+  #     resources :products
+  #   end
 
-  # Install the default route as the lowest priority.
-  map.connect ':controller/:action/:id'
+  # You can have the root of your site routed with "root"
+  # just remember to delete public/index.html.
+  # root :to => "welcome#index"
+
+  # See how all your routes lay out with "rake routes"
+
+  # This is a legacy wild controller route that's not recommended for RESTful applications.
+  # Note: This route will make all actions in every controller accessible via GET requests.
+  # match ':controller(/:action(/:id(.:format)))'
 end

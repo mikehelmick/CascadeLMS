@@ -1,0 +1,26 @@
+Use this README file to introduce your application and point to useful places in the API for learning more.
+Run "rake appdoc" to generate API documentation for your models and controllers.
+
+## File storage
+the 'external_dir' configuration option points to a local directory that stores files
+
+Inside that directory
+Documents:
+  term/:term_id/course/:course_id/documents/doc_:id.extension
+Assignments:
+  term/:term_id/course/:course_id/assignments/handouts/handout_:id.extension
+Student Turnins
+  term/:term_id/course/:course_id/assignments/turnins/:user_id/files
+
+
+## Required Gems
+Syntax
+Syntaxi
+Redcloth
+Diff-lcs
+=======
+  term/:term_id/course/:course_id/assignments/turnins/:user_id/files
+http://ruby-ldap.sourceforge.net/
+
+Requires
+  GNU enscript

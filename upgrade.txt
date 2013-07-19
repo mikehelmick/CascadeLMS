@@ -1,0 +1,6 @@
+If you are upgrading from a 2.0 installation to a 2.1 installation (that uses Rails 3 and Ruby 1.9+), then you need to update the character encoding on your database;
+
+Run this command:
+
+
+mysql --database=cascadelms_prod -B -N -e "SHOW TABLES"  | awk '{print "ALTER TABLE", $1, "CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;"}' | mysql --database=cascadelms_prod

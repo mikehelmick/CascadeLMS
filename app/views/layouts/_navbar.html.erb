@@ -11,9 +11,9 @@
         <ul class="nav">
 	      <li <%= 'class="active"' if !@tab.nil? && @tab.eql?('home') %>>
 		   <% unless @user.nil? %>
-	        <%= link_to '<i class="icon-home icon-white"></i> Home', :controller => '/home', :course => nil, :assignment => nil %>
+	        <%= link_to('<i class="icon-home icon-white"></i> Home'.html_safe, :controller => '/home', :course => nil, :assignment => nil) %>
 	       <% else %>
-	        <%= link_to '<i class="icon-home icon-white"></i> Login', :controller => '/', :course => nil, :assignment => nil %>
+	        <%= link_to('<i class="icon-home icon-white"></i> Login'.html_safe, :controller => '/', :course => nil, :assignment => nil) %>
 	       <% end %>
           </li>
           <li class="divider-vertical"></li>
@@ -24,35 +24,35 @@
 	          <a href="#" class="dropdown-toggle" data-toggle="dropdown"><%= h cu.course.title[0..30] %><b class="caret"></b></a>
 	         <ul class="dropdown-menu">
 		       <li>
-		         <%= link_to "<i class=\"icon-picture\"></i> #{h cu.course.title}", :controller => '/overview', :course => cu.course %>
+		         <%= link_to("<i class=\"icon-picture\"></i> #{h cu.course.title}".html_safe, :controller => '/overview', :course => cu.course) %>
 			   </li>
 			   <% if cu.course.course_setting.enable_outcomes %>
-			     <li><%= link_to '<i class="icon-indent-left"></i> Course Outcomes', {:controller => '/outcomes', :action => nil, :id => nil, :course => cu.course} %></li>
+			     <li><%= link_to('<i class="icon-indent-left"></i> Course Outcomes'.html_safe, {:controller => '/outcomes', :action => nil, :id => nil, :course => cu.course}) %></li>
 			   <% end %>
 			   
 		       <% if cu.course.course_setting.enable_blog %>
-			     <li><%= link_to '<i class="icon-list-alt"></i> Course Blog', :controller => '/blog', :course => cu.course, :assignment => nil %></li> 
+			     <li><%= link_to('<i class="icon-list-alt"></i> Course Blog'.html_safe, :controller => '/blog', :course => cu.course, :assignment => nil) %></li> 
 	           <% end %>
-               <li><%= link_to '<i class="icon-folder-open"></i> Documents', :controller => '/documents', :course => cu.course, :assignment => nil %></li>
-               <li><%= link_to '<i class="icon-calendar"></i> Assignments', :controller => '/assignments', :course => cu.course, :assignment => nil %></li>
+               <li><%= link_to('<i class="icon-folder-open"></i> Documents'.html_safe, :controller => '/documents', :course => cu.course, :assignment => nil) %></li>
+               <li><%= link_to('<i class="icon-calendar"></i> Assignments'.html_safe, :controller => '/assignments', :course => cu.course, :assignment => nil) %></li>
                <% if cu.course.course_setting.enable_project_teams %>
-			     <li><%= link_to '<i class="icon-magnet"></i> Team Center', :controller => '/team', :course => cu.course, :assignment => nil %></li> 
+			     <li><%= link_to('<i class="icon-magnet"></i> Team Center'.html_safe, :controller => '/team', :course => cu.course, :assignment => nil) %></li> 
 			   <% end %>
                <% if cu.course.course_setting.enable_wiki %>
-			     <li><%= link_to '<i class="icon-edit"></i> Wiki', :controller => '/wiki', :course => cu.course, :assignment => nil %></li> 
+			     <li><%= link_to('<i class="icon-edit"></i> Wiki'.html_safe, :controller => '/wiki', :course => cu.course, :assignment => nil) %></li> 
 			   <% end %>
                <% if cu.course.course_setting.enable_forum %>
-			     <li><%= link_to '<i class="icon-comment"></i> Forums', :controller => '/forums', :course => cu.course, :assignment => nil %></li> 
+			     <li><%= link_to('<i class="icon-comment"></i> Forums'.html_safe, :controller => '/forums', :course => cu.course, :assignment => nil) %></li> 
 			   <% end %>
                <% if !@user.nil? && @user.student_in_course?(cu.course.id) && cu.course.course_setting.enable_gradebook %>
-		  	     <li><%= link_to '<i class="icon-signal"></i> Grades', :controller => '/grades', :course => cu.course, :assignment => nil %></li>
+		  	     <li><%= link_to('<i class="icon-signal"></i> Grades'.html_safe, :controller => '/grades', :course => cu.course, :assignment => nil) %></li>
 		       <% end %>
                <% if !@user.nil? && @user.student_in_course?(cu.course.id) && cu.course.course_setting.enable_attendance %>
-		  	     <li><%= link_to '<i class="icon-check"></i> Attendance', :controller => '/attendance', :course => cu.course, :assignment => nil %></li>
+		  	     <li><%= link_to('<i class="icon-check"></i> Attendance'.html_safe, :controller => '/attendance', :course => cu.course, :assignment => nil) %></li>
 		       <% end %>
-		       <li><%= link_to '<i class="icon-user"></i> Class Roster', :controller => '/roster', :course => cu.course %></li>
+		       <li><%= link_to('<i class="icon-user"></i> Class Roster'.html_safe, :controller => '/roster', :course => cu.course) %></li>
                <% if !@user.nil? && (@user.instructor_in_course?(cu.course.id) || @user.assistant_in_course?(cu.course.id)) %>
-		         <li><%= link_to '<i class="icon-barcode"></i> Instructor', { :controller => '/instructor/index', :course => cu.course, :assignment => nil, :id => nil} %></li>
+		         <li><%= link_to('<i class="icon-barcode"></i> Instructor'.html_safe, { :controller => '/instructor/index', :course => cu.course, :assignment => nil, :id => nil}) %></li>
 		       <% end %>
 		     </ul>
 		    </li>
@@ -62,14 +62,14 @@
 
         <% if @user.nil? %>
           <ul class="nav pull-right">
-	        <li><%= link_to 'Login', {:controller => '/'} %></li>
+	        <li><%= link_to('Login', {:controller => '/'}) %></li>
 	      </ul>
 	    <% else %>
 		<ul class="nav pull-right">
 		  <% unless @user.nil? %>
 		    <% if @user.auditor? %>
 			   <li <%= 'class="active"' if !@tab.nil? && @tab.eql?('audit') %>>
-			     <%= link_to 'Audit', {:controller => '/audit', :action => 'index', :id => nil} %></li> 
+			     <%= link_to('Audit', {:controller => '/audit', :action => 'index', :id => nil}) %></li> 
 			<% end %>
 		  <% end %>
 		  <li class="divider-vertical"></li>
@@ -82,26 +82,26 @@
 		  <li><img src="<%= @user.gravatar_url(request.ssl?, 40) %>"></li>
 		  <li class="dropdown">
 		    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-		      <%=session[:user].display_name%>
+		      <%= session[:user].display_name %>
 			  <b class="caret"></b>
 		    </a>
 		    <ul class="dropdown-menu">
-			  <li><%= link_to 'Edit Profile <i class="icon-user"></i>', :controller => '/profile', :action => 'view', :course => nil, :assignment => nil, :id => nil %></li>
-	          <li><%= link_to 'Manage Subscriptions <i class="icon-inbox"></i>', :controller => '/home', :action => 'feeds', :course => nil, :id => nil, :assignment => nil %>		
-	          <li><%= link_to 'Account Settings <i class="icon-cog"></i>', :controller => '/home', :action => 'account' %></li>
+			  <li><%= link_to('Edit Profile <i class="icon-user"></i>'.html_safe, :controller => '/profile', :action => 'view', :course => nil, :assignment => nil, :id => nil) %></li>
+	          <li><%= link_to('Manage Subscriptions <i class="icon-inbox"></i>'.html_safe, :controller => '/home', :action => 'feeds', :course => nil, :id => nil, :assignment => nil) %>		
+	          <li><%= link_to('Account Settings <i class="icon-cog"></i>'.html_safe, :controller => '/home', :action => 'account') %></li>
 			  
 			  <li><a href="https://en.gravatar.com/site/signup/" target="_blank">Change Profile Picture <i class="icon-user"></i></a></li>
 			  <% if @user.program_manager? %>
 			    <li>
-			     <%= link_to 'Programs', {:controller => '/program', :course => nil, :assignment => nil, :id => nil} %></li>
+			     <%= link_to('Programs', {:controller => '/program', :course => nil, :assignment => nil, :id => nil}) %></li>
 			  <% end %>
 			  <% if @user.admin %>
 			   <li>
-			     <%= link_to 'Administration', {:controller => '/admin', :course => nil, :assignment => nil} %></li>
+			     <%= link_to('Administration', {:controller => '/admin', :course => nil, :assignment => nil}) %></li>
 			  <% end %>
 
 			
-			  <li><%= link_to 'Log Out <i class="icon-lock"></i>', :controller => '/index', :action => 'logout' %></li>
+			  <li><%= link_to('Log Out <i class="icon-lock"></i>'.html_safe, :controller => '/index', :action => 'logout') %></li>
 		    </ul>
 		  </li>
 		</ul>
@@ -115,12 +115,12 @@
    <li>
 	 <%=@app['title']%> <span class="divider">/</span>
 	 <% if @breadcrumb.public_access %>
-	   <%= link_to 'Public Access', :controller => '/public', :action => nil, :id => nil, :course => nil %> <span class="divider">/</span>
+	   <%= link_to('Public Access', :controller => '/public', :action => nil, :id => nil, :course => nil) %> <span class="divider">/</span>
 	 <% else %>
-	   <%= link_to 'Home', :controller => '/home', :action => nil, :id => nil, :course => nil %> <span class="divider">/</span>
+	   <%= link_to('Home', :controller => '/home', :action => nil, :id => nil, :course => nil) %> <span class="divider">/</span>
 	 <% end %>
 	 <% if @breadcrumb.catalog %>
-	   <%= link_to 'Course Catalog', :controller => '/catalog', :action => nil, :id => nil, :course => nil %> <span class="divider">/</span>
+	   <%= link_to('Course Catalog', :controller => '/catalog', :action => nil, :id => nil, :course => nil) %> <span class="divider">/</span>
 	 <% end %>
 	 <% unless @breadcrumb.course.nil? %>
 	   Course <span class="divider">/</span>

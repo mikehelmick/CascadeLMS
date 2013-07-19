@@ -1,5 +1,5 @@
 require 'digest/sha1'
-require 'md5'
+require 'digest/md5'
 
 class User < ActiveRecord::Base
   # TODO(mikehelmick): validate format of middle name if present
@@ -56,10 +56,14 @@ class User < ActiveRecord::Base
   def gravatar_url(ssl = false, size = 60)
     email_address = self.email.downcase
     #create the md5 hash
-    hash = MD5::md5(email_address)
+    hash = Digest::MD5.hexdigest(email_address)
     
-    return "http://www.gravatar.com/avatar/#{hash}.jpg?s=#{size}&d=wavatar&r=PG" unless ssl
-    return "https://secure.gravatar.com/avatar/#{hash}.jpg?s=#{size}&d=wavatar&r=PG"
+    url = if ssl
+            "https://secure.gravatar.com/avatar/#{hash}.jpg?s=#{size}&d=wavatar&r=PG"
+          else
+            "http://www.gravatar.com/avatar/#{hash}.jpg?s=#{size}&d=wavatar&r=PG"
+          end
+    return url
   end
 
   def assignment_journals( assignment )

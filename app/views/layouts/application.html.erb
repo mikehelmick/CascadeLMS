@@ -26,7 +26,7 @@
  <![endif]-->
 
  <%= stylesheet_link_tag "calendar/red/style", :media => "all" %>
-			
+
  <% if @course %>
  <%= auto_discovery_link_tag(:rss, {:controller => 'feed', :course => @course }) %>
  <% end %>
@@ -50,6 +50,7 @@
  <%= javascript_include_tag "bootstrap-wysihtml5-0.0.2.js" %>
  <%= javascript_include_tag :defaults %>
  <%= render :partial => '/layouts/google' %>
+ <%= csrf_meta_tag %>
 </head>
 
 <% if !@checkForm.nil? && @checkForm == true %>
@@ -76,12 +77,12 @@
   <div class="span9">
     <% if flash[:notice] %><div class="alert alert-success"><%= flash[:notice] %></div><% end %>
 	<% if flash[:badnotice] %><div class="alert alert-error"><%= flash[:badnotice] %></div><% end %>
-		
-	<%= @content_for_layout %>
+
+	<%= yield %>
   </div>
 </div>	
 
-<%= render :partial => '/layouts/footer' %>  
+ <%= render :partial => '/layouts/footer' %>
 <div>	
 
  <% if flash[:highlight] %> 
@@ -92,4 +93,3 @@
  <% end %>
 </body>
 </html>
-

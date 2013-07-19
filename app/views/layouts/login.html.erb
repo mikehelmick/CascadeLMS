@@ -23,7 +23,7 @@
 		<% if flash[:notice] %><div class="alert alert-success"><a class="close" data-dismiss="alert">×</a><%= flash[:notice] %></div><% end %>
 		<% if flash[:badnotice] %><div class="alert alert-error"><a class="close" data-dismiss="alert">×</a><%= flash[:badnotice] %></div><% end %>
 
-		<%= @content_for_layout %>
+        <%= yield %>
     </div>
 
 <% if !@showAds.nil? && @showAds %>

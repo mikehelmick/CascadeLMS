@@ -1,4 +1,4 @@
 <% if @user.instructor || @user.admin %>
-<li class="nav-header">Instructor Controls</li>
-<li><%= link_to 'Create a new course <i class="icon-plus-sign"></i>', :controller => 'instructor/newcourse', :action => nil, :course => nil, :id => nil %></li>
+ <li class="nav-header">Instructor Controls</li>
+ <li><%= link_to('Create a new course <i class="icon-plus-sign"></i>'.html_safe, :controller => 'instructor/newcourse', :action => nil, :course => nil, :id => nil) %></li>
 <% end %>

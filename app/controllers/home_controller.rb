@@ -8,7 +8,7 @@
 class HomeController < ApplicationController
   
   before_filter :ensure_logged_in
-  
+ 
   def initialize()
     @title = "CascadeLMS"
   end
@@ -49,7 +49,9 @@ class HomeController < ApplicationController
     maybe_run_publisher(false)
     
     respond_to do |format|
-      format.html
+      format.html {
+        render :layout => 'application'
+      }
       format.xml { 
         @other_courses = @user.courses
         @other_courses.sort! { |x,y| y.term.term <=> x.term.term }
