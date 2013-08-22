@@ -7,8 +7,8 @@ class CreateIoChecks < ActiveRecord::Migration
       
       t.column :assignment_id, :integer, :null => false
       
-      t.column :input, :text, :null => false, :default => ''
-      t.column :output, :text, :null => false, :default => ''
+      t.column :input, :text, :null => false
+      t.column :output, :text, :null => false
       t.column :tolerance, :float, :null => false, :default => 1.0
       t.column :ignore_newlines, :boolean, :null => false, :default => false
       

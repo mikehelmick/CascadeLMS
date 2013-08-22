@@ -6,8 +6,8 @@ class CreateIoCheckResults < ActiveRecord::Migration
       t.column :user_id, :integer, :null => false
       t.column :user_turnin_id, :integer, :null => false
       
-      t.column :output, :text, :null => false, :default => ''
-      t.column :diff_report, :text, :null => false, :default => ''
+      t.column :output, :text, :null => false
+      t.column :diff_report, :text, :null => false
       t.column :match_percent, :float, :null => false
       
       t.column :created_at, :datetime, :null => false

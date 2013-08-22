@@ -6,6 +6,6 @@ require(File.join(File.dirname(__FILE__), 'config', 'boot'))
 include Rake::DSL if defined?(Rake::DSL)
 require 'rake'
 require 'rake/testtask'
-require 'rake/rdoctask'
+require 'rdoc/task'
 
 require 'tasks/rails'

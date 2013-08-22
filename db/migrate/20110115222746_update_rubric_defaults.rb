@@ -1,18 +1,11 @@
 class UpdateRubricDefaults < ActiveRecord::Migration
   def self.up
-    change_column(:rubrics, :primary_trait, :text, {:null => false, :default => ""})
-    change_column(:rubrics, :primary_trait, :text, {:null => false, :default => ""})
-    
-    change_column(:rubrics, :no_credit_criteria, :text, {:null => false, :default => ""})
     change_column(:rubrics, :no_credit_points, :float, {:null => false, :default => 0.0})
     
-    change_column(:rubrics, :part_credit_criteria, :text, {:null => false, :default => ""})
     change_column(:rubrics, :part_credit_points, :float, {:null => false, :default => 0.0})
     
-    change_column(:rubrics, :full_credit_criteria, :text, {:null => false, :default => ""})
     change_column(:rubrics, :full_credit_points, :float, {:null => false, :default => 0.0})
     
-    change_column(:rubrics, :above_credit_criteria, :text, {:null => false, :default => ""})
     change_column(:rubrics, :above_credit_points, :float, {:null => false, :default => 0.0})
   end
 

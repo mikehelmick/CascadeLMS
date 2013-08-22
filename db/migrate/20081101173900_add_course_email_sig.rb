@@ -1,6 +1,6 @@
 class AddCourseEmailSig < ActiveRecord::Migration
   def self.up
-      add_column( :course_settings, :email_signature, :text, :null => false, :default => "" )
+      add_column( :course_settings, :email_signature, :text, :null => false)
     end
 
     def self.down
