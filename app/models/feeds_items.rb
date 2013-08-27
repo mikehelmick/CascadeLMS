@@ -20,7 +20,13 @@ class FeedsItems < ActiveRecord::Base
   def self.apply_acls(feeds_items, user)
     if user.nil?
       # If user is nil, then this is public access.
-      feeds_items.select { |feeds_items| feeds_items.item.public }
+      feeds_items.select do |feeds_items| 
+        if feeds_items.item.nil?
+          false 
+        else 
+          feeds_items.item.public 
+        end 
+      end
     else
       # nil items should be removed, and items where the ACL check is false should be removed.  
       feeds_items.select { |feeds_items| !feeds_items.item.nil? && feeds_items.item.acl_check?(user) }
