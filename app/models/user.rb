@@ -214,6 +214,7 @@ class User < ActiveRecord::Base
   end
   
   def before_create
+    self.uniqueid.downcase!
     self.password = Digest::SHA1.hexdigest( self.email + "mmmm...salty" + self.password + "ROCK, ROCK ON" )
   end
   
