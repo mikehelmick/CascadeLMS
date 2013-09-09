@@ -94,7 +94,7 @@ class String
     while (!pre_s.nil? && !pre_se.nil? && !pre_e.nil? && pre_e > pre_s)
       # Strip breaks, this code is naturally broken with newlines
       temp = output[0..pre_se]
-      temp = temp + output[pre_se+1...pre_e].gsub(/\<br\/\>/, '').gsub(/\<br \/\>/, '').gsub(/\<br\>/, '')
+      temp = temp + output[pre_se+1...pre_e].gsub(/\<br\/\>/, '').gsub(/\<br \/\>/, '').gsub(/\<br\>/, '\n')
       temp = temp + output[pre_e..-1]
       output = temp
 
@@ -125,6 +125,7 @@ class String
   end
 
   def apply_markup
-    return HtmlEngine.apply_textile(self.apply_code_tag).remove_breaks_from_pre()
+    # Removed - remove_breaks_from_pre(). Of course this doesn't impact strings already translated
+    return HtmlEngine.apply_textile(self.apply_code_tag)
   end
 end
