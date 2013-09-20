@@ -3,10 +3,12 @@ require 'LdapAuthentication'
 
 class IndexController < ApplicationController
   
-  before_filter :check_login, :except => [ :logout, :credits, :api, :logged_in, :tickle ]
+  before_filter :check_login, :except => [ :logout, :credits, :api, :logged_in, :tickle, :shibboleth ]
   before_filter :set_title
   
-  def index 
+  def index
+    @authtype = @app['authtype']
+     
     @user = User.new
     if params[:out].eql?('out')
       flash[:notice] = "You have been logged out."
@@ -16,6 +18,17 @@ class IndexController < ApplicationController
 
     showAds()
     render :layout => 'login'
+  end
+
+  def shibboleth
+    @new_user = shibboleth_authenticate()
+
+    if !@new_user
+      # Logged in, send to home
+      redirect_to :controller => '/home'
+    else
+      render :layout => 'transitional'
+    end
   end
 
   def tickle

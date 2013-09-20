@@ -114,6 +114,9 @@ class HomeController < ApplicationController
     return unless ensure_basic_auth
     
     @confirm = ''
+
+    @show_change_password = @app['authtype'].eql?('basic')
+    
     
     ## for the right display
     set_tab
@@ -122,7 +125,7 @@ class HomeController < ApplicationController
   end
   
   def account_update
-    return unless ensure_basic_auth
+    return unless ensure_not_ldap()
     
     ## for the right display
     set_tab
@@ -135,26 +138,29 @@ class HomeController < ApplicationController
     @user.office_hours = params[:office_hours]
     @user.save
     
+    requirePasswordValid = !'shibboleth'.eql?(@app['authtype'])
     unless @user.email.eql?( params[:email] )
-      unless @user.change_email( params[:email], params[:password] )
+      unless @user.change_email( params[:email], params[:password], requirePasswordValid)
         return bail( 'Incorrect password entered, email address has not been changed.' )
       end
       @user.save
       flash[:notice] = "Your email address has been updated."
     end
-    
-    unless params[:new_password].nil? || params[:new_password].eql?('') 
-      unless @user.valid_password?(params[:password])
-        return bail('Current password incorrect, password has not been changed')
-      end
-      unless params[:new_password].eql?( params[:new_password_confirm] )
-        return bail('New password and its confirmation do not match.  Password has not been changed.')
-      end
-      
-      @user.update_password( params[:new_password] )
-      @user.save
-      flash[:notice] = "#{flash[:notice]} Your password has been updated."
 
+    # Not all authentication types allow the password to be changed in the application.
+    if requirePasswordValid
+      unless params[:new_password].nil? || params[:new_password].eql?('') 
+        unless @user.valid_password?(params[:password])
+          return bail('Current password incorrect, password has not been changed')
+        end
+        unless params[:new_password].eql?( params[:new_password_confirm] )
+          return bail('New password and its confirmation do not match.  Password has not been changed.')
+        end
+
+        @user.update_password( params[:new_password] )
+        @user.save
+        flash[:notice] = "#{flash[:notice]} Your password has been updated."
+      end
     end
     
     redirect_to :action => 'account'

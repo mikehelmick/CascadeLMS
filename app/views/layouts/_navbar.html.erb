@@ -101,7 +101,13 @@
 			  <% end %>
 
 			
-			  <li><%= link_to 'Log Out <i class="icon-lock"></i>', :controller => '/index', :action => 'logout' %></li>
+			  <li>
+			    <% if @app['authtype'].eql?('shibboleth') %>
+			      <a href="/Shibboleth.sso/Logout">Log Out <i class="icon-lock"></i></a>
+			    <% else %>
+			      <%= link_to 'Log Out <i class="icon-lock"></i>', :controller => '/index', :action => 'logout' %>
+			    <% end %>
+			  </li>
 		    </ul>
 		  </li>
 		</ul>

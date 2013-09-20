@@ -234,10 +234,12 @@ class User < ActiveRecord::Base
     display_name
   end
   
-  def change_email( email, new_password ) 
-    if valid_password?( new_password )
+  def change_email( email, new_password, requireValidPassword = true ) 
+    if !requireValidPassword || valid_password?( new_password )
       self.email = email
-      self.password = Digest::SHA1.hexdigest(email + "mmmm...salty" + new_password + "ROCK, ROCK ON")
+      if requireValidPassword
+        self.password = Digest::SHA1.hexdigest(email + "mmmm...salty" + new_password + "ROCK, ROCK ON")
+      end
       return true
     else 
       return false

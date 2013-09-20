@@ -36,7 +36,7 @@ require 'browser'
 # Likewise, all the methods added will be available for all controllers.
 class ApplicationController < ActionController::Base
   ## CSCW Application version
-  @@VERSION = '2.0.038 <em>beta</em> (Jefferson) 20130504'
+  @@VERSION = '2.0.039 <em>beta</em> (Jefferson) 20130920'
   
   ## Supress password logging
   filter_parameter_logging :password
@@ -231,6 +231,14 @@ class ApplicationController < ActionController::Base
 
   def is_domain_restrict()
     return !@app['authtype']
+  end
+
+  def ensure_not_ldap
+    unless !@app['authtype'].eql?('ldap')
+      redirect_to :action => 'index'
+      return false
+    end
+    return true    
   end
   
   def ensure_basic_auth
@@ -513,6 +521,74 @@ class ApplicationController < ActionController::Base
 
   def is_using_ldap()
     return @app['authtype'].downcase.eql?('ldap')
+  end
+
+  def shibboleth_authenticate()
+    fieldAffiliation = request.env[@app['shib_field_affiliation']]
+    fieldFirstName = request.env[@app['shib_field_firstname']]
+    fieldLastName = request.env[@app['shib_field_lastname']]
+    fieldEMail = request.env[@app['shib_field_mail']]
+    fieldOrgId = request.env[@app['shib_field_org_id']]
+    fieldPhone = request.env[@app['shib_field_phone']]
+    fieldTitle = request.env[@app['shib_field_title']]
+    fieldUniqueId = request.env[@app['shib_field_uid']]
+    instructorAffiliation = @app['shib_instructor_affiliation']
+    fieldPersistentId = request.env[@app['shib_field_persistent_id']]
+
+    @user = User.find(:first, :conditions => ["uniqueid = ?", fieldUniqueId])
+    newUser = true
+
+    # Three cases - user already exists, and has been shibboleth authentacted before. Procede to home.
+    # User already exists, but hasn't shibboleth authenticated, show welcome screen.
+    # user doesn't exist, create user, show welcome screen.
+
+    if @user.nil?
+      @user = User.new
+      @user.uniqueid = fieldUniqueId
+    else
+      # user exists
+      if @user.shibboleth_auth
+        # user exists and has authenticated with shibboleth before
+        newUser = false
+      end
+    end
+      
+    # Adjust name, etc based on the shibboleth profile
+    # Email is only adjusted the first time, and then can be updated again later
+    if newUser
+      # If obsfucate the password, this effectievly removes the password for users that had once been on basic auth.
+      @user.password = fieldPersistentId
+      @user.affiliation = fieldAffiliation
+      @user.instructor = !fieldAffiliation.index(instructorAffiliation).nil?
+      @user.first_name = fieldFirstName
+      @user.last_name = fieldLastName
+      @user.email = fieldEMail
+      @user.org_id = fieldOrgId
+      @user.phone_number = fieldPhone
+      @user.title = fieldTitle
+      
+      @user.shibboleth_auth = true
+      @user.create_feed
+      @user.save
+    end
+    
+    if !@user.affiliation.eql?(fieldAffiliation)
+      # Update the affiliation in case a user becomes an instructor
+      @user.affiliation = fieldAffiliation
+      @user.instructor = !fieldAffiliation.index(instructorAffiliation).nil?
+      @user.save
+    end
+    if !@user.title.eql?(fieldTitle)
+      @user.title = fieldTitle
+      @user.save
+    end
+    
+
+    # Load session variables.
+    session[:user] = User.find( @user.id )
+    session[:ip] = request.remote_ip
+    session[:current_term] = Term.find_current
+    return newUser
   end
   
   def authenticate( user, redirect = true, force_basic = false )

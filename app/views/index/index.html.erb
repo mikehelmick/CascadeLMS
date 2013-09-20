@@ -9,6 +9,18 @@
 
 <h2><%= @app['title'] %> - CascadeLMS</h2>
 
+
+<% if 'shibboleth'.eql?(@authtype) %>
+ <div class="row-fluid">
+  <div class="span6" style="align: center">
+    <%= link_to "Login with your #{@app['organization']} credentials.", {:controller => '/index', :action => 'shibboleth'}, :class => 'btn btn-large btn-success' %>
+  </div>
+  <div class="span6" style="align: center">
+	<!-- TODO(mikehelmick): Support auditor standalone login -->
+  </div>
+ </div>
+<% else %>
+
 <% form_tag( {:action => 'login'}, {:class => 'form-horizontal'} ) do %>
  <fieldset>
     <legend><strong>Please login:</strong> Enter your username and password.</legend>
@@ -26,6 +38,7 @@
 	</div>
   </fieldset>
 
+
   <%= submit_tag 'Login', 'tabindex' => '3', :class => 'btn btn-large btn-primary' %>
   <% if @app['authtype'].eql?('basic') %>
     <%= link_to 'Help! I forgot my password!', {:controller => '/index', :action => 'forgot'}, :class => 'btn btn-large btn-warning' %>
@@ -33,4 +46,5 @@
   <% if @app['auth_self_registration'].eql?('true') %>
     <%= link_to 'Create a new account.', {:controller => '/index', :action => 'register'}, :class => 'btn btn-large btn-success' %>
   <% end %>
+<% end %>
 <% end %>
