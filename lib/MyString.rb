@@ -125,6 +125,7 @@ class String
   end
 
   def apply_markup
-    return HtmlEngine.apply_textile(self.apply_code_tag).remove_breaks_from_pre()
+    # Removed .remove_breaks_from_pre() - better newlines in code
+    return HtmlEngine.apply_textile(self.apply_code_tag)
   end
 end
