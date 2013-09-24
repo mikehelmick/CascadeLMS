@@ -1,3 +1,0 @@
-[submodule "vendor/plugins/ruby-saml"]
-	path = vendor/plugins/ruby-saml
-	url = git@github.com:mikehelmick/ruby-saml.git
