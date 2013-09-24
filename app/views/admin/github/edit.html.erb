@@ -1,0 +1,7 @@
+<h2>Editing Github Server '<%= @github_server.name %>'</h2>
+
+<% form_tag( {:action => 'update', :id => @github_server}, {:class => 'form-horizontal'} ) do %>
+  <%= render :partial => 'form' %>
+  <%= submit_tag 'Save Changes', :class => 'btn btn-primary' %>
+  <%= link_to 'Back', {:action => 'list'}, {:class => 'btn'} %>
+<% end %>

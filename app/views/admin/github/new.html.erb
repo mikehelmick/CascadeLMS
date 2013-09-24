@@ -1,0 +1,8 @@
+<h2>New Github Server</h2>
+
+<% form_tag( {:action => 'create'}, {:class => 'form-horizontal'} ) do %>
+  <%= render :partial => 'form' %>
+
+  <%= submit_tag 'Create', :class => 'btn btn-primary' %>
+  <%= link_to 'Back', {:action => 'index'}, {:class => 'btn'} %>
+<% end %>

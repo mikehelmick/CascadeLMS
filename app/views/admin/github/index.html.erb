@@ -1,0 +1,42 @@
+<h2>Github Servers</h2>
+
+<%= link_to 'New Github Server', {:action => 'new'}, {:class => 'btn btn-success'} %><br/><br/>
+
+<% if @servers.size == 0 %>
+  <div class="alert alert-info">There are no Github Servers configured.</div>
+<% else %>
+
+<table class="table table-condensed table-striped">
+  <tr>
+    <th>Name</th>
+    <th>API Endpoint</th>
+    <th>Endpoint</th>
+    <th>Client ID</th>
+    <th>Secret Key</th>
+    <th>Active?</th>
+    <th></th>
+  </tr>
+
+<% for server in @servers %>
+
+  <tr id="server_<%=server.id%>">
+    <td><%=h server.name %></td>
+    <td><%=h server.api_endpoint %></td>
+    <td><%=h server.web_endpoint %></td>
+    <td><%=h server.client_id %></td>
+    <td><%=h server.secret_key %></td>
+    <th>
+	  <% if server.active %>
+	    <%= link_to 'Yes', {:action => 'toggle_active', :id => server}, :confirm => 'Are you sure you want to deactivate this github server? It will no longer be available for use in assignments.' %>
+	  <% else %>
+	    <%= link_to 'No', {:action => 'toggle_active', :id => server}, :confirm => 'Are you sure you want to activate this github server for use?' %>
+	  <% end %>
+    <td>
+	  <div class="btn-group">
+         <%= link_to 'Edit', {:action => 'edit', :id => server}, {:class => 'btn btn-small'} %>
+      </div>
+    </td>
+  </tr>
+<% end %>
+</table>
+<% end %>

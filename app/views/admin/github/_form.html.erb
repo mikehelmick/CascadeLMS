@@ -1,0 +1,39 @@
+<%= error_messages_for('github_server', {:class => 'alert alert-error'}) %>
+
+<!--[form:github_server]-->
+<div class="control-group">
+  <label for="github_server_name" class="control-label">Server Name</label>
+  <div class="controls">
+    <%= text_field 'github_server', 'name'  %>
+  </div>
+</div>
+
+<div class="control-group">
+  <label for="github_api_endpoint" class="control-label">API Endpoint</label>
+  <div class="controls">
+    <%= text_field 'github_server', 'api_endpoint'  %>
+  </div>
+</div>
+
+<div class="control-group">
+  <label for="github_server_web_endpoint" class="control-label">Web Endpoint</label>
+  <div class="controls">
+    <%= text_field 'github_server', 'web_endpoint'  %>
+  </div>
+</div>
+
+<div class="control-group">
+  <label for="github_server_client_id" class="control-label">Client ID</label>
+  <div class="controls">
+    <%= text_field 'github_server', 'client_id'  %>
+  </div>
+</div>
+
+<div class="control-group">
+  <label for="github_server_secret_key" class="control-label">Secret Key</label>
+  <div class="controls">
+    <%= text_field 'github_server', 'secret_key'  %>
+  </div>
+</div>
+
+<!--[eoform:github_server]-->
