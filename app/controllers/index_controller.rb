@@ -23,6 +23,11 @@ class IndexController < ApplicationController
   def shibboleth
     @new_user = shibboleth_authenticate()
 
+    if @new_user.nil?
+      redirect_to :controller => '/', :action => nil
+      return
+    end
+
     if !@new_user
       # Logged in, send to home
       redirect_to :controller => '/home'
