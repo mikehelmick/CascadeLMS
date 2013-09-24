@@ -15,8 +15,6 @@
 </head>
 
 <body>
-  <%= render :partial => '/layouts/login_menu' %>
-
   <div class="container">
     <!-- Main hero unit for a primary marketing message or call to action -->
     <div class="hero-unit">
@@ -25,50 +23,6 @@
 
 		<%= @content_for_layout %>
     </div>
-
-<% if !@showAds.nil? && @showAds %>
- <div class="row">
-   <div class="span4">
-    <h2>Public Access</h2>
-    <p>Some courses provide public access to the course material, please <%= link_to 'take look at the list of courses offering public access.', :controller => '/public', :course => nil, :assignment => nil %></p>
-
-    <!-- <h2>Developer API</h2>
-    <p>CascadeLMS has an easy to use <%= link_to 'developer api', :controller => 'index', :action => 'api' %></p>
-    -->
-   </div>
-   <div class="span8">
-     <% if @publicCourses.size > 0 %>
-       <h2>Some of the Courses Available This Term</h2>
-
-	<ul class="nav nav-tabs">
-	  <% 0.upto(3) do |i| %>
-	    <% unless @publicCourses[i].nil? %>
-	      <li <%= 'class="active"' if i == 0 %>>
-		    <a href="#c<%= @publicCourses[i].id %>" data-toggle="tab"><%= @publicCourses[i].title %></a></li>
-		<% end %>
-	  <% end %>
-	</ul>
-	<div class="tab-content">
-	 <% 0.upto(3) do |i| %>
-	  <% unless @publicCourses[i].nil? %>
-	   <div class="tab-pane<%= " active" if i == 0 %>" id="c<%= @publicCourses[i].id %>">
-		 <dl class="dl-horizontal">
-		  <dt><%= @publicCourses[i].title %></dt>
-		  <dd><%= link_to "#{@publicCourses[i].short_description}", :controller => '/public', :action => 'overview', :course => @publicCourses[i].id %></dd>
-		  <dt>Instructor</dt>
-		  <dd><ul><% for instructor in  @publicCourses[i].instructors %>
-		       <li><%= instructor.to_s %></li>
-		      <% end %></ul>
-		  </dd>
-		 </dl>
-	   </div>
-	  <% end %>
-	 <% end %>
-	</div>
-     <% end %>
-   </div>
- </div>
-<% end %>
 
 <footer class="footer">
 CascadeLMS, Copyright &copy; 2006 - 2013 <a href="http://www.cascadelms.org/">Mike Helmick</a> -

@@ -12,6 +12,9 @@
   <div class="span8">
   	<h2><%= @user_profile.user.display_name %>'s Profile
     <% if @show_following %><%= render :partial => 'following', :locals => {:feed_subscription => @feed_subscription, :user => @user_profile.user} %><% end %></h2>
+    <% if !@user.title.nil? && !''.eql?(@user.title) %>
+      <h3><%= @user.title %></h3>
+    <% end %>
 
     <div class="well">
 	  <% unless @user_profile.major.nil? %>

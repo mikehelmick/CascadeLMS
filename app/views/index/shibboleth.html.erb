@@ -1,0 +1,25 @@
+
+<div class="alert alert-success">
+Welcome to CascadeLMS at the <%= @app['organization'] %>!
+</div>
+
+<h3>Information review</h3>
+<p>Please review your account information. Some of this information can be changed by selecting the edit profile link from the home screen.</p>
+
+<ul>
+ <li>UserId: <%= @user.uniqueid %></li>
+ <% unless @user.org_id.nil? || ''.eql?(@user.org_id ) %>
+   <li>ID: <%= @user.org_id %></li>
+ <% end %>
+ <li>Name: <%= @user.display_name() %></li>
+ <% unless @user.title.nil? || ''.eql?(@user.title) %>
+   <li>Title: <%= @user.title %></li>
+ <% end %>
+ <li>Email: <%= @user.email %> <span class="label label-important">Information from CascadeLMS will be sent here!</span></li>
+ <li>Phone: <%= @user.phone_number %></li>
+ <% if @user.instructor %>
+   <li>Instructor: <span class="label label-important">You have instructor access, you can create courses from the home screen.</span></li>
+ <% end %>
+</ul>
+
+<%= link_to "Continue", {:controller => '/home', :action => nil}, :class => 'btn btn-large btn-success' %>

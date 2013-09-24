@@ -7,7 +7,7 @@ class User < ActiveRecord::Base
   validates_uniqueness_of :email, :message => 'That email address is already registered.'
   validates_presence_of :uniqueid, :password, :first_name, :last_name, :email
   validates_format_of :first_name, :last_name, :with => /^[a-zA-Z0-9 '-.][a-zA-Z0-9 '-.]*$/, :message => 'name may only contains letters, numbers, "\'", spaces and "-" characters.'
-  validates_length_of :uniqueid, :within => 4..99, :too_long => ' Your username must be less than 100 characters in length.', :too_short => 'Your username must be at least 4 characters in length.'
+  validates_length_of :uniqueid, :within => 2..99, :too_long => ' Your username must be less than 100 characters in length.', :too_short => 'Your username must be at least 2 characters in length.'
   validates_format_of :email, :with => /^([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})$/i
   
   has_many :courses_users
@@ -214,6 +214,7 @@ class User < ActiveRecord::Base
   end
   
   def before_create
+    self.uniqueid.downcase!
     self.password = Digest::SHA1.hexdigest( self.email + "mmmm...salty" + self.password + "ROCK, ROCK ON" )
   end
   
@@ -233,10 +234,12 @@ class User < ActiveRecord::Base
     display_name
   end
   
-  def change_email( email, new_password ) 
-    if valid_password?( new_password )
+  def change_email( email, new_password, requireValidPassword = true ) 
+    if !requireValidPassword || valid_password?( new_password )
       self.email = email
-      self.password = Digest::SHA1.hexdigest(email + "mmmm...salty" + new_password + "ROCK, ROCK ON")
+      if requireValidPassword
+        self.password = Digest::SHA1.hexdigest(email + "mmmm...salty" + new_password + "ROCK, ROCK ON")
+      end
       return true
     else 
       return false

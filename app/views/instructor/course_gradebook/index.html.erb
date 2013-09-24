@@ -34,9 +34,9 @@
 	     <% end %>
 	   <% else %>
 	     <% if gi.assignment.nil? %>
-	       <span rel="tooltip" title="Visible to Students"><%= link_to '<i class="icon-eye-close"></i>', :action => 'item', :course => @course, :id => gi.id %></span>
+	       <span rel="tooltip" title="Not visible to Students"><%= link_to '<i class="icon-eye-close"></i>', :action => 'item', :course => @course, :id => gi.id %></span>
 	     <% else %>
-	       <span rel="tooltip" title="Visible to Students"><%= link_to '<i class="icon-eye-close"></i>', :controller => '/instructor/turnins', :action => 'toggle_released', :course => @course, :assignment => gi.assignment, :gradebook => true %></span>
+	       <span rel="tooltip" title="Not visible to Students"><%= link_to '<i class="icon-eye-close"></i>', :controller => '/instructor/turnins', :action => 'toggle_released', :course => @course, :assignment => gi.assignment, :gradebook => true %></span>
 	     <% end %>
 	   <% end %>
 	   <span rel="tooltip" title="Edit Item Information">

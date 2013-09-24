@@ -35,7 +35,10 @@
  <div class="control-group">
   <label for="fixed_instructor" class="control-label">Instructor Access</label>
   <div class="controls">
-   <%= text_field_tag 'fixed_instructor', @user.affiliation, {:disabled => true}  %>
+   <% instAccess = 'No'
+      instAccess = 'Yes' if @user.instructor
+    %>
+   <%= text_field_tag 'fixed_instructor', instAccess, {:disabled => true}  %>
   </div>
  </div>
  <% end %>
@@ -53,6 +56,8 @@
    <%= text_field_tag 'email', @user.email, :class => 'input-large' %>
   </div>
  </div>
+
+ <% if @show_change_password %>
  <div class="control-group">
   <label for="password" class="control-label">Current Password</label>
   <div class="controls">
@@ -72,3 +77,4 @@
    <%= password_field_tag 'new_password_confirm' %>
   </div>
  </div>
+ <% end %>
