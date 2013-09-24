@@ -36,7 +36,7 @@ require 'browser'
 # Likewise, all the methods added will be available for all controllers.
 class ApplicationController < ActionController::Base
   ## CSCW Application version
-  @@VERSION = '2.0.039 <em>beta</em> (Jefferson) 20130920'
+  @@VERSION = '2.0.040 <em>beta</em> (Jefferson) 20130924'
   
   ## Supress password logging
   filter_parameter_logging :password
@@ -524,6 +524,11 @@ class ApplicationController < ActionController::Base
   end
 
   def shibboleth_authenticate()
+    if (request.env[@app['shib_field_uid']].nil? || request.env[@app['shib_field_uid']].eql?(''))
+      flash[:badnotice] = "You must authenticate before continuing."
+      return nil
+    end
+    
     fieldAffiliation = request.env[@app['shib_field_affiliation']]
     fieldFirstName = request.env[@app['shib_field_firstname']]
     fieldLastName = request.env[@app['shib_field_lastname']]
@@ -559,7 +564,7 @@ class ApplicationController < ActionController::Base
       # If obsfucate the password, this effectievly removes the password for users that had once been on basic auth.
       @user.password = fieldPersistentId
       @user.affiliation = fieldAffiliation
-      @user.instructor = !fieldAffiliation.index(instructorAffiliation).nil?
+      @user.instructor = !fieldAffiliation.index(instructorAffiliation).nil? rescue @user.instructor = nil
       @user.first_name = fieldFirstName
       @user.last_name = fieldLastName
       @user.email = fieldEMail
