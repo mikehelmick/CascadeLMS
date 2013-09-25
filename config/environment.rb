@@ -43,7 +43,6 @@ Rails::Initializer.run do |config|
   config.gem 'packet'
   config.gem 'oauth'
   config.gem 'twitter'
-  config.gem 'omniauth-shibboleth'
 
   # See Rails::Configuration for more options
 end
