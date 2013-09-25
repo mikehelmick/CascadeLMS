@@ -15,6 +15,7 @@ class Notifier < ActionMailer::Base
     @bcc = addresses
     @subject = subject
     @from = "#{from_user.display_name} <#{from_user.email}>"
+    @reply_to = "#{from_user.display_name} <#{from_user.email}>"
     
     @body[:text] = text
   end
@@ -24,6 +25,7 @@ class Notifier < ActionMailer::Base
     @bcc = [from_user.email]
     @subject = subject
     @from = "#{from_user.display_name} <#{from_user.email}>"
+    @reply_to = "#{from_user.display_name} <#{from_user.email}>"
     
     @body[:text] = text
   end
