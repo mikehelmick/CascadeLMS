@@ -93,7 +93,7 @@
        clazz = 'label-success'
        if @extensions[student.id] >= @course.gradebook.extension_hours
          clazz = 'label-important'
-       elsif @extensions[student.id] >= @course.gradebook.extension_hours * 0.75
+       elsif @extensions[student.id] >= @course.gradebook.extension_hours * 0.5
 	     clazz = 'label-warning'
 	   end
        %>

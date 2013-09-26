@@ -7,6 +7,39 @@
   <p><%= link_to 'Back to turnins', {:course => @course, :assignment => @assignment, :controller => '/instructor/turnins', :action => nil}, {:class => 'btn'} %></p>
 <% end %>
 
+<hr/>
+<%
+	clazz = 'label-success'
+	progress_class = 'progress-success'
+    if @extension_hours >= @course.gradebook.extension_hours
+      clazz = 'label-important'
+      progress_class = 'progress-danger'
+    elsif @extension_hours >= @course.gradebook.extension_hours * 0.5
+	  clazz = 'label-warning'
+	  progress_class = 'progress-warning'
+	end
+   %>
+  <p><%= @student.display_name %> has received <%= pluralize(@user_extensions.size, 'extension') %> on assignments, and used
+  <span class="label <%= clazz %>"><%= pluralize(@extension_hours, 'hour') %></span> out of 
+  <%= pluralize(@course.gradebook.extension_hours, 'hour') %> available.</p>
+  <div class="progress <%= progress_class %> active progress-striped">
+    <div class="bar" style="width: <%= ((@extension_hours / @course.gradebook.extension_hours.to_f)*100).to_i %>%"></div>
+  </div>
+  <% if @user_extensions.size > 0 %> 
+    <p>Currently granted extensions:
+    <ul>
+	  <% for ex in @user_extensions %>
+	    <li>Assignment: '<%= ex.assignment.title %>', Due: <%= ex.assignment.due_date.to_formatted_s(:long) %>, Extension to: <%= ex.extension_date.to_formatted_s(:long) %>
+		  <ul>
+			<li>Extension time: <%= ((ex.extension_date.to_i - ex.assignment.due_date.to_i) / 60.0 / 60.0) %> hours</li>
+		  </ul>
+		</li>
+	  <% end %>
+	</ul>
+	</p>
+  <% end %>
+<hr/>
+
 <p>Edit due-date extension for <b><%= @student.display_name %></b></p>
 
 <% form_tag( {:action => 'update_grant', :id => @student.id, :course => @course, :assignment => @assignment}, {:class => 'form-horizontal'} ) do %>

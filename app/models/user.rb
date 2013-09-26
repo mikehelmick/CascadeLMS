@@ -77,6 +77,23 @@ class User < ActiveRecord::Base
       "#{self.first_name} #{self.middle_name} #{self.last_name}"
     end
   end
+
+  # Returns a tuple of the
+  # (user_extensions, extension_hours)
+  def extension_details(course)
+    user_extensions = Extension.find(:all,
+        :joins => ["left outer join assignments on extensions.assignment_id = assignments.id"],
+        :conditions => ["course_id = ? and extensions.user_id = ?", course.id, self.id])
+    extension_hours = 0
+    user_extensions.each do |extension|
+      seconds_used = extension.extension_date.to_i - extension.assignment.due_date.to_i
+      if (seconds_used > 0)
+        extension_hours = extension_hours + seconds_used
+      end
+    end
+    extension_hours = (extension_hours / 60.0 / 60.0).ceil
+    return user_extensions, extension_hours
+  end
   
   ## Returns a courses_user obj - so you have the course and relationship to the course
   def courses_in_term( term )

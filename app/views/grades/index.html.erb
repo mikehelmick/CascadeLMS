@@ -10,7 +10,7 @@
     if @extension_hours >= @course.gradebook.extension_hours
       clazz = 'label-important'
       progress_class = 'progress-danger'
-    elsif @extension_hours >= @course.gradebook.extension_hours * 0.75
+    elsif @extension_hours >= @course.gradebook.extension_hours * 0.5
 	  clazz = 'label-warning'
 	  progress_class = 'progress-warning'
 	end
