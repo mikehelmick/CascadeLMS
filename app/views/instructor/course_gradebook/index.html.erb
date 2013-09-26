@@ -15,6 +15,9 @@
    <th nowrap="nowrap">ID</th>
    <th nowrap="nowrap">Students</th>
    <% if @showSections %><th nowrap="nowrap">Section</th><% end %>
+   <% if @course.gradebook.track_extensions %>
+     <th nowrap="nowrap">Extensions<br/>Granted<br/>(<%= @course.gradebook.extension_hours %> Hours)</th>
+   <% end %>
    <% for gi in @grade_items %>
 	<th class="cell"  nowrap="nowrap">  
 	  <% if gi.assignment.nil? || gi.assignment.file_uploads %>
@@ -81,6 +84,21 @@
 	<td  nowrap="nowrap"><%= student.uniqueid %></td>
 	<td  nowrap="nowrap"><%= student.display_name %></td>
 	<% if @showSections %><td nowrap="nowrap"><%= student_cu.crn.name rescue "-none-" %></th><% end %>
+
+    <% if @course.gradebook.track_extensions %>
+      <%
+       if @extensions[student.id].nil?
+	     @extensions[student.id] = 0
+	   end
+       clazz = 'label-success'
+       if @extensions[student.id] >= @course.gradebook.extension_hours
+         clazz = 'label-important'
+       elsif @extensions[student.id] >= @course.gradebook.extension_hours * 0.75
+	     clazz = 'label-warning'
+	   end
+       %>
+	  <td nowrap="nowrap"><span class="label <%= clazz %>"><%= @extensions[student.id] %></span> / <%= @course.gradebook.extension_hours %></td>
+	<% end %>
 	
 	<% for gi in @grade_items %>
 	  <td class="cell">
@@ -120,7 +138,8 @@
 <% if @students.size > 0 %>
   <tr class="summary">
 	<% span = 2 
-	   span = 3 if @showSections %>
+	   span = span.next if @showSections 
+	   span = span.next if @course.gradebook.track_extensions %>
     <td colspan="<%= span %>" class="summaryCell"><b>Item Averages</b></td>
 	
 	<% for gi in @grade_items %>
@@ -204,6 +223,37 @@
 	<td class="summaryCell">*****</td>
 	<td class="summaryCell">*****</td>
   </tr>
+
+  <% if @course.gradebook.track_extensions %>
+    <tr class="summary">
+	  <td colspan="<%= span %>" class="summaryCell"><b>Extension Counts</b></td>
+	  <% for gi in @grade_items %>
+	    <td class="summaryCell" align="right">
+	    	<% unless gi.assignment.nil? %>
+		      <%= @assignment_extension_count[gi.assignment_id] %>
+	        <% end %>
+	    </td>
+	  <% end %>
+  	  <td class="summaryCell">*****</td>
+	  <td class="summaryCell">*****</td>
+	  <td class="summaryCell">*****</td>
+	</tr>
+
+    <tr class="summary">
+	  <td colspan="<%= span - 1 %>" class="summaryCell"><b>Extension Hours Granted</b></td>
+	  <td class="summaryCell"><%= @total_extension_hours %> (total hours)</td>
+	  <% for gi in @grade_items %>
+	    <td class="summaryCell" align="right">
+	    	<% unless gi.assignment.nil? %>
+		      <%= @assignment_extension_time[gi.assignment_id] %>
+	        <% end %>
+	    </td>
+	  <% end %>
+  	  <td class="summaryCell">*****</td>
+	  <td class="summaryCell">*****</td>
+	  <td class="summaryCell">*****</td>
+	</tr>
+  <% end %>
 
 <% end %>
 

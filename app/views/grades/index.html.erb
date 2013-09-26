@@ -1,6 +1,31 @@
 <h2>Grades for <%= @user.display_name %></h2>
 <h3><%= @course.title %>, <%= @course.term.semester %></h3>
 
+<% if @course.gradebook.track_extensions %>
+  <hr/>
+  <h4>Assignment Extensions</h4>
+  <%
+	clazz = 'label-success'
+	progress_class = 'progress-success'
+    if @extension_hours >= @course.gradebook.extension_hours
+      clazz = 'label-important'
+      progress_class = 'progress-danger'
+    elsif @extension_hours >= @course.gradebook.extension_hours * 0.75
+	  clazz = 'label-warning'
+	  progress_class = 'progress-warning'
+	end
+   %>
+  <p>You have received <%= pluralize(@user_extensions.size, 'extension') %> on assignments, and used
+  <span class="label <%= clazz %>"><%= pluralize(@extension_hours, 'hour') %></span> out of 
+  <%= pluralize(@course.gradebook.extension_hours, 'hour') %> available to you.</p>
+  <div class="progress <%= progress_class %> active progress-striped">
+    <div class="bar" style="width: <%= ((@extension_hours / @course.gradebook.extension_hours.to_f)*100).to_i %>%"></div>
+  </div>
+
+  <hr/>
+  <h4>Your Assignment Grades</h4>
+<% end %>
+
 <table class="table table-compact table-striped">
  <thead>
   <tr>

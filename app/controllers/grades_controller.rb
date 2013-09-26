@@ -22,6 +22,21 @@ class GradesController < ApplicationController
     
     @grade_items.each {|x| @total_points_possible += x.points if x.visible }
     
+    # Extensions
+    if @course.gradebook.track_extensions
+      @user_extensions = Extension.find(:all,
+          :joins => ["left outer join assignments on extensions.assignment_id = assignments.id"],
+          :conditions => ["course_id = ? and extensions.user_id = ?", @course.id, @user.id])
+      @extension_hours = 0
+      @user_extensions.each do |extension|
+        seconds_used = extension.extension_date.to_i - extension.assignment.due_date.to_i
+        if (seconds_used > 0)
+          @extension_hours = @extension_hours + seconds_used
+        end
+      end
+      @extension_hours = (@extension_hours / 60.0 / 60.0).ceil
+    end
+    
     # Weighting
     if !@course.gradebook.nil? && @course.gradebook.weight_grades
       weights = GradeWeight.reconcile( @course )

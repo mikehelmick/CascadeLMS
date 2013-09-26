@@ -19,6 +19,21 @@
    <%= radio_button 'gradebook', 'show_total', false %> No
   </div>
  </div>
+
+ <div class="control-group">
+  <label for="gradebook_track_extensions" class="control-label">Track total extension hours?</label>
+  <div class="controls">
+   <%= radio_button 'gradebook', 'track_extensions', true %> Yes
+   <%= radio_button 'gradebook', 'track_extensions', false %> No
+  </div>
+ </div>
+
+ <div class="control-group">
+  <label for="gradebook_extension_hours" class="control-label">Hours of extension allowed per student</label>
+  <div class="controls">
+	<%= text_field 'gradebook', 'extension_hours' %>
+  </div>
+ </div>
  
   <%= submit_tag('Save Settings', {:class => 'btn btn-primary'}) %>
   <%= link_to 'Cancel', {:controller => '/instructor/course_gradebook', :course => @course, :action => 'index'}, {:class => 'btn'} %>

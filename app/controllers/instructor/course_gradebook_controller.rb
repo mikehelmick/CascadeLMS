@@ -447,6 +447,51 @@ class Instructor::CourseGradebookController < Instructor::InstructorBase
         end
       end
     end
+
+    if @course.gradebook.track_extensions
+      due_dates = Hash.new
+      @assignment_extension_count = Hash.new
+      @assignment_extension_time = Hash.new
+      course.assignments.each do |assign|
+        # get the timestamp value
+        due_dates[assign.id] = assign.due_date.to_i
+        @assignment_extension_count[assign.id] = 0
+        @assignment_extension_time[assign.id] = 0
+      end
+      
+      all_extensions = Extension.find(:all,
+          :joins => ["left outer join assignments on extensions.assignment_id = assignments.id"],
+          :conditions => ["course_id = ?", course.id])
+      @extensions = Hash.new
+      all_extensions.each do |ex|
+        new_time = ex.extension_date.to_i - due_dates[ex.assignment_id] rescue new_time = 0
+        # If there is an extension that is before the due date, do not tack on negative seconds
+        new_time = 0 if new_time < 0
+
+        if @extensions[ex.user_id].nil?
+          @extensions[ex.user_id] = new_time
+        else
+          @extensions[ex.user_id] = @extensions[ex.user_id] + new_time
+        end
+        if @assignment_extension_count[ex.assignment_id].nil?
+          @assignment_extension_count[ex.assignment_id] = 0
+        end
+        @assignment_extension_count[ex.assignment_id] = @assignment_extension_count[ex.assignment_id] + 1
+        if @assignment_extension_time[ex.assignment_id].nil?
+          @assignment_extension_time[ex.assignment_id] = 0
+        end
+        @assignment_extension_time[ex.assignment_id] = @assignment_extension_time[ex.assignment_id] + new_time
+      end
+      # convert seconds of extension to hours of extension
+      @total_extension_hours = 0
+      @extensions.keys.each do |k|
+        @extensions[k] = (@extensions[k] / 60.0 / 60.0).ceil
+        @total_extension_hours = @total_extension_hours + @extensions[k]
+      end
+      @assignment_extension_time.keys.each do |k|
+        @assignment_extension_time[k] = (@assignment_extension_time[k] / 60.0 / 60.0).ceil
+      end
+    end
     
     if @students.size > 0
       @student_totals = Hash.new
