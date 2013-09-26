@@ -632,7 +632,7 @@ class Instructor::TurninsController < Instructor::InstructorBase
       @extension.extension_date = @assignment.due_date
     end
 
-    @user_extensions, @extension_hours = @user.extension_details(@course)
+    @user_extensions, @extension_hours = @student.extension_details(@course)
 
     @breadcrumb = Breadcrumb.for_assignment(@assignment)
     @breadcrumb.instructor = true
