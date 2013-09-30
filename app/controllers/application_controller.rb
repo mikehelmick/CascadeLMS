@@ -36,7 +36,7 @@ require 'browser'
 # Likewise, all the methods added will be available for all controllers.
 class ApplicationController < ActionController::Base
   ## CSCW Application version
-  @@VERSION = '2.0.043 <em>beta</em> (Jefferson) 20130926'
+  @@VERSION = '2.0.044 <em>beta</em> (Jefferson) 20130929'
   
   ## Supress password logging
   filter_parameter_logging :password

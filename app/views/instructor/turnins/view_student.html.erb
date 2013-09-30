@@ -1,4 +1,4 @@
-<h2>'<%= @assignment.title %>' submitted files for '<%= @student.display_name %>' <img src="<%= @user.gravatar_url(request.ssl?) %>" /></h2>
+<h2>'<%= @assignment.title %>' submitted files for '<%= @student.display_name %>' <img src="<%= @student.gravatar_url(request.ssl?) %>" /> (<%= @student.uniqueid %>)</h2>
 
 <div class="btn-group">
  <%= link_to 'Back to all students', {:controller => '/instructor/turnins', :course => @course, :assignment => @assignment}, {:class => 'btn btn-danger'} %>
