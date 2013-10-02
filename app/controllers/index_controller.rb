@@ -92,7 +92,11 @@ class IndexController < ApplicationController
   
   def logout
     reset_session
-    redirect_to :action => 'index', :out => 'out'
+    if @app['authtype'].eql?('shibboleth')
+      redirect_to "/Shibboleth.sso/Logout"
+	  else
+	    redirect_to :action => 'index', :out => 'out'
+    end
   end
 
   def register
