@@ -590,7 +590,7 @@ class ApplicationController < ActionController::Base
     
 
     # Load session variables.
-    session[:user] = User.find( @user.id )
+    session[:user] = @user
     session[:ip] = request.remote_ip
     session[:current_term] = Term.find_current
     return newUser
