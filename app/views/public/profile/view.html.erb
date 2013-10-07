@@ -1,0 +1,35 @@
+<div class="alert">Public version of this user's profile</div>
+<div class="row">	
+  <div class="span1"></div>
+  <div class="span3">
+  	<img src="<%= @user_profile.user.gravatar_url(request.ssl?, 300) %>">
+  </div>
+  <div class="span8">
+  	<h2><%= @user_profile.user.display_name %>'s Profile
+    <% if @show_following %><%= render :partial => 'following', :locals => {:feed_subscription => @feed_subscription, :user => @user_profile.user} %><% end %></h2>
+    <% if !@user_profile.user.title.nil? && !''.eql?(@user_profile.user.title) %>
+      <h3><%= @user_profile.user.title %></h3>
+    <% end %>
+
+    <div class="well">
+	  <% unless @user_profile.major.nil? %>
+	    <dl>
+		  <dt>Major</dt>
+		  <dd><%=h @user_profile.major %></dd>
+	    </dl>
+	  <% end %>
+	  <% unless @user_profile.year.nil? %>
+	    <dl>
+		  <dt>Year / Class</dt>
+		  <dd><%=h @user_profile.year %></dd>
+		</dl>
+	  <% end %>
+	  <% unless @user_profile.about_me.nil? %>
+	    <dl>
+		  <dt>About Me</dt>
+		  <dd><%= @user_profile.about_me.to_html %></dd>
+		</dl>
+	  <% end %>
+	</div>
+  </div>
+</div>

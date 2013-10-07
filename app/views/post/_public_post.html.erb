@@ -11,11 +11,7 @@
     <% unless item.user.nil? %>
       By: <%= link_to "#{item.user.display_name}", :controller => '/public/profile', :action => 'view', :id => item.user.id, :course => nil, :assignment => nil %> /
     <% end %>
-    <% if item.created_at > day_ago %>
-      <%= link_to "#{item.created_at.to_formatted_s(:social_time)}", :controller => '/public/post', :id => item.id, :course => nil, :assignment => nil, :action => 'view' %>
-	<% else %>
-	  <%= link_to "#{item.created_at.to_formatted_s(:social_date)}", :controller => '/public/post', :id => item.id, :course => nil, :assignment => nil, :action => 'view' %>
-	<% end %>
+    <%= item.created_at.to_formatted_s(:social_time) %>
 	
 	<% unless item.course.nil? %>
 	  / <%= link_to "#{h item.course.title}", :controller => '/public/overview', :course => item.course, :id => nil %>

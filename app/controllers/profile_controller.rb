@@ -186,29 +186,6 @@ class ProfileController < ApplicationController
   end
 
   private
-  def load_profile(params)
-    if !params[:id].nil? && !''.eql?(params[:id])
-      begin
-        profile_user = User.find(params[:id])        
-        @user_profile = profile_user.user_profile
-        if @user_profile.nil?
-          @user_profile = UserProfile.new
-          @user_profile.user = profile_user
-        end
-      rescue
-        flash[:badnotice] = 'The requested profile could not be found'
-        redirect_to :controller => '/home', :action => nil, :id => nil
-        return
-      end
-    else
-      @user_profile = @user.user_profile if @user_profile.nil?
-      if @user_profile.nil?
-        @user_profile = UserProfile.new
-        @user_profile.user = @user
-      end
-    end
-  end
-
   def setup_edit()
     # prepare for autocomplete
     load_majors()
