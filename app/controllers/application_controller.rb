@@ -36,7 +36,7 @@ require 'browser'
 # Likewise, all the methods added will be available for all controllers.
 class ApplicationController < ActionController::Base
   ## CSCW Application version
-  @@VERSION = '2.0.045 <em>beta</em> (Jefferson) 20131002'
+  @@VERSION = '2.0.046 <em>beta</em> (Jefferson) 20131007'
   
   ## Supress password logging
   filter_parameter_logging :password
@@ -521,6 +521,29 @@ class ApplicationController < ActionController::Base
 
   def is_using_ldap()
     return @app['authtype'].downcase.eql?('ldap')
+  end
+
+  def load_profile(params)
+    if !params[:id].nil? && !''.eql?(params[:id])
+      begin
+        profile_user = User.find(params[:id])        
+        @user_profile = profile_user.user_profile
+        if @user_profile.nil?
+          @user_profile = UserProfile.new
+          @user_profile.user = profile_user
+        end
+      rescue
+        flash[:badnotice] = 'The requested profile could not be found'
+        redirect_to :controller => '/home', :action => nil, :id => nil
+        return
+      end
+    else
+      @user_profile = @user.user_profile if @user_profile.nil?
+      if @user_profile.nil?
+        @user_profile = UserProfile.new
+        @user_profile.user = @user
+      end
+    end
   end
 
   def shibboleth_authenticate()

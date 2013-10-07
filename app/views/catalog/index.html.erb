@@ -7,6 +7,7 @@
  <div class="alert">There are no courses in the current term.</div>
 <% else %>
 
+<% if @programs.size > 0 %>
 <h2>Browse By Program</h2>
 <div class="row-fluid">
  <div class="span6">
@@ -20,7 +21,7 @@
    <% end %>
  </div>
 </div>
-
+<% end %>
 <hr/>
 
 <h2>Other Courses</h2>
