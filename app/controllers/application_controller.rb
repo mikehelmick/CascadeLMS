@@ -574,7 +574,16 @@ class ApplicationController < ActionController::Base
       
       @user.shibboleth_auth = true
       @user.create_feed
-      @user.save
+      if !@user.save
+        message = ""
+        @user.errors.full_messages.each do |msg|
+          message = "#{message} #{msg}"
+        end
+        flash[:badnotice] = message
+        logger.info("Error creating shibboleth user: #{message} #{@user.inspect}")
+        return nil 
+      end
+      logger.info("Created new shibboleth user: #{@user.uniqueid} (#{@user.id})") 
     end
     
     if !@user.affiliation.eql?(fieldAffiliation)
