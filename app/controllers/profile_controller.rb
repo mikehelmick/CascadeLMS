@@ -142,13 +142,18 @@ class ProfileController < ApplicationController
           Array.new
         end  
 
+    public_post = true
     # Find the courses to publish to.
     courses = Array.new
     @user.courses_in_term( @term ).each do |cu|
       if params["c#{cu.course_id}"]
         courses << cu.course
+        # If the poster is an instructor in all courses that this is scoped to, then it
+        # is allowed to be a public post, otherwise it is not
+        public_post = public_post && (cu.course_instructor || cu.course_assistant)          
       end
     end
+    item.public = false;
 
     begin
       Item.transaction do
