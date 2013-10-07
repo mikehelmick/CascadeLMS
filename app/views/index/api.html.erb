@@ -53,7 +53,7 @@ This will allow your response to be returned as XML.  Otherwise you will be retu
 <h2><a name="Authentication">Authentication</a></h2>
 </div></div>
 
-<p>To authentication, make a call to the login service.   There are 2 parameters, username (as <tt>user[uniqueid]</tt>) and password (as <tt>user[password]</tt>).<p>
+<p>To authenticate, make a call to the login service.   There are 2 parameters, username (as <tt>user[uniqueid]</tt>) and password (as <tt>user[password]</tt>).<p>
 
 <p><b>SAMPLE REQUEST</b>
 <ul>
@@ -62,6 +62,9 @@ This will allow your response to be returned as XML.  Otherwise you will be retu
   <li>If unsuccessful, there will be a redirect to a different page.</li>
 </ul>
 </p>
+
+<br /><p>To logout, make an HTTP GET call to<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<tt><%= url_for( :only_path => false, :controller => '/index', :action => 'logout' ) %></tt></p>
 
 <br/><div class="SectionHeader"><div class="Full">
 <h2><a name="ListingCourses">Listing Courses</a></h2>
