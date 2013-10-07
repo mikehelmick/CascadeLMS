@@ -1,7 +1,7 @@
 <h2>Grades for <%= @user.display_name %></h2>
 <h3><%= @course.title %>, <%= @course.term.semester %></h3>
 
-<% if @course.gradebook.track_extensions %>
+<% if !@course.gradebook.nil? && @course.gradebook.track_extensions %>
   <hr/>
   <h4>Assignment Extensions</h4>
   <%

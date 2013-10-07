@@ -23,7 +23,7 @@ class GradesController < ApplicationController
     @grade_items.each {|x| @total_points_possible += x.points if x.visible }
     
     # Extensions
-    if @course.gradebook.track_extensions
+    if !@course.gradebook.nil? && @course.gradebook.track_extensions
       @user_extensions, @extension_hours = @user.extension_details(@course)
     end
     
