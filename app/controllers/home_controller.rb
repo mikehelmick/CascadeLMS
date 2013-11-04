@@ -59,6 +59,13 @@ class HomeController < ApplicationController
         
         render :layout => false 
       }
+      format.json {
+        @other_courses = @user.courses
+        @other_courses.sort! { |x,y| y.term.term <=> x.term.term }
+        @other_courses.delete_if { |x| x.term.id == @term.id }
+
+        render :layout => false
+      }
     end
   end
 
