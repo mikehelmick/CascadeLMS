@@ -36,6 +36,7 @@ class AssignmentsController < ApplicationController
     respond_to do |format|
       format.html
       format.xml { render :layout => false }
+      format.json
     end
   end
   
