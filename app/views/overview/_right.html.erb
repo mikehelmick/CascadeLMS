@@ -1,7 +1,7 @@
 <% if @course.course_setting.enable_rss %>
 <h4>Subscribe to this course's RSS feed</h4>
 <p>
-Want to be notified any time there is a new document, announcement, or assignment posted? <%= link_to "Subscribe to this course's RSS feed. <i class=\"icon-fire\"></i>", :controller => 'feed', :action => 'subscribe', :course => @course %>
+Want to be notified any time there is a new document, announcement, or assignment posted? <%= link_to "Subscribe to this course's RSS feed. <i class=\"icon-fire\"></i>".html_safe, :controller => 'feed', :action => 'subscribe', :course => @course %>
 (<%= link_to "What is RSS?", "http://www.google.com/support/feedburner/bin/answer.py?answer=79408", :popup => true %>)
 </p>
 <% end %>

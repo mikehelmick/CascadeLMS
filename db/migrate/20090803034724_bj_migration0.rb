@@ -1,3 +1,5 @@
+	  require 'bj'
+
           class BjMigration0 < ActiveRecord::Migration
             def self.up
               Bj::Table.each{|table| table.up}

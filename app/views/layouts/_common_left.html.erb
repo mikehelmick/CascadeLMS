@@ -5,63 +5,63 @@
  <!-- normal, logged in access -->
 <% active = tab_active(@tab, 'course_overview') %>
 <li class="<%= 'active ' if active %>">
-  <%= link_to "<i class=\"icon-picture #{'icon-white' if active}\"></i> #{h @course.title}", :controller => '/overview', :course => @course %>
+  <%= link_to "<i class=\"icon-picture #{'icon-white' if active}\"></i> #{h @course.title}".html_safe, :controller => '/overview', :course => @course %>
 </li>
 <% if @course.course_outcomes.size > 0 %>
   <% active = tab_active(@tab, 'course_outcomes') %>
   <li class="<%= 'active ' if active %>">
-    <%= link_to "<i class=\"icon-indent-left #{'icon-white' if active}\"></i> Course Outcomes", :controller => '/outcomes', :course => @course %>
+    <%= link_to "<i class=\"icon-indent-left #{'icon-white' if active}\"></i> Course Outcomes".html_safe, :controller => '/outcomes', :course => @course %>
   </li>
 <% end %>
 <% if @course.course_setting.enable_blog %>
      <% active = tab_active(@tab, 'course_blog') %>
-     <li class="<%= 'active ' if active %>"><%= link_to "<i class=\"icon-list-alt #{'icon-white' if active}\"></i> Course Blog", {:controller => '/blog', :course => @course, :assignment => nil } %></li> 
+     <li class="<%= 'active ' if active %>"><%= link_to "<i class=\"icon-list-alt #{'icon-white' if active}\"></i> Course Blog".html_safe, {:controller => '/blog', :course => @course, :assignment => nil } %></li>
    <% end %>
    <% active = tab_active(@tab, 'course_documents') %>
-   <li class="<%= 'active ' if active %>"><%= link_to "<i class=\"icon-folder-open #{'icon-white' if active}\"></i> Documents", :controller => '/documents', :course => @course, :assignment => nil %></li>
+   <li class="<%= 'active ' if active %>"><%= link_to "<i class=\"icon-folder-open #{'icon-white' if active}\"></i> Documents".html_safe, :controller => '/documents', :course => @course, :assignment => nil %></li>
    <% active = tab_active(@tab, 'course_assignments') %>
-   <li class="<%= 'active ' if active %>"><%= link_to "<i class=\"icon-calendar #{'icon-white' if active}\"></i> Assignments", :controller => '/assignments', :course => @course, :assignment => nil %></li>
+   <li class="<%= 'active ' if active %>"><%= link_to "<i class=\"icon-calendar #{'icon-white' if active}\"></i> Assignments".html_safe, :controller => '/assignments', :course => @course, :assignment => nil %></li>
    <% if @course.course_setting.enable_project_teams %>
      <% active = tab_active(@tab, 'course_teams') %>
-     <li class="<%= 'active ' if active %>"><%= link_to "<i class=\"icon-magnet #{'icon-white' if active}\"></i> Team Center", :controller => '/team', :course => @course, :assignment => nil %></li> 
+     <li class="<%= 'active ' if active %>"><%= link_to "<i class=\"icon-magnet #{'icon-white' if active}\"></i> Team Center".html_safe, :controller => '/team', :course => @course, :assignment => nil %></li>
    <% end %>
    <% if @course.course_setting.enable_wiki %>
      <% active = tab_active(@tab, 'course_wiki') %>
-     <li class="<%= 'active ' if active %>"><%= link_to "<i class=\"icon-edit #{'icon-white' if active}\"></i> Wiki", :controller => '/wiki', :course => @course, :assignment => nil %></li> 
+     <li class="<%= 'active ' if active %>"><%= link_to "<i class=\"icon-edit #{'icon-white' if active}\"></i> Wiki".html_safe, :controller => '/wiki', :course => @course, :assignment => nil %></li>
    <% end %>
    <% if @course.course_setting.enable_forum %>
      <% active = tab_active(@tab, 'course_forum') %>
-     <li class="<%= 'active ' if active %>"><%= link_to "<i class=\"icon-comment  #{'icon-white' if active}\"></i> Forums", :controller => '/forums', :course => @course, :assignment => nil %></li> 
+     <li class="<%= 'active ' if active %>"><%= link_to "<i class=\"icon-comment  #{'icon-white' if active}\"></i> Forums".html_safe, :controller => '/forums', :course => @course, :assignment => nil %></li>
    <% end %>
    <% if !@user.nil? && @user.student_in_course?(@course.id) && @course.course_setting.enable_gradebook %>
      <% active = tab_active(@tab, 'course_grades') %>
-     <li class="<%= 'active ' if active %>"><%= link_to "<i class=\"icon-signal #{'icon-white' if active}\"></i> Grades", :controller => '/grades', :course => @course, :assignment => nil %></li>
+     <li class="<%= 'active ' if active %>"><%= link_to "<i class=\"icon-signal #{'icon-white' if active}\"></i> Grades".html_safe, :controller => '/grades', :course => @course, :assignment => nil %></li>
    <% end %>
    <% if !@user.nil? && @user.student_in_course?(@course.id) && @course.course_setting.enable_attendance %>
      <% active = tab_active(@tab, 'course_attendance') %>
-     <li class="<%= 'active ' if active %>"><%= link_to "<i class=\"icon-check #{'icon-white' if active}\"></i> Attendance", :controller => '/attendance', :course => @course, :assignment => nil %></li>
+     <li class="<%= 'active ' if active %>"><%= link_to "<i class=\"icon-check #{'icon-white' if active}\"></i> Attendance".html_safe, :controller => '/attendance', :course => @course, :assignment => nil %></li>
    <% end %>
    <% active = tab_active(@tab, 'course_roster') %>
-   <li class="<%= 'active ' if active %>"><%= link_to '<i class="icon-user"></i> Class Roster', :controller => '/roster', :course => @course %></li>
+   <li class="<%= 'active ' if active %>"><%= link_to '<i class="icon-user"></i> Class Roster'.html_safe, :controller => '/roster', :course => @course %></li>
    <% if !@user.nil? && (@user.instructor_in_course?(@course.id) || @user.assistant_in_course?(@course.id)) %>
      <% active = tab_active(@tab, 'course_instructor') %>
-     <li class="<%= 'active ' if active %>"><%= link_to "<i class=\"icon-barcode #{'icon-white' if active}\"></i> Instructor", { :controller => '/instructor/index', :course => @course, :assignment => nil } %></li>
+     <li class="<%= 'active ' if active %>"><%= link_to "<i class=\"icon-barcode #{'icon-white' if active}\"></i> Instructor".html_safe, { :controller => '/instructor/index', :course => @course, :assignment => nil } %></li>
    <% end %>
 		
 <% else %>
  <!-- public access -->
  <% active = tab_active(@tab, 'course_overview') %>
  <li class="<%= 'active ' if active %>">
-   <%= link_to "<i class=\"icon-picture #{'icon-white' if active}\"></i> #{h @course.title}", :controller => '/public/overview', :course => @course %>
+   <%= link_to "<i class=\"icon-picture #{'icon-white' if active}\"></i> #{h @course.title}".html_safe, :controller => '/public/overview', :course => @course %>
  </li>
  <% if @course.course_setting.enable_blog %>
    <% active = tab_active(@tab, 'course_blog') %>
-   <li class="<%= 'active ' if active %>"><%= link_to "<i class=\"icon-list-alt #{'icon-white' if active}\"></i> Course Blog", {:controller => '/public/blog', :course => @course, :assignment => nil } %></li> 
+   <li class="<%= 'active ' if active %>"><%= link_to "<i class=\"icon-list-alt #{'icon-white' if active}\"></i> Course Blog".html_safe, {:controller => '/public/blog', :course => @course, :assignment => nil } %></li>
  <% end %>
  <% active = tab_active(@tab, 'course_documents') %>
- <li class="<%= 'active ' if active %>"><%= link_to "<i class=\"icon-folder-open #{'icon-white' if active}\"></i> Documents", :controller => '/public/documents', :course => @course, :assignment => nil %></li>
+ <li class="<%= 'active ' if active %>"><%= link_to "<i class=\"icon-folder-open #{'icon-white' if active}\"></i> Documents".html_safe, :controller => '/public/documents', :course => @course, :assignment => nil %></li>
  <% active = tab_active(@tab, 'course_assignments') %>
- <li class="<%= 'active ' if active %>"><%= link_to "<i class=\"icon-calendar #{'icon-white' if active}\"></i> Assignments", :controller => '/public/assignments', :course => @course, :assignment => nil %></li>
+ <li class="<%= 'active ' if active %>"><%= link_to "<i class=\"icon-calendar #{'icon-white' if active}\"></i> Assignments".html_safe, :controller => '/public/assignments', :course => @course, :assignment => nil %></li>
 <% end %>
 <% end %>
 
@@ -74,7 +74,7 @@
     </li>
   <% end %>
   <% if ct.size > 1 %>
-    <li><%= link_to 'Change Display Order <i class="icon-random"></i>', :controller => '/home', :action => 'reorder' %></li>
+    <li><%= link_to 'Change Display Order <i class="icon-random"></i>'.html_safe, :controller => '/home', :action => 'reorder' %></li>
   <% end %>
 <% else %>
 <li><i class="icon-info-sign"></i> You are not enrolled in any courses during this term.  If this is incorrect, please contact your instructor.</li>

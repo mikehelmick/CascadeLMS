@@ -3,10 +3,10 @@
  <div class="span12">
   <div class="btn-toolbar">	
 	<div class="btn-group">
-<%= link_to '<i class="icon-plus-sign"></i> Create New Forum', {:course => @course, :action => 'new_forum'}, {:class => 'btn btn-small'} %>
+<%= link_to '<i class="icon-plus-sign"></i> Create New Forum'.html_safe, {:course => @course, :action => 'new_forum'}, {:class => 'btn btn-small'} %>
   <% if @user.instructor_in_course?(@course.id) || @user.assistant_in_course?(@course.id) %>
-<%= link_to '<i class="icon-signal"></i> View Post Report', {:course => @course, :action => 'post_report'}, {:class => 'btn btn-small'} %>
-<%= link_to '<i class="icon-random"></i> Reorder Forumns', {:course => @course, :action => 'reorder'}, {:class => 'btn btn-small'} %>
+<%= link_to '<i class="icon-signal"></i> View Post Report'.html_safe, {:course => @course, :action => 'post_report'}, {:class => 'btn btn-small'} %>
+<%= link_to '<i class="icon-random"></i> Reorder Forums'.html_safe, {:course => @course, :action => 'reorder'}, {:class => 'btn btn-small'} %>
   <% end %>
     </div>
    </div>

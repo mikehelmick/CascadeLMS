@@ -21,7 +21,7 @@
 	   %>
 	  <tr class="<%=odd%> hover" id="assignment_<%=assignment.id%>">
 		<% if @instructor %>
-		  <td nowrap="nowrap"><%= link_to '<i class="icon-edit"></i>', {:course => @course, :id => assignment, :controller => '/instructor/course_assignments', :action => 'edit'}, {:rel => "tooltip", :title => "Edit '#{h assignment.title}'"} %>
+		  <td nowrap="nowrap"><%= link_to '<i class="icon-edit"></i>'.html_safe, {:course => @course, :id => assignment, :controller => '/instructor/course_assignments', :action => 'edit'}, {:rel => "tooltip", :title => "Edit '#{h assignment.title}'"} %>
 		  	<% if assignment.visible %>	
 	   	    <i class="icon-ok-sign" rel="tooltip" title="Visible to students"></i>
 		    <% else %>
@@ -57,19 +57,19 @@
 	    <td valign="top" nowrap="nowrap" align="right">
 	      <% if assignment.released && !assignment.grade_item.nil? %>
 	        <% if assignment.quiz.nil? %>
-  	           <%= link_to 'Yes <i class="icon-ok-sign "></i>', {:controller => '/turnins', :course => @course, :assignment => assignment, :action => 'feedback'}, {:class => '', :rel => "tooltip", :title => "This assignment has graded"} %>
+  	           <%= link_to 'Yes <i class="icon-ok-sign "></i>'.html_safe, {:controller => '/turnins', :course => @course, :assignment => assignment, :action => 'feedback'}, {:class => '', :rel => "tooltip", :title => "This assignment has graded"} %>
             <% elsif assignment.quiz.survey %>
                -N/A-
             <% else %>
-               <%= link_to 'Yes <i class="icon-ok-sign "></i>', {:controller => '/quiz', :action => 'results', :course => @course, :id => assignment}, {:class => '', :rel => "tooltip", :title => "This assignment has graded"} %>
+               <%= link_to 'Yes <i class="icon-ok-sign "></i>'.html_safe, {:controller => '/quiz', :action => 'results', :course => @course, :id => assignment}, {:class => '', :rel => "tooltip", :title => "This assignment has graded"} %>
             <% end %>
 	      <% else %>
 	        <% if assignment.quiz.nil? %>
-	          <%= link_to 'No <i class="icon-exclamation-sign "></i>', {:controller => '/turnins', :course => @course, :assignment => assignment, :action => 'feedback'}, {:class => '', :rel => "tooltip", :title => "Not yet graded"} %>
+	          <%= link_to 'No <i class="icon-exclamation-sign "></i>'.html_safe, {:controller => '/turnins', :course => @course, :assignment => assignment, :action => 'feedback'}, {:class => '', :rel => "tooltip", :title => "Not yet graded"} %>
 	        <% elsif assignment.quiz.survey %>
                
 	        <% else %>
-	          <%= link_to 'No <i class="icon-exclamation-sign "></i>', {:controller => '/quiz', :action => 'results', :course => @course, :id => assignment}, {:class => '', :rel => "tooltip", :title => "Not yet graded"} %>
+	          <%= link_to 'No <i class="icon-exclamation-sign "></i>'.html_safe, {:controller => '/quiz', :action => 'results', :course => @course, :id => assignment}, {:class => '', :rel => "tooltip", :title => "Not yet graded"} %>
 	        <% end %>
 	      <% end %>
 	    </td>
