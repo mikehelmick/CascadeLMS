@@ -1,1 +1,8 @@
-https://my.csi.muohio.edu/
+{
+  "lastUpdated":"2013-11-11",
+  "knwnInstalls":
+    [
+      {"name":"Miami University", "url":"https://my.csi.muohio.edu/"},
+      {"name":"University of Cincinnati", "url":"https://cascade.ceas.uc.edu/"}
+    ]
+}
