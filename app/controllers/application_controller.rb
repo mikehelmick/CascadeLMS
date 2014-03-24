@@ -283,25 +283,35 @@ class ApplicationController < ActionController::Base
  	
  	def ensure_logged_in(update_time = true)
  	  redirect_uri = "#{request.protocol()}#{request.host()}#{request.port_string}#{request.request_uri()}"
- 	
- 	  if session[:user].nil?
- 	    flash[:notice] = "Please log in before proceeding."
- 	    session[:post_login] = redirect_uri if request.method.to_s.downcase.eql?("get") # && !redirect_uri.index('/redirect/').nil?
- 	    redirect_to :controller => '/index'
- 	    return false
+
+    if not request.headers['oauth_token'].nil?
+ 	    token = AccessToken.find_by_token request.headers['oauth_token']
+      if not token.invalidated?
+        @user = User.find(token.user_id)
+      else
+        redirect_to :controller => '/index', :action => 'expired'
+        return false
+      end
+    else
+      if session[:user].nil?
+        flash[:notice] = "Please log in before proceeding."
+        session[:post_login] = redirect_uri if request.method.to_s.downcase.eql?("get") # && !redirect_uri.index('/redirect/').nil?
+        redirect_to :controller => '/index'
+        return false
+      end
+
+      if !session_valid?(update_time)
+        redirect_to :controller => '/index', :action => 'expired'
+        # don't want to accidently clobber post data
+        session[:post_login] = "#{request.protocol()}#{request.host()}#{request.port_string}/home"
+        session[:post_login] = redirect_uri if request.method.to_s.downcase.eql?("get") # && !redirect_uri.index('/redirect/').nil?
+
+        return false
+      end
+
+      # duplicate user - to keep session down
+      @user = User.find(session[:user].id)
     end
-    
-    if !session_valid?(update_time)
-      redirect_to :controller => '/index', :action => 'expired'
-      # don't want to accidently clobber post data
-      session[:post_login] = "#{request.protocol()}#{request.host()}#{request.port_string}/home"
-      session[:post_login] = redirect_uri if request.method.to_s.downcase.eql?("get") # && !redirect_uri.index('/redirect/').nil?
-      
-      return false
-    end
-    
-    # duplicate user - to keep session down
-    @user = User.find(session[:user].id)
     @notificationCount = @user.notification_count
     # Load @browser object, some user agent detection stuff.
     browser()

@@ -89,7 +89,7 @@
 			  <li><%= link_to 'Edit Profile <i class="icon-user"></i>', :controller => '/profile', :action => 'view', :course => nil, :assignment => nil, :id => nil %></li>
 	          <li><%= link_to 'Manage Subscriptions <i class="icon-inbox"></i>', :controller => '/home', :action => 'feeds', :course => nil, :id => nil, :assignment => nil %>		
 	          <li><%= link_to 'Account Settings <i class="icon-cog"></i>', :controller => '/home', :action => 'account' %></li>
-			  
+			  <li><%= link_to 'My Applications <i class="icon-user"></i>', :controller => '/oauth_clients' %></li>
 			  <li><a href="https://en.gravatar.com/site/signup/" target="_blank">Change Profile Picture <i class="icon-user"></i></a></li>
 			  <% if @user.program_manager? %>
 			    <li>
