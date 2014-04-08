@@ -5,10 +5,14 @@ class OauthClientsController < ApplicationController
   def index
     @client_applications = @user.client_applications
     @tokens = @user.tokens.find :all, :conditions => 'oauth_tokens.invalidated_at is null and oauth_tokens.authorized_at is not null'
+    @breadcrumb = Breadcrumb.new
+    @breadcrumb.oauth_clients = true
   end
 
   def new
     @client_application = ClientApplication.new
+    @breadcrumb = Breadcrumb.new
+    @breadcrumb.oauth_clients = true
   end
 
   def create
@@ -22,9 +26,17 @@ class OauthClientsController < ApplicationController
   end
 
   def show
+    @breadcrumb = Breadcrumb.new
+    @breadcrumb.oauth_clients = true
+    @breadcrumb.text = @client_application.name
+    @breadcrumb.link = url_for(:action => 'show', :id => @client_application.id)
   end
 
   def edit
+    @breadcrumb = Breadcrumb.new
+    @breadcrumb.oauth_clients = true
+    @breadcrumb.text = @client_application.name
+    @breadcrumb.link = url_for(:action => 'show', :id => @client_application.id)
   end
 
   def update
