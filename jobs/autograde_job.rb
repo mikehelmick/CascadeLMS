@@ -246,6 +246,21 @@ class AutogradeJob
     end
   end
   
+  def git_clone_pull(queue, user_turnin, dir, directories, app)
+    puts 'Performing a git clone/pull'
+    queue.message = 'git pull has started.'
+    
+    if user_turnin.git_revision.nil?
+      # Time to do a clone
+      
+    else
+      # Time to do a pull
+      
+    end
+    
+    queue.message = 'git pull done.'
+  end
+  
     
   def execute()  
     puts "RUNNING WITH #{@gradeQueueId}"
@@ -272,7 +287,7 @@ class AutogradeJob
         else
           dir = user_turnin.get_dir( ApplicationController.external_dir )
         end
-
+        
         puts "Beginning grading on files in the directory = #{dir}"
 
         ## Set up direcories
@@ -287,6 +302,10 @@ class AutogradeJob
         end
  
         app = ApplicationController.app
+        
+        if user_turnin.assignment.use_github && !user_turnin.github_repository.nil?
+          git_clone_pull(queue, user_turnin, dir, directories, app)
+        end
 
         ## Just to have the status update outside of the transaction
         if user_turnin.assignment.auto_grade_setting.check_style?

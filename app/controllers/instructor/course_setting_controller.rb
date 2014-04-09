@@ -10,6 +10,8 @@ class Instructor::CourseSettingController < Instructor::InstructorBase
     @course_settings = @course.course_setting
     @breadcrumb = Breadcrumb.for_course(@course, true)
     @breadcrumb.text = "Course Settings"
+
+    @github_servers = GithubServer.find(:all)
   end
 
   # GETs should be safe (see http://www.w3.org/2001/tag/doc/whenToUseGet.html)

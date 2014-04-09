@@ -155,9 +155,31 @@
     <div class="controls">
   	  <%= radio_button 'course_settings', 'enable_prog_assignments', true %> Yes
 	  <%= radio_button 'course_settings', 'enable_prog_assignments', false %> No
-	  <p class="blockintro">Enable the programming assignments capability of this system for this course.  If your course does not involve programming assignments, it is recommended that you turn this off.  The programming assignments allow for full integration with Subversion using http(s). The SVN server location must follow the pattern <code>http://svnserver.com/uniqueid</code>, a more comprehensive path to an individual assignment's files can be entered for each assignment.</p>
+	  <p class="blockintro">Enable the programming assignments capability of this system for this course.  If your course does not involve programming assignments, it is recommended that you turn this off.  The programming assignments allow for full integration Git and with Subversion using http(s). For Git, you can specify exactly how the model works. The SVN server location must follow the pattern <code>http://svnserver.com/uniqueid</code>, a more comprehensive path to an individual assignment's files can be entered for each assignment.</p>
 	</div>
   </div>
+
+  <div class="control-group">
+    <label for="course_settings_enable_github" class="control-label">Enable GitHub Integration:</label>
+    <div class="controls">
+	  <% if @github_servers.size > 0 %>
+  	    <%= radio_button 'course_settings', 'enable_github', true %> Yes
+	    <%= radio_button 'course_settings', 'enable_github', false %> No
+   	    <p class="blockintro">Enables students to turn in files in CascadeLMS by cloning github repositories from a specified server (selected below).
+	  <% else %>
+	    <div class="alert">GitHub integration is unavailable because there are no servers configured. Ask your administrator to configure this for you.</div>
+	  <% end %>
+	</div>    	
+  </div>
+  <% if @github_servers.size > 0 %>
+  <div class="control-group">
+	<label for="course_settings_github_server_id" class="control-label">Choose GitHub Server to use:</label>
+    <div class="controls">
+  	  <%= select 'course_settings', 'github_server_id', @github_servers.collect { |g| [ "#{g.name} @ #{g.web_endpoint}", g.id ] }, { :selected => @course_settings.github_server_id }, {:class => 'input-xxlarge'} %>
+    </div>
+  </div>
+  <% end %>
+
   <div class="control-group">
     <label for="course_settings_enable_svn" class="control-label">Enable Subversion:</label>
     <div class="controls">

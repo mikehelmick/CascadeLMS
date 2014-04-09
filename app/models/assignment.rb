@@ -28,6 +28,8 @@ class Assignment < ActiveRecord::Base
   has_many :rubrics, :order => "position", :dependent => :destroy
 
   has_one :item, :dependent => :destroy
+
+  has_one :github_server
   
   
   validates_presence_of :title

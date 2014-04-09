@@ -227,7 +227,35 @@
     </div>
   </div>
   <div id="programming_settings" class="well" style="<%=prog_style%>">
-
+	
+	<% if @course.course_setting.enable_github %>
+      <div class="control-group">
+        <label for="assignment[use_github]" class="control-label">Enable GitHub</label>
+        <div class="controls">
+          <%= radio_button 'assignment', 'use_github', true, :onclick => 'new Effect.SlideDown("github_settings")' %> Yes
+	      <%= radio_button 'assignment', 'use_github', false, :onclick => 'new Effect.Puff("github_settings")' %> No
+	    </div>
+	  </div>
+	  <% git_style = "display: block;" 
+	     git_style = "display: none;" unless @assignment.use_github
+	   %>
+	  <div id="github_settings" class="sub_form" style="<%=git_style%>">
+	      <div class="control-group">
+	        <label for="assignment[github_organization]" class="control-label">GitHub Organization Name:</label>
+	        <div class="controls">
+	          <%= text_field 'assignment', 'github_organization'  %>
+	        </div>
+	        <p class="help-block">Fill this in if you are utilizing an Organization in GitHub, where all the student repositories are owned by the organization.</p>
+	      </div>
+		  <div class="control-group">
+	        <label for="assignment[github_pattern]" class="control-label">GitHub Repository Pattern:</label>
+	        <div class="controls">
+	          <%= text_field 'assignment', 'github_pattern'  %>
+	        </div>
+	        <p class="help-block">The GitHub Repository pattern is representative of either the user's CascadeLMS login (<code>$uniqueid$</code>) and or their GitHub id (<code>$githubid$</code>). If the repository was named with the user's GitHub ID and "-program1", then you could configure this like: <code>$githubid$-program01</code>. When each user authenticates to GitHub through Cascade, this link is established.</p>
+	      </div>
+	  </div>
+    <% end %>
     <% if @course.course_setting.enable_svn %>
       <div class="control-group">
         <label for="assignment[use_subversion]" class="control-label">Enable Subversion</label>

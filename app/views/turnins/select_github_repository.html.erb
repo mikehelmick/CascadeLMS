@@ -1,0 +1,36 @@
+
+<h3>GitHub Server Information</h3>
+<ul>
+  <li>Server: <%= @githubSession.github_authorization.github_server.web_endpoint %></li>
+  <li>GitHub Username: <%= @githubSession.login %></li>
+</ul>
+
+<h3>Select Repository for assignment: '<%= @assignment.title %>'</h3>
+
+<% if @githubSession.get_repository(@suggestedRepo) %>
+<div class="alert alert-success">
+  This repository appears to be the correct one to use for this assignment. Click the button below to confirm, or select an alternate repository below.</div>
+
+ <ul>
+   <% repoHash = @githubSession.get_repository(@suggestedRepo)
+      time = "#{repoHash['pushed_at']}" 
+      web_url = "#{@githubSession.github_authorization.github_server.web_endpoint}#{repoHash['full_name']}"
+    %>
+   <li><strong>Name:</strong> <%= repoHash['full_name'] %></li>
+   <li><strong>Description:</strong> <%= repoHash['description'] %></li>
+   <li><strong>Last pushed:</strong> <%= Time.parse(time).to_formatted_s(:long) rescue '?' %></li>
+   <li><strong>View Repository:</strong> <a href="<%= web_url %>" target="_blank"><%= web_url %></a></li>
+ </ul>	
+<% end %>
+
+<%= link_to "Use '#{repoHash['full_name']}' for this assignment", {:action => 'link_github', :course => @course, :assignment => @assignment, :repo => "#{repoHash['full_name']}"}, {:method => :post, :class => 'btn btn-primary'} %>
+
+
+<hr/>
+<h4>Other Repositories to Choose From</h4>
+
+<ul>
+  <% @visibleRepos.keys.sort.each do |repo| %>
+    <li><strong><%= link_to "#{@visibleRepos[repo]['full_name']}", {:action => 'link_github', :course => @course, :assignment => @assignment, :repo => "#{repoHash['full_name']}"}, {:method => :post, :confirm => "Are you sure you want to use the repository '#{@visibleRepos[repo]['full_name']}' for this assignment? This may not be where your instructor expects you to submit files from."} %></strong> <em><%= @visibleRepos[repo]['description'] %></em></li>
+  <% end %>
+</ul>

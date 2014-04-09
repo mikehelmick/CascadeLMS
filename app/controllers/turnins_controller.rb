@@ -1,6 +1,8 @@
 require 'FileManager'
 require 'MyString'
 require 'auto_grade_helper'
+require 'GitHubSession'
+require "base64"
 
 class TurninsController < ApplicationController
   
@@ -22,7 +24,9 @@ class TurninsController < ApplicationController
     
     return unless load_team( @course, @assignment, @user )
     load_turnins
-    
+
+    return unless github_oauth_redirect(@course, @assignment, @user)
+
     @current_turnin = nil
     @current_turnin = @turnins[0] if @turnins.size > 0
     
@@ -40,6 +44,20 @@ class TurninsController < ApplicationController
       redirect_to :action => 'create_set'
       return
     end
+
+    if @assignment.use_github
+      # Make sure a repository gets linked up
+      if @current_turnin.nil? || @current_turnin.github_repository.nil?
+        redirect_to :action => 'select_github_repository'
+        return
+      end
+      
+      # Do we need to do an intial pull?
+      if @current_turnin.git_revision.nil? || @current_turnin.git_revision.eql?('') && assignment_open(@assignment, false, false) 
+        redirect_to :action => 'git_pull'
+        return
+      end
+    end
   
     count_todays_turnins( @app["turnin_limit"].to_i )
     
@@ -48,6 +66,46 @@ class TurninsController < ApplicationController
     
     @now = Time.now
     set_title
+  end
+
+  def git_pull
+    return unless github_common_init(params, false)
+    set_title("GitHub pull confirmation for #{@assignment.title}")
+
+    # Display the information about this branch
+    @humanUrl = "#{@course.course_setting.github_server.web_endpoint}#{@current_turnin.github_repository}"
+    @branch = @githubSession.get_branch(@current_turnin.github_repository)
+    
+    @current_turnin.make_dir(@app['external_dir'], @team)
+    @queue = AutoGradeHelper.schedule(@assignment, @user, @current_turnin, @app, flash)
+    
+    #status = @githubSession.clone_to_dir(@current_turnin.get_dir(@app['external_dir'], @team))
+  end
+
+  def select_github_repository
+    return unless github_common_init(params)
+    set_title("Select GitHub Repository for #{@assignment.title}")
+    @suggestedRepo = @githubSession.resolve_repo_name(@assignment)
+    @visibleRepos = @githubSession.owned_repositories()
+  end
+
+  def link_github
+    return unless github_common_init(params)
+    
+    @selected = @githubSession.get_repository(params[:repo])
+    if @selected.nil?
+      flash[:badnotice] = "Couldn't find repository named '#{params[:repo]}'."
+      return redirect_to :action => 'select_github_repository'
+    end
+
+    @current_turnin.github_repository = @selected['full_name']
+    if @current_turnin.save
+      flash[:notice] = "Your turnins for this assignment are now associated with the GitHub repository '#{@selected['full_name']}' on the server #{@githubAuthorization.github_server.web_endpoint}"
+      redirect_to :action => 'index', :course => @course, :assignment => @assignment
+    else
+      flash[:badnotice] = 'Error linking the selected GitHub repository to this assignment.'
+      redirect_to :action => 'select_github_repository'
+    end
   end
   
   def view
@@ -763,8 +821,6 @@ private
     end
     true    
   end
-  
-
 
   def set_tab
     @show_course_tabs = true
@@ -772,8 +828,12 @@ private
     @title = "Course Assignments"
   end
 
-  def set_title
-    @title = "Submitted Files for #{@assignment.title} - #{@course.title}" 
+  def set_title(alt_title = nil)
+    if alt_title.nil?
+      @title = "Submitted Files for #{@assignment.title} - #{@course.title}" 
+    else
+      @title = alt_title
+    end
     @breadcrumb = Breadcrumb.for_course(@course)
     @breadcrumb.assignment = @assignment
     @breadcrumb.text = "Your Turnins"
@@ -813,5 +873,39 @@ private
     return ut, utf
   end
   
-  
+  def github_common_init(params, send_to_index_if_init = true)
+    return false unless load_course( params[:course] )
+    return false unless allowed_to_see_course( @course, @user )
+    
+    @instructor = @user.instructor_in_course?(@course.id)
+    @assignment = Assignment.find(params[:assignment]) rescue @assignment = Assignment.new
+    return false unless assignment_in_course( @assignment, @course )
+    if !@instructor
+      return false unless assignment_available( @assignment, true )
+      return false unless assignment_available_for_students_team( @course, @assignment, @user.id )
+    end
+    
+    return false unless load_team( @course, @assignment, @user )
+    load_turnins
+
+    return false unless github_oauth_redirect(@course, @assignment, @user)
+    
+
+    @current_turnin = nil
+    @current_turnin = @turnins[0] if @turnins.size > 0
+
+    if !@assignment.use_github || (!@current_turnin.nil? && !@current_turnin.github_repository.nil?)
+      if send_to_index_if_init
+        redirect_to :action => 'index'
+        return false
+      end
+    end
+
+    @githubSession = GitHubSession.new(@githubAuthorization);
+    if @githubSession.auth_error
+      redirect_to :action => 'index'
+      return false
+    end
+    true
+  end
 end

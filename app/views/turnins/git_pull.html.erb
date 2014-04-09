@@ -1,0 +1,23 @@
+<h3>Pull Scheduled, Your files are being synchronized</h3>
+
+<div class="row">
+  <div class="span3"></div>
+  <div class="span3"><%= link_to 'Back to Assignment', {:controller => '/assignments', :action => 'view', :course => @course, :assignment => nil, :id => @assignment}, {:class => 'btn'} %></div>
+  <div class="span3">
+    <% unless @queue.nil? %>
+      <%= link_to 'View pull status', {:controller => '/wait', :action => 'grade', :id => @queue.id}, {:class => 'btn'} %>
+    <% end %>
+  </div>
+  <div class="span3"></div>
+</div>
+<br/>
+
+<div class="well">
+  <ul>
+    <li><strong>Repository:</strong> <a href="<%=@humanUrl%>"><%=@humanUrl%></a></li>
+    <li><strong>Branch:</strong> <%= @branch[:name] %></li>
+    <li><strong>Committer:</strong> <%= @branch[:commit][:commit][:committer][:name] %></li>
+    <li><strong>Commit Timestamp:</strong> <%= @branch[:commit][:commit][:committer][:date] %></a> <em>direct from GitHub</em></li> 
+    <li><strong>Commit signature:</strong> <%= @branch[:commit][:sha] %> </li>
+  </ul>
+</div>

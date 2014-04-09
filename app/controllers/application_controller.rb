@@ -752,6 +752,17 @@ class ApplicationController < ActionController::Base
       logger.error(e)
     end
   end
+
+  def github_oauth_redirect(course, assignment, user)
+    return false unless assignment.use_github && course.course_setting.enable_github
+    
+    @githubAuthorization = user.get_github_auth_for_course(course)
+    if @githubAuthorization.nil?
+      redirect_to :controller => '/assignments', :action => 'github_notice', :course => course, :id => assignment, :assignment => nil
+      return false
+    end
+    return true
+  end
   
   def load_outcome_numbers( course )
     parent_stack = [-1]

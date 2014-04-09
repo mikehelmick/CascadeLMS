@@ -38,6 +38,49 @@ class AssignmentsController < ApplicationController
       format.xml { render :layout => false }
     end
   end
+
+  def github_notice
+    return unless load_course( params[:course] )
+    return unless allowed_to_see_course( @course, @user )
+    
+    @instructor = @user.instructor_in_course?(@course.id)
+    
+    @assignment = Assignment.find(params[:id]) rescue @assignment = Assignment.new
+    return unless assignment_in_course( @assignment, @course )
+    if !@instructor
+      return unless assignment_available( @assignment )
+      return unless assignment_available_for_students_team( @course, @assignment, @user.id )
+    end
+    
+    unless @assignment.use_github && @course.course_setting.enable_github
+      redirect_to :action => 'index', :course => @course, :assignment => nil, :id => nil
+      return
+    end
+
+    render :layout => 'wait'
+  end
+
+  def github_forward
+    return unless load_course( params[:course] )
+    return unless allowed_to_see_course( @course, @user )
+    
+    @instructor = @user.instructor_in_course?(@course.id)
+    
+    @assignment = Assignment.find(params[:id]) rescue @assignment = Assignment.new
+    return unless assignment_in_course( @assignment, @course )
+    if !@instructor
+      return unless assignment_available( @assignment )
+      return unless assignment_available_for_students_team( @course, @assignment, @user.id )
+    end
+    
+    unless @assignment.use_github && @course.course_setting.enable_github
+      redirect_to :action => 'index', :course => @course, :assignment => nil, :id => nil
+      return
+    end
+    
+    redirectUrl = "#{@course.course_setting.github_server.web_endpoint}login/oauth/authorize?client_id=#{@course.course_setting.github_server.client_id}&scope=repo&state=#{@course.course_setting.github_server.id}-#{@course.id}-#{@assignment.id}"
+    redirect_to redirectUrl
+  end
   
   def view
     return unless load_course( params[:course] )
@@ -59,7 +102,8 @@ class AssignmentsController < ApplicationController
       return unless assignment_available_for_students_team( @course, @assignment, @user.id )
     end
     return unless load_team( @course, @assignment, @user )
-    
+
+    return unless github_oauth_redirect(@course, @assignment, @user)    
       
     if @assignment.use_subversion && @assignment.auto_grade
       count_todays_turnins( @app["turnin_limit"].to_i )

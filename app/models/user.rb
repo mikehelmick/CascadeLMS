@@ -37,6 +37,8 @@ class User < ActiveRecord::Base
   has_one :user_profile, :dependent => :destroy
   has_one :feed
   has_many :feed_subscriptions
+
+  has_many :github_authorizations, :dependent => :destroy 
   
   attr_accessor :notice
 
@@ -47,6 +49,11 @@ class User < ActiveRecord::Base
       self.feed.save
     end
     return self.feed
+  end
+
+  def get_github_auth_for_course(course)
+    return nil if course.course_setting.github_server_id == 0
+    GithubAuthorization.find(:first, :conditions => ["user_id = ? and github_server_id = ?", self.id, course.course_setting.github_server_id])
   end
 
   def notification_count

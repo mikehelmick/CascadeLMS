@@ -49,14 +49,16 @@
 	  <% end %>
 	  <tr><th nowrap="nowrap">Turnin methods:</th>
 	  <td>
-		   <% if (@assignment.use_subversion && @assignment.programming) && @assignment.enable_upload %> Subversion or Upload to this site.
+		   <% if @assignment.use_github && @assignment.programming && @assignment.enable_upload %> GitHub or Upload to this site.
+		   <% elsif (@assignment.use_subversion && @assignment.programming) && @assignment.enable_upload %> Subversion or Upload to this site.
 		   <% elsif @assignment.use_subversion && @assignment.programming %> Subversion only.
+		   <% elsif @assignment.use_github && @assignment.programming %> GitHub only.
 		   <% elsif @assignment.enable_upload %> 
 		     <%= link_to "<i class=\"icon-upload\"></i> Upload / Manage Submitted Files #{"and AutoGrade" if @assignment.auto_grade}", :controller => '/turnins', :course => @course, :assignment => @assignment, :action => 'index', :id => nil  %> 
 		   <% else %> Printout. 
 		   <% end %>
 	  </td></tr>
-      <% if  @assignment.use_subversion && !@assignment.enable_upload %>
+      <% if (@assignment.use_github || @assignment.use_subversion) && !@assignment.enable_upload %>
 	  <tr><th nowrap="nowrap">Upload:</th>
 	      <td>
 	        <%= link_to "<i class=\"icon-upload\"></i> Manage Submitted Files #{"and AutoGrade" if @assignment.auto_grade}", :controller => '/turnins', :course => @course, :assignment => @assignment, :action => 'index'  %>
