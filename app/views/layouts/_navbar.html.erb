@@ -89,7 +89,7 @@
 			  <li><%= link_to 'Edit Profile <i class="icon-user"></i>', :controller => '/profile', :action => 'view', :course => nil, :assignment => nil, :id => nil %></li>
 	          <li><%= link_to 'Manage Subscriptions <i class="icon-inbox"></i>', :controller => '/home', :action => 'feeds', :course => nil, :id => nil, :assignment => nil %>		
 	          <li><%= link_to 'Account Settings <i class="icon-cog"></i>', :controller => '/home', :action => 'account' %></li>
-			  
+			  <li><%= link_to 'My Applications <i class="icon-user"></i>', :controller => '/oauth_clients' %></li>
 			  <li><a href="https://en.gravatar.com/site/signup/" target="_blank">Change Profile Picture <i class="icon-user"></i></a></li>
 			  <% if @user.program_manager? %>
 			    <li>
@@ -153,6 +153,10 @@
 	   <% if @breadcrumb.admin_languages %>
 	     <%= link_to 'Programming Languages', {:controller => '/admin/languages', :action => nil, :id => nil} %> <span class="divider">/</span>
 	   <% end %>
+       <% if @breadcrumb.oauth_clients %>
+           <%= link_to 'OAuth ClientsMain', {:controller => 'oauth_clients', :action => nil, :id => nil} %> <span class="divider">/</span>
+       <% end %>
+
 	 <% end %>
 	 <% if @breadcrumb.instructor %>
 	   <%= link_to 'Instructor', {:controller => '/instructor/index', :course => @breadcrumb.course, :action => nil, :id => nil} %>
@@ -225,6 +229,10 @@
          <%= link_to("#{@breadcrumb.audit_program.title}", {:controller => '/audit', :action => 'program', :id => @breadcrumb.audit_program}) %> <span class="divider">/</span>
        <% end %>
 	 <% end %>
+
+     <% if @breadcrumb.oauth_clients %>
+         <%= link_to 'OAuth Clients', {:controller => 'oauth_clients', :action => nil, :id => nil} %> <span class="divider">/</span>
+     <% end %>
 
 	 <% unless @breadcrumb.text.nil? %>
 	   <% if @breadcrumb.link.nil? %>

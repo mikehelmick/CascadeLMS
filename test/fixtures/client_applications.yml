@@ -1,0 +1,24 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+first:
+  id: 1
+  name: "CascadeLMS"
+  url: "http://cascadelms.org"
+  support_url: nil
+  callback_url: "http://cascadelms.org"
+  key: "njgDiIsHoWIFqxxqmx1wc6HT4YGipCJBjpRN9Oez"
+  secret: "4cBoV9oAaiL616E00OF77D3aOqaURuljpEmHC7Ku"
+  user_id: 1
+  created_at: nil
+  updated_at: nil
+
+second:
+  id: 2
+  name: "GitHub"
+  url: "http://github.com"
+  support_url: nil
+  callback_url: "http://cascadelms.org"
+  key: "LlY03uLGJCVWYpW1qnfeCQ07WEMtgXGrUtojO0lh"
+  secret: "VrjLf4SNjGdLJwQ3zVWls0xLeYM1kBjd7fKoBbaN"
+  user_id: 1
+  created_at: nil
+  updated_at: nil

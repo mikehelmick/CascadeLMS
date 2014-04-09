@@ -12,6 +12,7 @@ class Breadcrumb
   attr_accessor :catalog
   # text to display at the end
   attr_accessor :text, :link
+  attr_accessor :oauth_clients
 
   def initialize(course = nil, instructor = false)
     @course = course
