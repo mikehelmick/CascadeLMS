@@ -1,5 +1,5 @@
 class PostController < ApplicationController
-  
+
   before_filter :ensure_logged_in
 
   def index
@@ -13,7 +13,7 @@ class PostController < ApplicationController
     if @item.mark_notifications_read_for_user(@user)
       @notificationCount = @user.notification_count
     end
-  
+
     if @item.blog_post?
       return redirect_to :controller => '/blog', :action => 'post', :course => @item.course_id, :id => @item.post_id
     elsif @item.forum?
@@ -45,8 +45,15 @@ class PostController < ApplicationController
       end
     end
 
-    # For new comments
-    @item_comment = ItemComment.new
+    respond_to do |format|
+      format.html {
+        # For new comments
+        @item_comment = ItemComment.new
+      }
+      format.xml {
+        render :layout => false 
+      }
+    end
   end
 
   def comment
@@ -60,11 +67,11 @@ class PostController < ApplicationController
 
     link = url_for(:action => 'view', :id => @item, :only_path => false)
     Bj.submit "./script/runner ./jobs/comment_notify.rb #{@item.id} #{@user.id} \"#{link}\""
-    
+
     redirect_to :action => 'view', :id => params[:id]
   end
 
-  def aplus    
+  def aplus
     @item = Item.find(params[:item])
     return unless allowed_to_view_item(@user, @item)
     @item, userApRec = Item.toggle_plus(@item, @user)

@@ -1,17 +1,25 @@
 <%= error_messages_for :client_application %>
-<div class="field">
-  <label for="client_application_name">Name*</label><br/>
-  <%= f.text_field :name %>
+<div class="control-group">
+  <label for="client_application_name" class="control-label">Name*</label>
+  <div class="controls">
+    <%= f.text_field :name %>
+  </div>
 </div>
-<div class="field">
-  <label for="client_application_url">Main Application URL*</label><br/>
-  <%= f.text_field :url %>
+<div class="control-group">
+  <label for="client_application_url" class="control-label">Main Application URL*</label>
+  <div class="controls">
+    <%= f.text_field :url %>
+  </div>
 </div>
-<div class="field">
-  <label for="client_application_callback_url">Callback URL*</label><br/>
-  <%= f.text_field :callback_url %>
+<div class="control-group">
+  <label for="client_application_callback_url" class="control-label">Callback URL*</label>
+  <div class="controls">
+    <%= f.text_field :callback_url %>
+  </div>
 </div>
-<div class="field">
-  <label for="client_application_support_url">Support URL</label><br/>
-  <%= f.text_field :support_url %>
+<div class="control-group">
+  <label for="client_application_support_url" class="control-label">Support URL</label>
+  <div class="controls">
+    <%= f.text_field :support_url %>
+  </div>
 </div>
