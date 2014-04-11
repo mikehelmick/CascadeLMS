@@ -1,11 +1,13 @@
 xml.instruct!
 xml.post do
   xml.id "#{@item.id}"
-  xml.user_id "#{@item.user_id}"
   xml.date "#{@item.created_at.to_formatted_s(:social_date)}"
-  xml.user_name "#{@item.user.display_name rescue '?'}"
-  unless @item.user.nil?
-    xml.gravatar_url "#{@item.user.gravatar_url}"
+  xml.user do
+    xml.id "#{@item.user_id}"
+    xml.name "#{@item.user.display_name rescue '?'}"
+    unless @item.user.nil?
+      xml.gravatar_url "#{@item.user.gravatar_url}"
+    end
   end
   unless @item.course.nil?
     xml.course_id "#{@item.course.id}"
@@ -17,9 +19,11 @@ xml.post do
   xml.aplus_users do
     xml.user do
       @item.aplus_users(@user).each do |user|
-        xml.id "#{user.id}"
-        xml.name "#{user.display_name}"
-        xml.gravatar_url "#{user.gravatar_url}"
+        xml.user
+          xml.id "#{user.id}"
+          xml.name "#{user.display_name}"
+          xml.gravatar_url "#{user.gravatar_url}"
+        end
       end
     end
   end
@@ -27,9 +31,11 @@ xml.post do
   xml.comments do
     @item.item_comments.each do |comment|
       xml.comment do
-        xml.user_id "#{comment.user.id}"
-        xml.user "#{comment.user.display_name}"
-        xml.gravatar_url "#{comment.user.gravatar_url}"
+        xml.user do
+          xml.id "#{comment.user.id}"
+          xml.name "#{comment.user.display_name}"
+          xml.gravatar_url "#{comment.user.gravatar_url}"
+        end
         xml.body_html do
           xml.cdata! comment.body_html
         end
