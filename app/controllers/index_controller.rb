@@ -26,7 +26,7 @@ class IndexController < ApplicationController
     if @new_user.nil?
       redirect_to :controller => '/', :action => nil
       return
-    elsif !redirect_to session[:post_login].nil?
+    elsif !session[:post_login].nil?
       redirect_to session[:post_login]
       return
     elsif !@new_user
