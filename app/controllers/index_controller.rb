@@ -30,9 +30,11 @@ class IndexController < ApplicationController
     
     if !redirect_to session[:post_login].nil?
       redirect_to session[:post_login]
+      return
     elsif !@new_user
       # Logged in, send to home
       redirect_to :controller => '/home'
+      return
     else
       render :layout => 'transitional'
     end
