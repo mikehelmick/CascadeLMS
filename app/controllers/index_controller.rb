@@ -27,8 +27,10 @@ class IndexController < ApplicationController
       redirect_to :controller => '/', :action => nil
       return
     end
-
-    if !@new_user
+    
+    if !redirect_to session[:post_login].nil?
+      redirect_to session[:post_login]
+    elsif !@new_user
       # Logged in, send to home
       redirect_to :controller => '/home'
     else
