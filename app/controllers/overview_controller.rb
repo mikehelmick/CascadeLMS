@@ -43,16 +43,16 @@ class OverviewController < ApplicationController
     return unless allowed_to_see_course( @course, @user )
     
     set_title
+
+    @page = params[:page].to_i
+    @page = 1 if @page.nil? || @page == 0
+    @feed_id = @course.feed.id
+    @pages, @feed_items = @course.feed.load_items(@user, 25, @page)
     
     respond_to do |format|
       format.html {
-        @page = params[:page].to_i
-        @page = 1 if @page.nil? || @page == 0
-        @feed_id = @course.feed.id
-        @pages, @feed_items = @course.feed.load_items(@user, 25, @page)
       }
       format.xml {
-        @recent_activity = FreshItems.fresh( @course, @app['recent_items'].to_i, true, @user.id )
         render :layout => false
       }
     end
