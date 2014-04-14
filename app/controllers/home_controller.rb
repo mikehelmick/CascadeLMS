@@ -108,6 +108,13 @@ class HomeController < ApplicationController
     
     @courses = @user.courses
     @courses.sort! { |x,y| y.term.term <=> x.term.term }
+    
+    respond_to do |format|
+      format.html
+      format.xml { 
+        render :layout => false 
+      }
+    end
   end
   
   def account

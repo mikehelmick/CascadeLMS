@@ -29,7 +29,6 @@ module OAuth
 
       def access_token
         current_tok = ::RequestToken.find_by_token! params[:oauth_token]
-        puts params[:oauth_token]
         @token2 = current_tok.exchange!
         #@token = current_token && current_token.exchange!
         if @token2
