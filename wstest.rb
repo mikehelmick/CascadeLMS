@@ -5,7 +5,7 @@ http_sess = Net::HTTP.new('localhost', 3000)
 http_sess.use_ssl = false
 
 http_sess.start do |http|
-  response = http.get('/index/login?user[uniqueid]=ADMIN&user[password]=PASSWORD', 'Accept' => 'text/xml')
+  response = http.get('/index/login?user[uniqueid]=admin&user[password]=admin', 'Accept' => 'text/xml')
   puts response.inspect
   body = response.body
     
@@ -19,7 +19,7 @@ http_sess.start do |http|
   puts "Cookie: #{session}"
 
   #Do something with the response.
-  response = http.get('http://localhost:3000/home/courses', {'Accept' => 'text/xml', 'Cookie' => cookie} )
+  response = http.get('http://localhost:3000/course/1/blog/post/1', {'Accept' => 'text/xml', 'Cookie' => cookie} )
 
   puts "Code: #{response.code}"
   puts "Headers: #{response.header}"
