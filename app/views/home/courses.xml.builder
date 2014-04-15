@@ -9,8 +9,8 @@ xml.courses do
         xml.semester course.term.semester
         xml.current course.term.current
       end
+      xml.title course.title
+      xml.description course.short_description
     end
-    xml.title course.title
-    xml.description course.short_description
   end
 end
