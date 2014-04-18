@@ -17,6 +17,8 @@ xml.documents do
         	                         :course => @course,
         	                         :id => document.id )
         end
+      elsif document.link
+        xml.url document.url
       else
         xml.extension "#{document.extension}"
         xml.size "#{document.size}"
@@ -25,10 +27,10 @@ xml.documents do
       	                          :action => 'download',
       	                          :course => @course,
       	                          :id => document.id,
-      	                          :file => document.without_extension, 
+      	                          :file => document.without_extension,
       	                          :extension => document.extension )
       end
-      
+
     end
   end
 end
