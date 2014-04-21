@@ -238,17 +238,31 @@ function handleEnter(event)
   </div>
  </div>
  <div class="row-fluid">
-  <div class="span7">
-   <fieldset>
-    <%= render :partial => 'rubric_area' %>
-   </fieldset>
-  </div>
-  <div class="span5">
+  
+  <% 
+   showRubrics = true
+   rubricSpan = 'span7'
+   pointsSpan = 'span5'
+   pointsClass = 'input-medium'
+   if @assignment.rubrics.size == 0
+     showRubrics = false;
+     pointsSpan = 'span12'
+     pointsClass = 'input-xxlarge'
+   end
+  %>   
+  <% if showRubrics %>
+   <div class="span7">
+    <fieldset>
+     <%= render :partial => 'rubric_area' %>
+    </fieldset>
+   </div>
+  <% end %>
+  <div class="<%= pointsSpan %>">
 	<fieldset>
 	  <div class="control-group">
 	    <label for="document_title" class="control-label">Points:</label>
 	    <div class="controls">
-	      <%= text_field 'grade_entry', 'points', {:class => 'input-medium', :onchange => 'set_form_needs_checked();', :onkeypress => "return handleEnter(event);"}  %> / <%= sprintf("%0.1f", @grade_item.points ) %>
+	      <%= text_field 'grade_entry', 'points', {:class => pointsClass, :onchange => 'set_form_needs_checked();', :onkeypress => "return handleEnter(event);"}  %> / <%= sprintf("%0.1f", @grade_item.points ) %>
           <% if @assignment.team_project && !@team.nil? %>
              <br/><%= check_box_tag( 'apply_to_team', true, @apply_to_team )%> Apply grade and comments to all team members.
           <% end %> 
@@ -258,7 +272,7 @@ function handleEnter(event)
       <div class="control-group">
 	    <label for="document_comments" class="control-label">General comments:</label>
 	    <div class="controls">
-          <%= text_area 'grade_entry', 'comment', :class=> 'input-xlarge', :rows => 5, :onchange => 'set_form_needs_checked();'  %>
+          <%= text_area 'grade_entry', 'comment', :class=> pointsClass, :rows => 15, :onchange => 'set_form_needs_checked();'  %>
         </div>
       </div>
     </fieldset>
