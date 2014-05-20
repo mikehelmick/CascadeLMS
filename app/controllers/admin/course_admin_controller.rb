@@ -34,6 +34,7 @@ class Admin::CourseAdminController < ApplicationController
     @course = Course.find(params[:id])
     @terms = Term.find(:all)
     @breadcrumb.text = "Edit #{@course.title}"
+    @is_edit = true
   end
   
   def create
@@ -92,6 +93,7 @@ class Admin::CourseAdminController < ApplicationController
       redirect_to :action => 'edit', :id => @course
     else
       @terms = Term.find(:all)
+      @is_edit = true
       render :action => 'edit'
     end
   end

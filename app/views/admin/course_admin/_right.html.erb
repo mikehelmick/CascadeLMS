@@ -1,4 +1,4 @@
-<% if request.path_parameters['action'].eql?('edit') %>
+<% if !@is_edit.nil? && @is_edit %>
 <h3>Merge Courses</h3>
 <div id="merge_area">
 <% form_remote_tag( :update => 'merge_results', :url => { :action => 'mergesearch', :id => @course }, :complete => "new Effect.BlindDown('merge_results');", :html => {:class => 'form-search'} ) do %>
