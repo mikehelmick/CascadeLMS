@@ -91,6 +91,9 @@
 	          <li><%= link_to 'Account Settings <i class="icon-cog"></i>', :controller => '/home', :action => 'account' %></li>
 			  <li><%= link_to 'My Applications <i class="icon-user"></i>', :controller => '/oauth_clients' %></li>
 			  <li><a href="https://en.gravatar.com/site/signup/" target="_blank">Change Profile Picture <i class="icon-user"></i></a></li>
+			  <% if @user.instructor || @user.admin %>
+                            <li><%= link_to 'Create a new course <i class="icon-plus-sign"></i>', :controller => 'instructor/newcourse', :action => nil, :course => nil, :id => nil %></li>
+                          <% end %>
 			  <% if @user.program_manager? %>
 			    <li>
 			     <%= link_to 'Programs', {:controller => '/program', :course => nil, :assignment => nil, :id => nil} %></li>
