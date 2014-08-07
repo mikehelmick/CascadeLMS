@@ -35,6 +35,7 @@ class Admin::CourseAdminController < ApplicationController
     @terms = Term.find(:all)
     @breadcrumb.text = "Edit #{@course.title}"
     @is_edit = true
+    render(:layout => 'application_right')
   end
   
   def create
