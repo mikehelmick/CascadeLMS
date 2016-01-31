@@ -1,7 +1,7 @@
 
 # CascadeLMS
 
-CascadeLMS is under active development, and we welcome new contributors.
+CascadeLMS is no longer under development and (as far as we know) is no longer being run at any universities. We've had a good run, but there are other solutions out there that are actively supported.
 
 ## Branches and status
 
@@ -16,7 +16,3 @@ CascadeLMS (Learning Management System) an integrated online courseware applicat
 ## For Computer Science
 
 In addition, CascadeLMS is capable of automatically grading some student computer programs (currently just in Java).
-
-# Install CascadeLMS
-
-See installation instructions at http://www.cascadelms.org/install.html
